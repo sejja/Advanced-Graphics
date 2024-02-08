@@ -11,7 +11,7 @@
 
 #include <string>
 #include <glew.h>
-#include <glm/glm.hpp>
+#include "glm.hpp"
 #include "Shader.h"
 #include "Color.h"
 #include "CommonDefines.h"

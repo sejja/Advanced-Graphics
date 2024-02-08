@@ -1,7 +1,7 @@
 #pragma once
 
-#include <glm/glm.hpp>
-#include <glm/vec3.hpp>
+#include "glm.hpp"
+#include "vec3.hpp"
 #include "Core/ECSystem/Component.h"
 #include <unordered_map>
 #include <memory>

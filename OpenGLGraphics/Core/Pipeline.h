@@ -11,7 +11,7 @@
 
 #include <queue>
 #include <memory>
-#include <glm/glm.hpp>
+#include "glm.hpp"
 
 namespace Core {
 	class Renderable;

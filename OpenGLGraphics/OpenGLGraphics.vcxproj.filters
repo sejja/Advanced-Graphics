@@ -1980,6 +1980,7 @@
     <None Include="Content\Shaders\SkyBox.shader" />
     <None Include="Content\Shaders\Refractive.frag" />
     <None Include="Content\Shaders\Refractive.shader" />
+    <None Include="Content\Meshes\backpack.mtl" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
@@ -2009,5 +2010,17 @@
     <Image Include="Content\Textures\Brick.png">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="Content\Meshes\cone_20_averaged.obj" />
+    <Object Include="Content\Meshes\cone_20_face.obj" />
+    <Object Include="Content\Meshes\cube_averaged.obj" />
+    <Object Include="Content\Meshes\cube_face.obj" />
+    <Object Include="Content\Meshes\cylinder_20_averaged.obj" />
+    <Object Include="Content\Meshes\cylinder_20_face.obj" />
+    <Object Include="Content\Meshes\plane.obj" />
+    <Object Include="Content\Meshes\sphere_20_averaged.obj" />
+    <Object Include="Content\Meshes\sphere_20_face.obj" />
+    <Object Include="Content\Meshes\suzanne.obj" />
   </ItemGroup>
 </Project>

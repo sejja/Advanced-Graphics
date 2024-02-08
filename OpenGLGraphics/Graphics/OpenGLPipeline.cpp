@@ -8,7 +8,7 @@
 
 #include <execution>
 #include "OpenGLPipeline.h"
-#include <glm/gtc/matrix_transform.hpp>
+#include "gtc/matrix_transform.hpp"
 #include "Graphics/Camera.h"
 #include "Graphics/Primitives/Texture.h"
 #include "Core/InputManager.h"

@@ -11,7 +11,7 @@
 
 #include <Windows.h>
 #include "../CommonDefines.h"
-#include <glm/vec2.hpp>
+#include "vec2.hpp"
 #include "Core/Events/EventDispatcher.h"
 
 namespace Core {

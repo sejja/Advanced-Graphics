@@ -2,7 +2,8 @@
 #include <tinyobjloader.h>
 #include <glew.h>
 #include <iostream>
-#include "glm/glm.hpp"
+#include "glm.hpp"
+#include <filesystem>
 
 namespace Core {
 	namespace Graphics {
@@ -12,7 +13,9 @@ namespace Core {
 		*   Constructs an empty model class
 		*/ //----------------------------------------------------------------------
 		Model::Model() noexcept :
-			mVAO(NULL), mVBO(NULL), mIBO(NULL), mCount(0), mMaterial() {}
+			mVAO(NULL), mVBO(NULL), mIBO(NULL), mCount(0), mMaterial(),
+			mDiffuseTex(Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/Brick.png")),
+			mNormalTex(Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/BrickNormal.png")){}
 		
 		// ------------------------------------------------------------------------
 		/*! Destructor
@@ -51,11 +54,34 @@ namespace Core {
 			std::vector<int> indexes;
 			std::string warn, err;
 
+			std::string directory;
+			const size_t last_slash_idx = inputfile.rfind('/');
+			if (std::string::npos != last_slash_idx)
+			{
+				directory = inputfile.substr(0, last_slash_idx);
+			}
+
+			std::string_view file = inputfile.substr(inputfile.find_last_of("/\\") + 1);
+
+			auto oldpath = std::filesystem::current_path(); //getting path
+			std::filesystem::current_path(directory); //setting path
+
 			//If we had any issue loading the class
-			if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, inputfile.data()) || !err.empty())
+			if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, file.data()) || !warn.empty() || !err.empty())
 				throw ModelException(("Error: " + err + ", warning; " + warn).c_str());
 
+			std::filesystem::current_path(oldpath);
 			Clear();
+
+			if (materials.size()) {
+				if (!materials[0].diffuse_texname.empty()) {
+					mDiffuseTex = Singleton<ResourceManager>::Instance().GetResource<Texture>((directory + '/' + materials[0].diffuse_texname).c_str());
+				}
+
+				if (!materials[0].bump_texname.empty()) {
+					mNormalTex = Singleton<ResourceManager>::Instance().GetResource<Texture>((directory + '/' + materials[0].bump_texname).c_str());
+				}
+			}
 
 			// Loop over shapes
 			for (size_t s = 0; s < shapes.size(); s++) {
@@ -158,7 +184,7 @@ namespace Core {
 
 					if (shapes[s].mesh.material_ids[f] != -1) {
 						// per-face material
-						mMaterial.SetAmbient(glm::vec4(materials[shapes[s].mesh.material_ids[f]].ambient[0],
+						/*mMaterial.SetAmbient(glm::vec4(materials[shapes[s].mesh.material_ids[f]].ambient[0],
 							materials[shapes[s].mesh.material_ids[f]].ambient[1],
 							materials[shapes[s].mesh.material_ids[f]].ambient[2], 1.f));
 						mMaterial.SetDiffuse(glm::vec4(materials[shapes[s].mesh.material_ids[f]].diffuse[0],
@@ -170,7 +196,7 @@ namespace Core {
 						mMaterial.SetSpecular(glm::vec4(materials[shapes[s].mesh.material_ids[f]].specular[0],
 							materials[shapes[s].mesh.material_ids[f]].specular[1],
 							materials[shapes[s].mesh.material_ids[f]].specular[2], 1.f));
-						mMaterial.SetShininess(materials[shapes[s].mesh.material_ids[f]].shininess);
+						mMaterial.SetShininess(materials[shapes[s].mesh.material_ids[f]].shininess);*/
 					}
 					else {
 						mMaterial.SetAmbient(glm::vec4(1.f, 1.f, 1.f, 1.f));

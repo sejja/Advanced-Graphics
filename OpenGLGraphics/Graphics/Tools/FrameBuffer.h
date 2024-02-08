@@ -10,7 +10,7 @@
 #define _FRAME_BUFFER__H_
 
 #include <glew.h>
-#include <glm/glm.hpp>
+#include "glm.hpp"
 #include "CommonDefines.h"
 #include "../Primitives/Texture.h"
 

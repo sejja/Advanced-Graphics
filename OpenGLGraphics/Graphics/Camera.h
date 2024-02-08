@@ -9,8 +9,8 @@
 #ifndef _CAMERA__H_
 #define _CAMERA__H_
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
+#include "glm.hpp"
+#include "gtc/matrix_transform.hpp"
 #include "CommonDefines.h"
 #include "Core/Events/EventDispatcher.h"
 

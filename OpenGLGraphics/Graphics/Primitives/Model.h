@@ -45,6 +45,8 @@ namespace Core {
 			DONTDISCARD GLuint inline GetHandle() const noexcept;
 			DONTDISCARD size_t inline GetVertexCount() const noexcept;
 			void SetShaderUniforms(const ShaderProgram& s) const;
+			DONTDISCARD inline AssetReference<Texture> GetDiffuseTexture() const noexcept;
+			DONTDISCARD inline AssetReference<Texture> GetNormalTexture() const noexcept;
 
 		private:
 			void UploadToGPU(std::vector<float>& vertices, std::vector<int>& indexes);
@@ -76,6 +78,24 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		std::size_t Model::GetVertexCount() const noexcept {
 			return mCount;
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Get Diffuse Texutre
+		*
+		*   Returns an Asset Reference to the Diffuse Texture
+		*/ //----------------------------------------------------------------------
+		AssetReference<Texture> Model::GetDiffuseTexture() const noexcept {
+			return mDiffuseTex;
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Get Diffuse Texutre
+		*
+		*   Returns an Asset Reference to the Diffuse Texture
+		*/ //----------------------------------------------------------------------
+		AssetReference<Texture> Model::GetNormalTexture() const noexcept {
+			return mNormalTex;
 		}
 	}
 }

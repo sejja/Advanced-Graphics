@@ -9,7 +9,7 @@
 #ifndef _TRANSFORM__H_
 #define _TRANSFORM__H_
 
-#include <glm/glm.hpp>
+#include "glm.hpp"
 
 namespace Mathematics {
 	struct Transformation {

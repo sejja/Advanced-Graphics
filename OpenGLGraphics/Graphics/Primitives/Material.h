@@ -10,7 +10,7 @@
 #define _MATERIAL__H_
 
 #include "CommonDefines.h"
-#include "glm/vec4.hpp"
+#include "vec4.hpp"
 
 namespace Graphics {
 	class Material {

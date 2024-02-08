@@ -1,7 +1,7 @@
 #ifndef _WINDOW__H_
 #define _WINDOW__H_
 
-#include <glm/glm.hpp>
+#include "glm.hpp"
 
 namespace Core {
 	class Window {
