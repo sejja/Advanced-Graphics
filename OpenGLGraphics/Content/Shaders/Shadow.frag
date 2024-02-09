@@ -1,6 +1,17 @@
-#version 450 core
+﻿//
+//  Shadow.frag
+//  OpenGL Graphics
+//
+//  Created by Diego Revilla on 09/02/24
+//  Copyright � 2024. All rights reserved.
+//
 
-layout(location = 0) out float fragmentdepth;
+#version 460 core
 
-void main() {
-}
+// ------------------------------------------------------------------------
+/*! Shader Entrypoint
+*
+*   An empty shader, by default, returns the content of the depth buffer in
+*		the given pixel (little trick)
+*/ //----------------------------------------------------------------------
+void main() {}

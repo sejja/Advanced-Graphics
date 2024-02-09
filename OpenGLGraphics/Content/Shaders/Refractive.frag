@@ -1,4 +1,4 @@
-#version 450 core
+#version 460 core
 
 layout(location = 0) in vec3 aPos;
 layout(location = 1) in vec3 aNormal;
@@ -63,8 +63,8 @@ float ShadowCalculation(vec4 fragPosLightSpace, int light) {
 
   float shadow = 0.0;
   vec2 texelSize = 1.0 / textureSize(depth_texture2[light], 0);
-  for(int x = -9; x <= 9; ++x) {
-      for(int y = -9; y <= 9; ++y) {
+  for(int x = -1; x <= 1; ++x) {
+      for(int y = -1; y <= 1; ++y) {
           shadow += currentDepth - bias > texture(depth_texture2[light], projCoords.xy + vec2(x, y) * texelSize).r ? 1.0 : 0.0;        
       }    
   }

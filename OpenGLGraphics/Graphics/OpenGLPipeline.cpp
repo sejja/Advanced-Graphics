@@ -68,7 +68,7 @@ namespace Core {
 			ImGui_ImplSDL2_NewFrame();
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
-			ImGui::ShowDemoWindow();
+			//ImGui::ShowDemoWindow();
 
 			static Primitives::Camera cam;
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
