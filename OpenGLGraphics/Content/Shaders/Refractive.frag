@@ -49,8 +49,7 @@ layout(binding = 2) uniform sampler2D depth_texture2[8];
 layout(binding = 9) uniform samplerCube uSkyBox;
 
 
-float ShadowCalculation(vec4 fragPosLightSpace, int light)
-{
+float ShadowCalculation(vec4 fragPosLightSpace, int light) {
     // perform perspective divide
     vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
     // transform to [0,1] range
@@ -64,12 +63,9 @@ float ShadowCalculation(vec4 fragPosLightSpace, int light)
 
   float shadow = 0.0;
   vec2 texelSize = 1.0 / textureSize(depth_texture2[light], 0);
-  for(int x = -1; x <= 1; ++x)
-  {
-      for(int y = -1; y <= 1; ++y)
-      {
-          float pcfDepth = texture(depth_texture2[light], projCoords.xy + vec2(x, y) * texelSize).r; 
-          shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+  for(int x = -9; x <= 9; ++x) {
+      for(int y = -9; y <= 9; ++y) {
+          shadow += currentDepth - bias > texture(depth_texture2[light], projCoords.xy + vec2(x, y) * texelSize).r ? 1.0 : 0.0;        
       }    
   }
   shadow /= 9.0;
@@ -124,7 +120,7 @@ void main() {
     
        float Spotlight =1;
 		vec3 d = normalize(uLight[i].dir);
-		if(uLight[i].type ==1)
+		if(uLight[i].type == 1)
 		{
 			float aplha = dot(-lightDir, d);
 
@@ -141,8 +137,6 @@ void main() {
 
         totalLightShine += att * ((ambient + Spotlight * (1 - f) * diffuse + specular));
    }
-  
-    vec3 I = normalize(oPosition - uCameraPos);
-    vec3 R = reflect(I, normalize(oNormal));
-    FragColor = vec4(texture(uSkyBox, R).rgb, 1.0) * vec4(totalLightShine, 1.0);
+
+    FragColor = vec4(texture(uSkyBox, reflect(normalize(oPosition - uCameraPos), normalize(oNormal))).rgb, 1.0) * vec4(totalLightShine, 1.0);
 }

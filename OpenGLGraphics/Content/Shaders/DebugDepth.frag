@@ -14,6 +14,11 @@ in vec2 in_uv;
 
 uniform sampler2D s_depthMap;
 
+// ------------------------------------------------------------------------
+/*! Shader Entrypoint
+*
+*   The resulting color will be a greyscale representing the depthmap
+*/ //----------------------------------------------------------------------
 void main() {             
     o_fragcolor = vec4(vec3( texture(s_depthMap, in_uv).r), 1.0);
 }

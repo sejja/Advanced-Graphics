@@ -36,8 +36,6 @@ namespace Core {
 			glDisable(GL_BLEND);
 			glDisable(GL_STENCIL_TEST);
 			glClearColor(0.f, 0.f, 0.f, 0.f);
-			Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/UV.jpg")->Get();
-			Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/BrickNormal.png")->Get();
 			mShadowBuffers.emplace_back();
 			mShadowBuffers.emplace_back();
 			mShadowBuffers.emplace_back();

@@ -855,18 +855,6 @@
     <Image Include="Content\Textures\right.jpg" />
     <Image Include="Content\Textures\top.jpg" />
   </ItemGroup>
-  <ItemGroup>
-    <Object Include="Content\Meshes\cone_20_averaged.obj" />
-    <Object Include="Content\Meshes\cone_20_face.obj" />
-    <Object Include="Content\Meshes\cube_averaged.obj" />
-    <Object Include="Content\Meshes\cube_face.obj" />
-    <Object Include="Content\Meshes\cylinder_20_averaged.obj" />
-    <Object Include="Content\Meshes\cylinder_20_face.obj" />
-    <Object Include="Content\Meshes\plane.obj" />
-    <Object Include="Content\Meshes\sphere_20_averaged.obj" />
-    <Object Include="Content\Meshes\sphere_20_face.obj" />
-    <Object Include="Content\Meshes\suzanne.obj" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
