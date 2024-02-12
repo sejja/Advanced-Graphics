@@ -244,7 +244,7 @@ namespace Core {
 		// ------------------------------------------------------------------------
 		/*! Geometry Pass
 		*
-		*   I must think of a description... somewhenelse
+		*   Draws the geometry on the G-Buffer
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::GeometryPass() {
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
@@ -290,7 +290,7 @@ namespace Core {
 
 				mGBuffer->Bind();
 				mGBuffer->ClearBuffer();
-				mGBuffer->BindShader();
+				mGBuffer->BindGeometryShader();
 
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), 
 					[this, &obsoletes, &projection, &view, &f_grouprender](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {

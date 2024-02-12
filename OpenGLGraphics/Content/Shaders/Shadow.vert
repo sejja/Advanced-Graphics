@@ -1,4 +1,12 @@
-#version 450 core
+//
+//	Shadow.vert
+//	OpenGL Graphics
+//
+//	Created by Diego Revilla on 12/02/24
+//	Copyright © 2021 . All Rights reserved
+//
+
+#version 460 core
 
 layout (location = 0) in vec3 aPos;
 

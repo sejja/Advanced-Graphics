@@ -23,7 +23,7 @@ namespace Core {
 			GBuffer();
 			~GBuffer();
 			void Bind();
-			void BindShader();
+			void BindGeometryShader();
 			Asset<ShaderProgram> GetGeometryShader();
 			GLuint GetPositionTextureHandle();
 			GLuint GetNormalTextureHandle();

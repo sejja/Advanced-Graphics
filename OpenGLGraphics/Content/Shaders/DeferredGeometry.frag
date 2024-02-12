@@ -10,17 +10,24 @@ in vec3 oTangent;
 in vec3 oBitangent;
 in vec4 oShadowCoord[8];
 
+uniform vec3 uCameraPos;
+uniform mat4 uTransform;
+uniform mat4 uView;
+uniform mat4 uModel;
 
 layout(binding = 0) uniform sampler2D uDiffuseTex;
 layout(binding = 1) uniform sampler2D uNormalTex;
 
 void main() {    
+    mat4 VM = uView * uModel;
+    mat3 VM3 = mat3(VM);
+    mat3 iVM3 = inverse(transpose(VM3));
+    mat3 V_M_TBN = iVM3 * mat3(oTangent, oBitangent, oNormal);
+
     // store the fragment position vector in the first gbuffer texture
     gPosition = oPosition;
     // also store the per-fragment normals into the gbuffer
-    gNormal = texture(uNormalTex, oUVs).rgb;
+    gNormal = normalize(V_M_TBN * (texture(uNormalTex, oUVs).rgb * 2.0f - 1.0f));
     // and the diffuse per-fragment color
-    gAlbedoSpec.rgb = texture(uDiffuseTex, oUVs).rgb;
-    // store specular intensity in gAlbedoSpec's alpha component
-    gAlbedoSpec.a = texture(uNormalTex, oUVs).r;
+    gAlbedoSpec.rgba = texture(uDiffuseTex, oUVs).rgba;
 }

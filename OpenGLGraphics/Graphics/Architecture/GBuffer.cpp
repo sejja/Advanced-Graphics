@@ -12,6 +12,11 @@
 
 namespace Core {
 	namespace Graphics {
+		// ------------------------------------------------------------------------
+		/*! Default Constructor
+		*
+		*   Constructs a G-Buffer, with 3 Textures (Position, Normal, Albedo)
+		*/ //----------------------------------------------------------------------
 		GBuffer::GBuffer() {
 			mGeometryShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredGeometry.shader");
 			auto dim = Singleton<SDLWindow>::Instance().GetDimensions();
@@ -59,32 +64,77 @@ namespace Core {
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 
+		// ------------------------------------------------------------------------
+		/*! Destructor
+		*
+		*   Frees the resources
+		*/ //----------------------------------------------------------------------
 		GBuffer::~GBuffer() {
 			glDeleteTextures(1, &mPosition);
 			glDeleteTextures(1, &mNormal);
 			glDeleteTextures(1, &mAlbedoSpecular);
 			glDeleteBuffers(1, &mBuffer);
 		}
+
+		// ------------------------------------------------------------------------
+		/*! Bind
+		*
+		*   Binds the G-Buffer for drawing
+		*/ //----------------------------------------------------------------------
 		void GBuffer::Bind() {
 			glBindFramebuffer(GL_FRAMEBUFFER, mBuffer);
 		}
 
-		void GBuffer::BindShader() {
+		// ------------------------------------------------------------------------
+		/*! Bind Shader
+		*
+		*   Binds the shader for drawing geometry
+		*/ //----------------------------------------------------------------------
+		void GBuffer::BindGeometryShader() {
 			mGeometryShader->Get()->Bind();
 		}
 
+		// ------------------------------------------------------------------------
+		/*! Get Geometry Shader
+		*
+		*   Returns the asset for drawing geometry onto the G-Buffer
+		*/ //----------------------------------------------------------------------
 		Asset<ShaderProgram> GBuffer::GetGeometryShader() {
 			return mGeometryShader;
 		}
+
+		// ------------------------------------------------------------------------
+		/*! Get Position Texture Handle
+		*
+		*   Returns the Handle for the position-stride texture
+		*/ //----------------------------------------------------------------------
 		GLuint GBuffer::GetPositionTextureHandle() {
 			return mPosition;
 		}
+
+		// ------------------------------------------------------------------------
+		/*! get Normal Texture Handle
+		*
+		*   Returns the Handle for the normal-stride texture
+		*/ //----------------------------------------------------------------------
 		GLuint GBuffer::GetNormalTextureHandle() {
 			return mNormal;
 		}
+
+		// ------------------------------------------------------------------------
+		/*! Geometry Pass
+		*
+		*   Returns the Handle for the albedo-stride texture
+		*/ //----------------------------------------------------------------------
 		GLuint GBuffer::GetAlbedoTextureHandle() {
 			return mAlbedoSpecular;
 		}
+
+		// ------------------------------------------------------------------------
+		/*! Clear Buffer
+		*
+		*   G-Buffer clears the G-Buffer
+		*/ //----------------------------------------------------------------------
 		void GBuffer::ClearBuffer() {
 			glClearColor(0.0, 0.0, 0.0, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
