@@ -1,6 +1,6 @@
 //
 //	Texture.cpp
-//	Good Neighbours
+//	OpenGL Graphics
 //
 //	Created by Diego Revilla on 06/05/21
 //	Copyright © 2021 . All Rights reserved
@@ -76,6 +76,10 @@ namespace Core {
 					glBindTexture(GL_TEXTURE_2D, 0);
 				}
 			}
+		}
+
+		GLuint Texture::GetTextureHandle() const {
+			return mHandle;
 		}
 
 		// ------------------------------------------------------------------------

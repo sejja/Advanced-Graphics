@@ -35,6 +35,7 @@ namespace Core {
 			inline void SetTextureType(const TextureType type) noexcept;
 			void Bind() const noexcept;
 			void LoadFromFile(const std::string_view& filename) noexcept;
+			GLuint GetTextureHandle() const;
 		#pragma endregion
 
 		#pragma region //Members

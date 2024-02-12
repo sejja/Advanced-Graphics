@@ -1,6 +1,6 @@
 //
 //	Pipeline.h
-//	Good Neighbours
+//	OpenGL Graphics
 //
 //	Created by Diego Revilla on 10/03/22
 //	Copyright © 2023. All Rights reserved

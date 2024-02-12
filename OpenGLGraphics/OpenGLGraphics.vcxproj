@@ -185,6 +185,7 @@
     <ClCompile Include="Dependencies\ImGui\imgui_impl_sdl2.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Graphics\Architecture\GBuffer.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Primitives\Light.cpp" />
@@ -229,6 +230,7 @@
     <ClInclude Include="Dependencies\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Graphics\Architecture\GBuffer.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Dependencies\Json\include\adl_serializer.hpp" />
     <ClInclude Include="Dependencies\Json\include\byte_container_with_subtype.hpp" />
@@ -686,6 +688,8 @@
     <None Include="Content\Shaders\DebugDepth.frag" />
     <None Include="Content\Shaders\DebugDepth.shader" />
     <None Include="Content\Shaders\DebugDepth.vert" />
+    <None Include="Content\Shaders\DeferredGeometry.frag" />
+    <None Include="Content\Shaders\DeferredGeometry.shader" />
     <None Include="Content\Shaders\Refractive.frag" />
     <None Include="Content\Shaders\Refractive.shader" />
     <None Include="Content\Shaders\Shadow.frag" />

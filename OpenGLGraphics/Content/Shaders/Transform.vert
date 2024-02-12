@@ -10,6 +10,7 @@ uniform mat4 uTransform;
 uniform mat4 uView;
 uniform mat4 uModel;
 uniform mat4 uShadowMatrix[8];
+
 out vec2 oUVs;
 out vec3 oNormal;
 out vec3 oPosition;

@@ -123,6 +123,9 @@
     <ClCompile Include="Dependencies\ImGui\imgui_impl_sdl2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Architecture\GBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -1547,6 +1550,9 @@
     <ClInclude Include="Dependencies\ImGui\imgui_impl_sdl2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Architecture\GBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\SDL\Include\SDL_config.h.cmake" />
@@ -1981,6 +1987,8 @@
     <None Include="Content\Shaders\Refractive.frag" />
     <None Include="Content\Shaders\Refractive.shader" />
     <None Include="Content\Meshes\backpack.mtl" />
+    <None Include="Content\Shaders\DeferredGeometry.frag" />
+    <None Include="Content\Shaders\DeferredGeometry.shader" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
@@ -2010,17 +2018,5 @@
     <Image Include="Content\Textures\Brick.png">
       <Filter>Resource Files</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Object Include="Content\Meshes\cone_20_averaged.obj" />
-    <Object Include="Content\Meshes\cone_20_face.obj" />
-    <Object Include="Content\Meshes\cube_averaged.obj" />
-    <Object Include="Content\Meshes\cube_face.obj" />
-    <Object Include="Content\Meshes\cylinder_20_averaged.obj" />
-    <Object Include="Content\Meshes\cylinder_20_face.obj" />
-    <Object Include="Content\Meshes\plane.obj" />
-    <Object Include="Content\Meshes\sphere_20_averaged.obj" />
-    <Object Include="Content\Meshes\sphere_20_face.obj" />
-    <Object Include="Content\Meshes\suzanne.obj" />
   </ItemGroup>
 </Project>

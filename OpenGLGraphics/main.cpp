@@ -9,7 +9,7 @@
 #include "Core/Application.h"
 #include "Core/Window/SDLWindow.h"
 #include "Graphics/OpenGLPipeline.h"
-#include "Core/ECSystem/Scene.h"
+#include "Core/Window/SDLWindow.h"
 
 // ------------------------------------------------------------------------
 /*! Main

@@ -13,6 +13,7 @@
 #include "Graphics/Primitives/ShaderProgram.h"
 #include "Graphics/Primitives/Renderables.h"
 #include "Tools/FrameBuffer.h"
+#include "Graphics/Architecture/GBuffer.h"
 
 namespace Core {
 	namespace Graphics {
@@ -28,10 +29,12 @@ namespace Core {
 
 		private:
 			void UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader);
+			void GeometryPass();
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 			glm::lowp_u16vec2 mDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
+			std::unique_ptr<GBuffer> mGBuffer;
 		};
 
 		// ------------------------------------------------------------------------

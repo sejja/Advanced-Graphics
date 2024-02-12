@@ -34,6 +34,7 @@ namespace Core {
 			void inline Unbind() noexcept;
 			void BindTexture(unsigned i = 0);
 			void Clear(bool depthOnly = false);
+			GLuint GetTextureHandle();
 		#pragma endregion
 
 		#pragma region //Members
