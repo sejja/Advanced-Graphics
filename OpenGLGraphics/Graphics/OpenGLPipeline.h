@@ -31,11 +31,13 @@ namespace Core {
 			void UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader);
 			void GeometryPass();
 			void LightingPass();
+			void RenderScreenQuad();
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 			glm::lowp_u16vec2 mDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<GBuffer> mGBuffer;
+			GLuint mScreenQuadVAO, mScreenQuadVBO;
 		};
 
 		// ------------------------------------------------------------------------

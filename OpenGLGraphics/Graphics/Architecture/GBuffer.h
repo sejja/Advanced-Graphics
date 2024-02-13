@@ -26,6 +26,7 @@ namespace Core {
 			void BindGeometryShader();
 			void BindLightingShader();
 			Asset<ShaderProgram> GetGeometryShader();
+			Asset<ShaderProgram> GetLightingShader();
 			GLuint GetPositionTextureHandle();
 			GLuint GetNormalTextureHandle();
 			GLuint GetAlbedoTextureHandle();

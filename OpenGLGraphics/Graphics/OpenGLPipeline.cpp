@@ -51,6 +51,23 @@ namespace Core {
 			mShadowBuffers[3].Create();
 			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
 			mGBuffer = std::make_unique<GBuffer>();
+			float quadVertices[] = {
+				// positions        // texture Coords
+				-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+				-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+				 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+			};
+			// setup plane VAO
+			glGenVertexArrays(1, &mScreenQuadVAO);
+			glGenBuffers(1, &mScreenQuadVAO);
+			glBindVertexArray(mScreenQuadVBO);
+			glBindBuffer(GL_ARRAY_BUFFER, mScreenQuadVBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 		}
 
 		// ------------------------------------------------------------------------
@@ -97,9 +114,11 @@ namespace Core {
 				}
 			}
 			ImGui::End();
-
+			
 			GeometryPass();
-			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+			#if 1
+			LightingPass();
+			#else
 
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
@@ -210,6 +229,8 @@ namespace Core {
 			}
 
 			Skybox::sCurrentSky->Render(cam);
+
+			#endif
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -324,13 +345,20 @@ namespace Core {
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::LightingPass() {
+			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
-			glActiveTexture(GL_TEXTURE0);
+			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetNormalTextureHandle());
-			glActiveTexture(GL_TEXTURE0);
+			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetAlbedoTextureHandle());
+			mGBuffer->BindLightingShader();
+			glViewport(0, 0, mDimensions.x, mDimensions.y);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			UploadLightDataToGPU(mGBuffer->GetLightingShader());
+			mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
+			RenderScreenQuad();
 		}
 
 		// ------------------------------------------------------------------------
@@ -341,6 +369,40 @@ namespace Core {
 		void OpenGLPipeline::SetDimensions(const glm::lowp_u16vec2& dim) {
 			glViewport(0, 0, dim.x, dim.y);
 			mDimensions = dim;
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Render Screen Quad
+		*
+		*   Renders a Quad on the screen that covers the whole viewport
+		*/ //----------------------------------------------------------------------
+		unsigned int quadVAO = 0;
+		unsigned int quadVBO;
+		void OpenGLPipeline::RenderScreenQuad()
+		{
+			if (quadVAO == 0)
+			{
+				float quadVertices[] = {
+					// positions        // texture Coords
+					-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+					-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+					 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+					 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+				};
+				// setup plane VAO
+				glGenVertexArrays(1, &quadVAO);
+				glGenBuffers(1, &quadVBO);
+				glBindVertexArray(quadVAO);
+				glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+				glEnableVertexAttribArray(0);
+				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+				glEnableVertexAttribArray(1);
+				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+			}
+			glBindVertexArray(quadVAO);
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			glBindVertexArray(0);
 		}
 	}
 }

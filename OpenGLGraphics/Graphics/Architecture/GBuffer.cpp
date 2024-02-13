@@ -95,6 +95,10 @@ namespace Core {
 			mGeometryShader->Get()->Bind();
 		}
 
+		void GBuffer::BindLightingShader() {
+			mLightingShader->Get()->Bind();
+		}
+
 		// ------------------------------------------------------------------------
 		/*! Get Geometry Shader
 		*
@@ -102,6 +106,10 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		Asset<ShaderProgram> GBuffer::GetGeometryShader() {
 			return mGeometryShader;
+		}
+
+		Asset<ShaderProgram> GBuffer::GetLightingShader() {
+			return mLightingShader;
 		}
 
 		// ------------------------------------------------------------------------
