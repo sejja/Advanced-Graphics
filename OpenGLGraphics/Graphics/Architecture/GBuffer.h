@@ -25,6 +25,7 @@ namespace Core {
 			void Bind();
 			void BindGeometryShader();
 			void BindLightingShader();
+			void BlitDepthBuffer();
 			Asset<ShaderProgram> GetGeometryShader();
 			Asset<ShaderProgram> GetLightingShader();
 			GLuint GetPositionTextureHandle();

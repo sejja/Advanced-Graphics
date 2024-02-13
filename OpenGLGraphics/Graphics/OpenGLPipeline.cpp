@@ -118,6 +118,8 @@ namespace Core {
 			GeometryPass();
 			#if 1
 			LightingPass();
+			mGBuffer->BlitDepthBuffer();
+			Skybox::sCurrentSky->Render(cam);
 			#else
 
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;

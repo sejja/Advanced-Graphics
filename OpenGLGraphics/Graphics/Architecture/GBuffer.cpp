@@ -100,6 +100,20 @@ namespace Core {
 		}
 
 		// ------------------------------------------------------------------------
+		/*! Blit Depth Buffer
+		*
+		*   Copies the Depth Values, so we can Forward Render after Deferred
+		*/ //----------------------------------------------------------------------
+		void GBuffer::BlitDepthBuffer() {
+			glBindFramebuffer(GL_READ_FRAMEBUFFER, mBuffer);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
+			glBlitFramebuffer(
+				0, 0, 1072, 780, 0, 0, 1072, 780, GL_DEPTH_BUFFER_BIT, GL_NEAREST
+			);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+		}
+
+		// ------------------------------------------------------------------------
 		/*! Get Geometry Shader
 		*
 		*   Returns the asset for drawing geometry onto the G-Buffer
