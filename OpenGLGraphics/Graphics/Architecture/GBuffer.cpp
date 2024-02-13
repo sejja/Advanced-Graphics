@@ -3,7 +3,7 @@
 //	OpenGL Graphics
 //
 //	Created by Diego Revilla on 12/02/24
-//	Copyright © 2021 . All Rights reserved
+//	Copyright ï¿½ 2021 . All Rights reserved
 //
 
 #include "GBuffer.h"
@@ -19,6 +19,7 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		GBuffer::GBuffer() {
 			mGeometryShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredGeometry.shader");
+			mLightingShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredLighting.shader");
 			auto dim = Singleton<SDLWindow>::Instance().GetDimensions();
 			dim = { 1072, 780 };
 			glGenFramebuffers(1, &mBuffer);
