@@ -43,15 +43,29 @@ namespace Core {
 		}
 
 		// ------------------------------------------------------------------------
+		/*! Skip Byte Order Mark
+		*
+		*   To Fix Encoding Issues, we remove possible BOMs
+		*/ // --------------------------------------------------------------------
+		void SkipBOM(std::ifstream& in) {
+			char test[3] = { 0 };
+			in.read(test, 3);
+			if ((unsigned char)test[0] == 0xEF && (unsigned char)test[1] == 0xBB && (unsigned char)test[2] == 0xBF)
+				return;
+			in.seekg(0);
+		}
+
+		// ------------------------------------------------------------------------
 		/*! Load Source
 		*
 		*   Loads a Source for our Shader
 		*/ // --------------------------------------------------------------------
 		char* Shader::LoadSource(const std::string_view& filename) const noexcept {
-			std::fstream shaderFile(filename.data());
+			std::ifstream shaderFile(filename.data());
 			std::stringstream shaderSource;
 			char* source;
 
+			SkipBOM(shaderFile);
 			shaderSource << shaderFile.rdbuf();
 
 			//If we could allocate the string
@@ -74,7 +88,6 @@ namespace Core {
 				glShaderSource(static_cast<GLuint>(mHandle), 1, &source, NULL);
 				glCompileShader(static_cast<GLuint>(mHandle));
 
-				free(source);
 				// sanity check
 				GLint result;
 				glGetShaderiv(static_cast<GLuint>(mHandle), GL_COMPILE_STATUS, &result);
@@ -83,6 +96,7 @@ namespace Core {
 				//If there has been errors during compilation
 				if (!result) throw ShaderException("Couldn't compile shader");
 #endif
+				free(source);
 			} else 
 				throw ShaderException("Can't compile empty shader");
 		}
