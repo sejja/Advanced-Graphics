@@ -31,6 +31,7 @@ namespace Core {
 			void UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader);
 			void GeometryPass();
 			void LightingPass();
+			void RenderShadowMaps();
 			void RenderScreenQuad();
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;

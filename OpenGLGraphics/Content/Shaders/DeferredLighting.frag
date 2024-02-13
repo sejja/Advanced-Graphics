@@ -15,6 +15,7 @@ in vec2 oUVs;
 layout(binding = 0) uniform sampler2D gPosition;
 layout(binding = 1) uniform sampler2D gNormal;
 layout(binding = 2) uniform sampler2D gAlbedoSpec;
+layout(binding = 3) uniform sampler2D depth_texture2[8];
 
 struct Light {
     vec3 pos;
@@ -33,6 +34,38 @@ struct Light {
 uniform Light uLight[8];
 uniform int uLightCount;
 uniform vec3 uCameraPos;
+uniform mat4 uShadowMatrix[8];
+
+float ShadowCalculation(vec4 fragPosLightSpace, int light)
+{
+    // perform perspective divide
+    vec3 projCoords = fragPosLightSpace.xyz / fragPosLightSpace.w;
+    // transform to [0,1] range
+    projCoords = projCoords * 0.5 + 0.5;
+    // get closest depth value from light's perspective (using [0,1] range fragPosLight as coords)
+    float closestDepth = texture(depth_texture2[0] , projCoords.xy).r; 
+    // get depth of current fragment from light's perspective
+    float currentDepth = projCoords.z;
+    // check whether current frag pos is in shadow
+  float bias = 0.001;
+
+  float shadow = 0.0;
+  vec2 texelSize = 1.0 / textureSize(depth_texture2[light], 0);
+  for(int x = -9; x <= 9; ++x)
+  {
+      for(int y = -9; y <= 9; ++y)
+      {
+          float pcfDepth = texture(depth_texture2[light], projCoords.xy + vec2(x, y) * texelSize).r; 
+          shadow += currentDepth - bias > pcfDepth ? 1.0 : 0.0;        
+      }    
+  }
+  shadow /= pow(4, 4);
+
+    if(projCoords.z > 1.0)
+        shadow = 0.0;
+
+    return shadow;
+} 
 
 void main() {     
     // retrieve data from G-buffer
@@ -45,7 +78,7 @@ void main() {
     
     //Add per-light color using the Blinn-Phong equations
     for(int i = 0; i < uLightCount; i++) {
-        float f = 0.0;
+        float f = ShadowCalculation(uShadowMatrix[i] * vec4(FragPos, 1), i);
         //ambient
         float ambientStrength = 0.1;
         vec3 ambient = uLight[i].amb;
