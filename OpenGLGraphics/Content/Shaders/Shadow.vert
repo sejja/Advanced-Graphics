@@ -14,6 +14,11 @@ uniform mat4 uTransform;
 uniform mat4 uView;
 uniform mat4 uModel;
 
+// ------------------------------------------------------------------------
+/*! Shader Entrypoint
+*
+*   Only transorms the vertex position from model position to viewport position
+*/ //----------------------------------------------------------------------
 void main() {
     gl_Position = uTransform * uView * uModel * vec4(aPos, 1.0);
 } 
