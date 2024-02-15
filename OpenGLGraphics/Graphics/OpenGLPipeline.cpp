@@ -63,15 +63,17 @@ namespace Core {
 		}
 
 		// ------------------------------------------------------------------------
-		/*! Render
+		/*! Private function _RenderGUI()
 		*
-		*   Renders every object in the scene
+		*  
 		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::Render() {
+		void OpenGLPipeline::_RenderGUI() {
+			//Prepare GUI
 			ImGui_ImplSDL2_NewFrame();
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
 
+			//RenderGUI
 			if (ImGui::Begin("Deferred Rendering")) {
 				ImGui::Image((ImTextureID)mGBuffer->GetPositionTextureHandle(),
 					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
@@ -83,26 +85,44 @@ namespace Core {
 			}
 			ImGui::End();
 
+			//Render shadow
 			if (ImGui::Begin("Shadow Mapping")) {
 				int i = 0;
 				for (FrameBuffer& buff : mShadowBuffers) {
 					ImGui::Image((ImTextureID)buff.GetTextureHandle(),
 						ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-				
+
 					if (i < 1) {
 						ImGui::SameLine();
 						i++;
-					} else
+					}
+					else
 						i = 0;
 				}
 			}
 			ImGui::End();
+		}
 
+		void OpenGLPipeline::CleanObsolates()
+		{
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Render
+		*
+		*   Renders every object in the scene
+		*/ //----------------------------------------------------------------------
+		void OpenGLPipeline::Render() { //   <----  Modulicemos esto xd
+
+			//Render the ImGui
+			_RenderGUI();
+
+			//Render all Geometric Objects
 			GeometryPass();
 			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 
+			
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
-
 			auto f_flushobosoletes = [this , &obsoletes]() {
 				std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
 					std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
@@ -249,6 +269,8 @@ namespace Core {
 		void OpenGLPipeline::GeometryPass() {
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
+			#pragma region Clean obsolated renderable object
+
 			auto f_flushobosoletes = [this, &obsoletes]() {
 				std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
 					std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
@@ -258,6 +280,12 @@ namespace Core {
 					if (!it.size()) mGroupedRenderables.erase(x.first);
 					});
 				};
+			f_flushobosoletes();
+
+			#pragma endregion
+
+
+			#pragma region Render renderable objects
 
 			auto f_grouprender = [&obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram* shader) {
 				//For each renderable in shader program
@@ -279,39 +307,54 @@ namespace Core {
 				}
 				};
 
-			glEnable(GL_DEPTH_TEST);
-			glCullFace(GL_BACK);
+			#pragma endregion
+
+
+			#pragma region Configure OpenGl
+
+			glEnable(GL_DEPTH_TEST); //Ensure that all fragments is rendered in the correct order
+			glCullFace(GL_BACK); //Avoid render non-visible surfaces
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clean buffer for the new Frame
+
+			#pragma endregion
 
 			{
+				#pragma region Configure glm and GBuffer
+
 				glm::mat4 view = cam.GetViewMatrix();
-				glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
 
-				mGBuffer->Bind();
+				//glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
+
+				glm::mat4 projection = glm::perspective(glm::radians(cam.GetZFov()), (float)mDimensions.x / (float)mDimensions.y, cam.GetZNear(), cam.GetZFar());
+				mGBuffer->Bind(); //Activa el G-Buffer para que todos los dibujos subsiguientes se realicen en él, en lugar de en el framebuffer por defecto.
 				mGBuffer->ClearBuffer();
-				mGBuffer->BindGeometryShader();
+				mGBuffer->BindGeometryShader(); //Activa el shader de geometría específico que se usará para renderizar la geometría en el G-Buffer.
 
-				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), 
+				#pragma endregion
+
+				#pragma region Render all Renderables
+				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
 					[this, &obsoletes, &projection, &view, &f_grouprender](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 
-					mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uTransform", &projection);
-					mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uView", &view);
+						mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uTransform", &projection);
+						mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uView", &view);
 
-					try {
-						mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
-						UploadLightDataToGPU(it.first);
-						auto tex = Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/Brick.png")->Get();
-						tex->SetTextureType(Texture::TextureType::eDiffuse);
-						tex->Bind();
-						auto normals = Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/BrickNormal.png")->Get();
-						normals->SetTextureType(Texture::TextureType::eNormal);
-						normals->Bind();
-					}
-					catch (...) {}
-					f_grouprender(it, mGBuffer->GetGeometryShader().get()->Get());
+						try {
+							mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
+							UploadLightDataToGPU(it.first);
+							auto tex = Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/Brick.png")->Get();
+							tex->SetTextureType(Texture::TextureType::eDiffuse);
+							tex->Bind();
+							auto normals = Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/BrickNormal.png")->Get();
+							normals->SetTextureType(Texture::TextureType::eNormal);
+							normals->Bind();
+						}
+						catch (...) {}
+						f_grouprender(it, mGBuffer->GetGeometryShader().get()->Get());
 
 					});
+				#pragma endregion
 
 				f_flushobosoletes();
 			}

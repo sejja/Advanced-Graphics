@@ -3,7 +3,7 @@
 //	OpenGL Graphics
 //
 //	Created by Diego Revilla on 12/02/24
-//	Copyright © 2021 . All Rights reserved
+//	Copyright Â© 2021 . All Rights reserved
 //
 
 #version 460 core
@@ -160,7 +160,7 @@ void main() {
              att = min(1.f / (uLight[i].att.x + uLight[i].att.y * dist + uLight[i].att.z * dist * dist), 1.0f);
              break;
         default:
-    break;
+            break;
         }
 
         totalLightShine += att * ((ambient + Spotlight * (1 - shadowint) * diffuse + specular));
