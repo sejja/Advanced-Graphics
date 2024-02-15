@@ -386,7 +386,7 @@ bool    ImGui_ImplOpenGL3_Init(const char* glsl_version)
 void    ImGui_ImplOpenGL3_Shutdown()
 {
     ImGui_ImplOpenGL3_Data* bd = ImGui_ImplOpenGL3_GetBackendData();
-    //IM_ASSERT(bd != nullptr && "No renderer backend to shutdown, or already shutdown?");
+    IM_ASSERT(bd != nullptr && "No renderer backend to shutdown, or already shutdown?");
     ImGuiIO& io = ImGui::GetIO();
 
     ImGui_ImplOpenGL3_ShutdownPlatformInterface();
