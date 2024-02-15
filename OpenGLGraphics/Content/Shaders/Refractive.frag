@@ -145,10 +145,13 @@ void main() {
 				Spotlight= pow((aplha-cos(uLight[i].cosOut))/(cos(uLight[i].cosIn)-cos(uLight[i].cosOut)), uLight[i].fallOff);
 
 			Spotlight= clamp(Spotlight,0,1);
+            att = min(1.f / (uLight[i].att.x + uLight[i].att.y * dist + uLight[i].att.z * dist * dist), 1.0f);
+            break;
         case 0:
              att = min(1.f / (uLight[i].att.x + uLight[i].att.y * dist + uLight[i].att.z * dist * dist), 1.0f);
              break;
         default:
+            break;
         }
 
         totalLightShine += att * ((ambient + Spotlight * (1 - shadowint) * diffuse + specular));

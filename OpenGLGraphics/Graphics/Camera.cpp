@@ -52,16 +52,16 @@ namespace Core {
 		*/ // ---------------------------------------------------------------------
 		void Camera::HandleEvent(const Events::Event& event) {
 			if (RTTI::IsA<const InputManager::A_Down>(&event)) {
-				mPosition.x += 1;
-			}
-			else if (RTTI::IsA<const InputManager::D_Down>(&event)) {
 				mPosition.x -= 1;
 			}
+			else if (RTTI::IsA<const InputManager::D_Down>(&event)) {
+				mPosition.x += 1;
+			}
 			else if (RTTI::IsA<const InputManager::W_Down>(&event)) {
-				mPosition.z += 1;
+				mPosition.z -= 1;
 			}
 			else if (RTTI::IsA<const InputManager::S_Down>(&event)) {
-				mPosition.z -= 1;
+				mPosition.z += 1;
 			}
 			else if (RTTI::IsA<const InputManager::Shift_Down>(&event)) {
 				mPosition.y -= 1;

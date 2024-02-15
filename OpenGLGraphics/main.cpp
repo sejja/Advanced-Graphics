@@ -17,7 +17,7 @@
 *   Program Entry point
 */ //----------------------------------------------------------------------
 int main() {
-    struct MyOpenGLApp : public
+    struct MyOpenGLApp : public 
        Core::GraphicApplication<SDLWindow, Core::Graphics::OpenGLPipeline> {
        Core::Scene mScene;
     } app;
