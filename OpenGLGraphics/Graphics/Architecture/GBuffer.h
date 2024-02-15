@@ -3,7 +3,7 @@
 //	OpenGL Graphics
 //
 //	Created by Diego Revilla on 12/02/24
-//	Copyright © 2021 . All Rights reserved
+//	Copyright ï¿½ 2021 . All Rights reserved
 //
 
 
@@ -24,6 +24,7 @@ namespace Core {
 			~GBuffer();
 			void Bind();
 			void BindGeometryShader();
+			void BindLightingShader();
 			Asset<ShaderProgram> GetGeometryShader();
 			GLuint GetPositionTextureHandle();
 			GLuint GetNormalTextureHandle();
@@ -34,6 +35,7 @@ namespace Core {
 			GLuint mBuffer;
 			GLuint mPosition, mNormal, mAlbedoSpecular;
 			Asset<ShaderProgram> mGeometryShader;
+			Asset<ShaderProgram> mLightingShader;
 		};
 	}
 }

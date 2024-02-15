@@ -3,7 +3,7 @@
 //	OpenGL Graphics
 //
 //	Created by Diego Revilla on 14/01/23
-//	Copyright © 2023. All Rights reserved
+//	Copyright ï¿½ 2023. All Rights reserved
 //
 
 #include <execution>
@@ -358,6 +358,22 @@ namespace Core {
 
 				f_flushobosoletes();
 			}
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Lighting Pass
+		*
+		*   Using the buffers created on the geometry pass, we can 
+		*		compute the lighting for each pixel
+		*/ //----------------------------------------------------------------------
+		void OpenGLPipeline::LightingPass() {
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetNormalTextureHandle());
+			glActiveTexture(GL_TEXTURE0);
+			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetAlbedoTextureHandle());
 		}
 
 		// ------------------------------------------------------------------------

@@ -3,7 +3,7 @@
 //	OpenGL Graphics
 //
 //	Created by Diego Revilla on 14/01/23
-//	Copyright © 2023. All Rights reserved
+//	Copyright ï¿½ 2023. All Rights reserved
 //
 
 #ifndef _OPEN_GL_PIPELINE__H_
@@ -32,6 +32,7 @@ namespace Core {
 			void GeometryPass();
 			void _RenderGUI();
 			void CleanObsolates();
+			void LightingPass();
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 			glm::lowp_u16vec2 mDimensions;
