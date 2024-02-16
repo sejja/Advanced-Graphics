@@ -17,7 +17,6 @@ in vec3 oNormal;
 in vec3 oPosition;
 in vec3 oTangent;
 in vec3 oBitangent;
-in vec4 oShadowCoord[8];
 
 uniform vec3 uCameraPos;
 uniform mat4 uTransform;

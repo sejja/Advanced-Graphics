@@ -12,7 +12,7 @@ out vec4 FragColor;
 
 in vec3 oUVs;
 
-uniform samplerCube skybox;
+uniform samplerCube uSkyBox;
 
 // ------------------------------------------------------------------------
 /*! Shader Entrypoint
@@ -20,5 +20,5 @@ uniform samplerCube skybox;
 *   Samples the Skybox TextureCube (3D), as easy as that
 */ //----------------------------------------------------------------------
 void main() {    
-    FragColor = texture(skybox, oUVs);
+    FragColor = texture(uSkyBox, oUVs);
 }

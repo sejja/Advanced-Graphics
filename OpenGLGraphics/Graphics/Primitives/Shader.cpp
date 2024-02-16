@@ -40,6 +40,12 @@ namespace Core {
 		Shader::Shader(const std::string_view& filename, const EType type) :
 			ShaderType(type), mHandle(NULL) {
 			Compile(LoadSource(filename));
+
+			//Asign Uniform Buffers if the shader creation was correct
+			if(mHandle)
+				glUniformBlockBinding(mHandle, 
+					glGetUniformBlockIndex(mHandle, "UniformBuffer"), 
+					NULL);
 		}
 
 		// ------------------------------------------------------------------------

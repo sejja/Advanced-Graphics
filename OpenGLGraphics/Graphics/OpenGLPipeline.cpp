@@ -68,6 +68,14 @@ namespace Core {
 			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
 			glEnableVertexAttribArray(1);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+			glGenBuffers(1, &mUniformBuffer);
+
+			glBindBuffer(GL_UNIFORM_BUFFER, mUniformBuffer);
+			glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + sizeof(glm::vec3), NULL, GL_STATIC_DRAW);
+			glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+			glBindBufferRange(GL_UNIFORM_BUFFER, 0, mUniformBuffer, 0, 2 * sizeof(glm::mat4) + sizeof(glm::vec3));
 		}
 
 		// ------------------------------------------------------------------------
@@ -117,6 +125,7 @@ namespace Core {
 			
 			RenderShadowMaps();
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
+			UpdateUniformBuffers();
 			GeometryPass();
 			LightingPass();
 			mGBuffer->BlitDepthBuffer();
@@ -137,16 +146,16 @@ namespace Core {
 			for (size_t i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				const std::string id = "uLight[" + std::to_string(i);
 			
-				shadptr->SetShaderUniform((id + "].pos").c_str(), &::Graphics::Primitives::Light::sLightData[i].mPosition);
-				shadptr->SetShaderUniform((id + "].dir").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDirection);
-				shadptr->SetShaderUniform((id + "].amb").c_str(), &::Graphics::Primitives::Light::sLightData[i].mAmbient);
-				shadptr->SetShaderUniform((id + "].dif").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDiffuse);
-				shadptr->SetShaderUniform((id + "].spe").c_str(), &::Graphics::Primitives::Light::sLightData[i].mSpecular);
-				shadptr->SetShaderUniform((id + "].att").c_str(), &::Graphics::Primitives::Light::sLightData[i].mAttenuation);
-				shadptr->SetShaderUniform((id + "].cosIn").c_str(), &::Graphics::Primitives::Light::sLightData[i].mInner);
-				shadptr->SetShaderUniform((id + "].cosOut").c_str(), &::Graphics::Primitives::Light::sLightData[i].mOutter);
-				shadptr->SetShaderUniform((id + "].fallOff").c_str(), &::Graphics::Primitives::Light::sLightData[i].mFallOff);
-				shadptr->SetShaderUniform((id + "].type").c_str(), static_cast<int>(::Graphics::Primitives::Light::sLightData[i].mType));
+				shadptr->SetShaderUniform((id + "].mPosition").c_str(), &::Graphics::Primitives::Light::sLightData[i].mPosition);
+				shadptr->SetShaderUniform((id + "].mDirection").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDirection);
+				shadptr->SetShaderUniform((id + "].mAmbient").c_str(), &::Graphics::Primitives::Light::sLightData[i].mAmbient);
+				shadptr->SetShaderUniform((id + "].mDiffuse").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDiffuse);
+				shadptr->SetShaderUniform((id + "].mSpecular").c_str(), &::Graphics::Primitives::Light::sLightData[i].mSpecular);
+				shadptr->SetShaderUniform((id + "].mAttenuation").c_str(), &::Graphics::Primitives::Light::sLightData[i].mAttenuation);
+				shadptr->SetShaderUniform((id + "].mInnerAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mInner);
+				shadptr->SetShaderUniform((id + "].mOutterAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mOutter);
+				shadptr->SetShaderUniform((id + "].mFallOff").c_str(), &::Graphics::Primitives::Light::sLightData[i].mFallOff);
+				shadptr->SetShaderUniform((id + "].mType").c_str(), static_cast<int>(::Graphics::Primitives::Light::sLightData[i].mType));
 			}
 
 			shadptr->SetShaderUniform("uLightCount", static_cast<int>(::Graphics::Primitives::Light::sLightReg));
@@ -312,7 +321,7 @@ namespace Core {
 				{
 					const auto shadow = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Shadow.shader")->Get();
 					shadow->Bind();
-					shadow->SetShaderUniform("uTransform", &lightProjection);
+					shadow->SetShaderUniform("uProjection", &lightProjection);
 					shadow->SetShaderUniform("uView", &lightView);
 
 					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes, &f_grouprender](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
@@ -369,6 +378,22 @@ namespace Core {
 			glBindVertexArray(quadVAO);
 			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 			glBindVertexArray(0);
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Update Uniform Buffers
+		*
+		*   Updates the Uniform Buffers on the GPU across Shaders
+		*/ //----------------------------------------------------------------------
+		void OpenGLPipeline::UpdateUniformBuffers() {
+			glm::mat4 view = cam.GetViewMatrix();
+			glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
+		
+			glBindBuffer(GL_UNIFORM_BUFFER, mUniformBuffer);
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &view);
+			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &projection);
+			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), &cam.GetPositionRef());
+			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 		}
 	}
 }

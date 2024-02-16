@@ -17,12 +17,13 @@ in vec3 oNormal;
 in vec3 oPosition;
 in vec3 oTangent;
 in vec3 oBitangent;
-in vec4 oShadowCoord[8];
 
-uniform vec3 uCameraPos;
-uniform mat4 uTransform;
-uniform mat4 uView;
-uniform mat4 uModel;
+
+layout (std140) uniform UniformBuffer {
+	mat4 ubView;
+	mat4 ubProjection;
+    vec3 ubCameraPosition;
+};
 
 layout(binding = 0) uniform sampler2D uDiffuseTex;
 layout(binding = 1) uniform sampler2D uNormalTex;
@@ -34,5 +35,5 @@ void main() {
     // also store the per-fragment normals into the gbuffer
     gNormal = oNormal;
     // and the diffuse per-fragment color
-    gAlbedoSpec.rgba = vec4(texture(uSkyBox, reflect(normalize(oPosition - uCameraPos), normalize(oNormal))).rgb, 1.0);
+    gAlbedoSpec.rgba = vec4(texture(uSkyBox, reflect(normalize(oPosition - ubCameraPosition), normalize(oNormal))).rgb, 1.0);
 }

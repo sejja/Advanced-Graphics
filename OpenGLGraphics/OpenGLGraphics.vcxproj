@@ -685,9 +685,6 @@
   <ItemGroup>
     <None Include="Content\Maps\Scene.level" />
     <None Include="Content\Meshes\backpack.mtl" />
-    <None Include="Content\Shaders\DebugDepth.frag" />
-    <None Include="Content\Shaders\DebugDepth.shader" />
-    <None Include="Content\Shaders\DebugDepth.vert" />
     <None Include="Content\Shaders\DeferredGeometry.frag" />
     <None Include="Content\Shaders\DeferredGeometry.shader" />
     <None Include="Content\Shaders\DeferredLighting.frag" />
@@ -701,7 +698,6 @@
     <None Include="Content\Shaders\SkyBox.frag" />
     <None Include="Content\Shaders\SkyBox.shader" />
     <None Include="Content\Shaders\SkyBox.vert" />
-    <None Include="Content\Shaders\Textured.frag" />
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\UV.frag" />
     <None Include="Content\Shaders\Transform.vert" />
