@@ -116,7 +116,6 @@ namespace Core {
 
 			return obsoletes;
 		}
-		void OpenGL
 		// ------------------------------------------------------------------------
 		/*! Render
 		*
