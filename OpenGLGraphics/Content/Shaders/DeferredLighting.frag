@@ -1,26 +1,20 @@
 //
-//	Refractive.frag
-//	OpenGL Graphics
+//  DebugDepth.frag
+//  OpenGL Graphics
 //
-//	Created by Diego Revilla on 12/02/24
-//	Copyright © 2021 . All Rights reserved
+//  Created by Diego Revilla on 13/02/24
+//  Copyright � 2024. All rights reserved.
 //
 
 #version 460 core
 
-layout(location = 0) in vec3 aPos;
-layout(location = 1) in vec3 aNormal;
-layout(location = 2) in vec2 aUVs;
-layout(location = 3) in vec3 aTangent;
-layout(location = 4) in vec2 aBitangent;
+out vec4 FragColor;
+  
+in vec2 TexCoords;
 
-struct MaterialParameters {
-	vec4 emission;
-	vec4 ambient;
-	vec4 diffuse;
-	vec4 specular;
-	float shininess;
-};
+layout(binding = 0) uniform sampler2D gPosition;
+layout(binding = 1) uniform sampler2D gNormal;
+layout(binding = 2) uniform sampler2D gAlbedoSpec;
 
 struct Light {
     vec3 pos;
@@ -35,26 +29,9 @@ struct Light {
     int type;
 };
 
-uniform MaterialParameters uMaterial;
+
 uniform Light uLight[8];
 uniform vec3 uCameraPos;
-uniform mat4 uTransform;
-uniform mat4 uView;
-uniform mat4 uModel;
-uniform int uLightCount;
-
-out vec4 FragColor;
-in vec2 oUVs;
-in vec3 oNormal;
-in vec3 oPosition;
-in vec3 oTangent;
-in vec3 oBitangent;
-in vec4 oShadowCoord[8];
-
-layout(binding = 0) uniform sampler2D uDiffuseTex;
-layout(binding = 1) uniform sampler2D uNormalTex;
-layout(binding = 2) uniform sampler2D uShadowMaps[8];
-layout(binding = 9) uniform samplerCube uSkyBox;
 
 // ------------------------------------------------------------------------
 /*! Shadow Calculation
@@ -84,19 +61,15 @@ float ShadowCalculation(vec4 fragPosLightSpace, int lightidx) {
   shadow /= pow(3, 3);
 
   return projCoords.z <= 1.0 ? shadow : 0.0;
-} 
+}
 
-// ------------------------------------------------------------------------
-/*! Shader Entrypoint
-*
-*   Calculates the final color
-*/ //----------------------------------------------------------------------
-void main() {
-    mat4 VM = uView * uModel;
-    mat3 VM3 = mat3(VM);
-    mat3 iVM3 = inverse(transpose(VM3));
-    mat3 V_M_TBN = iVM3 * mat3(oTangent, oBitangent, oNormal);
-
+void main() {     
+    // retrieve data from G-buffer
+    vec3 FragPos = texture(gPosition, TexCoords).rgb;
+    vec3 Normal = texture(gNormal, TexCoords).rgb;
+    vec3 Albedo = texture(gAlbedoSpec, TexCoords).rgb;
+    float Specular = texture(gAlbedoSpec, TexCoords).a;
+    
     vec3 totalLightShine = vec3(0, 0, 0);
     
     //Add per-light color using the Blinn-Phong equations
@@ -106,7 +79,7 @@ void main() {
         vec3 ambient = uLight[i].amb;
   
         //diffuse
-        vec3 norm = normalize(mat3(transpose(inverse(uModel))) * oNormal);
+        vec3 norm = normalize(mat3(transpose(inverse(uModel))) * Nomal);
         
         vec3 lightDir;
         
@@ -160,11 +133,11 @@ void main() {
              att = min(1.f / (uLight[i].att.x + uLight[i].att.y * dist + uLight[i].att.z * dist * dist), 1.0f);
              break;
         default:
-            break;
+    break;
         }
 
         totalLightShine += att * ((ambient + Spotlight * (1 - shadowint) * diffuse + specular));
    }
 
     FragColor = vec4(texture(uSkyBox, reflect(normalize(oPosition - uCameraPos), normalize(oNormal))).rgb, 1.0) * vec4(totalLightShine, 1.0);
-}
+} 
