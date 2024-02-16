@@ -3,7 +3,7 @@
 //	OpenGL Graphics
 //
 //	Created by Diego Revilla on 12/02/24
-//	Copyright � 2021 . All Rights reserved
+//	Copyright � 2024 . All Rights reserved
 //
 
 #include "GBuffer.h"
@@ -18,7 +18,6 @@ namespace Core {
 		*   Constructs a G-Buffer, with 3 Textures (Position, Normal, Albedo)
 		*/ //----------------------------------------------------------------------
 		GBuffer::GBuffer() {
-			mGeometryShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredGeometry.shader");
 			mLightingShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredLighting.shader");
 			auto dim = Singleton<SDLWindow>::Instance().GetDimensions();
 			dim = { 1072, 780 };
@@ -28,7 +27,7 @@ namespace Core {
 			// - position color buffer
 			glGenTextures(1, &mPosition);
 			glBindTexture(GL_TEXTURE_2D, mPosition);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, dim.x, dim.y, 0, GL_RGBA, GL_FLOAT, NULL);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, dim.x, dim.y, 0, GL_RGB, GL_FLOAT, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mPosition, 0);
@@ -36,7 +35,7 @@ namespace Core {
 			// - normal color buffer
 			glGenTextures(1, &mNormal);
 			glBindTexture(GL_TEXTURE_2D, mNormal);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, dim.x, dim.y, 0, GL_RGBA, GL_FLOAT, NULL);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, dim.x, dim.y, 0, GL_RGB, GL_FLOAT, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT1, GL_TEXTURE_2D, mNormal, 0);
@@ -86,15 +85,6 @@ namespace Core {
 			glBindFramebuffer(GL_FRAMEBUFFER, mBuffer);
 		}
 
-		// ------------------------------------------------------------------------
-		/*! Bind Shader
-		*
-		*   Binds the shader for drawing geometry
-		*/ //----------------------------------------------------------------------
-		void GBuffer::BindGeometryShader() {
-			mGeometryShader->Get()->Bind();
-		}
-
 		void GBuffer::BindLightingShader() {
 			mLightingShader->Get()->Bind();
 		}
@@ -111,15 +101,6 @@ namespace Core {
 				0, 0, 1072, 780, 0, 0, 1072, 780, GL_DEPTH_BUFFER_BIT, GL_NEAREST
 			);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		}
-
-		// ------------------------------------------------------------------------
-		/*! Get Geometry Shader
-		*
-		*   Returns the asset for drawing geometry onto the G-Buffer
-		*/ //----------------------------------------------------------------------
-		Asset<ShaderProgram> GBuffer::GetGeometryShader() {
-			return mGeometryShader;
 		}
 
 		Asset<ShaderProgram> GBuffer::GetLightingShader() {

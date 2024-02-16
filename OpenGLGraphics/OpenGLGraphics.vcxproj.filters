@@ -1973,7 +1973,6 @@
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\UVs.shader" />
     <None Include="Content\Shaders\White.frag" />
-    <None Include="Content\Shaders\SolidColor.vert" />
     <None Include="Content\Shaders\White.shader" />
     <None Include="Content\Shaders\Shadow.frag" />
     <None Include="Content\Shaders\Shadow.shader" />
@@ -1989,6 +1988,9 @@
     <None Include="Content\Meshes\backpack.mtl" />
     <None Include="Content\Shaders\DeferredGeometry.frag" />
     <None Include="Content\Shaders\DeferredGeometry.shader" />
+    <None Include="Content\Shaders\DeferredLighting.frag" />
+    <None Include="Content\Shaders\DeferredLighting.shader" />
+    <None Include="Content\Shaders\DeferredLighting.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />

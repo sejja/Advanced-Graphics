@@ -3,7 +3,7 @@
 //	OpenGL Graphics
 //
 //	Created by Diego Revilla on 12/02/24
-//	Copyright © 2021 . All Rights reserved
+//	Copyright © 2024 . All Rights reserved
 //
 
 #version 460 core

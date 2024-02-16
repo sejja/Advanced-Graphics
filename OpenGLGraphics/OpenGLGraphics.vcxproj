@@ -701,7 +701,6 @@
     <None Include="Content\Shaders\SkyBox.frag" />
     <None Include="Content\Shaders\SkyBox.shader" />
     <None Include="Content\Shaders\SkyBox.vert" />
-    <None Include="Content\Shaders\SolidColor.vert" />
     <None Include="Content\Shaders\Textured.frag" />
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\UV.frag" />

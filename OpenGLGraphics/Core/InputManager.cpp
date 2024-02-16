@@ -3,7 +3,7 @@
 //	OpenGL Graphics
 //
 //	Created by Diego Revilla 14/01/23
-//	Copyright © 2021 . All Rights reserved
+//	Copyright © 2024 . All Rights reserved
 //
 
 #include "InputManager.h"

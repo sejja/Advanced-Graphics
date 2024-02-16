@@ -4,7 +4,7 @@
 // Grep for [DEAR IMGUI] to find the changes.
 
 // stb_truetype.h - v1.26 - public domain
-// authored from 2009-2021 by Sean Barrett / RAD Game Tools
+// authored from 2009-2024 by Sean Barrett / RAD Game Tools
 //
 // =======================================================================
 //
@@ -63,8 +63,8 @@
 //
 // VERSION HISTORY
 //
-//   1.26 (2021-08-28) fix broken rasterizer
-//   1.25 (2021-07-11) many fixes
+//   1.26 (2024-08-28) fix broken rasterizer
+//   1.25 (2024-07-11) many fixes
 //   1.24 (2020-02-05) fix warning
 //   1.23 (2020-02-02) query SVG data for glyphs; query whole kerning table (but only kern not GPOS)
 //   1.22 (2019-08-11) minimize missing-glyph duplication; fix kerning if both 'GPOS' and 'kern' are defined
@@ -4981,7 +4981,7 @@ STBTT_DEF int stbtt_CompareUTF8toUTF16_bigendian(const char *s1, int len1, const
 
 // FULL VERSION HISTORY
 //
-//   1.25 (2021-07-11) many fixes
+//   1.25 (2024-07-11) many fixes
 //   1.24 (2020-02-05) fix warning
 //   1.23 (2020-02-02) query SVG data for glyphs; query whole kerning table (but only kern not GPOS)
 //   1.22 (2019-08-11) minimize missing-glyph duplication; fix kerning if both 'GPOS' and 'kern' are defined

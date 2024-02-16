@@ -116,6 +116,7 @@ namespace Core {
 			ImGui::End();
 			
 			RenderShadowMaps();
+			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			GeometryPass();
 			LightingPass();
 			mGBuffer->BlitDepthBuffer();
@@ -200,16 +201,16 @@ namespace Core {
 
 				mGBuffer->Bind();
 				mGBuffer->ClearBuffer();
-				mGBuffer->BindGeometryShader();
 
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), 
 					[this, &obsoletes, &projection, &view, &f_grouprender](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 
-					mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uTransform", &projection);
-					mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uView", &view);
+						it, it.first->Get()->Bind();
+						it.first->Get()->SetShaderUniform("uTransform", &projection);
+						it.first->Get()->SetShaderUniform("uView", &view);
 
 					try {
-						mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
+						it.first->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
 						UploadLightDataToGPU(it.first);
 						auto tex = Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/Brick.png")->Get();
 						tex->SetTextureType(Texture::TextureType::eDiffuse);
@@ -219,7 +220,7 @@ namespace Core {
 						normals->Bind();
 					}
 					catch (...) {}
-					f_grouprender(it, mGBuffer->GetGeometryShader().get()->Get());
+					f_grouprender(it, it.first->Get());
 
 					});
 
