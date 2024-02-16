@@ -31,8 +31,12 @@ namespace Core {
 			void UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader);
 			void GeometryPass();
 			void _RenderGUI();
+<<<<<<< HEAD
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> FlushObsoletes();
+=======
+			void CleanObsolates();
 			void LightingPass();
+>>>>>>> 2889e94a83ff6c3e2e7001be676db48b3ba07630
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 			glm::lowp_u16vec2 mDimensions;
