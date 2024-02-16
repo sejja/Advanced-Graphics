@@ -18,8 +18,9 @@
 #include "Graphics/Primitives/Skybox.h"
 #include "Dependencies/ImGui/imgui.h"
 #include "Dependencies/ImGui/imgui_impl_opengl3.h"
-#include "Dependencies/ImGui/imgui_impl_sdl2.h"
+#include "Dependencies/ImGui/imgui_impl_sdl2.h"d
 
+using namespace Core::Graphics;
 namespace Core {
 	namespace Graphics {
 		static Primitives::Camera cam;
@@ -102,11 +103,20 @@ namespace Core {
 			}
 			ImGui::End();
 		}
-
-		void OpenGLPipeline::CleanObsolates()
+		std::unordered_multimap<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> OpenGLPipeline::FlushObsoletes()
 		{
-		}
+			std::unordered_multimap<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
+			std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
+				std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
+				it.erase(x.second);
 
+				//If we don't have any other renderables, erase it
+				if (!it.size()) mGroupedRenderables.erase(x.first);
+				});
+
+			return obsoletes;
+		}
+		void OpenGL
 		// ------------------------------------------------------------------------
 		/*! Render
 		*
@@ -121,19 +131,10 @@ namespace Core {
 			GeometryPass();
 			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 
-			
-			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
-			auto f_flushobosoletes = [this , &obsoletes]() {
-				std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
-					std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
-					it.erase(x.second);
+			// Get the list of obsoletes
+			std::unordered_multimap<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes = FlushObsoletes();
 
-					//If we don't have any other renderables, erase it
-					if (!it.size()) mGroupedRenderables.erase(x.first);
-					});
-			};
-
-			auto f_grouprender = [&obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram * shader) {
+			auto f_grouprender = [&obsoletes](const std::pair<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram * shader) {
 				//For each renderable in shader program
 				for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
 					//If it isn't expired
@@ -168,11 +169,11 @@ namespace Core {
 					shadow->SetShaderUniform("uTransform", &lightProjection);
 					shadow->SetShaderUniform("uView", &lightView);
 
-					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes, &f_grouprender](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &f_grouprender](const std::pair<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 						f_grouprender(it, shadow);
 						});
 
-					f_flushobosoletes();
+					FlushObsoletes();
 				}
 
 				mShadowBuffers[i].Unbind();
@@ -198,8 +199,8 @@ namespace Core {
 				glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
 				Skybox::sCurrentSky->UploadSkyboxCubeMap();
 
-				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow_matrices, &obsoletes, &projection, &view, &f_grouprender](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
-					Core::Graphics::ShaderProgram* shader = it.first->Get();
+				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow_matrices, &projection, &view, &f_grouprender](const std::pair<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+					 ShaderProgram* shader = it.first->Get();
 
 					shader->Bind();
 					
@@ -226,7 +227,7 @@ namespace Core {
 
 					});
 
-				f_flushobosoletes();
+				FlushObsoletes();
 			}
 
 			Skybox::sCurrentSky->Render(cam);
@@ -240,8 +241,8 @@ namespace Core {
 		*
 		*   Uploads the light data to the shader
 		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader) {
-			Core::Graphics::ShaderProgram* shadptr = shader.lock()->Get();
+		void OpenGLPipeline::UploadLightDataToGPU(const AssetReference< ShaderProgram>& shader) {
+			 ShaderProgram* shadptr = shader.lock()->Get();
 
 			for (size_t i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				const std::string id = "uLight[" + std::to_string(i);
@@ -267,27 +268,17 @@ namespace Core {
 		*   Draws the geometry on the G-Buffer
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::GeometryPass() {
-			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
 			#pragma region Clean obsolated renderable object
 
-			auto f_flushobosoletes = [this, &obsoletes]() {
-				std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
-					std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
-					it.erase(x.second);
-
-					//If we don't have any other renderables, erase it
-					if (!it.size()) mGroupedRenderables.erase(x.first);
-					});
-				};
-			f_flushobosoletes();
+			std::unordered_multimap<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes = FlushObsoletes();
 
 			#pragma endregion
 
 
 			#pragma region Render renderable objects
 
-			auto f_grouprender = [&obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram* shader) {
+			auto f_grouprender = [&obsoletes](const std::pair<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram* shader) {
 				//For each renderable in shader program
 				for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
 					//If it isn't expired
@@ -335,7 +326,7 @@ namespace Core {
 
 				#pragma region Render all Renderables
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
-					[this, &obsoletes, &projection, &view, &f_grouprender](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+					[this, &projection, &view, &f_grouprender](const std::pair<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 
 						mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uTransform", &projection);
 						mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uView", &view);
@@ -356,7 +347,7 @@ namespace Core {
 					});
 				#pragma endregion
 
-				f_flushobosoletes();
+				FlushObsoletes();
 			}
 		}
 
