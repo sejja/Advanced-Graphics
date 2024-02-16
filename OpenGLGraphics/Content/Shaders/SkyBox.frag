@@ -1,3 +1,11 @@
+//
+//	SkyBox.frag
+//	OpenGL Graphics
+//
+//	Created by Diego Revilla on 12/02/24
+//	Copyright © 2021 . All Rights reserved
+//
+
 #version 330 core
 out vec4 FragColor;
 
