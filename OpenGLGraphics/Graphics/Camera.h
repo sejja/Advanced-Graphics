@@ -28,11 +28,18 @@ namespace Core {
 			void HandleEvent(const Events::Event& event) override;
 			DONTDISCARD glm::vec3 inline GetPosition() const;
 			DONTDISCARD inline glm::vec3& GetPositionRef();
+			
+			DONTDISCARD float GetZNear();
+			DONTDISCARD float GetZFar();
+			DONTDISCARD float GetZFov();
 		#pragma endregion
 
 		#pragma region //Members
 		private:
 			glm::vec3 mPosition, mTargetPosition;
+			const float zNear = 0.f;
+			const float zfar = 10000.0f;
+			const float fov = 45.f;
 		#pragma endregion
 		};
 
@@ -62,6 +69,37 @@ namespace Core {
 		inline glm::vec3& Camera::GetPositionRef() {
 			return mPosition;
 		}
+
+		// ------------------------------------------------------------------------
+		/*! Get closest z
+		*
+		*   Return the minimun distance that is visible
+		*/ //----------------------------------------------------------------------
+		inline DONTDISCARD float Camera::GetZNear()
+		{
+			return zNear;
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Get farest z
+		*
+		*   Return the maximum distance that is visible
+		*/ //----------------------------------------------------------------------
+		inline DONTDISCARD float Camera::GetZFar()
+		{
+			return zfar;
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Get the fov
+		*
+		*   Return the maximum distance that is visible
+		*/ //----------------------------------------------------------------------
+		inline DONTDISCARD float Camera::GetZFov()
+		{
+			return fov;
+		}
+		
 	}
 }
 

@@ -30,6 +30,8 @@ namespace Core {
 		private:
 			void UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader);
 			void GeometryPass();
+			void _RenderGUI();
+			void CleanObsolates();
 			void LightingPass();
 			void RenderShadowMaps();
 			void RenderScreenQuad();
