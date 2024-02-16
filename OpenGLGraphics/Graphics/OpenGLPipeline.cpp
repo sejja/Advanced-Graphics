@@ -18,7 +18,7 @@
 #include "Graphics/Primitives/Skybox.h"
 #include "Dependencies/ImGui/imgui.h"
 #include "Dependencies/ImGui/imgui_impl_opengl3.h"
-#include "Dependencies/ImGui/imgui_impl_sdl2.h"d
+#include "Dependencies/ImGui/imgui_impl_sdl2.h"
 
 using namespace Core::Graphics;
 namespace Core {
