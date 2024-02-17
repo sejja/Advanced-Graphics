@@ -19,6 +19,7 @@
 #include "Dependencies/ImGui/imgui.h"
 #include "Dependencies/ImGui/imgui_impl_opengl3.h"
 #include "Dependencies/ImGui/imgui_impl_sdl2.h"
+#include "Core/Editor/Editor.h"
 
 namespace Core {
 	namespace Graphics {
@@ -78,6 +79,12 @@ namespace Core {
 			glBindBufferRange(GL_UNIFORM_BUFFER, 0, mUniformBuffer, 0, 2 * sizeof(glm::mat4) + sizeof(glm::vec3));
 		}
 
+		GBuffer* OpenGLPipeline::GetGBuffer() {
+			return mGBuffer.get();
+		}
+
+
+
 		// ------------------------------------------------------------------------
 		/*! PreRender
 		*
@@ -85,27 +92,34 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::PreRender() {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			mRenderBuffer->Clear();
 		}
 
-		// ------------------------------------------------------------------------
-		/*! Render
-		*
-		*   Renders every object in the scene
-		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::Render() {
+		void OpenGLPipeline::InitImGui() {
+			
 			ImGui_ImplSDL2_NewFrame();
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
 
-			if (ImGui::Begin("Deferred Rendering")) {
-				ImGui::Image((ImTextureID)mGBuffer->GetPositionTextureHandle(),
-					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-				ImGui::SameLine();
-				ImGui::Image((ImTextureID)mGBuffer->GetAlbedoTextureHandle(),
-					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-				ImGui::Image((ImTextureID)mGBuffer->GetNormalTextureHandle(),
-					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-			}
+			// Create the docking environment
+			ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar |
+				ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+				ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground;
+
+			ImGuiViewport* viewport = ImGui::GetMainViewport();
+			ImGui::SetNextWindowPos(viewport->Pos);
+			ImGui::SetNextWindowSize(viewport->Size);
+			ImGui::SetNextWindowViewport(viewport->ID);
+
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+			ImGui::Begin("InvisibleWindow", nullptr, windowFlags);
+			ImGui::PopStyleVar(3);
+
+			ImGuiID dockSpaceId = ImGui::GetID("InvisibleWindowDockSpace");
+
+			ImGui::DockSpace(dockSpaceId, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 			ImGui::End();
 
 			if (ImGui::Begin("Shadow Mapping")) {
@@ -122,10 +136,7 @@ namespace Core {
 				}
 			}
 			ImGui::End();
-			
-			RenderShadowMaps();
-			Skybox::sCurrentSky->UploadSkyboxCubeMap();
-			UpdateUniformBuffers();
+
 			GeometryPass();
 			LightingPass();
 			mGBuffer->BlitDepthBuffer();
@@ -235,6 +246,11 @@ namespace Core {
 
 				f_flushobosoletes();
 			}
+
+			Skybox::sCurrentSky->Render(cam);
+
+			ImGui::Render();
+			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
 
 		// ------------------------------------------------------------------------

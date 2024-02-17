@@ -11,6 +11,7 @@
 #include "../Core/InputManager.h"
 #include "Core/Singleton.h"
 #include "Core/RTTI.h"
+#include "Core/Editor/Editor.h"
 
 namespace Core {
 	namespace Primitives {
@@ -48,9 +49,13 @@ namespace Core {
 		// ------------------------------------------------------------------------
 		/*! Handle Event
 		*
-		*   Handles the Events received by the camer
+		*   Handles the Events received by the camera
 		*/ // ---------------------------------------------------------------------
 		void Camera::HandleEvent(const Events::Event& event) {
+
+
+			if (Singleton<Editor>::Instance().isEditorLocked()) { return; }
+
 			if (RTTI::IsA<const InputManager::A_Down>(&event)) {
 				mPosition.x -= 1;
 			}

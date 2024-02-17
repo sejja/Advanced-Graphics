@@ -71,7 +71,8 @@ namespace Core {
 		while (mWindow.Present()) {
 			Singleton<Core::InputManager>::Instance().ProcessInput();
 			if (mTick) mTick();
-			mPipe.PreRender();
+			mPipe.PreRender();//Clear the view
+			mPipe.InitImGui();//Sets up imgui 
 			mPipe.Render();
 			mPipe.PostRender();
 		}

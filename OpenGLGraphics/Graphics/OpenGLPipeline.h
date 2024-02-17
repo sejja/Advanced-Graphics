@@ -15,6 +15,7 @@
 #include "Tools/FrameBuffer.h"
 #include "Graphics/Architecture/GBuffer.h"
 
+
 namespace Core {
 	namespace Graphics {
 		class OpenGLPipeline : public Pipeline {
@@ -26,6 +27,9 @@ namespace Core {
 			inline void Shutdown() override;
 			virtual void SetDimensions(const glm::lowp_u16vec2& dim) override;
 			inline void AddRenderable(const std::weak_ptr<Renderable>& renderer);
+			void InitImGui();
+			GBuffer* GetGBuffer();
+			
 
 		private:
 			void UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader);
@@ -41,6 +45,8 @@ namespace Core {
 			glm::lowp_u16vec2 mDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<GBuffer> mGBuffer;
+			std::unique_ptr<FrameBuffer> mRenderBuffer;
+
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			GLuint mUniformBuffer;
 		};
