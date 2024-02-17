@@ -22,7 +22,9 @@ void Properties::RenderOutliner(){
 
 	// Scene object search input
 	ImGui::SameLine();
+	ImGui::PushItemWidth(100); // Define un ancho máximo para el input
 	ImGui::InputTextWithHint("##SearchItem", "Search item", str1, IM_ARRAYSIZE(str1));
+	ImGui::PopItemWidth(); // Restaura el ancho predeterminado
 
 	//New Folder
 	ImGui::SameLine();

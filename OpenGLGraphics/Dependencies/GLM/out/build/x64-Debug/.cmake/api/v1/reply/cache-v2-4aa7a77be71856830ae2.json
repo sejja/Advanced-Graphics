@@ -551,7 +551,7 @@
 				}
 			],
 			"type" : "PATH",
-			"value" : "C:/Users/Asier/Source/Repos/sejja/Advanced-Graphics/OpenGLGraphics/Dependencies/GLM/out/install/x64-Debug"
+			"value" : "C:/Users/Asier/source/repos/sejja/Advanced-Graphics/OpenGLGraphics/Dependencies/GLM/out/install/x64-Debug"
 		},
 		{
 			"name" : "CMAKE_LINKER",

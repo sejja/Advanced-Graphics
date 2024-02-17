@@ -22,7 +22,9 @@ void Properties::RenderOutliner(){
 
 	// Scene object search input
 	ImGui::SameLine();
+	ImGui::PushItemWidth(200); 
 	ImGui::InputTextWithHint("##SearchItem", "Search item", str1, IM_ARRAYSIZE(str1));
+	ImGui::PopItemWidth(); 
 
 	//New Folder
 	ImGui::SameLine();

@@ -861,6 +861,7 @@
     <Image Include="Content\Textures\left.jpg" />
     <Image Include="Content\Textures\right.jpg" />
     <Image Include="Content\Textures\top.jpg" />
+    <Image Include="D:\Asier\Descargas\folderAdd.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

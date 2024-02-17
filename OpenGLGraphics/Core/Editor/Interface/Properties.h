@@ -2,7 +2,7 @@
 #define __PROPERTIES__H__
 
 #include <iostream>
-
+#include <glew.h>
 
 class Properties {
 public:
@@ -11,6 +11,10 @@ public:
     void RenderOutliner();
 
     void RenderProperties();
+
+    GLuint LoadTexture(const char* filename);
+
+
 };
 
 
