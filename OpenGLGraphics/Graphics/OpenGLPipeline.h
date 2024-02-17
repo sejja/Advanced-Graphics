@@ -27,7 +27,6 @@ namespace Core {
 			inline void Shutdown() override;
 			virtual void SetDimensions(const glm::lowp_u16vec2& dim) override;
 			inline void AddRenderable(const std::weak_ptr<Renderable>& renderer);
-			void InitImGui();
 			GBuffer* GetGBuffer();
 			
 
@@ -45,7 +44,7 @@ namespace Core {
 			glm::lowp_u16vec2 mDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<GBuffer> mGBuffer;
-			std::unique_ptr<FrameBuffer> mRenderBuffer;
+			//std::unique_ptr<FrameBuffer> mRenderBuffer;
 
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			GLuint mUniformBuffer;

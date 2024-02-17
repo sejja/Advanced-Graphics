@@ -92,10 +92,9 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::PreRender() {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			mRenderBuffer->Clear();
 		}
 
-		void OpenGLPipeline::InitImGui() {
+		void OpenGLPipeline::_RenderGUI() {
 			
 			ImGui_ImplSDL2_NewFrame();
 			ImGui_ImplOpenGL3_NewFrame();
@@ -122,29 +121,35 @@ namespace Core {
 			ImGui::DockSpace(dockSpaceId, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 			ImGui::End();
 
-			if (ImGui::Begin("Shadow Mapping")) {
-				int i = 0;
-				for (FrameBuffer& buff : mShadowBuffers) {
-					ImGui::Image((ImTextureID)buff.GetTextureHandle(),
-						ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-				
-					if (i < 1) {
-						ImGui::SameLine();
-						i++;
-					} else
-						i = 0;
-				}
-			}
-			ImGui::End();
+			//Render editor
+			Singleton<Editor>::Instance().render(*this);
+		}
 
+
+		// ------------------------------------------------------------------------
+		/*! Render
+		*
+		*   Renders every object in the scene
+		*/ 
+		//----------------------------------------------------------------------
+		void OpenGLPipeline::Render() {
+			
+			_RenderGUI();
+			RenderShadowMaps();
+			Skybox::sCurrentSky->UploadSkyboxCubeMap();
+			UpdateUniformBuffers();
 			GeometryPass();
 			LightingPass();
 			mGBuffer->BlitDepthBuffer();
 			Skybox::sCurrentSky->Render(cam);
 
+			
+
+
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
+
 
 		// ------------------------------------------------------------------------
 		/*! Upload Light Data to GPU
