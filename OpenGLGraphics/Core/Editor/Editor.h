@@ -5,19 +5,21 @@
 #include <vector>
 #include <memory>
 #include "Dependencies/ImGui/imgui.h"
-#include "Graphics/OpenGLPipeline.h" 
+#include "Graphics/OpenGLPipeline.h"
+#include "Interface/Properties.h"
 
 
 class Editor {
 public:
     Editor();
 
-    void render(Core::Graphics::OpenGLPipeline& pipeline);
+    void Render(Core::Graphics::OpenGLPipeline& pipeline);
 
-    bool isEditorLocked();
+    bool IsEditorLocked();
 
 private:
     bool editorLocked;
+    Properties properties;
 
 
 };

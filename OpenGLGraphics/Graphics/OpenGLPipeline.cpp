@@ -122,7 +122,7 @@ namespace Core {
 			ImGui::End();
 
 			//Render editor
-			Singleton<Editor>::Instance().render(*this);
+			Singleton<Editor>::Instance().Render(*this);
 		}
 
 
