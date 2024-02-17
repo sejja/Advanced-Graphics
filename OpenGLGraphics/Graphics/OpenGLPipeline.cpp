@@ -21,6 +21,7 @@
 #include "Dependencies/ImGui/imgui_impl_sdl2.h"
 
 using namespace Core::Graphics;
+
 namespace Core {
 	namespace Graphics {
 		static Primitives::Camera cam;
@@ -103,6 +104,12 @@ namespace Core {
 			}
 			ImGui::End();
 		}
+
+		// ------------------------------------------------------------------------
+		/*! Flush obsoletes
+		*
+		*	It returns an empty hashmap
+		*/ //----------------------------------------------------------------------
 		std::unordered_multimap<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> OpenGLPipeline::FlushObsoletes()
 		{
 			std::unordered_multimap<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
@@ -116,6 +123,54 @@ namespace Core {
 
 			return obsoletes;
 		}
+
+		void OpenGLPipeline::Finished_FlushObsoletes(std::unordered_multimap<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes)
+		{
+			std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
+				std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
+				it.erase(x.second);
+
+				//If we don't have any other renderables, erase it
+				if (!it.size()) mGroupedRenderables.erase(x.first);
+				});
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Locate an instance of a renderable
+		*
+		*   
+		*/ //----------------------------------------------------------------------
+		void OpenGLPipeline::LocateInstance(std::shared_ptr<Object> parent, ShaderProgram* shader) {
+			glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
+				glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+				glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
+				glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
+				glm::scale(glm::mat4(1.0f), parent->GetScale());
+			shader->SetShaderUniform("uModel", &matrix);
+		};
+
+		// ------------------------------------------------------------------------
+		/*! Render Group of Instances
+		*
+		*
+		*/ //----------------------------------------------------------------------
+		void OpenGLPipeline::GroupRender(std::unordered_multimap<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
+										const std::pair<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, 
+										ShaderProgram* shader) 
+		{
+			for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
+				//If it isn't expired
+				if (auto renderable = it2->lock()) {
+					const std::shared_ptr<Object> parent = renderable->GetParent().lock();
+					LocateInstance(parent, shader);
+					reinterpret_cast<ModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
+				}
+				else {
+					obsoletes.insert(std::make_pair(it.first, it2));
+				}
+			}
+		}
+
 		// ------------------------------------------------------------------------
 		/*! Render
 		*
@@ -133,26 +188,6 @@ namespace Core {
 			// Get the list of obsoletes
 			std::unordered_multimap<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes = FlushObsoletes();
 
-			auto f_grouprender = [&obsoletes](const std::pair<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram * shader) {
-				//For each renderable in shader program
-				for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
-					//If it isn't expired
-					if (auto renderable = it2->lock()) {
-						const std::shared_ptr<Object> parent = renderable->GetParent().lock();
-						glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
-							glm::scale(glm::mat4(1.0f), parent->GetScale());
-						shader->SetShaderUniform("uModel", &matrix);
-						reinterpret_cast<ModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
-					}
-					else {
-						obsoletes.insert(std::make_pair(it.first, it2));
-					}
-				}
-			};
-
 			glCullFace(GL_FRONT);
 			for(int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				mShadowBuffers[i].Bind();
@@ -168,8 +203,8 @@ namespace Core {
 					shadow->SetShaderUniform("uTransform", &lightProjection);
 					shadow->SetShaderUniform("uView", &lightView);
 
-					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &f_grouprender](const std::pair<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
-						f_grouprender(it, shadow);
+					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes](const std::pair<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+						GroupRender(obsoletes, it, shadow);
 						});
 
 					FlushObsoletes();
@@ -198,7 +233,7 @@ namespace Core {
 				glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
 				Skybox::sCurrentSky->UploadSkyboxCubeMap();
 
-				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow_matrices, &projection, &view, &f_grouprender](const std::pair<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow_matrices, &projection, &view, &obsoletes](const std::pair<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 					 ShaderProgram* shader = it.first->Get();
 
 					shader->Bind();
@@ -222,11 +257,11 @@ namespace Core {
 						normals->SetTextureType(Texture::TextureType::eNormal);
 						normals->Bind();
 					} catch (...) {}
-					f_grouprender(it, shader);
+					GroupRender(obsoletes, it, shader);
 
 					});
 
-				FlushObsoletes();
+				Finished_FlushObsoletes(obsoletes);
 			}
 
 			Skybox::sCurrentSky->Render(cam);
@@ -275,31 +310,6 @@ namespace Core {
 			#pragma endregion
 
 
-			#pragma region Render renderable objects
-
-			auto f_grouprender = [&obsoletes](const std::pair<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram* shader) {
-				//For each renderable in shader program
-				for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
-					//If it isn't expired
-					if (auto renderable = it2->lock()) {
-						const std::shared_ptr<Object> parent = renderable->GetParent().lock();
-						glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
-							glm::scale(glm::mat4(1.0f), parent->GetScale());
-						shader->SetShaderUniform("uModel", &matrix);
-						reinterpret_cast<ModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
-					}
-					else {
-						obsoletes.insert(std::make_pair(it.first, it2));
-					}
-				}
-				};
-
-			#pragma endregion
-
-
 			#pragma region Configure OpenGl
 
 			glEnable(GL_DEPTH_TEST); //Ensure that all fragments is rendered in the correct order
@@ -325,7 +335,7 @@ namespace Core {
 
 				#pragma region Render all Renderables
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
-					[this, &projection, &view, &f_grouprender](const std::pair<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+					[this, &projection, &view, &obsoletes](const std::pair<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 
 						mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uTransform", &projection);
 						mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uView", &view);
@@ -341,12 +351,13 @@ namespace Core {
 							normals->Bind();
 						}
 						catch (...) {}
-						f_grouprender(it, mGBuffer->GetGeometryShader().get()->Get());
+						GroupRender(obsoletes,it, mGBuffer->GetGeometryShader().get()->Get());
 
 					});
 				#pragma endregion
 
-				FlushObsoletes();
+				//Finish Flush
+				Finished_FlushObsoletes(obsoletes);
 			}
 		}
 
