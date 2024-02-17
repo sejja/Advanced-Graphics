@@ -172,6 +172,7 @@
     <ClCompile Include="Core\ECSystem\Component.cpp" />
     <ClCompile Include="Core\ECSystem\Object.cpp" />
     <ClCompile Include="Core\Editor\Editor.cpp" />
+    <ClCompile Include="Core\Editor\Interface\Outliner.cpp" />
     <ClCompile Include="Core\Editor\Interface\Properties.cpp" />
     <ClCompile Include="Core\Events\Event.cpp" />
     <ClCompile Include="Core\Events\EventDispatcher.cpp" />
@@ -216,6 +217,7 @@
     <ClInclude Include="Core\ECSystem\Component.h" />
     <ClInclude Include="Core\ECSystem\Object.h" />
     <ClInclude Include="Core\Editor\Editor.h" />
+    <ClInclude Include="Core\Editor\Interface\Outliner.h" />
     <ClInclude Include="Core\Editor\Interface\Properties.h" />
     <ClInclude Include="Core\Events\Event.h" />
     <ClInclude Include="Core\Events\EventDispatcher.h" />

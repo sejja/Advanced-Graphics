@@ -8,11 +8,14 @@ class Properties {
 public:
     void Render();
 
-    void RenderOutliner();
+private:
+    void TransformOptions();
+    void CameraOptions();
+    void LightingOptions();
+    void MaterialsOptions();
+    void MeshOptions();
 
-    void RenderProperties();
 
-    GLuint LoadTexture(const char* filename);
 
 
 };

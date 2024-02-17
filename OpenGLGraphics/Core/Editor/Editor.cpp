@@ -10,7 +10,7 @@ bool Editor::IsEditorLocked() {
 
 void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
-	//If any input is being used 
+	//If any input is being used, camera controls are locked
 	editorLocked = ImGui::IsAnyItemActive();
 
 	//Abre una demo de opciones de imgui
@@ -18,6 +18,7 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 
 	properties.Render();
+	outliner.Render();
 
 
 }

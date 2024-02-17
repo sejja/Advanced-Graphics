@@ -1,18 +1,12 @@
-#include "Properties.h"
-#include <iostream>
+#include "Outliner.h"
 #include "Dependencies/ImGui/imgui.h"
 
-void Properties::Render() {
 
-	RenderOutliner();
-	//RenderProperties();
-}
-
-void Properties::RenderOutliner(){
+void Outliner::Render(){
 	ImGui::Begin("Outliner");
 
 	//Icons 
-	ImTextureID filterIcon = nullptr; 
+	ImTextureID filterIcon = nullptr;
 
 	static char str1[128] = "";
 	ImGui::SameLine();
@@ -21,10 +15,10 @@ void Properties::RenderOutliner(){
 	}
 
 	// Scene object search input
+	float remainingWidth = ImGui::GetContentRegionAvail().x;
 	ImGui::SameLine();
-	ImGui::PushItemWidth(100); // Define un ancho máximo para el input
+	ImGui::SetNextItemWidth(remainingWidth * 0.50f);
 	ImGui::InputTextWithHint("##SearchItem", "Search item", str1, IM_ARRAYSIZE(str1));
-	ImGui::PopItemWidth(); // Restaura el ancho predeterminado
 
 	//New Folder
 	ImGui::SameLine();
@@ -36,7 +30,8 @@ void Properties::RenderOutliner(){
 
 
 	//Tree with list of selectable items in scene
-	if (ImGui::TreeNode("Scene items")){
+	ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+	if (ImGui::TreeNode("Scene items")) {
 		for (int i = 0; i < 5; i++)
 		{
 			// Use SetNextItemOpen() so set the default state of a node to be open. We could
@@ -44,9 +39,9 @@ void Properties::RenderOutliner(){
 			if (i == 0)
 				ImGui::SetNextItemOpen(true, ImGuiCond_Once);
 
-			if (ImGui::TreeNode((void*)(intptr_t)i, "Child %d", i))
+			if (ImGui::TreeNode((void*)(intptr_t)i, "Elemento %d", i))
 			{
-				ImGui::Text("blah blah");
+				ImGui::Text("asdgasdg");
 				ImGui::SameLine();
 				if (ImGui::SmallButton("button")) {}
 				ImGui::TreePop();
@@ -55,7 +50,7 @@ void Properties::RenderOutliner(){
 		ImGui::TreePop();
 	}
 
-	
+
 	ImGui::Spacing();
 	ImGui::Text("4 items in scene", IMGUI_VERSION, IMGUI_VERSION_NUM);
 	ImGui::Spacing();
@@ -64,19 +59,5 @@ void Properties::RenderOutliner(){
 
 
 	ImGui::End();
-}
 
-
-
-void Properties::RenderProperties(){
-	char buf[256];
-	float f = 0.0f;
-
-	strcpy(buf, "test");
-
-	ImGui::Text("YEYEYE", 123);
-	if (ImGui::Button("Save"))
-		printf("TEST");
-	ImGui::InputText("string", buf, IM_ARRAYSIZE(buf));
-	ImGui::SliderFloat("float", &f, 0.0f, 1.0f);
 }

@@ -7,6 +7,8 @@
 #include "Dependencies/ImGui/imgui.h"
 #include "Graphics/OpenGLPipeline.h"
 #include "Interface/Properties.h"
+#include "Interface/Outliner.h"
+
 
 
 class Editor {
@@ -20,6 +22,7 @@ public:
 private:
     bool editorLocked;
     Properties properties;
+    Outliner outliner;
 
 
 };
