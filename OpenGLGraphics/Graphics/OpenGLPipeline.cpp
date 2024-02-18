@@ -111,7 +111,7 @@ namespace Core {
 		*
 		*	It returns an empty hashmap
 		*/ //----------------------------------------------------------------------
-		std::unordered_multimap<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> OpenGLPipeline::FlushObsoletes()
+		std::unordered_multimap<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> OpenGLPipeline::FlushObsoletes()
 		{
 			std::unordered_multimap<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 			std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
@@ -189,6 +189,7 @@ namespace Core {
 			// Get the list of obsoletes
 			std::unordered_multimap<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes = FlushObsoletes();
 
+			//Render Lights
 			glCullFace(GL_FRONT);
 			for(int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				mShadowBuffers[i].Bind();
@@ -267,6 +268,7 @@ namespace Core {
 
 			Skybox::sCurrentSky->Render(cam);
 
+			//Finish render GUI
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}

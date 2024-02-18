@@ -136,7 +136,7 @@ void main() {
 
 			Spotlight= clamp(Spotlight,0,1);
 		}
-        float filtro = 0.27f;
+        float filtro = 1.f;
         totalLightShine += att * ((ambient + Spotlight * (1 - f) * diffuse + specular)) * filtro;
    }
   
