@@ -173,7 +173,7 @@
     <ClCompile Include="Core\ECSystem\Component.cpp" />
     <ClCompile Include="Core\ECSystem\Object.cpp" />
     <ClCompile Include="Core\Editor\Editor.cpp" />
-    <ClCompile Include="Core\Editor\Interface\asset.cpp" />
+    <ClCompile Include="Core\Editor\Interface\AssetIcon.cpp" />
     <ClCompile Include="Core\Editor\Interface\AssetManager.cpp" />
     <ClCompile Include="Core\Editor\Interface\Outliner.cpp" />
     <ClCompile Include="Core\Editor\Interface\Properties.cpp" />
@@ -221,7 +221,7 @@
     <ClInclude Include="Core\ECSystem\Component.h" />
     <ClInclude Include="Core\ECSystem\Object.h" />
     <ClInclude Include="Core\Editor\Editor.h" />
-    <ClInclude Include="Core\Editor\Interface\asset.h" />
+    <ClInclude Include="Core\Editor\Interface\AssetIcon.h" />
     <ClInclude Include="Core\Editor\Interface\AssetManager.h" />
     <ClInclude Include="Core\Editor\Interface\Outliner.h" />
     <ClInclude Include="Core\Editor\Interface\Properties.h" />

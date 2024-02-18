@@ -1,6 +1,6 @@
 #include "AssetManager.h"
 #include "Dependencies/ImGui/imgui.h"
-#include "asset.h"
+#include "AssetIcon.h"
 
 void AssetManager::Render() {
 	ImGui::Begin("Asset Manager");
@@ -10,7 +10,7 @@ void AssetManager::Render() {
 	//printf("%d", ImGui::GetWindowWidth());
 
 	const int numAssets = 20;
-	Asset assets[20];
+	AssetIcon assets[20];
 
 	int cont = 0;
 	for (int i = 0; i < numAssets; i++) { //TODO intentar centrar elementos
