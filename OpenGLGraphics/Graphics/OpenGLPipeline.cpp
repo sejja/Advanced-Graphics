@@ -55,7 +55,8 @@ namespace Core {
 
 			mFrameBuffer = std::make_unique<FrameBuffer>();
 			mFrameBuffer->Create();
-
+			mFrameBuffer->CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
+			
 
 			float quadVertices[] = {
 				// positions        // texture Coords
@@ -147,6 +148,8 @@ namespace Core {
 			_RenderGUI();
 
 			mFrameBuffer->Bind();
+			mFrameBuffer->Clear();
+
 			RenderShadowMaps();
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
@@ -156,9 +159,7 @@ namespace Core {
 			Skybox::sCurrentSky->Render(cam);
 
 			mFrameBuffer->Unbind();
-
-			
-
+			mFrameBuffer->BindTexture();
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

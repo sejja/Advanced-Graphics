@@ -46,7 +46,6 @@ namespace Core {
 			glm::lowp_u16vec2 mDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<GBuffer> mGBuffer;
-			//std::unique_ptr<FrameBuffer> mRenderBuffer;
 			std::unique_ptr<FrameBuffer> mFrameBuffer;
 
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
