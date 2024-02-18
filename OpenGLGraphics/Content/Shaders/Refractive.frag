@@ -162,7 +162,6 @@ void main() {
         default:
             break;
         }
-
         totalLightShine += att * ((ambient + Spotlight * (1 - shadowint) * diffuse + specular));
    }
 

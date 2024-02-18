@@ -136,9 +136,8 @@ void main() {
 
 			Spotlight= clamp(Spotlight,0,1);
 		}
-
-
-        totalLightShine += att * ((ambient + Spotlight * (1 - f) * diffuse + specular));
+        float filtro = 0.27f;
+        totalLightShine += att * ((ambient + Spotlight * (1 - f) * diffuse + specular)) * filtro;
    }
   
     FragColor = texture(uDiffuseTex, oUVs) * vec4(totalLightShine, 1.0);
