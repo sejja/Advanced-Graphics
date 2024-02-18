@@ -1,6 +1,7 @@
 #include "Editor.h"
 #include <iostream>
 #include "Interface/Properties.h"
+#include "Interface/AssetManager.h"
 
 Editor::Editor() : editorLocked(false) {}
 
@@ -18,7 +19,10 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 
 	properties.Render();
+	AssetManager assetManager;
+	assetManager.Render();
 	outliner.Render();
+	
 
 
 }

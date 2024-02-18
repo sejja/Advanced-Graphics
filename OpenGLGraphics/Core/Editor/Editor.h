@@ -22,6 +22,7 @@ public:
 private:
     bool editorLocked;
     Properties properties;
+    //AssetManager assetManager;
     Outliner outliner;
 
 

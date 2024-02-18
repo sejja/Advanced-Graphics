@@ -167,11 +167,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\PruebaIMGui\Asset\asset.cpp" />
     <ClCompile Include="Behaviors\AnimationComponent.cpp" />
     <ClCompile Include="Core\Assets\Importers.cpp" />
     <ClCompile Include="Core\ECSystem\Component.cpp" />
     <ClCompile Include="Core\ECSystem\Object.cpp" />
     <ClCompile Include="Core\Editor\Editor.cpp" />
+    <ClCompile Include="Core\Editor\Interface\asset.cpp" />
+    <ClCompile Include="Core\Editor\Interface\AssetManager.cpp" />
     <ClCompile Include="Core\Editor\Interface\Outliner.cpp" />
     <ClCompile Include="Core\Editor\Interface\Properties.cpp" />
     <ClCompile Include="Core\Events\Event.cpp" />
@@ -209,6 +212,7 @@
     <ClCompile Include="Graphics\OpenGLPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\PruebaIMGui\Asset\asset.h" />
     <ClInclude Include="Core\Application.h" />
     <ClInclude Include="Behaviors\AnimationComponent.h" />
     <ClInclude Include="Core\Allocator.h" />
@@ -217,6 +221,8 @@
     <ClInclude Include="Core\ECSystem\Component.h" />
     <ClInclude Include="Core\ECSystem\Object.h" />
     <ClInclude Include="Core\Editor\Editor.h" />
+    <ClInclude Include="Core\Editor\Interface\asset.h" />
+    <ClInclude Include="Core\Editor\Interface\AssetManager.h" />
     <ClInclude Include="Core\Editor\Interface\Outliner.h" />
     <ClInclude Include="Core\Editor\Interface\Properties.h" />
     <ClInclude Include="Core\Events\Event.h" />
@@ -710,7 +716,6 @@
     <None Include="Content\Shaders\UVs.shader" />
     <None Include="Content\Shaders\White.frag" />
     <None Include="Content\Shaders\White.shader" />
-    <None Include="D:\Asier\Descargas\imgui.ini" />
     <None Include="Dependencies\GLM\detail\func_common.inl" />
     <None Include="Dependencies\GLM\detail\func_common_simd.inl" />
     <None Include="Dependencies\GLM\detail\func_exponential.inl" />
@@ -863,7 +868,6 @@
     <Image Include="Content\Textures\left.jpg" />
     <Image Include="Content\Textures\right.jpg" />
     <Image Include="Content\Textures\top.jpg" />
-    <Image Include="D:\Asier\Descargas\folderAdd.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
