@@ -1,6 +1,13 @@
 #include "Properties.h"
 #include <iostream>
 #include "Dependencies/ImGui/imgui.h"
+#include "Core/ResourceManager.h"
+#include "Graphics/Primitives/Texture.h"
+#include "Core/Singleton.h"
+#include "Dependencies/ImGui/imgui_internal.h"
+#include "Dependencies/ImGui/imgui_impl_opengl3.h"
+#include <Dependencies/ImGui/imgui_impl_sdl2.h>
+
 
 void Properties::Render() {
 	ImGui::Begin("Properties");
@@ -11,18 +18,26 @@ void Properties::Render() {
 	ImGui::InputTextWithHint("##SearchProperty", "Search property", str1, IM_ARRAYSIZE(str1));
 	ImGui::Spacing();
 
-	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_None)) {
-        ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
 		TransformOptions();
 	}
+
+    if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen)) {
+        LightingOptions();
+    }
+
+
+
 
 	ImGui::End();
 }
 
-void DrawColoredTextWithBackground(const char* text, ImVec4 bgColor) {
+void TextPaddingWBg(const char* text, ImVec4 bgColor) {
     ImVec2 labelSize = ImGui::CalcTextSize(text);
     ImVec2 startPos = ImGui::GetCursorScreenPos();
-    ImVec2 endPos = ImVec2(startPos.x + 2.5f + labelSize.x + 2.5f, startPos.y + labelSize.y + 6.0f);
+    ImVec2 endPos = ImVec2(startPos.x + labelSize.x + 5.0f, startPos.y + labelSize.y + 6.0f);
+
+    startPos.x -= 2.5f;
 
     ImGui::GetWindowDrawList()->AddRectFilled(startPos, endPos, IM_COL32((int)(bgColor.x * 255), (int)(bgColor.y * 255), (int)(bgColor.z * 255), (int)(bgColor.w * 255))); // Fondo
     ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), text);
@@ -31,43 +46,52 @@ void DrawColoredTextWithBackground(const char* text, ImVec4 bgColor) {
 
 void TransformRow(const char* title) {
     static char defaultValue[16] = "0";
+    const float f32_zero = 0.f;
+    const float f32_one = 100.f;
+    const float dragJump = 0.5f;
+    const float inputSize = 0.12f;
+    float remainingWidth = ImGui::GetContentRegionAvail().x;
 
     ImGui::Text(title); ImGui::SameLine();
 
-    if (ImGui::Button("Lock")) {
+    if (ImGui::Button("Lk")) {
     }
 
-    float remainingWidth = ImGui::GetContentRegionAvail().x;
-
-    static char buf1[32] = "0.0";
+    static float  defaultX = 0.0f;
     std::string XLabel = "X";
-    std::string XID = "##X" + std::string(title);
+    char XID[32];
+    sprintf(XID, "##%d%d", XLabel, title);
     ImGui::SameLine();
-    DrawColoredTextWithBackground(XLabel.c_str(), ImVec4(1.0f, 0.5f, 0.5f, 0.7f));
+    TextPaddingWBg(XLabel.c_str(), ImVec4(1.0f, 0.5f, 0.5f, 0.7f));
     ImGui::SameLine();
-    ImGui::SetNextItemWidth(remainingWidth * 0.10f);
-    ImGui::InputText(XID.c_str(), buf1, IM_ARRAYSIZE(buf1), ImGuiInputTextFlags_CharsDecimal);
+    ImGui::SetNextItemWidth(remainingWidth * inputSize);
+    ImGui::DragScalar(XID, ImGuiDataType_Float, &defaultX, dragJump, &f32_zero, &f32_one, "%.2f");
 
-    static char buf2[32] = "0.0";
+
+
+    static float  defaultY = 0.0f;
     std::string YLabel = "Y";
-    std::string YID = "##X" + std::string(title);
+    std::string YID = "##Y" + std::string(title);
     ImGui::SameLine();
-    DrawColoredTextWithBackground(YLabel.c_str(), ImVec4(0.5f, 1.0f, 0.5f, 0.7f));
+    TextPaddingWBg(YLabel.c_str(), ImVec4(0.5f, 1.0f, 0.5f, 0.7f));
     ImGui::SameLine();
-    ImGui::SetNextItemWidth(remainingWidth * 0.10f);
-    ImGui::InputText(YID.c_str(), buf2, IM_ARRAYSIZE(buf2), ImGuiInputTextFlags_CharsDecimal);
+    ImGui::SetNextItemWidth(remainingWidth * inputSize);
+    ImGui::DragScalar(YID.c_str(), ImGuiDataType_Float, &defaultY, dragJump, &f32_zero, &f32_one, "%.2f");
 
-    static char buf3[32] = "0.0";
+    static float  defaultZ = 0.0f;
     std::string ZLabel = "Z";
-    std::string ZID = "##X" + std::string(title);
+    std::string ZID = "##Z" + std::string(title);
     ImGui::SameLine();
-    DrawColoredTextWithBackground(ZLabel.c_str(), ImVec4(0.5f, 0.5f, 1.0f, 0.7f));
+    TextPaddingWBg(ZLabel.c_str(), ImVec4(0.5f, 0.5f, 1.0f, 0.7f));
     ImGui::SameLine();
-    ImGui::SetNextItemWidth(remainingWidth * 0.10f);
-    ImGui::InputText(ZID.c_str(), buf3, IM_ARRAYSIZE(buf3), ImGuiInputTextFlags_CharsDecimal);
+    ImGui::SetNextItemWidth(remainingWidth * inputSize);
+    ImGui::DragScalar(ZID.c_str(), ImGuiDataType_Float, &defaultZ, dragJump, &f32_zero, &f32_one, "%.2f");
+
+
+    ImTextureID IconTex = Singleton<ResourceManager>::Instance().GetResource("../Assets/Icons/fonderAdd.png").get();
 
     ImGui::SameLine();
-    ImGui::Button("Reset");
+    ImGui::ImageButton(IconTex, ImVec2(10, 10));
 
 }
 
@@ -78,9 +102,129 @@ void Properties::TransformOptions(){
     TransformRow("Location");
     TransformRow("Rotation");
     TransformRow(" Scale  ");
-
-    
 }
+
+
+static void HelpMarker(const char* desc)
+{
+    ImGui::TextDisabled("(?)");
+    if (ImGui::BeginItemTooltip())
+    {
+        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
+        ImGui::TextUnformatted(desc);
+        ImGui::PopTextWrapPos();
+        ImGui::EndTooltip();
+    }
+}
+
+void colorPickerBtn() {
+
+    ImGuiColorEditFlags misc_flags = ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoBorder | ImGuiColorEditFlags_AlphaPreviewHalf;
+    static ImVec4 color = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
+    static ImVec4 backup_color;
+
+    // Generate a default palette. The palette will persist and can be edited.
+    static bool saved_palette_init = true;
+    static ImVec4 saved_palette[32] = {};
+    if (saved_palette_init)
+    {
+        for (int n = 0; n < IM_ARRAYSIZE(saved_palette); n++)
+        {
+            ImGui::ColorConvertHSVtoRGB(n / 31.0f, 0.8f, 0.8f,
+                saved_palette[n].x, saved_palette[n].y, saved_palette[n].z);
+            saved_palette[n].w = 1.0f; // Alpha
+        }
+        saved_palette_init = false;
+    }
+
+
+    if (ImGui::ColorButton("Light Color ##3c", *(ImVec4*)&color, misc_flags, ImVec2(80, 40))) {
+        ImGui::OpenPopup("colorPicker");
+        backup_color = color;
+    }
+
+
+
+    if (ImGui::BeginPopup("colorPicker")) {
+        ImGui::Separator();
+        ImGui::ColorPicker4("##picker", (float*)&color, misc_flags | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_NoSmallPreview);
+        ImGui::SameLine();
+
+        ImGui::BeginGroup(); // Lock X position
+        ImGui::Text("Current");
+        ImGui::ColorButton("##current", color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40));
+        ImGui::Text("Previous");
+        if (ImGui::ColorButton("##previous", backup_color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40)))
+            color = backup_color;
+        ImGui::Separator();
+        ImGui::Text("Palette");
+        for (int n = 0; n < IM_ARRAYSIZE(saved_palette); n++)
+        {
+            ImGui::PushID(n);
+            if ((n % 8) != 0)
+                ImGui::SameLine(0.0f, ImGui::GetStyle().ItemSpacing.y);
+
+            ImGuiColorEditFlags palette_button_flags = ImGuiColorEditFlags_NoAlpha | ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_NoTooltip;
+            if (ImGui::ColorButton("##palette", saved_palette[n], palette_button_flags, ImVec2(20, 20)))
+                color = ImVec4(saved_palette[n].x, saved_palette[n].y, saved_palette[n].z, color.w); // Preserve alpha!
+
+            // Allow user to drop colors into each palette entry. Note that ColorButton() is already a
+            // drag source by default, unless specifying the ImGuiColorEditFlags_NoDragDrop flag.
+            if (ImGui::BeginDragDropTarget())
+            {
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F))
+                    memcpy((float*)&saved_palette[n], payload->Data, sizeof(float) * 3);
+                if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_4F))
+                    memcpy((float*)&saved_palette[n], payload->Data, sizeof(float) * 4);
+                ImGui::EndDragDropTarget();
+            }
+
+            ImGui::PopID();
+        }
+        ImGui::EndGroup();
+        ImGui::EndPopup();
+    }
+
+}
+
+
+void Properties::LightingOptions() {
+    static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
+    static ImVec2 cell_padding(4.0f, 8.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
+
+
+    if (ImGui::BeginTable("light_table", 2, flags1)) {
+
+        
+        ImGui::TableNextRow();
+
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Intensity");
+        ImGui::TableSetColumnIndex(1);
+        static float slider_f = 0.5f;
+        static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
+        ImGui::SliderFloat("", &slider_f, 0.0f, 100.0f, "%.3f");
+
+
+        ImGui::TableNextRow();
+
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Light Color");
+        ImGui::TableSetColumnIndex(1);
+        colorPickerBtn(); //esta todo dentro por que solo el hue esta dentro no devuelve bien el clr
+
+        ImGui::EndTable();
+    }
+
+    ImGui::PopStyleVar();
+
+
+
+
+
+}
+
 
 
 

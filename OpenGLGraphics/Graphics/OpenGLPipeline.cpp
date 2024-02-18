@@ -52,6 +52,12 @@ namespace Core {
 			mShadowBuffers[3].Create();
 			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
 			mGBuffer = std::make_unique<GBuffer>();
+
+			mFrameBuffer = std::make_unique<FrameBuffer>();
+			mFrameBuffer->Create();
+			mFrameBuffer->CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
+			
+
 			float quadVertices[] = {
 				// positions        // texture Coords
 				-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
@@ -81,6 +87,11 @@ namespace Core {
 
 		GBuffer* OpenGLPipeline::GetGBuffer() {
 			return mGBuffer.get();
+		}
+
+		FrameBuffer* OpenGLPipeline::GetRenderFrameBuffer()
+		{
+			return mFrameBuffer.get();
 		}
 
 
@@ -135,6 +146,10 @@ namespace Core {
 		void OpenGLPipeline::Render() {
 			
 			_RenderGUI();
+
+			mFrameBuffer->Bind();
+			mFrameBuffer->Clear();
+
 			RenderShadowMaps();
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
@@ -143,8 +158,8 @@ namespace Core {
 			mGBuffer->BlitDepthBuffer();
 			Skybox::sCurrentSky->Render(cam);
 
-			
-
+			mFrameBuffer->Unbind();
+			mFrameBuffer->BindTexture();
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
