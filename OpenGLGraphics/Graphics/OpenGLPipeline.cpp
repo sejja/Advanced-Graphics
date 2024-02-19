@@ -19,6 +19,7 @@
 #include "Dependencies/ImGui/imgui.h"
 #include "Dependencies/ImGui/imgui_impl_opengl3.h"
 #include "Dependencies/ImGui/imgui_impl_sdl2.h"
+#include <iostream>
 
 using namespace Core::Graphics;
 
@@ -35,7 +36,7 @@ namespace Core {
 			glEnable(GL_DEPTH_TEST);
 			glDepthFunc(GL_LESS);
 			glEnable(GL_CULL_FACE);
-			glEnable(GL_FRAMEBUFFER_SRGB);
+			//glEnable(GL_FRAMEBUFFER_SRGB);
 			glCullFace(GL_BACK);
 			glFrontFace(GL_CCW);
 			glDisable(GL_BLEND);
@@ -79,6 +80,14 @@ namespace Core {
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 			glBindBufferRange(GL_UNIFORM_BUFFER, 0, mUniformBuffer, 0, 2 * sizeof(glm::mat4) + sizeof(glm::vec3));
+
+			//HDR y esas mierdas de burgesia
+
+			if (hdrFBO) {
+				glBindTexture(GL_TEXTURE_2D, colorBuffer);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, mDimensions.x, mDimensions.y, 0, GL_RGBA, GL_FLOAT, NULL);
+			}
+
 		}
 
 		// ------------------------------------------------------------------------
@@ -86,10 +95,14 @@ namespace Core {
 		*
 		*   Clears the whole FrameBuffer
 		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::PreRender() {
+		void OpenGLPipeline::PreRender() 
+		{
+			if (hdrFBO) 
+			{
+				glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+			}
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
-
 
 		// ------------------------------------------------------------------------
 		/*! RenderGUI
@@ -191,6 +204,8 @@ namespace Core {
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 
 		// ------------------------------------------------------------------------
@@ -258,6 +273,9 @@ namespace Core {
 						auto normals = Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/BrickNormal.png")->Get();
 						normals->SetTextureType(Texture::TextureType::eNormal);
 						normals->Bind();
+
+						glActiveTexture(GL_TEXTURE0);
+						glBindTexture(GL_TEXTURE_2D, tex->GetTextureHandle());
 					}
 					catch (...) {}
 					GroupRender(obsoletes,it, it.first->Get());

@@ -690,6 +690,12 @@
     <None Include="Content\Shaders\DeferredLighting.frag" />
     <None Include="Content\Shaders\DeferredLighting.shader" />
     <None Include="Content\Shaders\DeferredLighting.vert" />
+    <None Include="Content\Shaders\FrameBuffer.frag">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Content\Shaders\FrameBuffer.vert">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
     <None Include="Content\Shaders\Refractive.frag" />
     <None Include="Content\Shaders\Refractive.shader" />
     <None Include="Content\Shaders\Shadow.frag" />
