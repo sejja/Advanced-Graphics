@@ -1344,7 +1344,7 @@ static inline ImDrawFlags FixRectCornerFlags(ImDrawFlags flags)
     /*
     IM_STATIC_ASSERT(ImDrawFlags_RoundCornersTopLeft == (1 << 4));
 #ifndef IMGUI_DISABLE_OBSOLETE_FUNCTIONS
-    // Obsoleted in 1.82 (from February 2021). This code was stripped/simplified and mostly commented in 1.90 (from September 2023)
+    // Obsoleted in 1.82 (from February 2024). This code was stripped/simplified and mostly commented in 1.90 (from September 2023)
     // - Legacy Support for hard coded ~0 (used to be a suggested equivalent to ImDrawCornerFlags_All)
     if (flags == ~0)                    { return ImDrawFlags_RoundCornersAll; }
     // - Legacy Support for hard coded 0x01 to 0x0F (matching 15 out of 16 old flags combinations). Read details in older version of this code.
@@ -1354,7 +1354,7 @@ static inline ImDrawFlags FixRectCornerFlags(ImDrawFlags flags)
     */
     // If this assert triggers, please update your code replacing hardcoded values with new ImDrawFlags_RoundCorners* values.
     // Note that ImDrawFlags_Closed (== 0x01) is an invalid flag for AddRect(), AddRectFilled(), PathRect() etc. anyway.
-    // See details in 1.82 Changelog as well as 2021/03/12 and 2023/09/08 entries in "API BREAKING CHANGES" section.
+    // See details in 1.82 Changelog as well as 2024/03/12 and 2023/09/08 entries in "API BREAKING CHANGES" section.
     IM_ASSERT((flags & 0x0F) == 0 && "Misuse of legacy hardcoded ImDrawCornerFlags values!");
 
     if ((flags & ImDrawFlags_RoundCornersMask_) == 0)

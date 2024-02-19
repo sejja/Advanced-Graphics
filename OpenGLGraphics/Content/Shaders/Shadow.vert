@@ -3,14 +3,14 @@
 //	OpenGL Graphics
 //
 //	Created by Diego Revilla on 12/02/24
-//	Copyright © 2021 . All Rights reserved
+//	Copyright © 2024 . All Rights reserved
 //
 
 #version 460 core
 
 layout (location = 0) in vec3 aPos;
 
-uniform mat4 uTransform;
+uniform mat4 uProjection;
 uniform mat4 uView;
 uniform mat4 uModel;
 
@@ -20,5 +20,5 @@ uniform mat4 uModel;
 *   Only transorms the vertex position from model position to viewport position
 */ //----------------------------------------------------------------------
 void main() {
-    gl_Position = uTransform * uView * uModel * vec4(aPos, 1.0);
+    gl_Position = uProjection * uView * uModel * vec4(aPos, 1.0);
 } 

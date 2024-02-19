@@ -3,7 +3,7 @@
 //	OpenGL Graphics
 //
 //	Created by Diego Revilla on 06/05/21
-//	Copyright © 2021 . All Rights reserved
+//	Copyright © 2024 . All Rights reserved
 //
 
 #include <Windows.h>
@@ -40,6 +40,12 @@ namespace Core {
 		Shader::Shader(const std::string_view& filename, const EType type) :
 			ShaderType(type), mHandle(NULL) {
 			Compile(LoadSource(filename));
+
+			//Asign Uniform Buffers if the shader creation was correct
+			if(mHandle)
+				glUniformBlockBinding(mHandle, 
+					glGetUniformBlockIndex(mHandle, "UniformBuffer"), 
+					NULL);
 		}
 
 		// ------------------------------------------------------------------------

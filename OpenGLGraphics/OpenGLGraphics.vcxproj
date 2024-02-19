@@ -49,7 +49,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -685,11 +685,11 @@
   <ItemGroup>
     <None Include="Content\Maps\Scene.level" />
     <None Include="Content\Meshes\backpack.mtl" />
-    <None Include="Content\Shaders\DebugDepth.frag" />
-    <None Include="Content\Shaders\DebugDepth.shader" />
-    <None Include="Content\Shaders\DebugDepth.vert" />
     <None Include="Content\Shaders\DeferredGeometry.frag" />
     <None Include="Content\Shaders\DeferredGeometry.shader" />
+    <None Include="Content\Shaders\DeferredLighting.frag" />
+    <None Include="Content\Shaders\DeferredLighting.shader" />
+    <None Include="Content\Shaders\DeferredLighting.vert" />
     <None Include="Content\Shaders\Refractive.frag" />
     <None Include="Content\Shaders\Refractive.shader" />
     <None Include="Content\Shaders\Shadow.frag" />
@@ -698,8 +698,6 @@
     <None Include="Content\Shaders\SkyBox.frag" />
     <None Include="Content\Shaders\SkyBox.shader" />
     <None Include="Content\Shaders\SkyBox.vert" />
-    <None Include="Content\Shaders\SolidColor.vert" />
-    <None Include="Content\Shaders\Textured.frag" />
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\UV.frag" />
     <None Include="Content\Shaders\Transform.vert" />

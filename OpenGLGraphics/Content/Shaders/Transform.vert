@@ -16,7 +16,6 @@ out vec3 oNormal;
 out vec3 oPosition;
 out vec3 oTangent;
 out vec3 oBitangent;
-out vec4 oShadowCoord[8];
 
 void main() {
 	oUVs = aUVs;
@@ -24,8 +23,5 @@ void main() {
 	oPosition = vec3(uModel * vec4(aPos, 1));
 	oTangent = aTangent;
 	oBitangent = aBitangent;
-
-	for(int i = 0; i < 8; i++)
-		oShadowCoord[i] = uShadowMatrix[i] * vec4(oPosition, 1);
 	gl_Position = uTransform * uView * uModel * vec4(aPos, 1.0);
 }

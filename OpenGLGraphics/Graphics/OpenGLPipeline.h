@@ -35,6 +35,9 @@ namespace Core {
 			void Finished_FlushObsoletes(std::unordered_multimap<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes);
 
 			void LightingPass();
+			void RenderShadowMaps();
+			void RenderScreenQuad();
+			void UpdateUniformBuffers();
 
 			void LocateInstance(std::shared_ptr<Object> parent, ShaderProgram* shader);
 			void GroupRender(std::unordered_multimap<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
@@ -46,6 +49,8 @@ namespace Core {
 			glm::lowp_u16vec2 mDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<GBuffer> mGBuffer;
+			GLuint mScreenQuadVAO, mScreenQuadVBO;
+			GLuint mUniformBuffer;
 		};
 
 		// ------------------------------------------------------------------------

@@ -20,8 +20,6 @@
 #include "Dependencies/ImGui/imgui_impl_opengl3.h"
 #include "Dependencies/ImGui/imgui_impl_sdl2.h"
 
-using namespace Core::Graphics;
-
 namespace Core {
 	namespace Graphics {
 		static Primitives::Camera cam;
@@ -35,7 +33,6 @@ namespace Core {
 			glEnable(GL_DEPTH_TEST);
 			glDepthFunc(GL_LESS);
 			glEnable(GL_CULL_FACE);
-			glEnable(GL_FRAMEBUFFER_SRGB);
 			glCullFace(GL_BACK);
 			glFrontFace(GL_CCW);
 			glDisable(GL_BLEND);
@@ -54,6 +51,31 @@ namespace Core {
 			mShadowBuffers[3].Create();
 			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
 			mGBuffer = std::make_unique<GBuffer>();
+			float quadVertices[] = {
+				// positions        // texture Coords
+				-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+				-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+				 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+			};
+			// setup plane VAO
+			glGenVertexArrays(1, &mScreenQuadVAO);
+			glGenBuffers(1, &mScreenQuadVAO);
+			glBindVertexArray(mScreenQuadVBO);
+			glBindBuffer(GL_ARRAY_BUFFER, mScreenQuadVBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+
+			glGenBuffers(1, &mUniformBuffer);
+
+			glBindBuffer(GL_UNIFORM_BUFFER, mUniformBuffer);
+			glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + sizeof(glm::vec3), NULL, GL_STATIC_DRAW);
+			glBindBuffer(GL_UNIFORM_BUFFER, 0);
+
+			glBindBufferRange(GL_UNIFORM_BUFFER, 0, mUniformBuffer, 0, 2 * sizeof(glm::mat4) + sizeof(glm::vec3));
 		}
 
 		// ------------------------------------------------------------------------
@@ -66,17 +88,15 @@ namespace Core {
 		}
 
 		// ------------------------------------------------------------------------
-		/*! Private function _RenderGUI()
+		/*! Render
 		*
-		*  
+		*   Renders every object in the scene
 		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::_RenderGUI() {
-			//Prepare GUI
+		void OpenGLPipeline::Render() {
 			ImGui_ImplSDL2_NewFrame();
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
 
-			//RenderGUI
 			if (ImGui::Begin("Deferred Rendering")) {
 				ImGui::Image((ImTextureID)mGBuffer->GetPositionTextureHandle(),
 					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
@@ -88,187 +108,29 @@ namespace Core {
 			}
 			ImGui::End();
 
-			//Render shadow
 			if (ImGui::Begin("Shadow Mapping")) {
 				int i = 0;
 				for (FrameBuffer& buff : mShadowBuffers) {
 					ImGui::Image((ImTextureID)buff.GetTextureHandle(),
 						ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-
+				
 					if (i < 1) {
 						ImGui::SameLine();
 						i++;
-					}
-					else
+					} else
 						i = 0;
 				}
 			}
 			ImGui::End();
-		}
-
-		// ------------------------------------------------------------------------
-		/*! Flush obsoletes
-		*
-		*	It returns an empty hashmap
-		*/ //----------------------------------------------------------------------
-		std::unordered_multimap<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> OpenGLPipeline::FlushObsoletes()
-		{
-			std::unordered_multimap<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
-			std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
-				std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
-				it.erase(x.second);
-
-				//If we don't have any other renderables, erase it
-				if (!it.size()) mGroupedRenderables.erase(x.first);
-				});
-
-			return obsoletes;
-		}
-
-		void OpenGLPipeline::Finished_FlushObsoletes(std::unordered_multimap<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes)
-		{
-			std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
-				std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
-				it.erase(x.second);
-
-				//If we don't have any other renderables, erase it
-				if (!it.size()) mGroupedRenderables.erase(x.first);
-				});
-		}
-
-		// ------------------------------------------------------------------------
-		/*! Locate an instance of a renderable
-		*
-		*   
-		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::LocateInstance(std::shared_ptr<Object> parent, ShaderProgram* shader) {
-			glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
-				glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-				glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
-				glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
-				glm::scale(glm::mat4(1.0f), parent->GetScale());
-			shader->SetShaderUniform("uModel", &matrix);
-		};
-
-		// ------------------------------------------------------------------------
-		/*! Render Group of Instances
-		*
-		*
-		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::GroupRender(std::unordered_multimap<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
-										const std::pair<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, 
-										ShaderProgram* shader) 
-		{
-			for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
-				//If it isn't expired
-				if (auto renderable = it2->lock()) {
-					const std::shared_ptr<Object> parent = renderable->GetParent().lock();
-					LocateInstance(parent, shader);
-					reinterpret_cast<ModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
-				}
-				else {
-					obsoletes.insert(std::make_pair(it.first, it2));
-				}
-			}
-		}
-
-		// ------------------------------------------------------------------------
-		/*! Render
-		*
-		*   Renders every object in the scene
-		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::Render() { //   <----  Modulicemos esto xd
-
-			//Render the ImGui
-			_RenderGUI();
-
-			//Render all Geometric Objects
+			
+			RenderShadowMaps();
+			Skybox::sCurrentSky->UploadSkyboxCubeMap();
+			UpdateUniformBuffers();
 			GeometryPass();
-			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
-
-			// Get the list of obsoletes
-			std::unordered_multimap<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes = FlushObsoletes();
-
-			//Render Lights
-			glCullFace(GL_FRONT);
-			for(int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-				mShadowBuffers[i].Bind();
-				mShadowBuffers[i].Clear(true);
-
-				auto up = glm::normalize(glm::cross(glm::cross(-::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0, 1, 0)), -::Graphics::Primitives::Light::sLightData[i].mPosition));
-				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 2.f, 2000.f);
-				glm::mat4 lightView = glm::lookAt(::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0.0, -15, 50), glm::vec3(0, 1, 0));
-
-				{
-					const auto shadow = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Shadow.shader")->Get();
-					shadow->Bind();
-					shadow->SetShaderUniform("uTransform", &lightProjection);
-					shadow->SetShaderUniform("uView", &lightView);
-
-					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes](const std::pair<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
-						GroupRender(obsoletes, it, shadow);
-						});
-
-					FlushObsoletes();
-				}
-
-				mShadowBuffers[i].Unbind();
-
-			}
-
-			glCullFace(GL_BACK);
-			glViewport(0, 0, mDimensions.x, mDimensions.y);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			std::vector<glm::mat4> shadow_matrices;
-
-			for(int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-				mShadowBuffers[i].BindTexture(2 + i);
-				auto up = glm::normalize(glm::cross(glm::cross(-::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0, 1, 0)), -::Graphics::Primitives::Light::sLightData[i].mPosition));
-				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 2.f, 2000.f);
-				glm::mat4 lightView = glm::lookAt(::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0.0, -15, 50), glm::vec3(0, 1, 0));
-				glm::mat4 shadow_matrix = lightProjection * lightView;
-				shadow_matrices.push_back(shadow_matrix);
-			}
-
-			{
-				glm::mat4 view = cam.GetViewMatrix();
-				glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
-				Skybox::sCurrentSky->UploadSkyboxCubeMap();
-
-				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow_matrices, &projection, &view, &obsoletes](const std::pair<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
-					 ShaderProgram* shader = it.first->Get();
-
-					shader->Bind();
-					
-					shader->SetShaderUniform("uTransform", &projection);
-					shader->SetShaderUniform("uView", &view);
-
-					try {
-						shader->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
-
-						for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-							shader->SetShaderUniform("uShadowMatrix[" + std::to_string(i) + "]", shadow_matrices.data() + i);
-						}
-
-
-						UploadLightDataToGPU(it.first);
-						auto tex = Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/Brick.png")->Get();
-						tex->SetTextureType(Texture::TextureType::eDiffuse);
-						tex->Bind();
-						auto normals = Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/BrickNormal.png")->Get();
-						normals->SetTextureType(Texture::TextureType::eNormal);
-						normals->Bind();
-					} catch (...) {}
-					GroupRender(obsoletes, it, shader);
-
-					});
-
-				Finished_FlushObsoletes(obsoletes);
-			}
-
+			LightingPass();
+			mGBuffer->BlitDepthBuffer();
 			Skybox::sCurrentSky->Render(cam);
 
-			//Finish render GUI
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
@@ -278,22 +140,22 @@ namespace Core {
 		*
 		*   Uploads the light data to the shader
 		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::UploadLightDataToGPU(const AssetReference< ShaderProgram>& shader) {
-			 ShaderProgram* shadptr = shader.lock()->Get();
+		void OpenGLPipeline::UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader) {
+			Core::Graphics::ShaderProgram* shadptr = shader.lock()->Get();
 
 			for (size_t i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				const std::string id = "uLight[" + std::to_string(i);
 			
-				shadptr->SetShaderUniform((id + "].pos").c_str(), &::Graphics::Primitives::Light::sLightData[i].mPosition);
-				shadptr->SetShaderUniform((id + "].dir").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDirection);
-				shadptr->SetShaderUniform((id + "].amb").c_str(), &::Graphics::Primitives::Light::sLightData[i].mAmbient);
-				shadptr->SetShaderUniform((id + "].dif").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDiffuse);
-				shadptr->SetShaderUniform((id + "].spe").c_str(), &::Graphics::Primitives::Light::sLightData[i].mSpecular);
-				shadptr->SetShaderUniform((id + "].att").c_str(), &::Graphics::Primitives::Light::sLightData[i].mAttenuation);
-				shadptr->SetShaderUniform((id + "].cosIn").c_str(), &::Graphics::Primitives::Light::sLightData[i].mInner);
-				shadptr->SetShaderUniform((id + "].cosOut").c_str(), &::Graphics::Primitives::Light::sLightData[i].mOutter);
-				shadptr->SetShaderUniform((id + "].fallOff").c_str(), &::Graphics::Primitives::Light::sLightData[i].mFallOff);
-				shadptr->SetShaderUniform((id + "].type").c_str(), static_cast<int>(::Graphics::Primitives::Light::sLightData[i].mType));
+				shadptr->SetShaderUniform((id + "].mPosition").c_str(), &::Graphics::Primitives::Light::sLightData[i].mPosition);
+				shadptr->SetShaderUniform((id + "].mDirection").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDirection);
+				shadptr->SetShaderUniform((id + "].mAmbient").c_str(), &::Graphics::Primitives::Light::sLightData[i].mAmbient);
+				shadptr->SetShaderUniform((id + "].mDiffuse").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDiffuse);
+				shadptr->SetShaderUniform((id + "].mSpecular").c_str(), &::Graphics::Primitives::Light::sLightData[i].mSpecular);
+				shadptr->SetShaderUniform((id + "].mAttenuation").c_str(), &::Graphics::Primitives::Light::sLightData[i].mAttenuation);
+				shadptr->SetShaderUniform((id + "].mInnerAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mInner);
+				shadptr->SetShaderUniform((id + "].mOutterAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mOutter);
+				shadptr->SetShaderUniform((id + "].mFallOff").c_str(), &::Graphics::Primitives::Light::sLightData[i].mFallOff);
+				shadptr->SetShaderUniform((id + "].mType").c_str(), static_cast<int>(::Graphics::Primitives::Light::sLightData[i].mType));
 			}
 
 			shadptr->SetShaderUniform("uLightCount", static_cast<int>(::Graphics::Primitives::Light::sLightReg));
@@ -305,62 +167,73 @@ namespace Core {
 		*   Draws the geometry on the G-Buffer
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::GeometryPass() {
+			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
-			#pragma region Clean obsolated renderable object
+			auto f_flushobosoletes = [this, &obsoletes]() {
+				std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
+					std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
+					it.erase(x.second);
 
-			std::unordered_multimap<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes = FlushObsoletes();
+					//If we don't have any other renderables, erase it
+					if (!it.size()) mGroupedRenderables.erase(x.first);
+					});
+				};
 
-			#pragma endregion
+			auto f_grouprender = [&obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram* shader) {
+				//For each renderable in shader program
+				for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
+					//If it isn't expired
+					if (auto renderable = it2->lock()) {
+						const std::shared_ptr<Object> parent = renderable->GetParent().lock();
+						glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
+							glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+							glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
+							glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
+							glm::scale(glm::mat4(1.0f), parent->GetScale());
+						shader->SetShaderUniform("uModel", &matrix);
+						reinterpret_cast<ModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
+					}
+					else {
+						obsoletes.insert(std::make_pair(it.first, it2));
+					}
+				}
+				};
 
-
-			#pragma region Configure OpenGl
-
-			glEnable(GL_DEPTH_TEST); //Ensure that all fragments is rendered in the correct order
-			glCullFace(GL_BACK); //Avoid render non-visible surfaces
+			glEnable(GL_DEPTH_TEST);
+			glCullFace(GL_BACK);
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); //Clean buffer for the new Frame
-
-			#pragma endregion
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			{
-				#pragma region Configure glm and GBuffer
-
 				glm::mat4 view = cam.GetViewMatrix();
+				glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
 
-				//glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
-
-				glm::mat4 projection = glm::perspective(glm::radians(cam.GetZFov()), (float)mDimensions.x / (float)mDimensions.y, cam.GetZNear(), cam.GetZFar());
-				mGBuffer->Bind(); //Activa el G-Buffer para que todos los dibujos subsiguientes se realicen en él, en lugar de en el framebuffer por defecto.
+				mGBuffer->Bind();
 				mGBuffer->ClearBuffer();
-				mGBuffer->BindGeometryShader(); //Activa el shader de geometría específico que se usará para renderizar la geometría en el G-Buffer.
 
-				#pragma endregion
+				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), 
+					[this, &obsoletes, &projection, &view, &f_grouprender](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 
-				#pragma region Render all Renderables
-				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
-					[this, &projection, &view, &obsoletes](const std::pair<Asset< ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+						it, it.first->Get()->Bind();
+						it.first->Get()->SetShaderUniform("uTransform", &projection);
+						it.first->Get()->SetShaderUniform("uView", &view);
 
-						mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uTransform", &projection);
-						mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uView", &view);
-
-						try {
-							mGBuffer->GetGeometryShader().get()->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
-							UploadLightDataToGPU(it.first);
-							auto tex = Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/Brick.png")->Get();
-							tex->SetTextureType(Texture::TextureType::eDiffuse);
-							tex->Bind();
-							auto normals = Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/BrickNormal.png")->Get();
-							normals->SetTextureType(Texture::TextureType::eNormal);
-							normals->Bind();
-						}
-						catch (...) {}
-						GroupRender(obsoletes,it, mGBuffer->GetGeometryShader().get()->Get());
+					try {
+						it.first->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
+						UploadLightDataToGPU(it.first);
+						auto tex = Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/Brick.png")->Get();
+						tex->SetTextureType(Texture::TextureType::eDiffuse);
+						tex->Bind();
+						auto normals = Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/BrickNormal.png")->Get();
+						normals->SetTextureType(Texture::TextureType::eNormal);
+						normals->Bind();
+					}
+					catch (...) {}
+					f_grouprender(it, it.first->Get());
 
 					});
-				#pragma endregion
 
-				//Finish Flush
-				Finished_FlushObsoletes(obsoletes);
+				f_flushobosoletes();
 			}
 		}
 
@@ -371,13 +244,96 @@ namespace Core {
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::LightingPass() {
+			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
-			glActiveTexture(GL_TEXTURE0);
+			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetNormalTextureHandle());
-			glActiveTexture(GL_TEXTURE0);
+			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetAlbedoTextureHandle());
+			mGBuffer->BindLightingShader();
+			glViewport(0, 0, mDimensions.x, mDimensions.y);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			UploadLightDataToGPU(mGBuffer->GetLightingShader());
+
+			std::vector<glm::mat4> shadow_matrices;
+
+			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
+				mShadowBuffers[i].BindTexture(3 + i);
+				auto up = glm::normalize(glm::cross(glm::cross(-::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0, 1, 0)), -::Graphics::Primitives::Light::sLightData[i].mPosition));
+				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 2.f, 2000.f);
+				glm::mat4 lightView = glm::lookAt(::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0.0, -15, 50), glm::vec3(0, 1, 0));
+				glm::mat4 shadow_matrix = lightProjection * lightView;
+				shadow_matrices.push_back(shadow_matrix);
+			}
+
+			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
+				mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uShadowMatrix[" + std::to_string(i) + "]", shadow_matrices.data() + i);
+			}
+
+			mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
+			RenderScreenQuad();
+		}
+
+		void OpenGLPipeline::RenderShadowMaps() {
+			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
+
+			auto f_flushobosoletes = [this, &obsoletes]() {
+				std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
+					std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
+					it.erase(x.second);
+
+					//If we don't have any other renderables, erase it
+					if (!it.size()) mGroupedRenderables.erase(x.first);
+					});
+				};
+
+			auto f_grouprender = [&obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram* shader) {
+				//For each renderable in shader program
+				for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
+					//If it isn't expired
+					if (auto renderable = it2->lock()) {
+						const std::shared_ptr<Object> parent = renderable->GetParent().lock();
+						glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
+							glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+							glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
+							glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
+							glm::scale(glm::mat4(1.0f), parent->GetScale());
+						shader->SetShaderUniform("uModel", &matrix);
+						reinterpret_cast<ModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
+					}
+					else {
+						obsoletes.insert(std::make_pair(it.first, it2));
+					}
+				}
+				};
+
+			glCullFace(GL_FRONT);
+			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
+				mShadowBuffers[i].Bind();
+				mShadowBuffers[i].Clear(true);
+
+				auto up = glm::normalize(glm::cross(glm::cross(-::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0, 1, 0)), -::Graphics::Primitives::Light::sLightData[i].mPosition));
+				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 2.f, 2000.f);
+				glm::mat4 lightView = glm::lookAt(::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0.0, -15, 50), glm::vec3(0, 1, 0));
+
+				{
+					const auto shadow = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Shadow.shader")->Get();
+					shadow->Bind();
+					shadow->SetShaderUniform("uProjection", &lightProjection);
+					shadow->SetShaderUniform("uView", &lightView);
+
+					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes, &f_grouprender](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+						f_grouprender(it, shadow);
+						});
+
+					f_flushobosoletes();
+				}
+
+				mShadowBuffers[i].Unbind();
+
+			}
 		}
 
 		// ------------------------------------------------------------------------
@@ -388,6 +344,56 @@ namespace Core {
 		void OpenGLPipeline::SetDimensions(const glm::lowp_u16vec2& dim) {
 			glViewport(0, 0, dim.x, dim.y);
 			mDimensions = dim;
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Render Screen Quad
+		*
+		*   Renders a Quad on the screen that covers the whole viewport
+		*/ //----------------------------------------------------------------------
+		unsigned int quadVAO = 0;
+		unsigned int quadVBO;
+		void OpenGLPipeline::RenderScreenQuad()
+		{
+			if (quadVAO == 0)
+			{
+				float quadVertices[] = {
+					// positions        // texture Coords
+					-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+					-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+					 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+					 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+				};
+				// setup plane VAO
+				glGenVertexArrays(1, &quadVAO);
+				glGenBuffers(1, &quadVBO);
+				glBindVertexArray(quadVAO);
+				glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+				glEnableVertexAttribArray(0);
+				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+				glEnableVertexAttribArray(1);
+				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+			}
+			glBindVertexArray(quadVAO);
+			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+			glBindVertexArray(0);
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Update Uniform Buffers
+		*
+		*   Updates the Uniform Buffers on the GPU across Shaders
+		*/ //----------------------------------------------------------------------
+		void OpenGLPipeline::UpdateUniformBuffers() {
+			glm::mat4 view = cam.GetViewMatrix();
+			glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
+		
+			glBindBuffer(GL_UNIFORM_BUFFER, mUniformBuffer);
+			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &view);
+			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &projection);
+			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), &cam.GetPositionRef());
+			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 		}
 	}
 }

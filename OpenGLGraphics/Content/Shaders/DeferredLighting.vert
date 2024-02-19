@@ -1,8 +1,8 @@
 ﻿//
-//  DebugDepth.vert
+//  DeferredLighting.vert
 //  OpenGL Graphics
 //
-//  Created by Diego Revilla on 09/02/24
+//  Created by Diego Revilla on 16/02/24
 //  Copyright � 2024. All rights reserved.
 //
 
@@ -11,14 +11,15 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec2 aTexCoords;
 
-out vec2 TexCoords;
+out vec2 oUVs;
+out vec4 oShadowCoord[8];
 
 // ------------------------------------------------------------------------
-/*! Post Render
+/*! Shader Entrypoint
 *
-*   EMPTY FUNCTION
+*   Provides vertices for a full-screen quad. Easy?
 */ //----------------------------------------------------------------------
 void main() {
-    TexCoords = aTexCoords;
+    oUVs = aTexCoords;
     gl_Position = vec4(aPos, 1.0);
 }
