@@ -129,9 +129,6 @@ namespace Core {
 			ImGui::Begin("InvisibleWindow", nullptr, windowFlags);
 			ImGui::PopStyleVar(3);
 
-
-
-
 			ImGuiID dockSpaceId = ImGui::GetID("InvisibleWindowDockSpace");
 
 			ImGui::DockSpace(dockSpaceId, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
@@ -139,6 +136,7 @@ namespace Core {
 
 			ImGui::GetStyle().FrameRounding = 4.0f;
 			ImGui::GetStyle().GrabRounding = 4.0f;
+			ImGui::GetStyle().WindowBorderSize = 0.0f;
 			
 
 			ImVec4* colors = ImGui::GetStyle().Colors;

@@ -81,21 +81,10 @@ void SDLWindow::Create() {
     //Load font
     
     io.Fonts->AddFontDefault();
-    ImFont* mainFont = io.Fonts->AddFontFromFileTTF("Core/Editor/Assets/Roboto-Medium.ttf", 14.0f , NULL , io.Fonts->GetGlyphRangesDefault());
+    ImFont* mainFont = io.Fonts->AddFontFromFileTTF("Core/Editor/Assets/DroidSans.ttf", 15.0f , NULL , io.Fonts->GetGlyphRangesDefault());
     IM_ASSERT(mainFont != NULL);
 
-    unsigned char* pixels;
-    int width, height;
-    io.Fonts->GetTexDataAsRGBA32(&pixels, &width, &height);
-
-    GLuint fontTexture;
-    glGenTextures(1, &fontTexture);
-    glBindTexture(GL_TEXTURE_2D, fontTexture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-
-    io.Fonts->TexID = (void*)(intptr_t)fontTexture;
+    io.FontGlobalScale = 1.0f;
     io.FontDefault = mainFont;
 
     // Setup Platform/Renderer backends
