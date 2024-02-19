@@ -25,6 +25,12 @@ namespace Core {
 
 		template<typename PIPE>
 		void UploadObjectsToPipeline(PIPE& pipe);
+
+		const std::vector<std::shared_ptr<Core::Object>>& GetObjects() const {
+			return mObjects;
+		}
+
+
 #pragma endregion	
 
 #pragma region //Variables

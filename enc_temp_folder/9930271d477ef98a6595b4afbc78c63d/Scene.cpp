@@ -12,6 +12,7 @@
 #include "Graphics/Primitives/Light.h"
 #include "Core/Singleton.h"
 #include "Graphics/Primitives/Skybox.h"
+#include <iostream>
 
 namespace Core {
 	SceneParser Scene::sParser;

@@ -1,5 +1,9 @@
 #include "Outliner.h"
 #include "Dependencies/ImGui/imgui.h"
+#include "Core/ResourceManager.h"
+#include "Core/ECSystem/Scene.h"
+#include "Core/AppWrapper.h"
+#include "Core/ECSystem/Scene.h"
 
 
 void Outliner::Render(){
@@ -23,23 +27,23 @@ void Outliner::Render(){
 	//New Folder
 	ImGui::SameLine();
 	if (ImGui::Button("New Folder")) {
-		//new folder action
+
 	}
 
 
+	Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
 
+	
+	for (const auto& obj : scene.GetObjects()) {
+		std::cout << "Objeto: " << obj->GetName() << std::endl;
+	}
 
 	//Tree with list of selectable items in scene
 	ImGui::SetNextItemOpen(true, ImGuiCond_Once);
 	if (ImGui::TreeNode("Scene items")) {
-		for (int i = 0; i < 5; i++)
-		{
-			// Use SetNextItemOpen() so set the default state of a node to be open. We could
-			// also use TreeNodeEx() with the ImGuiTreeNodeFlags_DefaultOpen flag to achieve the same thing!
-			if (i == 0)
-				ImGui::SetNextItemOpen(true, ImGuiCond_Once);
+		for (const auto& obj : scene.GetObjects()) {
 
-			if (ImGui::TreeNode((void*)(intptr_t)i, "Elemento %d", i))
+			if (ImGui::TreeNode(obj->GetName().c_str(), obj->GetName().c_str()))
 			{
 				ImGui::Text("asdgasdg");
 				ImGui::SameLine();
