@@ -2,7 +2,6 @@
 #include <iostream>
 #include "Interface/Properties.h"
 #include "Interface/AssetManager.h"
-#include "Graphics/Tools/OpenGLInfo.h"
 
 Editor::Editor() : editorLocked(false) {}
 
@@ -18,10 +17,9 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	//Abre una demo de opciones de imgui
 	ImGui::ShowDemoWindow();
 
-
-	properties.Render();
 	AssetManager assetManager;
 	assetManager.Render();
+	properties.Render();
 	outliner.Render();
 	
 
@@ -32,18 +30,6 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	uint64_t textureID = pipeline.GetRenderFrameBuffer()->GetTextureHandle();
 	ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 	ImGui::End();
-	
-
-	
-	ImGui::Begin("Scene");
-	viewportPanelSize = ImGui::GetContentRegionAvail();
-	//habría que setear la vista de la camara de la escena a este viewport tmb
-	textureID = pipeline.GetRenderFrameBuffer()->GetTextureHandle();
-	ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-	ImGui::End();
-	auto size = ImGui::GetWindowSize();
-
-	Singleton<Core::Graphics::OpenGLInfo>::Instance().mDimensions = glm::vec2(size.x *5, size.y*4);
 	
 
 
