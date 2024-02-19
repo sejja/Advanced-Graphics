@@ -81,6 +81,7 @@ namespace Core {
 			obj->AddComponent(std::move(lightrend));
 
 			//Switch by the light index (to switch behaviors)
+			
 			switch (i % 4) {
 			case 0:
 				obj->AddComponent(std::move((std::make_shared<Behaviors::AnimationComponent>(obj))));
@@ -98,7 +99,7 @@ namespace Core {
 				obj->AddComponent(std::move((std::make_shared<Behaviors::AnimationComponent4>(obj))));
 				break;
 			}
-
+			
 			i++;
 			upload(obj);
 			mObjects.emplace_back(std::move(obj));
