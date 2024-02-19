@@ -112,6 +112,7 @@ namespace Core {
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
 
+
 			// Create the docking environment
 			ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar |
 				ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
@@ -128,6 +129,9 @@ namespace Core {
 			ImGui::Begin("InvisibleWindow", nullptr, windowFlags);
 			ImGui::PopStyleVar(3);
 
+
+
+
 			ImGuiID dockSpaceId = ImGui::GetID("InvisibleWindowDockSpace");
 
 			ImGui::DockSpace(dockSpaceId, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
@@ -135,6 +139,7 @@ namespace Core {
 
 			ImGui::GetStyle().FrameRounding = 4.0f;
 			ImGui::GetStyle().GrabRounding = 4.0f;
+			
 
 			ImVec4* colors = ImGui::GetStyle().Colors;
 			colors[ImGuiCol_::ImGuiCol_Text] = { 0.95f, 0.96f, 0.98f, 1.00f };
@@ -186,8 +191,14 @@ namespace Core {
 			colors[ImGuiCol_::ImGuiCol_NavWindowingDimBg] = { 0.80f, 0.80f, 0.80f, 0.20f };
 			colors[ImGuiCol_::ImGuiCol_ModalWindowDimBg] = { 0.80f, 0.80f, 0.80f, 0.35f };
 
+
+
+
+
 			//Render editor
 			Singleton<Editor>::Instance().Render(*this);
+
+
 		}
 
 

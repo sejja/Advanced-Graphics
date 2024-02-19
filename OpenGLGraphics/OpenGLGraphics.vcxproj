@@ -867,6 +867,9 @@
     <Image Include="Content\Textures\right.jpg" />
     <Image Include="Content\Textures\top.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="D:\Asier\Descargas\uni-sans-regular\Uni Sans Regular\Uni Sans Regular.ttf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
