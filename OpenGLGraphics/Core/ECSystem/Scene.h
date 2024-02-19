@@ -14,12 +14,15 @@
 #include <execution>
 #include "Parser.h"
 #include "Graphics/Primitives/Renderables.h"
+#include "Graphics/Particles/ParticleSystem.h"
 
 namespace Core {
 	class Renderable;
 	class Scene {
 #pragma region //Functions
 	public:
+		::Graphics::Particles::ParticleSystem ParticleSystem;
+
 		void CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Object>& obj)>);
 		void Tick();
 

@@ -126,8 +126,7 @@ namespace Core {
 			x->Update();
 			});
 
-		//Temporal data
-		::Graphics::Particles::ParticleSystem ParticleSystem;
+		//Temporal
 		ParticleSystem.Update();
 	}
 }
