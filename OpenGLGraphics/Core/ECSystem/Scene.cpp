@@ -12,6 +12,7 @@
 #include "Graphics/Primitives/Light.h"
 #include "Core/Singleton.h"
 #include "Graphics/Primitives/Skybox.h"
+#include "Graphics/Particles/ParticleSystem.h"
 
 namespace Core {
 	SceneParser Scene::sParser;
@@ -103,14 +104,16 @@ namespace Core {
 			i++;
 			upload(obj);
 			mObjects.emplace_back(std::move(obj));
+
+			//Temporal test
 			});
 
 		std::shared_ptr<Core::Object> sky = std::move(std::make_shared<Core::Object>());
 		std::shared_ptr<Core::Graphics::Skybox> skycomp = std::make_shared<Core::Graphics::Skybox>(sky);
 		skycomp->CreateCubeMap();
+
 		sky->AddComponent(std::move(skycomp));
 		mObjects.emplace_back(sky);
-
 	}
 
 	// ------------------------------------------------------------------------
@@ -122,5 +125,9 @@ namespace Core {
 		std::for_each(std::execution::par, mObjects.begin(), mObjects.end(), [](const std::shared_ptr<Core::Object>& x) {
 			x->Update();
 			});
+
+		//Temporal data
+		::Graphics::Particles::ParticleSystem ParticleSystem;
+		ParticleSystem.Update();
 	}
 }
