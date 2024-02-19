@@ -20,6 +20,8 @@
 #include "Dependencies/ImGui/imgui_impl_opengl3.h"
 #include "Dependencies/ImGui/imgui_impl_sdl2.h"
 
+using namespace Core::Graphics;
+
 namespace Core {
 	namespace Graphics {
 		static Primitives::Camera cam;
@@ -33,6 +35,7 @@ namespace Core {
 			glEnable(GL_DEPTH_TEST);
 			glDepthFunc(GL_LESS);
 			glEnable(GL_CULL_FACE);
+			glEnable(GL_FRAMEBUFFER_SRGB);
 			glCullFace(GL_BACK);
 			glFrontFace(GL_CCW);
 			glDisable(GL_BLEND);
@@ -233,7 +236,7 @@ namespace Core {
 
 					});
 
-				f_flushobosoletes();
+				Finished_FlushObsoletes(obsoletes);
 			}
 		}
 
