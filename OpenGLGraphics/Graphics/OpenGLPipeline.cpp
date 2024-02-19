@@ -128,6 +128,7 @@ namespace Core {
 			UpdateUniformBuffers();
 			GeometryPass();
 			LightingPass();
+			glEnable(GL_DEPTH_TEST);
 			mGBuffer->BlitDepthBuffer();
 			Skybox::sCurrentSky->Render(cam);
 
@@ -199,6 +200,8 @@ namespace Core {
 				}
 				};
 
+			glDepthMask(GL_TRUE);
+			glDisable(GL_BLEND);
 			glEnable(GL_DEPTH_TEST);
 			glCullFace(GL_BACK);
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
@@ -235,6 +238,9 @@ namespace Core {
 
 				f_flushobosoletes();
 			}
+
+			glDepthMask(GL_FALSE);
+			glDisable(GL_DEPTH_TEST);
 		}
 
 		// ------------------------------------------------------------------------
@@ -245,6 +251,9 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::LightingPass() {
 			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+			glEnable(GL_BLEND);
+			glBlendEquation(GL_FUNC_ADD);
+			glBlendFunc(GL_ONE, GL_ONE);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
