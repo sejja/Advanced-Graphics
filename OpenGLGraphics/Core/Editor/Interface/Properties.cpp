@@ -54,8 +54,9 @@ void TransformRow(const char* title) {
 
     ImGui::Text(title); ImGui::SameLine();
 
-    if (ImGui::Button("Lk")) {
-    }
+    auto folderText = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Content/Textures/back.jpg")->Get();
+    ImGui::ImageButton((void*)(intptr_t)folderText->GetTextureHandle(), ImVec2(13, 13));
+
 
     static float  defaultX = 0.0f;
     std::string XLabel = "X";
@@ -88,10 +89,10 @@ void TransformRow(const char* title) {
     ImGui::DragScalar(ZID.c_str(), ImGuiDataType_Float, &defaultZ, dragJump, &f32_zero, &f32_one, "%.2f");
 
 
-    ImTextureID IconTex = Singleton<ResourceManager>::Instance().GetResource("../Assets/Icons/fonderAdd.png").get();
 
+    auto IconTex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("../Assets/Icons/reload.png")->Get();
     ImGui::SameLine();
-    ImGui::ImageButton(IconTex, ImVec2(10, 10));
+    ImGui::ImageButton((void*)(intptr_t)IconTex->GetTextureHandle(), ImVec2(13, 13));
 
 }
 
@@ -187,6 +188,22 @@ void colorPickerBtn() {
 
 }
 
+void CreateSliderRow(const char* rowName , float& sliderValue , float minValue, float maxValue ) {
+    ImGui::TableSetColumnIndex(0);
+    ImGui::Text(rowName);
+    ImGui::TableSetColumnIndex(1);
+
+    static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
+    std::string SLIDERID = "##" + std::string(rowName);
+    ImGui::SliderFloat(SLIDERID.c_str(), &sliderValue, minValue, maxValue, "%.3f");
+    ImGui::SameLine();
+
+    auto reloadText = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/lockClosed.jpg")->Get();
+    ImGui::ImageButton((void*)(intptr_t)reloadText->GetTextureHandle(), ImVec2(13, 13));
+
+
+}
+
 
 void Properties::LightingOptions() {
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
@@ -198,21 +215,27 @@ void Properties::LightingOptions() {
 
         
         ImGui::TableNextRow();
-
-        ImGui::TableSetColumnIndex(0);
-        ImGui::Text("Intensity");
-        ImGui::TableSetColumnIndex(1);
-        static float slider_f = 0.5f;
-        static ImGuiSliderFlags flags = ImGuiSliderFlags_None;
-        ImGui::SliderFloat("", &slider_f, 0.0f, 100.0f, "%.3f");
+        static float intensity = 0.5f;
+        CreateSliderRow("Intensity", intensity,0.0f,100.0f);
 
 
         ImGui::TableNextRow();
-
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Light Color");
         ImGui::TableSetColumnIndex(1);
         colorPickerBtn(); //esta todo dentro por que solo el hue esta dentro no devuelve bien el clr
+
+        ImGui::TableNextRow();
+        static float scrrange = 0.5f;
+        CreateSliderRow("Source Range", scrrange, 0.0f, 100.0f);
+
+        ImGui::TableNextRow();
+        static float scrlength = 0.5f;
+        CreateSliderRow("Source Length", scrlength, 0.0f, 100.0f);
+
+        
+
+
 
         ImGui::EndTable();
     }

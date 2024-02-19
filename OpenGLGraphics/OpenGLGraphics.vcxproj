@@ -167,7 +167,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\PruebaIMGui\Asset\asset.cpp" />
     <ClCompile Include="Behaviors\AnimationComponent.cpp" />
     <ClCompile Include="Core\Assets\Importers.cpp" />
     <ClCompile Include="Core\ECSystem\Component.cpp" />
@@ -212,7 +211,6 @@
     <ClCompile Include="Graphics\OpenGLPipeline.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\PruebaIMGui\Asset\asset.h" />
     <ClInclude Include="Core\Application.h" />
     <ClInclude Include="Behaviors\AnimationComponent.h" />
     <ClInclude Include="Core\Allocator.h" />
