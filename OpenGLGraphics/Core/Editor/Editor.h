@@ -8,6 +8,7 @@
 #include "Graphics/OpenGLPipeline.h"
 #include "Interface/Properties.h"
 #include "Interface/Outliner.h"
+#include "Interface/TextEditor.h"
 
 
 
@@ -24,6 +25,7 @@ private:
     Properties properties;
     //AssetManager assetManager;
     Outliner outliner;
+    //TextEditor textEditor;
 
 
 };

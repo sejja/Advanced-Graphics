@@ -15,4 +15,4 @@ class AssetIcon {
 		void dibujar();
 };
 
-#endif;
+#endif
