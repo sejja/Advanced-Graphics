@@ -19,6 +19,7 @@
 */ // --------------------------------------------------------------------
 void ResourceManager::Initialize() {
 	importers.insert({ "obj", new Core::Assets::GLBImporter });
+	importers.insert({ "gltf", new Core::Assets::GLBImporter });
 	importers.insert({ "fbx", new Core::Assets::ModelImporter });
 	importers.insert({ "png", new Core::Assets::TextureImporter });
 	importers.insert({ "jpg", new Core::Assets::TextureImporter });

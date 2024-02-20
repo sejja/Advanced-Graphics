@@ -34,8 +34,8 @@ void main() {
     gPosition = oPosition;
     // also store the per-fragment normals into the gbuffer
     gNormal = normalize(inverse(transpose(mat3(ubView * uModel))) * 
-        mat3(oTangent, oBitangent, oNormal) * 
-        (texture(uNormalTex, oUVs).rgb * 2.0f - 1.0f));
+        mat3(oTangent, oBitangent, oNormal) * oNormal);
+        //(texture(uNormalTex, oUVs).rgb * 2.0f - 1.0f));
     // and the diffuse per-fragment color
     gAlbedoSpec.rgba = texture(uDiffuseTex, oUVs).rgba;
 }
