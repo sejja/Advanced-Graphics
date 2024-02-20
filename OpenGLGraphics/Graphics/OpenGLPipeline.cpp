@@ -196,8 +196,6 @@ namespace Core {
 		void OpenGLPipeline::Render() {
 			RenderGUI();
 
-			//HDR y esas pijadas
-
 			RenderShadowMaps();
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
@@ -294,7 +292,7 @@ namespace Core {
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::LightingPass() {
-			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
