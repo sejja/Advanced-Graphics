@@ -30,37 +30,65 @@ AssetIcon::AssetIcon(AssetType p_tipo, const char* p_nombre, const char* p_ruta)
 	clicked = false;
 }
 
-void AssetIcon::dibujar() {
+void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente no llamar recursivamente a esta función
 	//ImGui::Image()
 	ImGui::BeginGroup();
 	//ImGui::Button("Hola", ImVec2(100, 100));
 
 	if (tipo == AssetType::MODEL) {
 		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/folderAdd.png")->Get();
-		ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::PopStyleColor(1);
+		if (dibujarToolTip == false) {
+			if (ImGui::BeginDragDropSource()) {
+				//printf("Dragging");
+				dibujar(true);
+				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				ImGui::EndDragDropSource();
+			}
+		}
 	
 	}
 	else if (tipo == AssetType::TEXTURE) {
 		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(ruta)->Get(); //Que cojones es la sintaxis de esta línea???
-		ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100));
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::PopStyleColor(1);
+		if (dibujarToolTip == false) {
+			if (ImGui::BeginDragDropSource()) {
+				//printf("Dragging");
+				dibujar(true);
+				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				ImGui::EndDragDropSource();
+			}
+		}
 	 
 	}
 	else {
 		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/other.png")->Get(); //Que cojones es la sintaxis de esta línea???
 		//ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
-		ImGui::Button("Hola", ImVec2(100, 100));
-		if (ImGui::BeginDragDropSource()) {
-			printf("Dragging");
-			ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
-			ImGui::EndDragDropSource();
+		//ImGui::Button("Hola", ImVec2(100, 100));
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::PopStyleColor(1);
+		if (dibujarToolTip == false) {
+			if (ImGui::BeginDragDropSource()) {
+				//printf("Dragging");
+				dibujar(true);
+				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				ImGui::EndDragDropSource();
+			}
 		}
+		
+		
 		
 	}
 
-	clicked = ImGui::IsItemClicked();
+	/*clicked = ImGui::IsItemClicked();
 	if (clicked == true) {
 		printf(nombre);
-	}
+	}*/
 
 
 

@@ -21,7 +21,7 @@ class AssetIcon {
 		AssetIcon();
 		AssetIcon(AssetType p_tipo, const char* p_nombre, const char* p_ruta);
 
-		void dibujar();
+		void dibujar(bool dibujarToolTip);
 };
 
 #endif;
