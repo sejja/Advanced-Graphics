@@ -32,7 +32,6 @@ public:
 	TResource() = default;
 	TResource(Ty_* data) :
 		rawData(data){
-		
 	}
 	~TResource() {}
 	

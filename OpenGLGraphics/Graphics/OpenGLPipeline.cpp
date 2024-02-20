@@ -22,6 +22,7 @@
 #include <iostream>
 
 using namespace Core::Graphics;
+using namespace std;
 
 namespace Core {
 	namespace Graphics {
@@ -54,7 +55,7 @@ namespace Core {
 			mShadowBuffers[2].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
 			mShadowBuffers[3].Create();
 			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
-			mGBuffer = std::make_unique<GBuffer>();
+			mGBuffer = make_unique<GBuffer>();
 			float quadVertices[] = {
 				// positions        // texture Coords
 				-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
@@ -97,7 +98,7 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::PreRender() 
 		{
-			if (hdrFBO) 
+			if (hdrON) 
 			{
 				glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 			}
@@ -147,10 +148,11 @@ namespace Core {
 		*
 		*   Prepare and render the GUI
 		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::FlushObsoletes(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes) 
+		void OpenGLPipeline::FlushObsoletes(unordered_multimap<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes) 
 		{
-			std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
-				std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
+			for_each(execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](pair<const Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> x) {
+				
+				vector<weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
 				it.erase(x.second);
 
 				//If we don't have any other renderables, erase it
@@ -163,14 +165,14 @@ namespace Core {
 		*
 		*   Prepare and render the GUI
 		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::GroupRender(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
-			const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it,
+		void OpenGLPipeline::GroupRender(unordered_multimap<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes,
+			const pair<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>>& it,
 			ShaderProgram* shader) 
 		{
-			for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
+			for (vector<weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
 				//If it isn't expired
 				if (auto renderable = it2->lock()) {
-					const std::shared_ptr<Object> parent = renderable->GetParent().lock();
+					const shared_ptr<Object> parent = renderable->GetParent().lock();
 					glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
 						glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
 						glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
@@ -180,7 +182,7 @@ namespace Core {
 					reinterpret_cast<ModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
 				}
 				else {
-					obsoletes.insert(std::make_pair(it.first, it2));
+					obsoletes.insert(make_pair(it.first, it2));
 				}
 			}
 			FlushObsoletes(obsoletes);
@@ -193,7 +195,9 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::Render() {
 			RenderGUI();
-			
+
+			//HDR y esas pijadas
+
 			RenderShadowMaps();
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
@@ -213,11 +217,11 @@ namespace Core {
 		*
 		*   Uploads the light data to the shader
 		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader) {
-			Core::Graphics::ShaderProgram* shadptr = shader.lock()->Get();
+		void OpenGLPipeline::UploadLightDataToGPU(const AssetReference<ShaderProgram>& shader) {
+			ShaderProgram* shadptr = shader.lock()->Get();
 
 			for (size_t i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-				const std::string id = "uLight[" + std::to_string(i);
+				const string id = "uLight[" + to_string(i);
 			
 				shadptr->SetShaderUniform((id + "].mPosition").c_str(), &::Graphics::Primitives::Light::sLightData[i].mPosition);
 				shadptr->SetShaderUniform((id + "].mDirection").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDirection);
@@ -241,7 +245,7 @@ namespace Core {
 		*   Draws the geometry on the G-Buffer
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::GeometryPass() {
-			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
+			unordered_multimap<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes;
 
 			FlushObsoletes(obsoletes);
 
@@ -257,8 +261,8 @@ namespace Core {
 				mGBuffer->Bind();
 				mGBuffer->ClearBuffer();
 
-				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), 
-					[this, &obsoletes, &projection, &view](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+				for_each(execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), 
+					[this, &obsoletes, &projection, &view](const pair<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>>& it) {
 
 						it, it.first->Get()->Bind();
 						it.first->Get()->SetShaderUniform("uTransform", &projection);
@@ -303,7 +307,7 @@ namespace Core {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			UploadLightDataToGPU(mGBuffer->GetLightingShader());
 
-			std::vector<glm::mat4> shadow_matrices;
+			vector<glm::mat4> shadow_matrices;
 
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				mShadowBuffers[i].BindTexture(3 + i);
@@ -315,7 +319,7 @@ namespace Core {
 			}
 
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-				mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uShadowMatrix[" + std::to_string(i) + "]", shadow_matrices.data() + i);
+				mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uShadowMatrix[" + to_string(i) + "]", shadow_matrices.data() + i);
 			}
 
 			mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
@@ -323,7 +327,7 @@ namespace Core {
 		}
 
 		void OpenGLPipeline::RenderShadowMaps() {
-			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
+			unordered_multimap<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes;
 
 
 			glCullFace(GL_FRONT);
@@ -341,7 +345,7 @@ namespace Core {
 					shadow->SetShaderUniform("uProjection", &lightProjection);
 					shadow->SetShaderUniform("uView", &lightView);
 
-					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+					for_each(execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes](const pair<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>>& it) {
 						GroupRender(obsoletes,it, shadow);
 						});
 				}

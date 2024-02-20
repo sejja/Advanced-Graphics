@@ -111,6 +111,7 @@ namespace Core {
 		sky->AddComponent(std::move(skycomp));
 		mObjects.emplace_back(sky);
 
+
 	}
 
 	// ------------------------------------------------------------------------
