@@ -5,6 +5,8 @@
 #include "Core/AppWrapper.h"
 #include "Core/ECSystem/Scene.h"
 #include "Core/Editor/SelectedObj.h"
+#include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
+
 
 SelectedObj& selectedObj = Singleton<SelectedObj>::Instance();
 
@@ -25,7 +27,7 @@ void Outliner::Render(){
 	float remainingWidth = ImGui::GetContentRegionAvail().x;
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(remainingWidth * 0.50f);
-	ImGui::InputTextWithHint("##SearchItem", "Search item", str1, IM_ARRAYSIZE(str1));
+	ImGui::InputTextWithHint("##SearchItem", ICON_FA_MAGNIFYING_GLASS " Search item", str1, IM_ARRAYSIZE(str1));
 
 
 	Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
@@ -61,12 +63,12 @@ void Outliner::Render(){
 				std::string cLight = obj->GetName() + "_light";
 
 				
-				if (ImGui::Selectable("Mesh", selected == cMesh)){
+				if (ImGui::Selectable(ICON_FA_CUBE " Mesh", selected == cMesh)){
 					selected = cMesh;
 					selectedObj.SetSelectedObject(obj);
 				}
 
-				if (ImGui::Selectable("Light", selected == cLight)) {
+				if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light", selected == cLight)) {
 					selected = cLight;
 					selectedObj.SetSelectedObject(obj);
 				}

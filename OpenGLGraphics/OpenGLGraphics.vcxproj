@@ -219,6 +219,7 @@
     <ClInclude Include="Core\Assets\Importers.h" />
     <ClInclude Include="Core\ECSystem\Component.h" />
     <ClInclude Include="Core\ECSystem\Object.h" />
+    <ClInclude Include="Core\Editor\Assets\Fonts\IconsFontAwesome.h" />
     <ClInclude Include="Core\Editor\Editor.h" />
     <ClInclude Include="Core\Editor\Interface\AssetIcon.h" />
     <ClInclude Include="Core\Editor\Interface\AssetManager.h" />
@@ -870,6 +871,7 @@
     <Image Include="Content\Textures\top.jpg" />
   </ItemGroup>
   <ItemGroup>
+    <Font Include="D:\Asier\Descargas\fa-regular-400.ttf" />
     <Font Include="D:\Asier\Descargas\uni-sans-regular\Uni Sans Regular\Uni Sans Regular.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1589,6 +1589,9 @@
     <ClInclude Include="Core\Editor\SelectedObj.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Editor\Assets\Fonts\IconsFontAwesome.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\SDL\Include\SDL_config.h.cmake" />
@@ -2055,5 +2058,6 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="D:\Asier\Descargas\uni-sans-regular\Uni Sans Regular\Uni Sans Regular.ttf" />
+    <Font Include="D:\Asier\Descargas\fa-regular-400.ttf" />
   </ItemGroup>
 </Project>

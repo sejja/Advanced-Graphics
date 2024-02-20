@@ -8,7 +8,7 @@
 #include "Dependencies/ImGui/imgui_impl_opengl3.h"
 #include <Dependencies/ImGui/imgui_impl_sdl2.h>
 #include "Core/Editor/SelectedObj.h"
-
+#include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 
 SelectedObj& selectedObjIns = Singleton<SelectedObj>::Instance();
 
@@ -20,14 +20,14 @@ void Properties::Render() {
 	// Property tool search input
 	static char str1[128] = "";
 
-	ImGui::InputTextWithHint("##SearchProperty", "Search property", str1, IM_ARRAYSIZE(str1));
+	ImGui::InputTextWithHint("##SearchProperty", ICON_FA_MAGNIFYING_GLASS " Search property", str1, IM_ARRAYSIZE(str1));
 	ImGui::Spacing();
 
-	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+	if (ImGui::CollapsingHeader(ICON_FA_ARROWS_UP_DOWN_LEFT_RIGHT " Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
 		TransformOptions();
 	}
 
-    if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen)) {
+    if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB " Light", ImGuiTreeNodeFlags_DefaultOpen)) {
         LightingOptions();
     }
 
@@ -40,19 +40,21 @@ void Properties::Render() {
 void TextPaddingWBg(const char* text, ImVec4 bgColor) {
     ImVec2 labelSize = ImGui::CalcTextSize(text);
     ImVec2 startPos = ImGui::GetCursorScreenPos();
-    ImVec2 endPos = ImVec2(startPos.x + labelSize.x + 5.0f, startPos.y + labelSize.y + 6.0f);
+    ImVec2 endPos = ImVec2(startPos.x + labelSize.x + 4.5f, startPos.y + labelSize.y + 6.0f);
+    float borderRadius = 3.0f;
 
-    startPos.x -= 2.5f;
+    startPos.x -= 4.5f;
 
-    ImGui::GetWindowDrawList()->AddRectFilled(startPos, endPos, IM_COL32((int)(bgColor.x * 255), (int)(bgColor.y * 255), (int)(bgColor.z * 255), (int)(bgColor.w * 255))); // Fondo
+    ImGui::GetWindowDrawList()->AddRectFilled(startPos, endPos, IM_COL32((int)(bgColor.x * 255), (int)(bgColor.y * 255), (int)(bgColor.z * 255), (int)(bgColor.w * 255)), borderRadius); // Fondo
     ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), text);
 }
 
 
 void TransformRow(const char* title,float& x_value, float& y_val, float& z_val) {
+    //TODO CONVERTIRLO EN UNA GRID
     static char defaultValue[16] = "0";
-    const float f32_zero = -100.f;
-    const float f32_one = 100.f;
+    const float f32_zero = -1000.f;
+    const float f32_one = 1000.f;
     const float dragJump = 0.5f;
     const float inputSize = 0.12f;
     float remainingWidth = ImGui::GetContentRegionAvail().x;
@@ -64,8 +66,9 @@ void TransformRow(const char* title,float& x_value, float& y_val, float& z_val) 
     ImGui::PopItemWidth();
     ImGui::SameLine();
 
-    auto folderText = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Content/Textures/back.jpg")->Get();
-    ImGui::ImageButton((void*)(intptr_t)folderText->GetTextureHandle(), ImVec2(13, 13));
+
+    ImGui::Button(ICON_FA_LOCK);
+
 
     std::string XLabel = "X";
     char XID[32];
@@ -97,7 +100,7 @@ void TransformRow(const char* title,float& x_value, float& y_val, float& z_val) 
 
     auto IconTex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("../Assets/Icons/reload.png")->Get();
     ImGui::SameLine();
-    ImGui::ImageButton((void*)(intptr_t)IconTex->GetTextureHandle(), ImVec2(13, 13));
+    ImGui::Button(ICON_FA_ARROW_ROTATE_LEFT);
 
 }
 

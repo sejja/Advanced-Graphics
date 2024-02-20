@@ -11,6 +11,7 @@
 #include "Dependencies/ImGui/imgui.h"
 #include "Dependencies/ImGui/imgui_impl_opengl3.h"
 #include "Dependencies/ImGui/imgui_impl_sdl2.h"
+#include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 
 // ------------------------------------------------------------------------
 /*! Constructor
@@ -81,11 +82,17 @@ void SDLWindow::Create() {
     //Load font
     
     io.Fonts->AddFontDefault();
-    ImFont* mainFont = io.Fonts->AddFontFromFileTTF("Core/Editor/Assets/DroidSans.ttf", 15.0f , NULL , io.Fonts->GetGlyphRangesDefault());
+    ImFont* mainFont = io.Fonts->AddFontFromFileTTF("Core/Editor/Assets/Fonts/DroidSans.ttf", 15.0f , NULL , io.Fonts->GetGlyphRangesDefault());
     IM_ASSERT(mainFont != NULL);
 
     io.FontGlobalScale = 1.0f;
     io.FontDefault = mainFont;
+
+    ImFontConfig config;
+    config.MergeMode = true;
+    config.GlyphMinAdvanceX = 13.0f; // Makes icons monospaced
+    static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+    io.Fonts->AddFontFromFileTTF("Core/Editor/Assets/Fonts/fontawesome-webfont.ttf", 13.0f, &config, icon_ranges);
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForOpenGL(mWindow.get(), mContext);
