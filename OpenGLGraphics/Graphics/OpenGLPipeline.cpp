@@ -37,7 +37,7 @@ namespace Core {
 			glEnable(GL_DEPTH_TEST);
 			glDepthFunc(GL_LESS);
 			glEnable(GL_CULL_FACE);
-			//glEnable(GL_FRAMEBUFFER_SRGB);
+			glEnable(GL_FRAMEBUFFER_SRGB);
 			glCullFace(GL_BACK);
 			glFrontFace(GL_CCW);
 			glDisable(GL_BLEND);
@@ -84,9 +84,69 @@ namespace Core {
 
 			//HDR y esas mierdas de burgesia
 
-			if (hdrFBO) {
+			if (hdrON) {
+				Shader frameVertex("FrameBuffer.vert", Shader::EType::Vertex);
+				Shader frameFrag("FrameBuffer.frag", Shader::EType::Fragment);
+
+				FrameBufferProgram = glCreateProgram();
+
+
+				glAttachShader(FrameBufferProgram,frameVertex.GetGLHandle());
+				glAttachShader(FrameBufferProgram, frameFrag.GetGLHandle());
+
+				glLinkProgram(FrameBufferProgram);
+				glUseProgram(FrameBufferProgram);
+
+
+				glUniform1i(glGetUniformLocation(FrameBufferProgram, "ScreenTexture"), 0);
+
+				float rectangleVertices[] =
+				{
+					// Coords    // texCoords
+					 1.0f, -1.0f,  1.0f, 0.0f,
+					-1.0f, -1.0f,  0.0f, 0.0f,
+					-1.0f,  1.0f,  0.0f, 1.0f,
+
+					 1.0f,  1.0f,  1.0f, 1.0f,
+					 1.0f, -1.0f,  1.0f, 0.0f,
+					-1.0f,  1.0f,  0.0f, 1.0f
+				};
+
+				// Prepare framebuffer rectangle VBO and VAO
+				unsigned int rectVAO, rectVBO;
+				glGenVertexArrays(1, &rectVAO);
+				glGenBuffers(1, &rectVBO);
+				glBindVertexArray(rectVAO);
+				glBindBuffer(GL_ARRAY_BUFFER, rectVBO);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(rectangleVertices), &rectangleVertices, GL_STATIC_DRAW);
+				glEnableVertexAttribArray(0);
+				glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+				glEnableVertexAttribArray(1);
+				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+
+
 				glBindTexture(GL_TEXTURE_2D, colorBuffer);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, mDimensions.x, mDimensions.y, 0, GL_RGBA, GL_FLOAT, NULL);
+				glGenBuffers(1, &hdrFBO);
+
+				glGenTextures(1, &framebufferTexture);
+				glBindTexture(GL_TEXTURE_2D, framebufferTexture);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mDimensions.x, mDimensions.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); 
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); 
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTexture, 0);
+
+				glGenRenderbuffers(1, &rboDepth);
+				glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+				glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, mDimensions.x, mDimensions.y);
+				glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+
+				auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+				if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
+					std::cout << "Framebuffer error: " << fboStatus << std::endl;
+
 			}
 
 		}
@@ -195,6 +255,7 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::Render() {
 			RenderGUI();
+			glEnable(GL_DEPTH_TEST);
 
 			RenderShadowMaps();
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
@@ -208,6 +269,10 @@ namespace Core {
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glUseProgram(FrameBufferProgram);
+			glDisable(GL_DEPTH_TEST);
+			glBindTexture(GL_TEXTURE_2D, framebufferTexture);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
 		}
 
 		// ------------------------------------------------------------------------

@@ -42,8 +42,6 @@ namespace Core {
 				const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, 
 				ShaderProgram* shader);
 
-			glm::vec3 ToneMapping(glm::vec3 color);
-
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 			glm::lowp_u16vec2 mDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
@@ -53,9 +51,11 @@ namespace Core {
 
 			//HDR
 			const float gamma = 2.2f;
+			GLuint FrameBufferProgram;
+			GLuint framebufferTexture;
 			GLuint hdrFBO;
 			GLuint colorBuffer;
-			GLuint rboDepth;
+			GLuint rboDepth;  
 			bool hdrON = false;
 		};
 
