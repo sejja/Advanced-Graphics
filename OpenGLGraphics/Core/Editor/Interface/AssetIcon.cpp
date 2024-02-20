@@ -5,16 +5,29 @@
 #include "Graphics/Primitives/Texture.h"
 
 
-AssetIcon::AssetIcon(std::string p_tipo, std::string p_nombre, std::string p_ruta)
+
+
+//Write a constructor that takes all the parameters
+//AssetIcon::AssetIcon(AssetType p_tipo, std::string p_nombre, std::string p_ruta) {
+//	tipo = p_tipo;
+//	nombre = p_nombre;
+//	ruta = p_ruta;
+//}
+
+
+AssetIcon::AssetIcon() {
+	tipo = AssetType::OTHER;
+	nombre = "Sin nombre";
+	ruta = "";
+	clicked = false;
+}
+
+AssetIcon::AssetIcon(AssetType p_tipo, const char* p_nombre, const char* p_ruta)
 {
 	tipo = p_tipo;
 	nombre = p_nombre;
 	ruta = p_ruta;
-}
-
-
-AssetIcon::AssetIcon() {
-	
+	clicked = false;
 }
 
 void AssetIcon::dibujar() {
@@ -22,12 +35,38 @@ void AssetIcon::dibujar() {
 	ImGui::BeginGroup();
 	//ImGui::Button("Hola", ImVec2(100, 100));
 
-	auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Content/Textures/back.jpg")->Get(); //Que cojones es la sintaxis de esta línea???
-	ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100)); //No funciona
+	if (tipo == AssetType::MODEL) {
+		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/folderAdd.png")->Get();
+		ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+	
+	}
+	else if (tipo == AssetType::TEXTURE) {
+		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(ruta)->Get(); //Que cojones es la sintaxis de esta línea???
+		ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100));
+	 
+	}
+	else {
+		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/other.png")->Get(); //Que cojones es la sintaxis de esta línea???
+		//ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Button("Hola", ImVec2(100, 100));
+		if (ImGui::BeginDragDropSource()) {
+			printf("Dragging");
+			ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+			ImGui::EndDragDropSource();
+		}
+		
+	}
 
-	int centerOffset = 100 / 2 - ImGui::CalcTextSize("nombre").x / 2;
+	clicked = ImGui::IsItemClicked();
+	if (clicked == true) {
+		printf(nombre);
+	}
+
+
+
+	int centerOffset = 100 / 2 - ImGui::CalcTextSize(nombre).x / 2;
 	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + centerOffset);
-	ImGui::Text("nombre");
+	ImGui::Text(nombre);
 	ImGui::EndGroup();
 
 }

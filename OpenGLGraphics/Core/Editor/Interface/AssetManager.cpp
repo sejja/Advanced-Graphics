@@ -11,6 +11,7 @@ void AssetManager::Render() {
 
 	const int numAssets = 20;
 	AssetIcon assets[20];
+	assets[1] = AssetIcon(AssetType::TEXTURE, "Textura", "C:\\Users\\UX363\\source\\repos\\sejja\\Advanced-Graphics\\OpenGLGraphics\\Content\\Textures\\Brick.png");
 
 	int cont = 0;
 	for (int i = 0; i < numAssets; i++) { //TODO intentar centrar elementos

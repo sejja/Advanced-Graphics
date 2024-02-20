@@ -28,7 +28,7 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 
 
-	AssetManager assetManager;
+	//AssetManager assetManager;
 	assetManager.Render();
 	properties.Render();
 	outliner.Render();
