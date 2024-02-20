@@ -36,11 +36,13 @@ namespace Core {
 			void RenderShadowMaps();
 			void RenderScreenQuad();
 			void UpdateUniformBuffers();
+			void DirectionalLightPass();
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 			glm::lowp_u16vec2 mDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<GBuffer> mGBuffer;
+			Asset<ShaderProgram> mDirectionalLightShader;
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			GLuint mUniformBuffer;
 		};

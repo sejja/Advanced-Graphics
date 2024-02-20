@@ -51,6 +51,8 @@ namespace Core {
 			mShadowBuffers[3].Create();
 			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
 			mGBuffer = std::make_unique<GBuffer>();
+			mDirectionalLightShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DirectionalLight.shader");
+
 			float quadVertices[] = {
 				// positions        // texture Coords
 				-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
@@ -403,6 +405,16 @@ namespace Core {
 			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &projection);
 			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), &cam.GetPositionRef());
 			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Directional Light Pass
+		*
+		*   Updates the Uniform Buffers on the GPU across Shaders
+		*/ //----------------------------------------------------------------------
+		void OpenGLPipeline::DirectionalLightPass() {	
+			mDirectionalLightShader->Get()->Bind();
+			RenderScreenQuad();
 		}
 	}
 }
