@@ -7,6 +7,11 @@
 #include "Dependencies/ImGui/imgui_internal.h"
 #include "Dependencies/ImGui/imgui_impl_opengl3.h"
 #include <Dependencies/ImGui/imgui_impl_sdl2.h>
+#include "Core/Editor/SelectedObj.h"
+
+
+SelectedObj& selectedObjIns = Singleton<SelectedObj>::Instance();
+
 
 
 void Properties::Render() {
@@ -46,7 +51,7 @@ void TextPaddingWBg(const char* text, ImVec4 bgColor) {
 
 void TransformRow(const char* title,float& x_value, float& y_val, float& z_val) {
     static char defaultValue[16] = "0";
-    const float f32_zero = 0.f;
+    const float f32_zero = -100.f;
     const float f32_one = 100.f;
     const float dragJump = 0.5f;
     const float inputSize = 0.12f;
@@ -100,21 +105,25 @@ void TransformRow(const char* title,float& x_value, float& y_val, float& z_val) 
 
 
 void Properties::TransformOptions() {
-    static float defaultX_location = 0.0f;
-    static float defaultY_location = 0.0f;
-    static float defaultZ_location = 0.0f;
-    TransformRow("Location", defaultX_location, defaultY_location, defaultZ_location);
+    
+    std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
+
+    if (obj) {
+    
+    glm::vec3 curPos = obj->GetPosition();
+    glm::vec3 curRot = obj->GetRotation();
+    glm::vec3 curScale = obj->GetScale();
+    
+    TransformRow("Location", curPos[0], curPos[1], curPos[2]);
+    TransformRow("Rotation", curRot[0], curRot[1], curRot[2]);
+    TransformRow("  Scale    ", curScale[0], curScale[1], curScale[2]);
+
+    obj->SetPosition(curPos);
+    obj->SetRotation(curRot);
+    obj->SetScale(curScale);
 
 
-    static float defaultX_rotation = 0.0f;
-    static float defaultY_rotation = 0.0f;
-    static float defaultZ_rotation = 0.0f;
-    TransformRow("Rotation", defaultX_rotation, defaultY_rotation, defaultZ_rotation);
-
-    static float defaultX_scale = 0.0f;
-    static float defaultY_scale = 0.0f;
-    static float defaultZ_scale = 0.0f;
-    TransformRow("  Scale   ", defaultX_scale, defaultY_scale, defaultZ_scale);
+    }
 }
 
 
