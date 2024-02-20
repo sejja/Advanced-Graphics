@@ -699,11 +699,7 @@
     <None Include="Content\Shaders\SkyBox.shader" />
     <None Include="Content\Shaders\SkyBox.vert" />
     <None Include="Content\Shaders\Textured.shader" />
-    <None Include="Content\Shaders\UV.frag" />
     <None Include="Content\Shaders\Transform.vert" />
-    <None Include="Content\Shaders\UVs.shader" />
-    <None Include="Content\Shaders\White.frag" />
-    <None Include="Content\Shaders\White.shader" />
     <None Include="Dependencies\GLM\detail\func_common.inl" />
     <None Include="Dependencies\GLM\detail\func_common_simd.inl" />
     <None Include="Dependencies\GLM\detail\func_exponential.inl" />
