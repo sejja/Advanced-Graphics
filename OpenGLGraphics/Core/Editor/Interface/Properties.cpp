@@ -23,9 +23,11 @@ void Properties::Render() {
 	ImGui::InputTextWithHint("##SearchProperty", ICON_FA_MAGNIFYING_GLASS " Search property", str1, IM_ARRAYSIZE(str1));
 	ImGui::Spacing();
 
-	if (ImGui::CollapsingHeader(ICON_FA_ARROWS_UP_DOWN_LEFT_RIGHT " Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
-		TransformOptions();
-	}
+    if (selectedObjIns.GetSelectedObject()) {
+        if (ImGui::CollapsingHeader(ICON_FA_ARROWS_UP_DOWN_LEFT_RIGHT " Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+            TransformOptions();
+        }
+    }
 
     if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB " Light", ImGuiTreeNodeFlags_DefaultOpen)) {
         LightingOptions();
@@ -50,7 +52,7 @@ void TextPaddingWBg(const char* text, ImVec4 bgColor) {
 }
 
 
-void TransformRow(const char* title,float& x_value, float& y_val, float& z_val) {
+void TransformRow(const char* title,float& x_val, float& y_val, float& z_val) {
     //TODO CONVERTIRLO EN UNA GRID
     static char defaultValue[16] = "0";
     const float f32_zero = -1000.f;
@@ -77,7 +79,7 @@ void TransformRow(const char* title,float& x_value, float& y_val, float& z_val) 
     TextPaddingWBg(XLabel.c_str(), ImVec4(1.0f, 0.5f, 0.5f, 0.7f));
     ImGui::SameLine();
     ImGui::SetNextItemWidth(remainingWidth * inputSize);
-    ImGui::DragScalar(XID, ImGuiDataType_Float, &x_value, dragJump, &f32_zero, &f32_one, "%.2f");
+    ImGui::DragScalar(XID, ImGuiDataType_Float, &x_val, dragJump, &f32_zero, &f32_one, "%.2f");
 
 
     std::string YLabel = "Y";
@@ -100,7 +102,14 @@ void TransformRow(const char* title,float& x_value, float& y_val, float& z_val) 
 
     auto IconTex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("../Assets/Icons/reload.png")->Get();
     ImGui::SameLine();
-    ImGui::Button(ICON_FA_ARROW_ROTATE_LEFT);
+
+    if (ImGui::Button(ICON_FA_ARROW_ROTATE_LEFT)) {
+        x_val = 0.0f;
+        y_val = 0.0f;
+        z_val = 0.0f;
+    };
+
+
 
 }
 
@@ -111,7 +120,6 @@ void Properties::TransformOptions() {
     
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
 
-    if (obj) {
     
     glm::vec3 curPos = obj->GetPosition();
     glm::vec3 curRot = obj->GetRotation();
@@ -126,7 +134,7 @@ void Properties::TransformOptions() {
     obj->SetScale(curScale);
 
 
-    }
+    
 }
 
 

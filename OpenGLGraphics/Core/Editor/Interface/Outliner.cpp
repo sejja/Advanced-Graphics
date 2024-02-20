@@ -19,9 +19,7 @@ void Outliner::Render(){
 
 	static char str1[128] = "";
 	ImGui::SameLine();
-	if (ImGui::ImageButton(filterIcon, ImVec2(20, 20))) {
-		// filter dropdown
-	}
+	ImGui::Button(ICON_FA_ARROW_UP_WIDE_SHORT);
 
 	// Scene object search input
 	float remainingWidth = ImGui::GetContentRegionAvail().x;
@@ -35,7 +33,7 @@ void Outliner::Render(){
 
 	//New Folder
 	ImGui::SameLine();
-	if (ImGui::Button("New Folder")) {
+	if (ImGui::Button(ICON_FA_FOLDER)) {
 		for (const auto& obj : scene.GetObjects()) {
 			std::cout << "Objeto: " << obj->GetName() << std::endl;
 		}
@@ -51,32 +49,71 @@ void Outliner::Render(){
 	const std::vector<std::shared_ptr<Core::Object>>& sceneObjects = scene.GetObjects();
 
 
-	if (ImGui::TreeNode("Scene items")) {
-		static std::string selected = "None";
+	if (ImGui::TreeNode(ICON_FA_HOUSE " Main (Editor)")) {
+		static std::string selectedNodeChild = "None";
+
 		
 		for (const auto& obj : sceneObjects) {
 
-			if (ImGui::TreeNode(obj->GetName().c_str(), obj->GetName().c_str()))
-			{
 
-				std::string cMesh = obj->GetName() + "_mesh";
-				std::string cLight = obj->GetName() + "_light";
+			ImGui::SetNextItemAllowOverlap(); 
 
-				
-				if (ImGui::Selectable(ICON_FA_CUBE " Mesh", selected == cMesh)){
-					selected = cMesh;
-					selectedObj.SetSelectedObject(obj);
+
+			if (obj->GetName().find("_mesh") != std::string::npos){
+
+				std::string displayName = obj->GetName();
+				displayName.erase(displayName.length() - 5);
+				displayName[0] = std::toupper(displayName[0]);
+
+				boolean isNodeSelected = obj == selectedObj.GetSelectedObject();
+
+
+				//OBJECTO MESH
+				if (ImGui::TreeNodeEx(obj->GetName().c_str(), isNodeSelected, displayName.c_str())){
+
+					if (ImGui::IsItemClicked()) {
+						selectedObj.SetSelectedObject(obj);
+					}
+
+
+					//New LIGHT/MESH COMPONENT 
+					ImGui::SameLine();
+					ImGui::SmallButton(ICON_FA_SQUARE_PLUS " " ICON_FA_LIGHTBULB);
+
+					ImGui::SameLine();
+					ImGui::SmallButton(ICON_FA_SQUARE_PLUS " " ICON_FA_CUBE);
+
+
+					std::string cMesh = obj->GetName() + "_mesh";
+					std::string cLight = obj->GetName() + "_light";
+
+
+					if (ImGui::Selectable(ICON_FA_CUBE " Mesh", selectedNodeChild == cMesh)) {
+						selectedNodeChild = cMesh;
+						selectedObj.SetSelectedObject(obj);
+					}
+
+					if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light", selectedNodeChild == cLight)) {
+						selectedNodeChild = cLight;
+						selectedObj.SetSelectedObject(obj);
+					}
+
+
+
+					ImGui::TreePop();
 				}
-
-				if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light", selected == cLight)) {
-					selected = cLight;
-					selectedObj.SetSelectedObject(obj);
-				}
-
-
-
-				ImGui::TreePop();
 			}
+			else {
+				if (ImGui::TreeNode(obj->GetName().c_str(), obj->GetName().c_str())) {
+					if (ImGui::IsItemClicked()) {
+						selectedObj.SetSelectedObject(obj);
+					}
+					ImGui::TreePop();
+				}
+			
+			}
+
+
 		}
 
 
