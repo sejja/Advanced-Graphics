@@ -36,6 +36,7 @@ namespace Core {
 		DONTDISCARD inline glm::vec3 GetScale() const;
 		DONTDISCARD inline std::string GetName() const;
 
+
 		inline void ForEachComponent(std::function<void(const std::shared_ptr<Core::Component>& comp)> func);
 		void Update();
 
@@ -102,6 +103,8 @@ namespace Core {
 	glm::vec3 Object::GetPosition() const {
 		return mTransform.mPostion;
 	}
+
+
 
 	// ------------------------------------------------------------------------
 	/*! Get Rotation

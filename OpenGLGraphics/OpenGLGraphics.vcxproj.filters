@@ -129,6 +129,18 @@
     <ClCompile Include="Core\Editor\Editor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Editor\Interface\AssetIcon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\Interface\AssetManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\Interface\Outliner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\Interface\Properties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -1559,6 +1571,27 @@
     <ClInclude Include="Core\Editor\Editor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\AppWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\Interface\AssetIcon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\Interface\AssetManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\Interface\Outliner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\Interface\Properties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\SelectedObj.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\Assets\Fonts\IconsFontAwesome.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\SDL\Include\SDL_config.h.cmake" />
@@ -1975,7 +2008,6 @@
     <None Include="Content\Shaders\Transform.vert" />
     <None Include="Content\Shaders\UV.frag" />
     <None Include="Content\Maps\Scene.level" />
-    <None Include="Content\Shaders\Textured.frag" />
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\UVs.shader" />
     <None Include="Content\Shaders\White.frag" />
@@ -1983,9 +2015,6 @@
     <None Include="Content\Shaders\Shadow.frag" />
     <None Include="Content\Shaders\Shadow.shader" />
     <None Include="Content\Shaders\Shadow.vert" />
-    <None Include="Content\Shaders\DebugDepth.frag" />
-    <None Include="Content\Shaders\DebugDepth.vert" />
-    <None Include="Content\Shaders\DebugDepth.shader" />
     <None Include="Content\Shaders\SkyBox.vert" />
     <None Include="Content\Shaders\SkyBox.frag" />
     <None Include="Content\Shaders\SkyBox.shader" />
@@ -2026,5 +2055,9 @@
     <Image Include="Content\Textures\Brick.png">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="D:\Asier\Descargas\uni-sans-regular\Uni Sans Regular\Uni Sans Regular.ttf" />
+    <Font Include="D:\Asier\Descargas\fa-regular-400.ttf" />
   </ItemGroup>
 </Project>
