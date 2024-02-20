@@ -19,6 +19,11 @@ namespace Core {
 			DONTDISCARD std::shared_ptr<IResource> ImportFromFile(const std::string_view& filename) const override;
 		};
 
+		class GLBImporter : public IResourceImporter {
+		public:
+			DONTDISCARD std::shared_ptr<IResource> ImportFromFile(const std::string_view& filename) const override;
+		};
+
 		class TextureImporter : public IResourceImporter {
 		public:
 			DONTDISCARD std::shared_ptr<IResource> ImportFromFile(const std::string_view& filename) const override;

@@ -18,10 +18,11 @@
 *  Initializes the Resource Manager
 */ // --------------------------------------------------------------------
 void ResourceManager::Initialize() {
-	importers.insert({ "obj", new Core::Assets::ModelImporter });
+	importers.insert({ "obj", new Core::Assets::GLBImporter });
 	importers.insert({ "fbx", new Core::Assets::ModelImporter });
 	importers.insert({ "png", new Core::Assets::TextureImporter });
 	importers.insert({ "jpg", new Core::Assets::TextureImporter });
+	importers.insert({ "tga", new Core::Assets::TextureImporter });
 	importers.insert({ "shader", new Core::Assets::ShaderProgramImporter });
 	importers.insert({ "vert", new Core::Assets::ShaderImporter<Core::Graphics::Shader::EType::Vertex> });
 	importers.insert({ "frag", new Core::Assets::ShaderImporter<Core::Graphics::Shader::EType::Fragment> });

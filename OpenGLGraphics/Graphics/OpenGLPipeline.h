@@ -67,7 +67,7 @@ namespace Core {
 		*   Adds a Renderable into the pipeline
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::AddRenderable(const std::weak_ptr<Renderable>& renderer) {
-			mGroupedRenderables[(std::dynamic_pointer_cast<ModelRenderer<Core::GraphicsAPIS::OpenGL>>(renderer.lock()))->GetShaderProgram().lock()].push_back(renderer);
+			mGroupedRenderables[(std::dynamic_pointer_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(renderer.lock()))->GetShaderProgram().lock()].push_back(renderer);
 		}
 	}
 }

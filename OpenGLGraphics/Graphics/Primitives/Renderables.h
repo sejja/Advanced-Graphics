@@ -15,6 +15,7 @@
 #include "Graphics/Primitives/Model.h"
 #include "Core/ResourceManager.h"
 #include "Graphics/Primitives/ShaderProgram.h"
+#include "Graphics/Primitives/GLBModel.h"
 
 namespace Core {
 	namespace Graphics {
@@ -37,17 +38,17 @@ namespace Core {
 		};
 
 		template<GraphicsAPIS E>
-		class ModelRenderer : public Renderable {};
+		class GLBModelRenderer : public Renderable {};
 
 		template<>
-		class ModelRenderer<GraphicsAPIS::OpenGL> : public Renderable {
+		class GLBModelRenderer<GraphicsAPIS::OpenGL> : public Renderable {
 #pragma region //Constructor
 		public:
-			ModelRenderer(const std::weak_ptr<Object>& parent) : Renderable(parent) {}
+			GLBModelRenderer(const std::weak_ptr<Object>& parent) : Renderable(parent) {}
 #pragma endregion
 
 #pragma region //Functions
-			inline void SetMesh(const AssetReference<Model>& model);
+			inline void SetMesh(const AssetReference<::Graphics::Primitives::GLBModel>& model);
 			inline void SetShaderProgram(const AssetReference<Graphics::ShaderProgram>& s);
 			DONTDISCARD inline AssetReference<Graphics::ShaderProgram> GetShaderProgram();
 			void Render() const noexcept override;
@@ -57,7 +58,7 @@ namespace Core {
 
 #pragma region //Variables
 		private:
-			Asset<Model> mModel;
+			Asset<::Graphics::Primitives::GLBModel> mModel;
 			Asset<Graphics::ShaderProgram> mShaderProgram;
 #pragma endregion
 		};
@@ -67,7 +68,7 @@ namespace Core {
 		*
 		*   Sets the Mesh associated with this renderer
 		*/ // ---------------------------------------------------------------------
-		void ModelRenderer<GraphicsAPIS::OpenGL>::SetMesh(const AssetReference<Model>& model) {
+		void GLBModelRenderer<GraphicsAPIS::OpenGL>::SetMesh(const AssetReference<::Graphics::Primitives::GLBModel>& model) {
 			mModel = model.lock();
 		}
 
@@ -76,7 +77,7 @@ namespace Core {
 		*
 		*   Sets the Shader Program associated with this renderer
 		*/ // ---------------------------------------------------------------------
-		void ModelRenderer<GraphicsAPIS::OpenGL>::SetShaderProgram(const AssetReference<Graphics::ShaderProgram>& s) {
+		void GLBModelRenderer<GraphicsAPIS::OpenGL>::SetShaderProgram(const AssetReference<Graphics::ShaderProgram>& s) {
 			mShaderProgram = s.lock();
 		}
 
@@ -85,7 +86,7 @@ namespace Core {
 		*
 		*   Gets the Shader Program associated with this renderer
 		*/ // ---------------------------------------------------------------------
-		AssetReference<Graphics::ShaderProgram> ModelRenderer<GraphicsAPIS::OpenGL>::GetShaderProgram() {
+		AssetReference<Graphics::ShaderProgram> GLBModelRenderer<GraphicsAPIS::OpenGL>::GetShaderProgram() {
 			return mShaderProgram;
 		}
 	}
