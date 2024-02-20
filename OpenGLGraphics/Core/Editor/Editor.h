@@ -8,6 +8,7 @@
 #include "Graphics/OpenGLPipeline.h"
 #include "Interface/Properties.h"
 #include "Interface/Outliner.h"
+#include "Interface/AssetManager.h"
 
 
 
@@ -22,7 +23,7 @@ public:
 private:
     bool editorLocked;
     Properties properties;
-    //AssetManager assetManager;
+    AssetManager assetManager;
     Outliner outliner;
 
 

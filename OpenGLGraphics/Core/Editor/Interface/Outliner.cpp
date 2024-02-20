@@ -35,7 +35,7 @@ void Outliner::Render(){
 
 	
 	for (const auto& obj : scene.GetObjects()) {
-		std::cout << "Objeto: " << obj->GetName() << std::endl;
+		//std::cout << "Objeto: " << obj->GetName() << std::endl;
 	}
 
 	//Tree with list of selectable items in scene

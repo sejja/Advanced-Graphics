@@ -19,6 +19,7 @@ AssetIcon::AssetIcon() {
 	tipo = AssetType::OTHER;
 	nombre = "Sin nombre";
 	ruta = "";
+	clicked = false;
 }
 
 AssetIcon::AssetIcon(AssetType p_tipo, const char* p_nombre, const char* p_ruta)
@@ -26,6 +27,7 @@ AssetIcon::AssetIcon(AssetType p_tipo, const char* p_nombre, const char* p_ruta)
 	tipo = p_tipo;
 	nombre = p_nombre;
 	ruta = p_ruta;
+	clicked = false;
 }
 
 void AssetIcon::dibujar() {
@@ -34,19 +36,31 @@ void AssetIcon::dibujar() {
 	//ImGui::Button("Hola", ImVec2(100, 100));
 
 	if (tipo == AssetType::MODEL) {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/folderAdd.png")->Get(); //Que cojones es la sintaxis de esta línea???
-		ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0)); //Por algún motivo se carga al reves, creo que es lo del vídeo
+		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/folderAdd.png")->Get();
+		ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+	
 	}
-	//else if (tipo == "texture") {
-	//	auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(ruta)->Get(); //Que cojones es la sintaxis de esta línea???
-	//	ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100));
-	// 
-	//}
+	else if (tipo == AssetType::TEXTURE) {
+		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(ruta)->Get(); //Que cojones es la sintaxis de esta línea???
+		ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100));
+	 
+	}
 	else {
 		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/other.png")->Get(); //Que cojones es la sintaxis de esta línea???
-		ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		//ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Button("Hola", ImVec2(100, 100));
+		if (ImGui::BeginDragDropSource()) {
+			printf("Dragging");
+			ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+			ImGui::EndDragDropSource();
+		}
+		
 	}
-	
+
+	clicked = ImGui::IsItemClicked();
+	if (clicked == true) {
+		printf(nombre);
+	}
 
 
 
