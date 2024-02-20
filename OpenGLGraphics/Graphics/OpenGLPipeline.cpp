@@ -137,6 +137,7 @@ namespace Core {
 			ImGui::GetStyle().FrameRounding = 4.0f;
 			ImGui::GetStyle().GrabRounding = 4.0f;
 			ImGui::GetStyle().WindowBorderSize = 0.0f;
+			ImGui::GetStyle().WindowRounding = 7.0f;
 			
 
 			ImVec4* colors = ImGui::GetStyle().Colors;

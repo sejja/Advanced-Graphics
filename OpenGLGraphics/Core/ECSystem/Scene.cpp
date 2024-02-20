@@ -65,6 +65,9 @@ namespace Core {
 			light->mData.mOutter = x.outer;
 			light->mData.mFallOff = x.falloff;
 
+			//TEMPORAL PARA SABER SI ES LUZ HASTA NUEVO LEVEL 
+			obj->SetName(x.type + " Light");
+			
 			//If the light is a point light
 			if (x.type == "POINT") light->mData.mType = ::Graphics::Primitives::Light::LightType::Point;
 
@@ -111,6 +114,7 @@ namespace Core {
 		std::shared_ptr<Core::Graphics::Skybox> skycomp = std::make_shared<Core::Graphics::Skybox>(sky);
 		skycomp->CreateCubeMap();
 		sky->AddComponent(std::move(skycomp));
+		sky->SetName("Background");
 		mObjects.emplace_back(sky);
 
 	}

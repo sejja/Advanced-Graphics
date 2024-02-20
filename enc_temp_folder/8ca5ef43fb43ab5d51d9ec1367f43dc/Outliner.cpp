@@ -86,11 +86,11 @@ void Outliner::Render(){
 	ImGui::Spacing();
 
 	std::string itemNum = std::to_string(sceneObjects.size()) + " items in scene";
-	ImGui::Text(itemNum.c_str());
+	ImGui::Text(itemNum.c_str(), IMGUI_VERSION, IMGUI_VERSION_NUM);
 
 	if (selectedObj.GetSelectedObject()) {
-		std::string selectedObjInfo = "Editing: " + selectedObj.GetSelectedObject()->GetName();
-		ImGui::Text(selectedObjInfo.c_str());
+		std::string selectedObjInfo = selectedObj.GetSelectedObject()->GetName() + " items in scene";
+		ImGui::Text(selectedObjInfo.c_str(), IMGUI_VERSION, IMGUI_VERSION_NUM);
 	}
 
 

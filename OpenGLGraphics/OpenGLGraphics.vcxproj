@@ -224,6 +224,7 @@
     <ClInclude Include="Core\Editor\Interface\AssetManager.h" />
     <ClInclude Include="Core\Editor\Interface\Outliner.h" />
     <ClInclude Include="Core\Editor\Interface\Properties.h" />
+    <ClInclude Include="Core\Editor\SelectedObj.h" />
     <ClInclude Include="Core\Events\Event.h" />
     <ClInclude Include="Core\Events\EventDispatcher.h" />
     <ClInclude Include="Core\RTTI.h" />

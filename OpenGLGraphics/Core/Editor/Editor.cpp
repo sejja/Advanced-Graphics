@@ -3,6 +3,8 @@
 #include "Interface/Properties.h"
 #include "Interface/AssetManager.h"
 #include "Core/Window/SDLWindow.h"
+#include "Core/Editor/SelectedObj.h"
+#include "Core/Singleton.h"
 
 Editor::Editor() : editorLocked(false) {}
 
@@ -17,6 +19,10 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 	//Abre una demo de opciones de imgui
 	ImGui::ShowDemoWindow();
+
+
+	//Singleton para gestionar objeto seleccionado en cualquier 
+	Singleton<SelectedObj>::Instance();
 
 
 

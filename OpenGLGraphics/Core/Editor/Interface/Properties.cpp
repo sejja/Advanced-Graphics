@@ -44,7 +44,7 @@ void TextPaddingWBg(const char* text, ImVec4 bgColor) {
 }
 
 
-void TransformRow(const char* title) {
+void TransformRow(const char* title,float& x_value, float& y_val, float& z_val) {
     static char defaultValue[16] = "0";
     const float f32_zero = 0.f;
     const float f32_one = 100.f;
@@ -52,13 +52,16 @@ void TransformRow(const char* title) {
     const float inputSize = 0.12f;
     float remainingWidth = ImGui::GetContentRegionAvail().x;
 
-    ImGui::Text(title); ImGui::SameLine();
+    ImGui::SetNextItemWidth(remainingWidth * inputSize);
+
+    ImGui::PushItemWidth(100);//No funciona
+    ImGui::Text(title); 
+    ImGui::PopItemWidth();
+    ImGui::SameLine();
 
     auto folderText = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Content/Textures/back.jpg")->Get();
     ImGui::ImageButton((void*)(intptr_t)folderText->GetTextureHandle(), ImVec2(13, 13));
 
-
-    static float  defaultX = 0.0f;
     std::string XLabel = "X";
     char XID[32];
     sprintf(XID, "##%d%d", XLabel, title);
@@ -66,27 +69,24 @@ void TransformRow(const char* title) {
     TextPaddingWBg(XLabel.c_str(), ImVec4(1.0f, 0.5f, 0.5f, 0.7f));
     ImGui::SameLine();
     ImGui::SetNextItemWidth(remainingWidth * inputSize);
-    ImGui::DragScalar(XID, ImGuiDataType_Float, &defaultX, dragJump, &f32_zero, &f32_one, "%.2f");
+    ImGui::DragScalar(XID, ImGuiDataType_Float, &x_value, dragJump, &f32_zero, &f32_one, "%.2f");
 
 
-
-    static float  defaultY = 0.0f;
     std::string YLabel = "Y";
     std::string YID = "##Y" + std::string(title);
     ImGui::SameLine();
     TextPaddingWBg(YLabel.c_str(), ImVec4(0.5f, 1.0f, 0.5f, 0.7f));
     ImGui::SameLine();
     ImGui::SetNextItemWidth(remainingWidth * inputSize);
-    ImGui::DragScalar(YID.c_str(), ImGuiDataType_Float, &defaultY, dragJump, &f32_zero, &f32_one, "%.2f");
+    ImGui::DragScalar(YID.c_str(), ImGuiDataType_Float, &y_val, dragJump, &f32_zero, &f32_one, "%.2f");
 
-    static float  defaultZ = 0.0f;
     std::string ZLabel = "Z";
     std::string ZID = "##Z" + std::string(title);
     ImGui::SameLine();
     TextPaddingWBg(ZLabel.c_str(), ImVec4(0.5f, 0.5f, 1.0f, 0.7f));
     ImGui::SameLine();
     ImGui::SetNextItemWidth(remainingWidth * inputSize);
-    ImGui::DragScalar(ZID.c_str(), ImGuiDataType_Float, &defaultZ, dragJump, &f32_zero, &f32_one, "%.2f");
+    ImGui::DragScalar(ZID.c_str(), ImGuiDataType_Float, &z_val, dragJump, &f32_zero, &f32_one, "%.2f");
 
 
 
@@ -99,11 +99,24 @@ void TransformRow(const char* title) {
 
 
 
-void Properties::TransformOptions(){
-    TransformRow("Location");
-    TransformRow("Rotation");
-    TransformRow(" Scale  ");
+void Properties::TransformOptions() {
+    static float defaultX_location = 0.0f;
+    static float defaultY_location = 0.0f;
+    static float defaultZ_location = 0.0f;
+    TransformRow("Location", defaultX_location, defaultY_location, defaultZ_location);
+
+
+    static float defaultX_rotation = 0.0f;
+    static float defaultY_rotation = 0.0f;
+    static float defaultZ_rotation = 0.0f;
+    TransformRow("Rotation", defaultX_rotation, defaultY_rotation, defaultZ_rotation);
+
+    static float defaultX_scale = 0.0f;
+    static float defaultY_scale = 0.0f;
+    static float defaultZ_scale = 0.0f;
+    TransformRow("  Scale   ", defaultX_scale, defaultY_scale, defaultZ_scale);
 }
+
 
 
 static void HelpMarker(const char* desc)
