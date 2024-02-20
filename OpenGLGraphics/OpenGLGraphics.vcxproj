@@ -857,6 +857,7 @@
     <None Include="Dependencies\SDL\Include\SDL_config_macosx.h.orig" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="Core\Editor\patata.txt" />
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
