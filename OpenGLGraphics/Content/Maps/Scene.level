@@ -9,7 +9,7 @@ camTarget 0 0 50
 camUp 0 1 0
     
 #scene data
-object floor
+object floor_mesh
 translate 0 -25 50
 rotation 0 270 0
 scale 150 150 1

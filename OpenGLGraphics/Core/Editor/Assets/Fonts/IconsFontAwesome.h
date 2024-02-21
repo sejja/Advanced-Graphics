@@ -565,7 +565,7 @@
 #define ICON_FA_FOLDER_MINUS "\xef\x99\x9d"	// U+f65d
 #define ICON_FA_FOLDER_OPEN "\xef\x81\xbc"	// U+f07c
 #define ICON_FA_FOLDER_PLUS "\xef\x99\x9e"	// U+f65e
-#define ICON_FA_FOLDER_TREE "\xef\xa0\x82"	// U+f802
+#define ICON_FA_FOLDER_TREE "\xef\xF8\x02"	// U+f802 
 #define ICON_FA_FONT "\xef\x80\xb1"	// U+f031
 #define ICON_FA_FONT_AWESOME "\xef\x8a\xb4"	// U+f2b4
 #define ICON_FA_FOOTBALL "\xef\x91\x8e"	// U+f44e

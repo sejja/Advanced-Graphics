@@ -9,6 +9,7 @@
 #include "Interface/Properties.h"
 #include "Interface/Outliner.h"
 #include "Interface/AssetManager.h"
+#include "Interface/SceneView.h"
 
 
 
@@ -25,6 +26,7 @@ private:
     Properties properties;
     AssetManager assetManager;
     Outliner outliner;
+    SceneView sceneView;
 
 
 };

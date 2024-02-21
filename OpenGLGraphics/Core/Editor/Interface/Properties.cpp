@@ -15,13 +15,19 @@ SelectedObj& selectedObjIns = Singleton<SelectedObj>::Instance();
 
 
 void Properties::Render() {
-	ImGui::Begin("Properties");
+	ImGui::Begin(ICON_FA_SLIDERS " Properties");
 
 	// Property tool search input
 	static char str1[128] = "";
 
+    objectOutlinerComp();
+
+
 	ImGui::InputTextWithHint("##SearchProperty", ICON_FA_MAGNIFYING_GLASS " Search property", str1, IM_ARRAYSIZE(str1));
 	ImGui::Spacing();
+
+
+
 
     if (selectedObjIns.GetSelectedObject()) {
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_UP_DOWN_LEFT_RIGHT " Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
@@ -112,6 +118,89 @@ void TransformRow(const char* title,float& x_val, float& y_val, float& z_val) {
 
 
 }
+
+
+void Properties::objectOutlinerComp() {
+    std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
+
+    if (obj) {
+        float originalTextSize = ImGui::GetFontSize();
+       
+        ImGui::Text("%s %s", ICON_FA_CUBES, obj->GetName().c_str());
+        ImGui::SameLine();
+        if (ImGui::Button(ICON_FA_PLUS " Add")) {
+            ImGui::OpenPopup("new_component_modal");
+        }
+
+        if (ImGui::BeginPopup("new_component_modal"))
+        {
+            ImGui::SeparatorText("Components");
+
+            if (ImGui::Selectable(ICON_FA_CUBE " Mesh")) {
+				//obj->AddComponent<Core::Graphics::Mesh>();  
+            }
+            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light")) {
+                //obj->AddComponent<Core::Graphics::Light>();
+            }
+            
+            ImGui::EndPopup();
+        }
+
+
+
+        selectedObjectTree();
+        ImGui::Spacing();
+    }
+
+}
+
+
+
+
+void Properties::selectedObjectTree() {
+    std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
+
+    ImGui::BeginChild("ResizableChild", ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 2), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeY);
+
+
+        std::string displayName = ("%s %s (Instance)", ICON_FA_CUBE, obj->GetName());
+     
+        //el selcted seria obj== selobj and comp 
+        if (ImGui::Selectable(displayName.c_str(), true)) {
+            selectedObjIns.SetSelectedObject(obj);
+        }
+
+        ImGui::Indent();
+
+
+        //OBJECT COMPONENTS
+
+        //obj->GetComponent<Mesh>()
+
+
+        if (ImGui::Selectable(ICON_FA_CUBE " Mesh",false)) {
+            selectedObjIns.SetSelectedObject(obj);
+        }
+
+        if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light", false)) {
+            selectedObjIns.SetSelectedObject(obj);
+        }
+        ImGui::Unindent();
+
+
+    ImGui::EndChildFrame();
+
+
+
+
+    
+    
+    
+
+
+}
+
+
 
 
 

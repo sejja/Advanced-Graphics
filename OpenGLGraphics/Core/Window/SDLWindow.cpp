@@ -56,7 +56,7 @@ void SDLWindow::Create() {
     mWindow.reset(SDL_CreateWindow("OpenGL Graphics",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         mDimensions.x, mDimensions.y,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI));
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI ));
 
 	//If we got no pointer to the window, throw an exception
     if(!mWindow)
@@ -82,8 +82,9 @@ void SDLWindow::Create() {
     //Load font
     
     io.Fonts->AddFontDefault();
-    ImFont* mainFont = io.Fonts->AddFontFromFileTTF("Core/Editor/Assets/Fonts/DroidSans.ttf", 15.0f , NULL , io.Fonts->GetGlyphRangesDefault());
+    ImFont* mainFont = io.Fonts->AddFontFromFileTTF("Core/Editor/Assets/Fonts/DroidSans.ttf", 16.5f , NULL , io.Fonts->GetGlyphRangesDefault());
     IM_ASSERT(mainFont != NULL);
+
 
     io.FontGlobalScale = 1.0f;
     io.FontDefault = mainFont;
@@ -92,7 +93,7 @@ void SDLWindow::Create() {
     config.MergeMode = true;
     config.GlyphMinAdvanceX = 13.0f; // Makes icons monospaced
     static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-    io.Fonts->AddFontFromFileTTF("Core/Editor/Assets/Fonts/fontawesome-webfont.ttf", 13.0f, &config, icon_ranges);
+    io.Fonts->AddFontFromFileTTF("Core/Editor/Assets/Fonts/fontawesome-webfont.ttf", 16.5f, &config, icon_ranges);
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForOpenGL(mWindow.get(), mContext);

@@ -9,6 +9,7 @@ class SelectedObj {
 
 private:
     std::shared_ptr<Core::Object> selectedObject;
+    std::shared_ptr<Core::Component> selectedComponent;
 
 public:
 
@@ -22,6 +23,17 @@ public:
         return selectedObject;
     }
 
+    // ------------------------------------------------------------------------
+    /*! Get Selected Component
+    *
+    *  Gets the selected component
+    */ // ---------------------------------------------------------------------
+
+
+    std::shared_ptr<Core::Component> GetSelectedComponent() const {
+		return selectedComponent;
+	}
+
 
     // ------------------------------------------------------------------------
     /*! Set Selected Object
@@ -32,6 +44,16 @@ public:
     void SetSelectedObject(const std::shared_ptr<Core::Object>& obj) {
         selectedObject = obj;
     }
+
+    // ------------------------------------------------------------------------
+    /*! Set Selected Component
+    *
+    * Sets the selected component to the given one
+    */ // ---------------------------------------------------------------------
+
+    void SetSelectedComponent(const std::shared_ptr<Core::Component>& comp) {
+		selectedComponent = comp;
+	}
 
 };
 

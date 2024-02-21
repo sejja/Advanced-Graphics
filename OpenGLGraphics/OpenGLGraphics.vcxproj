@@ -176,6 +176,7 @@
     <ClCompile Include="Core\Editor\Interface\AssetManager.cpp" />
     <ClCompile Include="Core\Editor\Interface\Outliner.cpp" />
     <ClCompile Include="Core\Editor\Interface\Properties.cpp" />
+    <ClCompile Include="Core\Editor\Interface\SceneView.cpp" />
     <ClCompile Include="Core\Events\Event.cpp" />
     <ClCompile Include="Core\Events\EventDispatcher.cpp" />
     <ClCompile Include="Core\Events\TypeInfo.cpp" />
@@ -225,6 +226,7 @@
     <ClInclude Include="Core\Editor\Interface\AssetManager.h" />
     <ClInclude Include="Core\Editor\Interface\Outliner.h" />
     <ClInclude Include="Core\Editor\Interface\Properties.h" />
+    <ClInclude Include="Core\Editor\Interface\SceneView.h" />
     <ClInclude Include="Core\Editor\SelectedObj.h" />
     <ClInclude Include="Core\Events\Event.h" />
     <ClInclude Include="Core\Events\EventDispatcher.h" />
@@ -871,7 +873,6 @@
     <Image Include="Content\Textures\top.jpg" />
   </ItemGroup>
   <ItemGroup>
-    <Font Include="D:\Asier\Descargas\fa-regular-400.ttf" />
     <Font Include="D:\Asier\Descargas\uni-sans-regular\Uni Sans Regular\Uni Sans Regular.ttf" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

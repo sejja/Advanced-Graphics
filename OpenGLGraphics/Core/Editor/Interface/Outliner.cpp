@@ -1,4 +1,4 @@
-#include "Outliner.h"
+﻿#include "Outliner.h"
 #include "Dependencies/ImGui/imgui.h"
 #include "Core/ResourceManager.h"
 #include "Core/ECSystem/Scene.h"
@@ -12,7 +12,7 @@ SelectedObj& selectedObj = Singleton<SelectedObj>::Instance();
 
 
 void Outliner::Render(){
-	ImGui::Begin("Outliner");
+	ImGui::Begin(ICON_FA_FOLDER "  Outliner");
 
 	//Icons 
 	ImTextureID filterIcon = nullptr;
@@ -58,59 +58,38 @@ void Outliner::Render(){
 
 			ImGui::SetNextItemAllowOverlap(); 
 
+			std::string displayName = obj->GetName();
 
+			
+			//Check if object is selected
+			boolean isNodeSelected = obj == selectedObj.GetSelectedObject();
+
+			// de momento así por que los objetos de la escena no tienen un tipo
+			// y probablemente se va a cambiar la estructura pronto
 			if (obj->GetName().find("_mesh") != std::string::npos){
-
-				std::string displayName = obj->GetName();
 				displayName.erase(displayName.length() - 5);
 				displayName[0] = std::toupper(displayName[0]);
+				displayName = ICON_FA_CUBE " " + displayName;
 
-				boolean isNodeSelected = obj == selectedObj.GetSelectedObject();
+			}
+			else if (obj->GetName().find("_light") != std::string::npos) {
+				displayName.erase(displayName.length() - 6);
+				displayName[0] = std::toupper(displayName[0]);
+				displayName = ICON_FA_LIGHTBULB " " + displayName;
 
+			}
+			else if (obj->GetName().find("_bg") != std::string::npos) {
+				displayName.erase(displayName.length() - 3);
+				displayName[0] = std::toupper(displayName[0]);
+				displayName = ICON_FA_IMAGE " " + displayName;
 
-				//OBJECTO MESH
-				if (ImGui::TreeNodeEx(obj->GetName().c_str(), isNodeSelected, displayName.c_str())){
-
-					if (ImGui::IsItemClicked()) {
-						selectedObj.SetSelectedObject(obj);
-					}
-
-
-					//New LIGHT/MESH COMPONENT 
-					ImGui::SameLine();
-					ImGui::SmallButton(ICON_FA_SQUARE_PLUS " " ICON_FA_LIGHTBULB);
-
-					ImGui::SameLine();
-					ImGui::SmallButton(ICON_FA_SQUARE_PLUS " " ICON_FA_CUBE);
-
-
-					std::string cMesh = obj->GetName() + "_mesh";
-					std::string cLight = obj->GetName() + "_light";
-
-
-					if (ImGui::Selectable(ICON_FA_CUBE " Mesh", selectedNodeChild == cMesh)) {
-						selectedNodeChild = cMesh;
-						selectedObj.SetSelectedObject(obj);
-					}
-
-					if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light", selectedNodeChild == cLight)) {
-						selectedNodeChild = cLight;
-						selectedObj.SetSelectedObject(obj);
-					}
-
-
-
-					ImGui::TreePop();
-				}
 			}
 			else {
-				if (ImGui::TreeNode(obj->GetName().c_str(), obj->GetName().c_str())) {
-					if (ImGui::IsItemClicked()) {
-						selectedObj.SetSelectedObject(obj);
-					}
-					ImGui::TreePop();
-				}
-			
+				displayName = ICON_FA_OBJECT_GROUP " " + displayName;
+			}
+
+			if (ImGui::Selectable(displayName.c_str(), isNodeSelected)) {
+				selectedObj.SetSelectedObject(obj);
 			}
 
 
@@ -127,10 +106,7 @@ void Outliner::Render(){
 	std::string itemNum = std::to_string(sceneObjects.size()) + " items in scene";
 	ImGui::Text(itemNum.c_str());
 
-	if (selectedObj.GetSelectedObject()) {
-		std::string selectedObjInfo = "Editing: " + selectedObj.GetSelectedObject()->GetName();
-		ImGui::Text(selectedObjInfo.c_str());
-	}
+
 
 
 	

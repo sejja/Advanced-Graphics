@@ -141,6 +141,9 @@
     <ClCompile Include="Core\Editor\Interface\Properties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Editor\Interface\SceneView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -1592,6 +1595,9 @@
     <ClInclude Include="Core\Editor\Assets\Fonts\IconsFontAwesome.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Editor\Interface\SceneView.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\SDL\Include\SDL_config.h.cmake" />
@@ -2058,6 +2064,5 @@
   </ItemGroup>
   <ItemGroup>
     <Font Include="D:\Asier\Descargas\uni-sans-regular\Uni Sans Regular\Uni Sans Regular.ttf" />
-    <Font Include="D:\Asier\Descargas\fa-regular-400.ttf" />
   </ItemGroup>
 </Project>
