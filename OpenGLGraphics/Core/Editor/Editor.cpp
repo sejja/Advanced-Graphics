@@ -32,7 +32,6 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	assetManager.Render();
 	properties.Render();
 	outliner.Render();
-	
 
 	
 	ImGui::Begin("Scene");
