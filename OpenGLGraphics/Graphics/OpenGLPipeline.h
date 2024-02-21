@@ -53,11 +53,6 @@ namespace Core {
 
 			//HDR
 			const float gamma = 2.2f;
-			GLuint FrameBufferProgram;
-			GLuint framebufferTexture;
-			GLuint hdrFBO;
-			GLuint colorBuffer;
-			GLuint rboDepth;  
 			bool hdrON = true;
 		};
 

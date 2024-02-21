@@ -68,43 +68,6 @@ namespace Core {
 
 			//HDR y esas mierdas de burgesia
 
-			if (hdrON) {
-				///*
-
-				/*cout << "HDR \t -> \t ON" << endl;
-
-				Asset<ShaderProgram>shader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/HDR.shader");
-				auto shaderptr = shader->Get();
-				//shaderptr->SetShaderUniform("ScreenTexture", 0);
-				//shaderptr->SetShaderUniform("gamma", 2.2f);
-
-
-				glBindTexture(GL_TEXTURE_2D, colorBuffer);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, mDimensions.x, mDimensions.y, 0, GL_RGBA, GL_FLOAT, NULL);
-
-				glGenBuffers(0, &hdrFBO);
-				glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
-
-				glGenTextures(1, &framebufferTexture);
-				glBindTexture(GL_TEXTURE_2D, framebufferTexture);
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mDimensions.x, mDimensions.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTexture, 0);
-
-				glGenRenderbuffers(1, &rboDepth);
-				glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
-				glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, mDimensions.x, mDimensions.y);
-				glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
-
-				auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-				if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
-					std::cout << "Framebuffer error: " << fboStatus << std::endl;
-				//*/
-			}
-
 		}
 
 		// ------------------------------------------------------------------------
@@ -117,7 +80,7 @@ namespace Core {
 			///*
 			if (hdrON) 
 			{
-				glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+				mHDRBuffer->Bind();
 			}
 			//*/
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -226,20 +189,10 @@ namespace Core {
 			mGBuffer->BlitDepthBuffer();
 
 			//Bind the HDR shader
-			
-			//Bind the HDR Texture image stored in the HDR framebuffer
-			//Render full-screen quad
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			/*
-			glUseProgram(FrameBufferProgram);
-			glDisable(GL_DEPTH_TEST);
-			glBindTexture(GL_TEXTURE_2D, framebufferTexture);
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-			*/
 		}
 
 		// ------------------------------------------------------------------------

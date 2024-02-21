@@ -1,14 +1,20 @@
 #version 460 core
 
 out vec4 FragColor;
+
+layout(binding = 0) uniform sampler2D screenTexture;
 layout (location = 1) in vec2 texCoords;
 
-uniform sampler2D screenTexture;
 uniform float gamma;
 
 void main()
 {
-    vec4 fragment = texture(screenTexture, texCoords);
-    FragColor.rgb = pow(fragment.rgb, vec3(1.0f / 2.2f));
-    FragColor = vec4(gamma) - texture(screenTexture, texCoords);
+    vec3 hdrColor = texture(screenTexture, texCoords).rgb;
+  
+    // reinhard tone mapping
+    vec3 mapped = hdrColor / (hdrColor + vec3(1.0));
+    // gamma correction 
+    mapped = pow(mapped, vec3(1.0 / gamma));
+  
+    FragColor = vec4(mapped, 1.0);
 }
