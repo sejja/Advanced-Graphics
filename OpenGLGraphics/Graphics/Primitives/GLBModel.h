@@ -12,9 +12,9 @@
 #include <vector>
 #include "GLBMesh.h"
 #include "ShaderProgram.h"
-#include <Importer.hpp>
-#include <postprocess.h>
-#include <scene.h>
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
 #include <iostream>
 #include <stb_image.h>
 

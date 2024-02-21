@@ -7,6 +7,7 @@
 //
 
 #include "GLBModel.h"
+#include <filesystem>
 
 namespace Graphics {
 	namespace Primitives {
@@ -28,20 +29,26 @@ namespace Graphics {
                 directory = path.substr(0, last_slash_idx);
             }
 
-            // read file via ASSIMP
-            Assimp::Importer importer;
-            const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_CalcTangentSpace);
-            // check for errors
-            if (!scene || !scene->mRootNode) // if is Not Zero
-            {
-                std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
-                return;
-            }
             // retrieve the directory path of the filepath
             directory = path.substr(0, path.find_last_of('/'));
 
-            // process ASSIMP's root node recursively
-            processNode(scene->mRootNode, scene, directory);
+            // read file via ASSIMP
+            Assimp::Importer importer;
+            const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
+            // check for errors
+            if(scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
+            std::cout << "ERROR::ASSIMP:: INCOMPLETE DATA" << std::endl;
+
+            if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
+                std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
+                return;
+            }
+
+            if (!scene->mRootNode)
+                for (int i = 0; i < scene->mNumMeshes; i++)
+                    meshes.push_back(processMesh(scene->mMeshes[i], scene, directory));
+            else  // process ASSIMP's root node recursively
+                processNode(scene->mRootNode, scene, directory);
         }
 
         void GLBModel::processNode(aiNode* node, const aiScene* scene, const std::string& dir) {

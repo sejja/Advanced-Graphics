@@ -12,14 +12,14 @@ camUp 0 1 0
 object floor
 translate 0 -10 0
 rotation 0 0 0
-scale 1 1 1
-mesh Content/Scenes/sponza.obj 
+scale 0.2 0.2 0.2
+mesh Content/Scenes/Sponza.gltf 
 
 
 #light data
 light
 translate -50 0 55
-color 1 0 0
+color 1 1 1
 lightType POINT	
 attenuation 0 0.0 0.01
 #sinusoidal 0 1 20
@@ -28,13 +28,13 @@ direction -1 0 0
 
 light
 translate 50 0 55
-color 0 1 0
+color 1 1 1
 lightType DIR	
 direction -1 0 0
 	
 light
 translate 50 30 50
-color 0 0 1
+color 1 1 1
 lightType SPOT
 attenuation 1 0.0 0.0	
 direction 0 -1 0
