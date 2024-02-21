@@ -85,6 +85,7 @@ namespace Core {
 			//HDR y esas mierdas de burgesia
 
 			if (hdrON) {
+				///*
 				Shader frameVertex("FrameBuffer.vert", Shader::EType::Vertex);
 				Shader frameFrag("FrameBuffer.frag", Shader::EType::Fragment);
 
@@ -100,25 +101,7 @@ namespace Core {
 
 				glUniform1i(glGetUniformLocation(FrameBufferProgram, "ScreenTexture"), 0);
 
-				float rectangleVertices[] =
-				{
-					// Coords    // texCoords
-					 1.0f, -1.0f,  1.0f, 0.0f,
-					-1.0f, -1.0f,  0.0f, 0.0f,
-					-1.0f,  1.0f,  0.0f, 1.0f,
-
-					 1.0f,  1.0f,  1.0f, 1.0f,
-					 1.0f, -1.0f,  1.0f, 0.0f,
-					-1.0f,  1.0f,  0.0f, 1.0f
-				};
-
-				// Prepare framebuffer rectangle VBO and VAO
-				unsigned int rectVAO, rectVBO;
-				glGenVertexArrays(1, &rectVAO);
-				glGenBuffers(1, &rectVBO);
-				glBindVertexArray(rectVAO);
-				glBindBuffer(GL_ARRAY_BUFFER, rectVBO);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(rectangleVertices), &rectangleVertices, GL_STATIC_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, sizeof(mScreenQuadVBO), &mScreenQuadVBO, GL_STATIC_DRAW);
 				glEnableVertexAttribArray(0);
 				glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
 				glEnableVertexAttribArray(1);
@@ -127,7 +110,8 @@ namespace Core {
 
 				glBindTexture(GL_TEXTURE_2D, colorBuffer);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, mDimensions.x, mDimensions.y, 0, GL_RGBA, GL_FLOAT, NULL);
-				glGenBuffers(1, &hdrFBO);
+				glGenBuffers(0, &hdrFBO);
+				glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 
 				glGenTextures(1, &framebufferTexture);
 				glBindTexture(GL_TEXTURE_2D, framebufferTexture);
@@ -146,7 +130,7 @@ namespace Core {
 				auto fboStatus = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 				if (fboStatus != GL_FRAMEBUFFER_COMPLETE)
 					std::cout << "Framebuffer error: " << fboStatus << std::endl;
-
+				//*/
 			}
 
 		}
@@ -158,10 +142,12 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::PreRender() 
 		{
+			///*
 			if (hdrON) 
 			{
 				glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 			}
+			//*/
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
@@ -254,6 +240,7 @@ namespace Core {
 		*   Renders every object in the scene
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::Render() {
+			glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 			RenderGUI();
 			glEnable(GL_DEPTH_TEST);
 
@@ -269,10 +256,12 @@ namespace Core {
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			///*
 			glUseProgram(FrameBufferProgram);
 			glDisable(GL_DEPTH_TEST);
 			glBindTexture(GL_TEXTURE_2D, framebufferTexture);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
+			//*/
 		}
 
 		// ------------------------------------------------------------------------
@@ -357,7 +346,7 @@ namespace Core {
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::LightingPass() {
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
