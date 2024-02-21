@@ -56,23 +56,7 @@ namespace Core {
 			mShadowBuffers[3].Create();
 			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
 			mGBuffer = make_unique<GBuffer>();
-			float quadVertices[] = {
-				// positions        // texture Coords
-				-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-				-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-				 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-			};
-			// setup plane VAO
-			glGenVertexArrays(1, &mScreenQuadVAO);
-			glGenBuffers(1, &mScreenQuadVAO);
-			glBindVertexArray(mScreenQuadVBO);
-			glBindBuffer(GL_ARRAY_BUFFER, mScreenQuadVBO);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+			mHDRBuffer = std::make_unique<HDRBuffer>();
 
 			glGenBuffers(1, &mUniformBuffer);
 
@@ -86,30 +70,18 @@ namespace Core {
 
 			if (hdrON) {
 				///*
-				Shader frameVertex("FrameBuffer.vert", Shader::EType::Vertex);
-				Shader frameFrag("FrameBuffer.frag", Shader::EType::Fragment);
 
-				FrameBufferProgram = glCreateProgram();
+				/*cout << "HDR \t -> \t ON" << endl;
 
-
-				glAttachShader(FrameBufferProgram,frameVertex.GetGLHandle());
-				glAttachShader(FrameBufferProgram, frameFrag.GetGLHandle());
-
-				glLinkProgram(FrameBufferProgram);
-				glUseProgram(FrameBufferProgram);
-
-
-				glUniform1i(glGetUniformLocation(FrameBufferProgram, "ScreenTexture"), 0);
-
-				glBufferData(GL_ARRAY_BUFFER, sizeof(mScreenQuadVBO), &mScreenQuadVBO, GL_STATIC_DRAW);
-				glEnableVertexAttribArray(0);
-				glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
-				glEnableVertexAttribArray(1);
-				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+				Asset<ShaderProgram>shader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/HDR.shader");
+				auto shaderptr = shader->Get();
+				//shaderptr->SetShaderUniform("ScreenTexture", 0);
+				//shaderptr->SetShaderUniform("gamma", 2.2f);
 
 
 				glBindTexture(GL_TEXTURE_2D, colorBuffer);
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, mDimensions.x, mDimensions.y, 0, GL_RGBA, GL_FLOAT, NULL);
+
 				glGenBuffers(0, &hdrFBO);
 				glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
 
@@ -118,8 +90,8 @@ namespace Core {
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, mDimensions.x, mDimensions.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE); 
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE); 
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, framebufferTexture, 0);
 
 				glGenRenderbuffers(1, &rboDepth);
@@ -240,7 +212,7 @@ namespace Core {
 		*   Renders every object in the scene
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::Render() {
-			glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+			//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			RenderGUI();
 			glEnable(GL_DEPTH_TEST);
 
@@ -248,20 +220,26 @@ namespace Core {
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
+			mHDRBuffer->Bind();
+			Skybox::sCurrentSky->Render(cam);
 			LightingPass();
 			mGBuffer->BlitDepthBuffer();
-			Skybox::sCurrentSky->Render(cam);
+
+			//Bind the HDR shader
+			
+			//Bind the HDR Texture image stored in the HDR framebuffer
+			//Render full-screen quad
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			///*
+			/*
 			glUseProgram(FrameBufferProgram);
 			glDisable(GL_DEPTH_TEST);
 			glBindTexture(GL_TEXTURE_2D, framebufferTexture);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
-			//*/
+			*/
 		}
 
 		// ------------------------------------------------------------------------
@@ -346,7 +324,7 @@ namespace Core {
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::LightingPass() {
-			glBindFramebuffer(GL_FRAMEBUFFER, hdrFBO);
+			mHDRBuffer->Bind();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
@@ -356,7 +334,7 @@ namespace Core {
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetAlbedoTextureHandle());
 			mGBuffer->BindLightingShader();
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			mHDRBuffer->ClearBuffer();
 			UploadLightDataToGPU(mGBuffer->GetLightingShader());
 
 			vector<glm::mat4> shadow_matrices;

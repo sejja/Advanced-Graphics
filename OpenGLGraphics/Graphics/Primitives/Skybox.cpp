@@ -84,7 +84,6 @@ namespace Core {
             //Enable depth mask & culling again
             glEnable(GL_CULL_FACE);
             glDepthMask(GL_TRUE);
-
             glDepthFunc(GL_LESS);
         }
 

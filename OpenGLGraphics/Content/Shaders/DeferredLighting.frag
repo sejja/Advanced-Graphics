@@ -121,9 +121,9 @@ void main() {
             reflect(-lightDir, normal)), 0.0), 32)));
    }
 
-    //FragColor = texture(gAlbedoSpec, oUVs) * vec4(totalLightShine, 1.0);
+    FragColor = texture(gAlbedoSpec, oUVs) * vec4(totalLightShine, 1.0);
 
-    vec4 fragment = texture(gAlbedoSpec, oUVs) * vec4(totalLightShine, 1.0);
-    FragColor.rgb = pow (fragment.rgb, vec3(1.f/2.2f));
+    //fragment = texture(gAlbedoSpec, oUVs) * vec4(totalLightShine, 1.0);
+    //FragColor = pow (fragment.rgb, vec3(1.f/2.2f));
 
 } 

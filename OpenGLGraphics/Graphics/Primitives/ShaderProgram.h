@@ -35,6 +35,7 @@ namespace Core {
 			void inline Bind() const noexcept;
 			void inline SetShaderUniform(const std::string_view& name, const int value);
 			void inline SetShaderUniform(const std::string_view& name, const bool value);
+			void inline SetShaderUniform(const std::string_view& name, const float value);
 			void inline SetShaderUniform(const std::string_view& name, int* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, float* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, glm::mat4* value, const int count = 1);
@@ -69,6 +70,15 @@ namespace Core {
 		*/ // --------------------------------------------------------------------
 		void ShaderProgram::SetShaderUniform(const std::string_view& name, const bool value) {
 			glUniform1i(getUniformLocation(name), value);
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Set Shader Uniform
+		*
+		*   Sets uniform values in form of a boolean
+		*/ // --------------------------------------------------------------------
+		void ShaderProgram::SetShaderUniform(const std::string_view& name, const float value) {
+			glUniform1f(getUniformLocation(name), value);
 		}
 
 		// ------------------------------------------------------------------------

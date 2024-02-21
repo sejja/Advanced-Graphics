@@ -14,6 +14,7 @@
 #include "Graphics/Primitives/Renderables.h"
 #include "Tools/FrameBuffer.h"
 #include "Graphics/Architecture/GBuffer.h"
+#include "Graphics/Architecture/HDRBuffer.h"
 
 namespace Core {
 	namespace Graphics {
@@ -46,6 +47,7 @@ namespace Core {
 			glm::lowp_u16vec2 mDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<GBuffer> mGBuffer;
+			std::unique_ptr<HDRBuffer> mHDRBuffer;
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			GLuint mUniformBuffer;
 
@@ -56,7 +58,7 @@ namespace Core {
 			GLuint hdrFBO;
 			GLuint colorBuffer;
 			GLuint rboDepth;  
-			bool hdrON = false;
+			bool hdrON = true;
 		};
 
 		// ------------------------------------------------------------------------
