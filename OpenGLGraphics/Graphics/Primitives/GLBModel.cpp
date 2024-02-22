@@ -34,7 +34,7 @@ namespace Graphics {
 
             // read file via ASSIMP
             Assimp::Importer importer;
-            const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_CalcTangentSpace);
+            const aiScene* scene = importer.ReadFile(path, aiProcess_CalcTangentSpace);
             // check for errors
             if(scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
             std::cout << "ERROR::ASSIMP:: INCOMPLETE DATA" << std::endl;
@@ -100,6 +100,9 @@ namespace Graphics {
                     // use models where a vertex can have multiple texture coordinates so we always take the first set (0).
                     vec.x = mesh->mTextureCoords[0][i].x;
                     vec.y = mesh->mTextureCoords[0][i].y;
+                    //if(vec.x > 1.0f || vec.y > 1.0f)
+					//	std::cout << "Whattt????: " << vec.x << ", " << vec.y << std::endl;
+
                     vertex.mUV = vec;
                     // tangent
                     vector.x = mesh->mTangents[i].x;
