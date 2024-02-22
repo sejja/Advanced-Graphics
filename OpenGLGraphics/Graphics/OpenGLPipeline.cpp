@@ -298,7 +298,7 @@ namespace Core {
 			//glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 			glEnable(GL_BLEND);
 			glBlendEquation(GL_FUNC_ADD);
-			//glBlendFunc(GL_ONE, GL_ONE); //Transparencia
+			//glBlendFunc(GL_ONE, GL_ONE); //Transparencia 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
