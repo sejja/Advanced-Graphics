@@ -43,13 +43,13 @@ namespace Core {
 			mShadowBuffers.emplace_back();
 			mShadowBuffers.emplace_back();
 			mShadowBuffers[0].Create();
-			mShadowBuffers[0].CreateRenderTexture({mDimensions.x * 2, mDimensions.y * 2}, false);
+			mShadowBuffers[0].CreateRenderTexture({mDimensions.x * 4, mDimensions.y * 4}, false);
 			mShadowBuffers[1].Create();
-			mShadowBuffers[1].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
+			mShadowBuffers[1].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
 			mShadowBuffers[2].Create();
-			mShadowBuffers[2].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
+			mShadowBuffers[2].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
 			mShadowBuffers[3].Create();
-			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
+			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
 			mGBuffer = std::make_unique<GBuffer>();
 			mDirectionalLightShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DirectionalLight.shader");
 
@@ -208,6 +208,8 @@ namespace Core {
 			glCullFace(GL_BACK);
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_GREATER, 0.1f);
 
 			{
 				glm::mat4 view = cam.GetViewMatrix();
@@ -241,6 +243,7 @@ namespace Core {
 
 			glDepthMask(GL_FALSE);
 			glDisable(GL_DEPTH_TEST);
+			glDisable(GL_ALPHA_TEST);
 		}
 
 		// ------------------------------------------------------------------------
@@ -319,6 +322,7 @@ namespace Core {
 				};
 
 			glCullFace(GL_FRONT);
+			glViewport(0, 0, mDimensions.x * 4, mDimensions.y * 4);
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				mShadowBuffers[i].Bind();
 				mShadowBuffers[i].Clear(true);
