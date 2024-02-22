@@ -1131,7 +1131,16 @@ void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder)
 			t << GetText();
 		}
 		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(1, 1, 0, 1), "File: %s", fileToEdit);
+	}
+	{ // Swap
+		 if (ImGui::Button("Swap")) {
+			 fileToEdit = "Core/Editor/patata.txt";
+			 firstTime = true;
+			 SetText("");
+		 }
+
+		 ImGui::SameLine();
+		 ImGui::TextColored(ImVec4(1, 1, 0, 1), "File: %s", fileToEdit);
 	}
 	std::ifstream t(fileToEdit);
 	if (t.good() && firstTime)
@@ -1140,6 +1149,7 @@ void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder)
 		SetText(str);
 		firstTime = false;
 	}
+	t.close();
 	mWithinRender = true;
 	mTextChanged = false;
 	mCursorPositionChanged = false;
