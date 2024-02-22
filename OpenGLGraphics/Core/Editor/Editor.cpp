@@ -20,20 +20,16 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	//Abre una demo de opciones de imgui
 	ImGui::ShowDemoWindow();
 
-
-	//Singleton para gestionar objeto seleccionado en cualquier 
+	//Singleton para gestionar objeto seleccionado
 	Singleton<SelectedObj>::Instance();
 
 
-
-
-
-	//AssetManager assetManager;
 	assetManager.Render();
 	properties.Render();
 	outliner.Render();
 
-	//SceneView sceneView;
+
+	//SceneView
 	sceneView.Render(pipeline);
 	
 

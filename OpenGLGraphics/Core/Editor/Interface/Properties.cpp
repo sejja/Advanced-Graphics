@@ -1,5 +1,6 @@
 #include "Properties.h"
 #include <iostream>
+#include <format>
 #include "Dependencies/ImGui/imgui.h"
 #include "Core/ResourceManager.h"
 #include "Graphics/Primitives/Texture.h"
@@ -9,6 +10,8 @@
 #include <Dependencies/ImGui/imgui_impl_sdl2.h>
 #include "Core/Editor/SelectedObj.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
+#include "Core/Editor/Interface/AssetIcon.h"
+
 
 SelectedObj& selectedObjIns = Singleton<SelectedObj>::Instance();
 
@@ -30,15 +33,22 @@ void Properties::Render() {
 
 
     if (selectedObjIns.GetSelectedObject()) {
-        if (ImGui::CollapsingHeader(ICON_FA_ARROWS_UP_DOWN_LEFT_RIGHT " Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+        if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
             TransformOptions();
         }
     }
 
-    if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB " Light", ImGuiTreeNodeFlags_DefaultOpen)) {
+    if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "  Light", ImGuiTreeNodeFlags_DefaultOpen)) {
         LightingOptions();
     }
 
+    if (ImGui::CollapsingHeader(ICON_FA_BRUSH "  Material", ImGuiTreeNodeFlags_DefaultOpen)) {
+		MaterialsOptions();
+	}
+
+    if (ImGui::CollapsingHeader(ICON_FA_SHAPES "  Static Mesh", ImGuiTreeNodeFlags_DefaultOpen)) {
+        MaterialsOptions();
+    }
 
 
 
@@ -123,6 +133,8 @@ void TransformRow(const char* title,float& x_val, float& y_val, float& z_val) {
 void Properties::objectOutlinerComp() {
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
 
+    //obj->GetComponent<Core::Graphics::Model>();
+
     if (obj) {
         float originalTextSize = ImGui::GetFontSize();
        
@@ -163,8 +175,11 @@ void Properties::selectedObjectTree() {
     ImGui::BeginChild("ResizableChild", ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 2), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeY);
 
 
-        std::string displayName = ("%s %s (Instance)", ICON_FA_CUBE, obj->GetName());
-     
+        std::string displayName = std::format("{} {} (Instance)", ICON_FA_CUBE, obj->GetName());
+
+
+        printf(displayName.c_str());
+
         //el selcted seria obj== selobj and comp 
         if (ImGui::Selectable(displayName.c_str(), true)) {
             selectedObjIns.SetSelectedObject(obj);
@@ -367,6 +382,102 @@ void Properties::LightingOptions() {
 
 
 
+
+}
+//TODO componetizar tabla y usar en todas los componentes
+
+void Properties::MaterialsOptions(){
+    static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
+    static ImVec2 cell_padding(4.0f, 8.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
+
+
+    ImGuiDragDropFlags flags = 0;
+    flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+    std::string texto = "No se ha droppeado nada";
+    if (ImGui::BeginDragDropTarget()) {
+        printf("Dropping");
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
+            AssetIcon* iconPtr = (AssetIcon*)payload->Data;
+            texto = iconPtr->nombre;
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+    if (ImGui::BeginTable("materials_table", 2, flags1)) {
+
+        ImGui::TableNextRow();
+       
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Element 0");
+        ImGui::TableSetColumnIndex(1);
+
+       
+        auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Content\\Textures\\Brick.png")->Get();
+        ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+
+
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+
+        ImGui::Text(texto.c_str());
+
+        ImGui::Button(ICON_FA_ARROW_TURN_UP);
+        ImGui::SameLine();
+        ImGui::Button(ICON_FA_FOLDER_OPEN);
+
+
+        ImGui::EndGroup();
+
+
+    }
+    ImGui::EndTable();
+
+    ImGui::PopStyleVar();
+
+
+}
+
+void Properties::MeshOptions(){
+    static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
+    static ImVec2 cell_padding(4.0f, 8.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
+
+    if (ImGui::BeginTable("mesh_table", 2, flags1)) {
+
+        ImGui::TableNextRow();
+
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Element 0");
+        ImGui::TableSetColumnIndex(1);
+
+
+        auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Content\\Textures\\Brick.png")->Get();
+        ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+
+
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+
+        if (ImGui::BeginCombo("", "Nombre textura")) {
+            ImGui::Selectable("Textura 1");
+            ImGui::Selectable("Textura 2");
+            ImGui::Selectable("Textura 3");
+            ImGui::EndCombo();
+        }
+
+        ImGui::Button(ICON_FA_ARROW_TURN_UP);
+        ImGui::SameLine();
+        ImGui::Button(ICON_FA_FOLDER_OPEN);
+
+
+        ImGui::EndGroup();
+
+
+    }
+    ImGui::EndTable();
+
+    ImGui::PopStyleVar();
 
 }
 

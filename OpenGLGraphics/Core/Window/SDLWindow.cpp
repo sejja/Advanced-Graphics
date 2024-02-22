@@ -93,7 +93,11 @@ void SDLWindow::Create() {
     config.MergeMode = true;
     config.GlyphMinAdvanceX = 13.0f; // Makes icons monospaced
     static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
-    io.Fonts->AddFontFromFileTTF("Core/Editor/Assets/Fonts/fontawesome-webfont.ttf", 16.5f, &config, icon_ranges);
+    io.Fonts->AddFontFromFileTTF("Core/Editor/Assets/Fonts/fa-regular-400.ttf", 16.5f, &config, icon_ranges);
+    io.Fonts->AddFontFromFileTTF("Core/Editor/Assets/Fonts/fa-brands-400.ttf", 16.5f, &config, icon_ranges);
+    io.Fonts->AddFontFromFileTTF("Core/Editor/Assets/Fonts/fa-solid-900.ttf", 16.5f, &config, icon_ranges);
+
+
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForOpenGL(mWindow.get(), mContext);

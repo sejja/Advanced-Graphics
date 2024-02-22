@@ -33,7 +33,7 @@ void Outliner::Render(){
 
 	//New Folder
 	ImGui::SameLine();
-	if (ImGui::Button(ICON_FA_FOLDER)) {
+	if (ImGui::Button(ICON_FA_FOLDER_PLUS)) {
 		for (const auto& obj : scene.GetObjects()) {
 			std::cout << "Objeto: " << obj->GetName() << std::endl;
 		}
@@ -51,7 +51,6 @@ void Outliner::Render(){
 
 	if (ImGui::TreeNode(ICON_FA_HOUSE " Main (Editor)")) {
 		static std::string selectedNodeChild = "None";
-
 		
 		for (const auto& obj : sceneObjects) {
 
@@ -81,7 +80,7 @@ void Outliner::Render(){
 			else if (obj->GetName().find("_bg") != std::string::npos) {
 				displayName.erase(displayName.length() - 3);
 				displayName[0] = std::toupper(displayName[0]);
-				displayName = ICON_FA_IMAGE " " + displayName;
+				displayName = ICON_FA_MOUNTAIN_SUN " " + displayName;
 
 			}
 			else {
