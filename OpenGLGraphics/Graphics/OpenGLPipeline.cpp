@@ -195,10 +195,12 @@ namespace Core {
 			//RenderScreenQuad();
 			//mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 			//Bind the HDR shader
-			//Todo lo que saca a partier de aqui esta en el HDRBuffer
-			//glBindTexture(GL_TEXTURE_2D, mHDRBuffer->GetTextureHandle());
+
+			#pragma Cosas de hdr
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+			#pragma endregion
 
 			RenderScreenQuad();
 			
@@ -296,7 +298,7 @@ namespace Core {
 			//glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 			glEnable(GL_BLEND);
 			glBlendEquation(GL_FUNC_ADD);
-			glBlendFunc(GL_ONE, GL_ONE);
+			//glBlendFunc(GL_ONE, GL_ONE); //Transparencia
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
