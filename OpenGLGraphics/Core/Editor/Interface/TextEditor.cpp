@@ -3,6 +3,8 @@
 #include <string>
 #include <regex>
 #include <cmath>
+#include <iostream>
+#include <fstream>
 
 #include "TextEditor.h"
 
@@ -11,6 +13,7 @@
 
 // TODO
 // - multiline comments vs single-line: latter is blocking start of a ML
+
 
 template<class InputIt1, class InputIt2, class BinaryPredicate>
 bool equals(InputIt1 first1, InputIt1 last1,
@@ -48,6 +51,8 @@ TextEditor::TextEditor()
 	, mIgnoreImGuiChild(false)
 	, mShowWhitespaces(true)
 	, mStartTime(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count())
+	, fileToEdit("Content/Shaders/White.frag")
+	, firstTime(true)
 {
 	SetPalette(GetDarkPalette());
 	SetLanguageDefinition(LanguageDefinition::HLSL());
@@ -1120,6 +1125,21 @@ void TextEditor::Render()
 
 void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder)
 {
+	 { // Save
+		if (ImGui::Button("Save")) {
+			std::ofstream t(fileToEdit);
+			t << GetText();
+		}
+		ImGui::SameLine();
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), "File: %s", fileToEdit);
+	}
+	std::ifstream t(fileToEdit);
+	if (t.good() && firstTime)
+	{
+		std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+		SetText(str);
+		firstTime = false;
+	}
 	mWithinRender = true;
 	mTextChanged = false;
 	mCursorPositionChanged = false;
@@ -1151,6 +1171,7 @@ void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder)
 	ImGui::PopStyleColor();
 
 	mWithinRender = false;
+	ImGui::End();
 }
 
 void TextEditor::SetText(const std::string& aText)

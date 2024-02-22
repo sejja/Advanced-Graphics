@@ -25,7 +25,7 @@ private:
     Properties properties;
     //AssetManager assetManager;
     Outliner outliner;
-    //TextEditor textEditor;
+    TextEditor textEditor;
 
 
 };

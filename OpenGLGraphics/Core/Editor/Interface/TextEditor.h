@@ -16,6 +16,8 @@
 class TextEditor
 {
 public:
+	const char* fileToEdit;
+	bool firstTime;
 	enum class PaletteIndex
 	{
 		Default,
