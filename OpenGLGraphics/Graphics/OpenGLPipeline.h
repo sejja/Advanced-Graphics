@@ -35,6 +35,7 @@ namespace Core {
 			void RenderShadowMaps();
 			void RenderScreenQuad();
 			void UpdateUniformBuffers();
+			void DirectionalLightPass();
 
 			void RenderGUI();
 			void FlushObsoletes(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes);
@@ -46,6 +47,7 @@ namespace Core {
 			glm::lowp_u16vec2 mDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<GBuffer> mGBuffer;
+			Asset<ShaderProgram> mDirectionalLightShader;
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			GLuint mUniformBuffer;
 		};
@@ -70,7 +72,7 @@ namespace Core {
 		*   Adds a Renderable into the pipeline
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::AddRenderable(const std::weak_ptr<Renderable>& renderer) {
-			mGroupedRenderables[(std::dynamic_pointer_cast<ModelRenderer<Core::GraphicsAPIS::OpenGL>>(renderer.lock()))->GetShaderProgram().lock()].push_back(renderer);
+			mGroupedRenderables[(std::dynamic_pointer_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(renderer.lock()))->GetShaderProgram().lock()].push_back(renderer);
 		}
 	}
 }

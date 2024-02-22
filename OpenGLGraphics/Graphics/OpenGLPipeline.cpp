@@ -46,14 +46,16 @@ namespace Core {
 			mShadowBuffers.emplace_back();
 			mShadowBuffers.emplace_back();
 			mShadowBuffers[0].Create();
-			mShadowBuffers[0].CreateRenderTexture({mDimensions.x * 2, mDimensions.y * 2}, false);
+			mShadowBuffers[0].CreateRenderTexture({mDimensions.x * 4, mDimensions.y * 4}, false);
 			mShadowBuffers[1].Create();
-			mShadowBuffers[1].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
+			mShadowBuffers[1].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
 			mShadowBuffers[2].Create();
-			mShadowBuffers[2].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
+			mShadowBuffers[2].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
 			mShadowBuffers[3].Create();
-			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, false);
+			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
 			mGBuffer = std::make_unique<GBuffer>();
+			mDirectionalLightShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DirectionalLight.shader");
+
 			float quadVertices[] = {
 				// positions        // texture Coords
 				-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
@@ -164,7 +166,7 @@ namespace Core {
 						glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
 						glm::scale(glm::mat4(1.0f), parent->GetScale());
 					shader->SetShaderUniform("uModel", &matrix);
-					reinterpret_cast<ModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
+					reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
 				}
 				else {
 					obsoletes.insert(std::make_pair(it.first, it2));
@@ -186,6 +188,7 @@ namespace Core {
 			UpdateUniformBuffers();
 			GeometryPass();
 			LightingPass();
+			glEnable(GL_DEPTH_TEST);
 			mGBuffer->BlitDepthBuffer();
 			Skybox::sCurrentSky->Render(cam);
 
@@ -228,12 +231,44 @@ namespace Core {
 		void OpenGLPipeline::GeometryPass() {
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
-			FlushObsoletes(obsoletes);
+			auto f_flushobosoletes = [this, &obsoletes]() {
+				std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
+					std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
+					it.erase(x.second);
 
+					//If we don't have any other renderables, erase it
+					if (!it.size()) mGroupedRenderables.erase(x.first);
+					});
+				};
+
+			auto f_grouprender = [&obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram* shader) {
+				//For each renderable in shader program
+				for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
+					//If it isn't expired
+					if (auto renderable = it2->lock()) {
+						const std::shared_ptr<Object> parent = renderable->GetParent().lock();
+						glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
+							glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+							glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
+							glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
+							glm::scale(glm::mat4(1.0f), parent->GetScale());
+						shader->SetShaderUniform("uModel", &matrix);
+						reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
+					}
+					else {
+						obsoletes.insert(std::make_pair(it.first, it2));
+					}
+				}
+				};
+
+			glDepthMask(GL_TRUE);
+			glDisable(GL_BLEND);
 			glEnable(GL_DEPTH_TEST);
 			glCullFace(GL_BACK);
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_GREATER, 0.1f);
 
 			{
 				glm::mat4 view = cam.GetViewMatrix();
@@ -246,8 +281,6 @@ namespace Core {
 					[this, &obsoletes, &projection, &view](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 
 						it, it.first->Get()->Bind();
-						it.first->Get()->SetShaderUniform("uTransform", &projection);
-						it.first->Get()->SetShaderUniform("uView", &view);
 
 					try {
 						it.first->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
@@ -263,6 +296,10 @@ namespace Core {
 					GroupRender(obsoletes,it, it.first->Get());
 					});
 			}
+
+			glDepthMask(GL_FALSE);
+			glDisable(GL_DEPTH_TEST);
+			glDisable(GL_ALPHA_TEST);
 		}
 
 		// ------------------------------------------------------------------------
@@ -273,6 +310,9 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::LightingPass() {
 			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+			glEnable(GL_BLEND);
+			glBlendEquation(GL_FUNC_ADD);
+			glBlendFunc(GL_ONE, GL_ONE);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
@@ -307,8 +347,38 @@ namespace Core {
 		void OpenGLPipeline::RenderShadowMaps() {
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
+			auto f_flushobosoletes = [this, &obsoletes]() {
+				std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
+					std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
+					it.erase(x.second);
+
+					//If we don't have any other renderables, erase it
+					if (!it.size()) mGroupedRenderables.erase(x.first);
+					});
+				};
+
+			auto f_grouprender = [&obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram* shader) {
+				//For each renderable in shader program
+				for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
+					//If it isn't expired
+					if (auto renderable = it2->lock()) {
+						const std::shared_ptr<Object> parent = renderable->GetParent().lock();
+						glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
+							glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+							glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
+							glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
+							glm::scale(glm::mat4(1.0f), parent->GetScale());
+						shader->SetShaderUniform("uModel", &matrix);
+						reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
+					}
+					else {
+						obsoletes.insert(std::make_pair(it.first, it2));
+					}
+				}
+				};
 
 			glCullFace(GL_FRONT);
+			glViewport(0, 0, mDimensions.x * 4, mDimensions.y * 4);
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				mShadowBuffers[i].Bind();
 				mShadowBuffers[i].Clear(true);
@@ -391,6 +461,16 @@ namespace Core {
 			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &projection);
 			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), &cam.GetPositionRef());
 			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Directional Light Pass
+		*
+		*   Updates the Uniform Buffers on the GPU across Shaders
+		*/ //----------------------------------------------------------------------
+		void OpenGLPipeline::DirectionalLightPass() {	
+			mDirectionalLightShader->Get()->Bind();
+			RenderScreenQuad();
 		}
 	}
 }

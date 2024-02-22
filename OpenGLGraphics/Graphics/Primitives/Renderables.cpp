@@ -19,26 +19,8 @@ namespace Core {
 		*
 		*   Renders this  Model
 		*/ //----------------------------------------------------------------------
-		void ModelRenderer<GraphicsAPIS::OpenGL>::Render() const noexcept {
-			Model* const model = mModel->Get();
-
-			auto tex = model->GetDiffuseTexture();
-			if (!tex.expired()) {
-				Asset<Texture> texl = tex.lock();
-				texl->Get()->SetTextureType(Texture::TextureType::eDiffuse);
-				texl->Get()->Bind();
-			}
-
-			tex = model->GetNormalTexture();
-			if (!tex.expired()) {
-				Asset<Texture> texl = tex.lock();
-				texl->Get()->SetTextureType(Texture::TextureType::eNormal);
-				texl->Get()->Bind();
-			}
-
-			model->SetShaderUniforms(*mShaderProgram->Get());
-			glBindVertexArray(model->GetHandle());
-			glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(model->GetVertexCount()));
+		void GLBModelRenderer<GraphicsAPIS::OpenGL>::Render() const noexcept {
+			mModel->Get()->Draw(*mShaderProgram->Get());
 		}
 
 		// ------------------------------------------------------------------------
