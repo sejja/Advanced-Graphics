@@ -97,10 +97,11 @@ namespace Core {
 		void GBuffer::BlitDepthBuffer(GLuint HDRBuffer) {
 			glBindFramebuffer(GL_READ_FRAMEBUFFER, mBuffer);
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, HDRBuffer); // write to default framebuffer
+			//glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
 			glBlitFramebuffer(
 				0, 0, 1072, 780, 0, 0, 1072, 780, GL_DEPTH_BUFFER_BIT, GL_NEAREST
 			);
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 
 		Asset<ShaderProgram> GBuffer::GetLightingShader() {

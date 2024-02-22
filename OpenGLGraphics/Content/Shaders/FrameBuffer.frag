@@ -2,10 +2,10 @@
 
 out vec4 FragColor;
 
-layout(binding = 0) uniform sampler2D screenTexture;
 layout (location = 1) in vec2 texCoords;
 
 uniform float gamma;
+uniform sampler2D screenTexture;
 
 void main()
 {

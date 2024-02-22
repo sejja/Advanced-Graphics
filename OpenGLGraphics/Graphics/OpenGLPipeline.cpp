@@ -66,8 +66,7 @@ namespace Core {
 
 			glBindBufferRange(GL_UNIFORM_BUFFER, 0, mUniformBuffer, 0, 2 * sizeof(glm::mat4) + sizeof(glm::vec3));
 
-			//HDR y esas mierdas de burgesia
-
+			mHDRBuffer->Bind();
 		}
 
 		// ------------------------------------------------------------------------
@@ -77,12 +76,6 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::PreRender() 
 		{
-			///*
-			if (hdrON) 
-			{
-				mHDRBuffer->Bind();
-			}
-			//*/
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
@@ -175,28 +168,48 @@ namespace Core {
 		*   Renders every object in the scene
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::Render() {
-			//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+			//Render the GUI and store its textures in the mGBuffers
 			RenderGUI();
+
+			//Enable depth Test
 			glEnable(GL_DEPTH_TEST);
 
+			//Render all the shadowMaps in their buffer and unbind them at the end
 			RenderShadowMaps();
+
+			//Activate GL_TEXTRURE9 and Bind the SkyBoxTexture
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
+
+			//Update mUniformBuffer withe the cam position
 			UpdateUniformBuffers();
+
+			//Draw every Geometry Object in the mGBuffer
 			GeometryPass();
+
+			//Bind mHDRBuffer, clear it, render over mHDRBuffer and store all textures in the GBuffer 
 			LightingPass();
-			mHDRBuffer->Bind();
+
+
 			Skybox::sCurrentSky->Render(cam);
 			   
 			mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 
 			//Bind the HDR shader
-
+			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mHDRBuffer->GetTextureHandle());
+
+			//GLuint screenTexture = glGetUniformLocation(mHDRBuffer->GetLightingShader()->Get());
+			//mHDRBuffer->GetLightingShader()->Get()->SetShaderUniform("screenTexture", );
+
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			RenderScreenQuad();
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+	
 		}
 
 		// ------------------------------------------------------------------------
@@ -281,6 +294,13 @@ namespace Core {
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::LightingPass() {
+			mHDRBuffer->Bind();
+			mHDRBuffer->ClearBuffer();
+
+			//glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+			glEnable(GL_BLEND);
+			glBlendEquation(GL_FUNC_ADD);
+			glBlendFunc(GL_ONE, GL_ONE);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
@@ -290,10 +310,10 @@ namespace Core {
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetAlbedoTextureHandle());
 			mGBuffer->BindLightingShader();
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
-			mHDRBuffer->ClearBuffer();
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			UploadLightDataToGPU(mGBuffer->GetLightingShader());
 
-			vector<glm::mat4> shadow_matrices;
+			std::vector<glm::mat4> shadow_matrices;
 
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				mShadowBuffers[i].BindTexture(3 + i);
@@ -305,19 +325,16 @@ namespace Core {
 			}
 
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-				mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uShadowMatrix[" + to_string(i) + "]", shadow_matrices.data() + i);
+				mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uShadowMatrix[" + std::to_string(i) + "]", shadow_matrices.data() + i);
 			}
 
 			mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
 
-			mHDRBuffer->Bind();
 			RenderScreenQuad();
 		}
 
 		void OpenGLPipeline::RenderShadowMaps() {
 			unordered_multimap<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes;
-
-
 			glCullFace(GL_FRONT);
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				mShadowBuffers[i].Bind();
@@ -399,7 +416,7 @@ namespace Core {
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &view);
 			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &projection);
 			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), &cam.GetPositionRef());
-			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
+			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 		}
 	}
 }
