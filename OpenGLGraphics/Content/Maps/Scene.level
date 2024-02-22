@@ -15,6 +15,52 @@ rotation 0 0 0
 scale 0.2 0.2 0.2
 mesh Content/Scenes/Sponza.gltf 
 
+object plane_mesh
+translate -40 30 50
+rotation 0 0 0
+scale 10 10 1
+mesh Content/Meshes/cube_averaged.obj  
+
+object cube_mesh
+translate -20 30 50
+rotation 0 0 0
+scale 10 10 10
+mesh Content/Meshes/cube_averaged.obj    
+
+object cone_mesh
+translate 0 30 50
+rotation 0 0 0
+scale 10 10 10
+mesh Content/Meshes/cone_20_averaged.obj 
+
+object cylinder_mesh
+translate 20 30 50
+rotation 0 0 0
+scale 10 10 10
+mesh Content/Meshes/cylinder_20_averaged.obj    
+
+object sphere_mesh
+translate 40 30 50
+rotation 0 0 0
+scale 10 10 10
+mesh Content/Meshes/sphere_20_averaged.obj    
+
+object backpack_mesh
+translate -25 -0 50
+rotation 0 0 0
+scale 5 5 5
+mesh Content/Meshes/backpack.obj
+sinusoidal 0 3 5
+orbit 0 -15 0
+
+object suzanne_mesh
+translate 0 -0 50
+rotation 40 20 10
+scale 5 5 5
+mesh Content/Meshes/suzanne.obj
+sinusoidal 0 3 5
+orbit 0 -15 0
+
 #light data
 light
 translate -50 0 55
