@@ -101,7 +101,7 @@ namespace Core {
 			glBlitFramebuffer(
 				0, 0, 1072, 780, 0, 0, 1072, 780, GL_DEPTH_BUFFER_BIT, GL_NEAREST
 			);
-			//glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			//glBindFramebuffer(GL_FRAMEBUFFER, HDRBuffer);
 		}
 
 		Asset<ShaderProgram> GBuffer::GetLightingShader() {

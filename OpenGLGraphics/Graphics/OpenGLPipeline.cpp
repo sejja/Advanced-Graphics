@@ -168,7 +168,6 @@ namespace Core {
 		*   Renders every object in the scene
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::Render() {
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 			//Render the GUI and store its textures in the mGBuffers
 			RenderGUI();
@@ -188,24 +187,21 @@ namespace Core {
 			//Draw every Geometry Object in the mGBuffer
 			GeometryPass();
 
-			//Bind mHDRBuffer, clear it, render over mHDRBuffer and store all textures in the GBuffer 
+			//Bind mHDRBuffer, clear it, render over mHDRBuffer
 			LightingPass();
 
 
-			Skybox::sCurrentSky->Render(cam);
-			   
-			mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
-
+			//Skybox::sCurrentSky->Render(cam);
+			//RenderScreenQuad();
+			//mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 			//Bind the HDR shader
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, mHDRBuffer->GetTextureHandle());
-
-			//GLuint screenTexture = glGetUniformLocation(mHDRBuffer->GetLightingShader()->Get());
-			//mHDRBuffer->GetLightingShader()->Get()->SetShaderUniform("screenTexture", );
+			//Todo lo que saca a partier de aqui esta en el HDRBuffer
+			//glBindTexture(GL_TEXTURE_2D, mHDRBuffer->GetTextureHandle());
 
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			RenderScreenQuad();
 
+			RenderScreenQuad();
+			
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 

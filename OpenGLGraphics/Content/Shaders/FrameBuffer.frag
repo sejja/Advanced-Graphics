@@ -19,5 +19,5 @@ void main()
 
     mapped = pow(mapped, vec3(2.0 / gamma));
   
-    FragColor = vec4(mapped, 1.0);
+    FragColor = vec4(1.0f, 0.f, 0.f, 1.f);
 }

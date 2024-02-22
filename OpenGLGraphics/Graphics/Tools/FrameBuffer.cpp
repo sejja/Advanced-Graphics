@@ -108,7 +108,7 @@ namespace Core {
 
 			if(openglinfo.mBindedBuffer) {
 				Singleton<OpenGLInfo>::Instance().mBindedBuffer = 0;
-				glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			}
 		}
 

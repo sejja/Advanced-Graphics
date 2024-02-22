@@ -71,6 +71,7 @@ namespace Core {
             mShaderProgram->Get()->Bind();
 
             glActiveTexture(GL_TEXTURE0);
+
             glBindTexture(GL_TEXTURE_CUBE_MAP, mMapHandle);
 
             glm::mat4 view = glm::mat4(glm::mat3(cam.GetViewMatrix()));

@@ -18,7 +18,6 @@ namespace Core {
 		*   Constructs a G-Buffer, with 3 Textures (Position, Normal, Albedo)
 		*/ //----------------------------------------------------------------------
 		HDRBuffer::HDRBuffer() {
-			mLightingShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredLighting.shader");
 			auto dim = Singleton<SDLWindow>::Instance().GetDimensions();
 			dim = { 1072, 780 };
 			glGenFramebuffers(1, &mBuffer);
