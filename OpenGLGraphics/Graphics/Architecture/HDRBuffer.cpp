@@ -71,20 +71,6 @@ namespace Core {
 			mLightingShader->Get()->Bind();
 		}
 
-		// ------------------------------------------------------------------------
-		/*! Blit Depth Buffer
-		*
-		*   Copies the Depth Values, so we can Forward Render after Deferred
-		*/ //----------------------------------------------------------------------
-		void HDRBuffer::BlitDepthBuffer() {
-			glBindFramebuffer(GL_READ_FRAMEBUFFER, mBuffer);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
-			glBlitFramebuffer(
-				0, 0, 1072, 780, 0, 0, 1072, 780, GL_DEPTH_BUFFER_BIT, GL_NEAREST
-			);
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		}
-
 		Asset<ShaderProgram> HDRBuffer::GetLightingShader() {
 			return mLightingShader;
 		}
@@ -106,6 +92,10 @@ namespace Core {
 		void HDRBuffer::ClearBuffer() {
 			glClearColor(0.0, 0.0, 0.0, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
+
+		GLuint HDRBuffer::GetHandle() {
+			return mBuffer;
 		}
 	}
 }

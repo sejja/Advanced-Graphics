@@ -183,16 +183,20 @@ namespace Core {
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
+			LightingPass();
 			mHDRBuffer->Bind();
 			Skybox::sCurrentSky->Render(cam);
-			LightingPass();
-			mGBuffer->BlitDepthBuffer();
+			   
+			mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 
 			//Bind the HDR shader
 
+			glBindTexture(GL_TEXTURE_2D, mHDRBuffer->GetTextureHandle());
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			RenderScreenQuad();
+
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
 		}
 
 		// ------------------------------------------------------------------------
@@ -277,7 +281,6 @@ namespace Core {
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::LightingPass() {
-			mHDRBuffer->Bind();
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
@@ -306,6 +309,8 @@ namespace Core {
 			}
 
 			mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
+
+			mHDRBuffer->Bind();
 			RenderScreenQuad();
 		}
 
@@ -334,7 +339,6 @@ namespace Core {
 				}
 
 				mShadowBuffers[i].Unbind();
-
 			}
 		}
 

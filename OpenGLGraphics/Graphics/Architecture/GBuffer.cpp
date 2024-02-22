@@ -94,9 +94,9 @@ namespace Core {
 		*
 		*   Copies the Depth Values, so we can Forward Render after Deferred
 		*/ //----------------------------------------------------------------------
-		void GBuffer::BlitDepthBuffer() {
+		void GBuffer::BlitDepthBuffer(GLuint HDRBuffer) {
 			glBindFramebuffer(GL_READ_FRAMEBUFFER, mBuffer);
-			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, HDRBuffer); // write to default framebuffer
 			glBlitFramebuffer(
 				0, 0, 1072, 780, 0, 0, 1072, 780, GL_DEPTH_BUFFER_BIT, GL_NEAREST
 			);

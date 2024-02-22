@@ -12,9 +12,12 @@ void main()
     vec3 hdrColor = texture(screenTexture, texCoords).rgb;
   
     // reinhard tone mapping
+
     vec3 mapped = hdrColor / (hdrColor + vec3(1.0));
+
     // gamma correction 
-    mapped = pow(mapped, vec3(1.0 / gamma));
+
+    mapped = pow(mapped, vec3(2.0 / gamma));
   
     FragColor = vec4(mapped, 1.0);
 }

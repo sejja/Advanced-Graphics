@@ -24,7 +24,7 @@ namespace Core {
 			~GBuffer();
 			void Bind();
 			void BindLightingShader();
-			void BlitDepthBuffer();
+			void BlitDepthBuffer(GLuint HDRBuffer);
 			Asset<ShaderProgram> GetLightingShader();
 			GLuint GetPositionTextureHandle();
 			GLuint GetNormalTextureHandle();

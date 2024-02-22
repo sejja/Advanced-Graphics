@@ -24,10 +24,10 @@ namespace Core {
 			~HDRBuffer();
 			void Bind();
 			void BindLightingShader();
-			void BlitDepthBuffer();
 			Asset<ShaderProgram> GetLightingShader();
 			GLuint GetTextureHandle();
 			void ClearBuffer();
+			GLuint GetHandle();
 
 		private:
 			GLuint mBuffer;
