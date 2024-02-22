@@ -36,7 +36,6 @@ namespace Core {
 			glDepthFunc(GL_LESS);
 			glEnable(GL_CULL_FACE);
 			glEnable(GL_FRAMEBUFFER_SRGB);
-			glCullFace(GL_BACK);
 			glFrontFace(GL_CCW);
 			glDisable(GL_BLEND);
 			glDisable(GL_STENCIL_TEST);
@@ -377,7 +376,6 @@ namespace Core {
 				}
 				};
 
-			glCullFace(GL_FRONT);
 			glViewport(0, 0, mDimensions.x * 4, mDimensions.y * 4);
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				mShadowBuffers[i].Bind();
@@ -392,7 +390,7 @@ namespace Core {
 					shadow->Bind();
 					shadow->SetShaderUniform("uProjection", &lightProjection);
 					shadow->SetShaderUniform("uView", &lightView);
-
+					glCullFace(GL_FRONT);
 					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 						GroupRender(obsoletes,it, shadow);
 						});
