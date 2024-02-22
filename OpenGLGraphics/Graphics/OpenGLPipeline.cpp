@@ -390,7 +390,7 @@ namespace Core {
 					shadow->Bind();
 					shadow->SetShaderUniform("uProjection", &lightProjection);
 					shadow->SetShaderUniform("uView", &lightView);
-					glCullFace(GL_FRONT);
+					glCullFace(GL_NONE);
 					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 						GroupRender(obsoletes,it, shadow);
 						});
