@@ -28,20 +28,24 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     assetManager.Render();
     properties.Render();
     outliner.Render();
+    //auto lang = TextEditor::LanguageDefinition::Lua();
+    //textEditor.SetLanguageDefinition(lang);
 
     ImGui::Begin("Text Editor");
+    static const char* fileToEdit = "Content/Shaders/White.frag";
+    { // Save
+        if (ImGui::Button("Save")) {
+            std::ofstream t(fileToEdit);
+            t << textEditor.GetText();
+        }
+        ImGui::SameLine();
+        ImGui::TextColored(ImVec4(1, 1, 0, 1), "File: %s", fileToEdit);
+    }
     ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
     textEditor.Render("Patata", ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, false);
-    static const char* fileToEdit = "Core/Editor/patata.txt";
-    { // Save
-		if (ImGui::Button("Save")) {
-			std::ofstream t(fileToEdit);
-			t << textEditor.GetText();
-		}
-	}
     std::ifstream t(fileToEdit);
-    //std::cout << "Error: " << strerror(errno) << std::endl;
-    if (t.good() & firstTime)
+    //std::cout << "Err&or: " << strerror(errno) << std::endl;
+    if (t.good() && firstTime)
     {
         std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
         textEditor.SetText(str);
@@ -55,8 +59,4 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     uint64_t textureID = pipeline.GetRenderFrameBuffer()->GetTextureHandle();
     ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
     ImGui::End();
-}
-
-void editamos() {
-	std::cout << "Editamos" << std::endl;
 }
