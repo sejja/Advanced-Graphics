@@ -62,7 +62,7 @@ namespace Core {
 			int i = idx == mUniformLocations.end() ? (mUniformLocations[id] = glGetUniformLocation(mHandle, id.data())) : idx->second;
 
 			if (i == -1) {
-				std::cout << "There is no such uniform in the shader" << std::endl;
+				//std::cout << "There is no such uniform in the shader" << std::endl;
 				throw ShaderProgramException("There is no such uniform in the shader");
 			}
 

@@ -57,6 +57,9 @@ namespace Core {
 			mFrameBuffer = std::make_unique<FrameBuffer>();
 			mFrameBuffer->Create();
 			mFrameBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
+			mHDRBuffer = std::make_unique<HDRBuffer>();
+			mHDRBuffer->Create();
+			mHDRBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
 			
 
 			//-------------------------
@@ -192,6 +195,10 @@ namespace Core {
 
 			//Render editor
 			Singleton<Editor>::Instance().Render(*this);
+
+			ImGui::Begin("Exposure Window");
+			ImGui::SliderFloat("Exposure", &exposure, 0, 5);
+			ImGui::End();
 		}
 
 
@@ -209,17 +216,21 @@ namespace Core {
 			UpdateUniformBuffers();
 			GeometryPass();
 
-			mFrameBuffer->Bind();
-			mFrameBuffer->Clear();
+			mHDRBuffer->Bind();
+			mHDRBuffer->Clear();
 			glEnable(GL_DEPTH_TEST);
 
 			LightingPass();
-			mGBuffer->BlitDepthBuffer(mFrameBuffer->GetHandle());
+			mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 			Skybox::sCurrentSky->Render(cam);
 
+			mFrameBuffer->Bind();
+			mFrameBuffer->Clear();
+			mHDRBuffer->BindTexture();
+			
+			RendererShader->Get()->Bind();
 			//----------------------------------------------------
 
-			mFrameBuffer->Unbind();
 
 			//RendererShader->Get()->Bind();
 			//If Gamma is always going to be 2.2, might as well set is as a constant on the shader
@@ -227,9 +238,8 @@ namespace Core {
 			//	mapped = vec3(..., vec3(1.f))
 			//	the first argument within the vec3 operator is already a vec3, so the second part is being discarded,
 			//		thus, rendering "gamma" unused
-			//RendererShader->Get()->SetShaderUniform("gamma", gamma);
+			RendererShader->Get()->SetShaderUniform("exposure", exposure);
 			
-			mFrameBuffer->BindTexture();
 			//We don't pass textures as uniforms, we bind them as
 			// texture->Bind();
 			//	which internally, binds glBindTexture()
@@ -243,9 +253,10 @@ namespace Core {
 			//glBindTexture(GL_TEXTURE_2D, HDRTexture);
 			//mFrameBuffer->Bind();
 
-			RenderScreenQuad();
+			//RenderScreenQuad();
 			//----------------------------------------------------
-
+			RenderScreenQuad();
+			mFrameBuffer->Unbind();
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}

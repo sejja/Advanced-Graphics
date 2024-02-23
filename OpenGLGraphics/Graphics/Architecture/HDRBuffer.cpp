@@ -6,8 +6,8 @@
 //	Copyright © 2023. All Rights reserved
 //
 
-#include "FrameBuffer.h"
-#include "OpenGLInfo.h"
+#include "HDRBuffer.h"
+#include "Graphics/Tools/OpenGLInfo.h"
 #include "Core/Singleton.h"
 
 namespace Core {
@@ -17,7 +17,7 @@ namespace Core {
 		*
 		*   Constructs a FrameBuffer of said dimensions
 		*/ //----------------------------------------------------------------------
-		FrameBuffer::FrameBuffer() noexcept :
+		HDRBuffer::HDRBuffer() noexcept :
 			mHandle(NULL), mTexture(NULL), mDimensions() {}
 
 		// ------------------------------------------------------------------------
@@ -25,10 +25,10 @@ namespace Core {
 		*
 		*   Releases the FrameBuffer resources from the GPU
 		*/ //----------------------------------------------------------------------
-		FrameBuffer::~FrameBuffer() noexcept {
+		HDRBuffer::~HDRBuffer() noexcept {
 			Unbind();
-			if(mTexture) glDeleteTextures(1, &mTexture);
-			if(mHandle) glDeleteBuffers(1, &mHandle);
+			if (mTexture) glDeleteTextures(1, &mTexture);
+			if (mHandle) glDeleteBuffers(1, &mHandle);
 		}
 
 		// ------------------------------------------------------------------------
@@ -36,10 +36,10 @@ namespace Core {
 		*
 		*   Creates a FrameBuffer allocation on the GPU
 		*/ //----------------------------------------------------------------------		
-		void FrameBuffer::Create() {
-		#ifdef _DEBUG
-			if(mHandle) throw FrameBufferException("We already have a buffer assigned!");
-		#endif
+		void HDRBuffer::Create() {
+#ifdef _DEBUG
+			if (mHandle) throw FrameBufferException("We already have a buffer assigned!");
+#endif
 			glGenFramebuffers(1, &mHandle);
 		}
 
@@ -48,17 +48,17 @@ namespace Core {
 		*
 		*   Allocates a new rendertarget associated with this render texture
 		*/ //----------------------------------------------------------------------
-		void FrameBuffer::CreateRenderTexture(glm::lowp_u16vec2 dimensions, bool depthonly, bool readable) {
-		#ifdef _DEBUG
-			if(!mHandle) throw FrameBufferException("We don't have a framebuffer created yet. Did you forget to call Create()?");
-		#endif
+		void HDRBuffer::CreateRenderTexture(glm::lowp_u16vec2 dimensions, bool depthonly, bool readable) {
+#ifdef _DEBUG
+			if (!mHandle) throw FrameBufferException("We don't have a framebuffer created yet. Did you forget to call Create()?");
+#endif
 
 			glGenTextures(1, &mTexture);
 			glBindTexture(GL_TEXTURE_2D, mTexture);
-			if(depthonly)
+			if (depthonly)
 				glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, dimensions.x, dimensions.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-			else 
-				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dimensions.x, dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+			else
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, dimensions.x, dimensions.y, 0, GL_RGBA, GL_FLOAT, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -67,7 +67,7 @@ namespace Core {
 			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 			Bind();
 
-			if(depthonly)
+			if (depthonly)
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, mTexture, 0);
 			else
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mTexture, 0);
@@ -78,7 +78,7 @@ namespace Core {
 				glReadBuffer(GL_NONE);
 			}
 
-			if(!depthonly) {
+			if (!depthonly) {
 				glGenRenderbuffers(1, &mDepth);
 				glBindRenderbuffer(GL_RENDERBUFFER, mDepth);
 				glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, dimensions.x, dimensions.y); // use a single renderbuffer object for both a depth AND stencil buffer.
@@ -95,7 +95,7 @@ namespace Core {
 		*
 		*   Sets this FrameBuffer as the current target for drawing operations
 		*/ //----------------------------------------------------------------------
-		void FrameBuffer::Bind() {
+		void HDRBuffer::Bind() {
 #ifdef _DEBUG
 			if (!mHandle) throw FrameBufferException("We don't have a framebuffer created yet. Did you forget to call Create()?");
 #endif
@@ -117,10 +117,10 @@ namespace Core {
 		*
 		*   Unbinds this buffer
 		*/ //----------------------------------------------------------------------
-		void inline FrameBuffer::Unbind() noexcept {
+		void inline HDRBuffer::Unbind() noexcept {
 			auto& openglinfo = Singleton<OpenGLInfo>::Instance();
 
-			if(openglinfo.mBindedBuffer) {
+			if (openglinfo.mBindedBuffer) {
 				Singleton<OpenGLInfo>::Instance().mBindedBuffer = 0;
 				glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 			}
@@ -131,7 +131,7 @@ namespace Core {
 		*
 		*   Binds the framebuffer render texture
 		*/ //----------------------------------------------------------------------
-		void FrameBuffer::BindTexture(unsigned i) {
+		void HDRBuffer::BindTexture(unsigned i) {
 #ifdef _DEBUG
 			if (!mTexture) throw FrameBufferException("We don't have a texture associated yer. Did you forget to call CreateRenderTexture()?");
 #endif
@@ -139,24 +139,24 @@ namespace Core {
 			glActiveTexture(GL_TEXTURE0 + i);
 			glBindTexture(GL_TEXTURE_2D, mTexture);
 		}
-		
+
 		// ------------------------------------------------------------------------
 		/*! Clear
 		*
 		*   Clears the FrameBuffer memory
 		*/ //----------------------------------------------------------------------
-		void FrameBuffer::Clear(bool depthOnly) {
+		void HDRBuffer::Clear(bool depthOnly) {
 			Bind();
 
 			//Switch depending on wether we need a full clean or just the depth
-			if(depthOnly) glClear(GL_DEPTH_BUFFER_BIT);
+			if (depthOnly) glClear(GL_DEPTH_BUFFER_BIT);
 			else glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
-		GLuint FrameBuffer::GetTextureHandle() {
+		GLuint HDRBuffer::GetTextureHandle() {
 			return mTexture;
 		}
-		GLuint FrameBuffer::GetHandle()
+		GLuint HDRBuffer::GetHandle()
 		{
 			return mHandle;
 		}

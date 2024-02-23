@@ -121,10 +121,7 @@ void main() {
             reflect(-lightDir, normal)), 0.0), 32)));
    }
 
-   const float gamma = 2.2;
-   vec3 hdrcolor = texture(gAlbedoSpec, oUVs).rgb * vec3(totalLightShine);
-   vec3 mapped = hdrcolor / (hdrcolor + vec3(1.0));
-   mapped = pow(mapped, vec3(1.0 / gamma));
 
-   FragColor = vec4(mapped, 1.0);
+
+   FragColor =  texture(gAlbedoSpec, oUVs).rgba * vec4(totalLightShine, 1.0);
 } 

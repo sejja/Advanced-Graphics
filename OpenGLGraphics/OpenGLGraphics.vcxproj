@@ -191,6 +191,7 @@
     <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Graphics\Architecture\GBuffer.cpp" />
+    <ClCompile Include="Graphics\Architecture\HDRBuffer.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Primitives\Light.cpp" />
@@ -241,6 +242,7 @@
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
     <ClInclude Include="Graphics\Architecture\GBuffer.h" />
+    <ClInclude Include="Graphics\Architecture\HDRBuffer.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Dependencies\Json\include\adl_serializer.hpp" />
     <ClInclude Include="Dependencies\Json\include\byte_container_with_subtype.hpp" />

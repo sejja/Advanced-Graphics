@@ -14,7 +14,7 @@
 #include "Graphics/Primitives/Renderables.h"
 #include "Tools/FrameBuffer.h"
 #include "Graphics/Architecture/GBuffer.h"
-
+#include "Graphics/Architecture/HDRBuffer.h"
 
 namespace Core {
 	namespace Graphics {
@@ -47,12 +47,13 @@ namespace Core {
 			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<GBuffer> mGBuffer;
 			std::unique_ptr<FrameBuffer> mFrameBuffer;
+			std::unique_ptr<HDRBuffer> mHDRBuffer;
 
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			GLuint mUniformBuffer;
 
 			Asset<ShaderProgram> RendererShader;
-			GLfloat gamma = 2.2f;
+			float exposure = 1;
 			GLuint HDRTexture;
 		};
 
