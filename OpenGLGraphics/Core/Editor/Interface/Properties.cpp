@@ -17,6 +17,7 @@ SelectedObj& selectedObjIns = Singleton<SelectedObj>::Instance();
 
 
 
+
 void Properties::Render() {
 	ImGui::Begin(ICON_FA_SLIDERS " Properties");
 
@@ -47,7 +48,7 @@ void Properties::Render() {
 	}
 
     if (ImGui::CollapsingHeader(ICON_FA_SHAPES "  Static Mesh", ImGuiTreeNodeFlags_DefaultOpen)) {
-        MaterialsOptions();
+        MeshOptions();
     }
 
 
@@ -178,7 +179,6 @@ void Properties::selectedObjectTree() {
         std::string displayName = std::format("{} {} (Instance)", ICON_FA_CUBE, obj->GetName());
 
 
-        printf(displayName.c_str());
 
         //el selcted seria obj== selobj and comp 
         if (ImGui::Selectable(displayName.c_str(), true)) {
@@ -386,6 +386,8 @@ void Properties::LightingOptions() {
 }
 //TODO componetizar tabla y usar en todas los componentes
 
+static std::string nombreTexturaTemporal = "Textura def";
+
 void Properties::MaterialsOptions(){
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
     static ImVec2 cell_padding(4.0f, 8.0f);
@@ -394,16 +396,9 @@ void Properties::MaterialsOptions(){
 
     ImGuiDragDropFlags flags = 0;
     flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
-    std::string texto = "No se ha droppeado nada";
-    if (ImGui::BeginDragDropTarget()) {
-        printf("Dropping");
-        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
-            AssetIcon* iconPtr = (AssetIcon*)payload->Data;
-            texto = iconPtr->nombre;
-        }
-        ImGui::EndDragDropTarget();
-    }
 
+    
+  
     if (ImGui::BeginTable("materials_table", 2, flags1)) {
 
         ImGui::TableNextRow();
@@ -420,7 +415,7 @@ void Properties::MaterialsOptions(){
         ImGui::SameLine();
         ImGui::BeginGroup();
 
-        ImGui::Text(texto.c_str());
+        ImGui::Text(nombreTexturaTemporal.c_str());
 
         ImGui::Button(ICON_FA_ARROW_TURN_UP);
         ImGui::SameLine();
@@ -432,6 +427,13 @@ void Properties::MaterialsOptions(){
 
     }
     ImGui::EndTable();
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
+            AssetIcon* iconPtr = (AssetIcon*)payload->Data;
+            nombreTexturaTemporal = iconPtr->nombre;
+        }
+        ImGui::EndDragDropTarget();
+    }
 
     ImGui::PopStyleVar();
 
@@ -439,6 +441,7 @@ void Properties::MaterialsOptions(){
 }
 
 void Properties::MeshOptions(){
+    /*
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
     static ImVec2 cell_padding(4.0f, 8.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
@@ -478,7 +481,7 @@ void Properties::MeshOptions(){
     ImGui::EndTable();
 
     ImGui::PopStyleVar();
-
+    */
 }
 
 

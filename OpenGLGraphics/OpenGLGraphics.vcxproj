@@ -174,6 +174,8 @@
     <ClCompile Include="Core\Editor\Editor.cpp" />
     <ClCompile Include="Core\Editor\Interface\AssetIcon.cpp" />
     <ClCompile Include="Core\Editor\Interface\AssetManager.cpp" />
+    <ClCompile Include="Core\Editor\Interface\DebugTools.cpp" />
+    <ClCompile Include="Core\Editor\Interface\MainMenu.cpp" />
     <ClCompile Include="Core\Editor\Interface\Outliner.cpp" />
     <ClCompile Include="Core\Editor\Interface\Properties.cpp" />
     <ClCompile Include="Core\Editor\Interface\SceneView.cpp" />
@@ -224,6 +226,8 @@
     <ClInclude Include="Core\Editor\Editor.h" />
     <ClInclude Include="Core\Editor\Interface\AssetIcon.h" />
     <ClInclude Include="Core\Editor\Interface\AssetManager.h" />
+    <ClInclude Include="Core\Editor\Interface\DebugTools.h" />
+    <ClInclude Include="Core\Editor\Interface\MainMenu.h" />
     <ClInclude Include="Core\Editor\Interface\Outliner.h" />
     <ClInclude Include="Core\Editor\Interface\Properties.h" />
     <ClInclude Include="Core\Editor\Interface\SceneView.h" />
