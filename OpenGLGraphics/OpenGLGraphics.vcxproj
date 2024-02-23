@@ -702,6 +702,9 @@
     <None Include="Content\Shaders\DeferredLighting.vert" />
     <None Include="Content\Shaders\Refractive.frag" />
     <None Include="Content\Shaders\Refractive.shader" />
+    <None Include="Content\Shaders\Renderer.frag" />
+    <None Include="Content\Shaders\Renderer.shader" />
+    <None Include="Content\Shaders\Renderer.vert" />
     <None Include="Content\Shaders\Shadow.frag" />
     <None Include="Content\Shaders\Shadow.shader" />
     <None Include="Content\Shaders\Shadow.vert" />

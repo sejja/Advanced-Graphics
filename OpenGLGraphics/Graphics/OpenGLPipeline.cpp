@@ -57,7 +57,10 @@ namespace Core {
 			mFrameBuffer = std::make_unique<FrameBuffer>();
 			mFrameBuffer->Create();
 			mFrameBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
-			
+
+			//-------------------------
+			RendererShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredLighting.shader");
+			//-------------------------
 
 			float quadVertices[] = {
 				// positions        // texture Coords
@@ -207,13 +210,27 @@ namespace Core {
 
 			mFrameBuffer->Bind();
 			mFrameBuffer->Clear();
+			glEnable(GL_DEPTH_TEST);
 
 			LightingPass();
 			mGBuffer->BlitDepthBuffer(mFrameBuffer->GetHandle());
 			Skybox::sCurrentSky->Render(cam);
 
+			//----------------------------------------------------
+
 			mFrameBuffer->Unbind();
+
+			RendererShader->Get()->Bind();
+			RendererShader->Get()->SetShaderUniform("gamma", &gamma);
+			HDRTexture = mFrameBuffer->GetTextureHandle();
+			RendererShader->Get()->SetShaderUniform("screenTexture", &HDRTexture);
+
+			glBindVertexArray(mScreenQuadVAO);
+			glDisable(GL_DEPTH_TEST);
 			mFrameBuffer->BindTexture();
+
+			RenderScreenQuad();
+			//----------------------------------------------------
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

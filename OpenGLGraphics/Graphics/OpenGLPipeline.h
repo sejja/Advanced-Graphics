@@ -50,6 +50,10 @@ namespace Core {
 
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			GLuint mUniformBuffer;
+
+			Asset<ShaderProgram> RendererShader;
+			GLfloat gamma = 2.2f;
+			GLuint HDRTexture;
 		};
 
 		// ------------------------------------------------------------------------
