@@ -47,13 +47,13 @@ namespace Core {
 			mShadowBuffers.emplace_back();
 			mShadowBuffers.emplace_back();
 			mShadowBuffers[0].Create();
-			mShadowBuffers[0].CreateRenderTexture({mDimensions.x * 4, mDimensions.y * 4}, false);
+			mShadowBuffers[0].CreateRenderTexture({mDimensions.x * 4, mDimensions.y * 4}, true);
 			mShadowBuffers[1].Create();
-			mShadowBuffers[1].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
+			mShadowBuffers[1].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, true);
 			mShadowBuffers[2].Create();
-			mShadowBuffers[2].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
+			mShadowBuffers[2].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, true);
 			mShadowBuffers[3].Create();
-			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
+			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, true);
 			mGBuffer = std::make_unique<GBuffer>();
 			mDirectionalLightShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DirectionalLight.shader");
 
@@ -113,7 +113,7 @@ namespace Core {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
-		void OpenGLPipeline::_RenderGUI() {
+		void OpenGLPipeline::RenderGUI() {
 			
 			ImGui_ImplSDL2_NewFrame();
 			ImGui_ImplOpenGL3_NewFrame();
@@ -211,31 +211,7 @@ namespace Core {
 		}
 
 
-		// ------------------------------------------------------------------------
-		/*! Render
-		*
-		*   Renders every object in the scene
-		*/ 
-		//----------------------------------------------------------------------
-		void OpenGLPipeline::Render() {
-			
-			_RenderGUI();
-			if (ImGui::Begin("Shadow Mapping")) {
-				int i = 0;
-				for (FrameBuffer& buff : mShadowBuffers) {
-					ImGui::Image((ImTextureID)buff.GetTextureHandle(),
-						ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 
-					if (i < 1) {
-						ImGui::SameLine();
-						i++;
-					}
-					else
-						i = 0;
-				}
-			}
-			ImGui::End();
-		}
 
 		// ------------------------------------------------------------------------
 		/*! RenderGUI
@@ -424,7 +400,7 @@ namespace Core {
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::LightingPass() {
-			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+			
 			glEnable(GL_BLEND);
 			glBlendEquation(GL_FUNC_ADD);
 			glBlendFunc(GL_ONE, GL_ONE);
@@ -567,8 +543,9 @@ namespace Core {
 		*   Updates the Uniform Buffers on the GPU across Shaders
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::UpdateUniformBuffers() {
+			float ratio = mDimensions.x / mDimensions.y;
 			glm::mat4 view = cam.GetViewMatrix();
-			glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
+			glm::mat4 projection = glm::perspective(glm::radians(45.0f), ratio, 0.1f, 10000.0f);
 		
 			glBindBuffer(GL_UNIFORM_BUFFER, mUniformBuffer);
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &view);
