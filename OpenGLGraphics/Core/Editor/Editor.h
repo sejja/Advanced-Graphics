@@ -23,12 +23,13 @@ public:
     bool IsEditorLocked();
 
 private:
+    bool editorLocked;
     MainMenu mainMenu;
     Properties properties;
     AssetManager assetManager;
     Outliner outliner;
     SceneView sceneView;
-    bool editorLocked;
+
 
 
 };

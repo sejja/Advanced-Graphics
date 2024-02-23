@@ -23,7 +23,7 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	//Singleton para gestionar objeto seleccionado
 	Singleton<SelectedObj>::Instance();
 
-	mainMenu.Render();
+	mainMenu.Render(pipeline);
 	assetManager.Render();
 	properties.Render();
 	outliner.Render();

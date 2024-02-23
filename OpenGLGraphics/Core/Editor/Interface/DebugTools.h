@@ -3,14 +3,13 @@
 
 #include "Dependencies/ImGui/imgui.h"
 #include "Graphics/OpenGLPipeline.h"
+#include "Graphics/Tools/FrameBuffer.h"
 
 
 class DebugTools {
 public:
-	static void RenderShadowMapping();
-
-private:
-	Core::Graphics::OpenGLPipeline& pipeline;
+	void RenderShadowMapping(Core::Graphics::OpenGLPipeline& pipeline);
+	void RenderDeferredRendering(Core::Graphics::OpenGLPipeline& pipeline);
 
 
 };

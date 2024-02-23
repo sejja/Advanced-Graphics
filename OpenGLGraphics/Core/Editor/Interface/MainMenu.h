@@ -9,7 +9,9 @@
 
 class MainMenu {
 public:
-	void Render();
+	void Render(Core::Graphics::OpenGLPipeline& pipeline);
+private:
+	DebugTools debugTools;
 
 };
 

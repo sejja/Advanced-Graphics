@@ -29,7 +29,7 @@ namespace Core {
 			inline void AddRenderable(const std::weak_ptr<Renderable>& renderer);
 			GBuffer* GetGBuffer();
 			FrameBuffer* GetRenderFrameBuffer();
-			std::vector<FrameBuffer> GetShadowMappingBuffer() { return mShadowBuffers; };
+			std::vector<FrameBuffer> GetShadowMappingBuffer();
 
 
 			

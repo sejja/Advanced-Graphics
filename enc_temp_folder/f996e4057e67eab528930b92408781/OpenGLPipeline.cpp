@@ -96,6 +96,11 @@ namespace Core {
 			return mFrameBuffer.get();
 		}
 
+		std::vector<FrameBuffer> OpenGLPipeline::GetShadowMappingBuffer()
+		{
+			return mShadowBuffers;
+		}
+
 
 		
 
