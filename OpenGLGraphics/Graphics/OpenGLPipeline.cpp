@@ -22,6 +22,8 @@
 #include "Core/Editor/Editor.h"
 #include "Graphics/Tools/OpenGLInfo.h"
 
+using namespace Core::Graphics;
+
 namespace Core {
 	namespace Graphics {
 		static Primitives::Camera cam;
@@ -35,7 +37,7 @@ namespace Core {
 			glEnable(GL_DEPTH_TEST);
 			glDepthFunc(GL_LESS);
 			glEnable(GL_CULL_FACE);
-			glCullFace(GL_BACK);
+			glEnable(GL_FRAMEBUFFER_SRGB);
 			glFrontFace(GL_CCW);
 			glDisable(GL_BLEND);
 			glDisable(GL_STENCIL_TEST);
@@ -45,14 +47,16 @@ namespace Core {
 			mShadowBuffers.emplace_back();
 			mShadowBuffers.emplace_back();
 			mShadowBuffers[0].Create();
-			mShadowBuffers[0].CreateRenderTexture({mDimensions.x * 2, mDimensions.y * 2}, true);
+			mShadowBuffers[0].CreateRenderTexture({mDimensions.x * 4, mDimensions.y * 4}, false);
 			mShadowBuffers[1].Create();
-			mShadowBuffers[1].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, true);
+			mShadowBuffers[1].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
 			mShadowBuffers[2].Create();
-			mShadowBuffers[2].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, true);
+			mShadowBuffers[2].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
 			mShadowBuffers[3].Create();
-			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 2, mDimensions.y * 2 }, true);
+			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
 			mGBuffer = std::make_unique<GBuffer>();
+			mDirectionalLightShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DirectionalLight.shader");
+
 
 			mFrameBuffer = std::make_unique<FrameBuffer>();
 			mFrameBuffer->Create();
@@ -216,6 +220,75 @@ namespace Core {
 		void OpenGLPipeline::Render() {
 			
 			_RenderGUI();
+			if (ImGui::Begin("Shadow Mapping")) {
+				int i = 0;
+				for (FrameBuffer& buff : mShadowBuffers) {
+					ImGui::Image((ImTextureID)buff.GetTextureHandle(),
+						ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
+
+					if (i < 1) {
+						ImGui::SameLine();
+						i++;
+					}
+					else
+						i = 0;
+				}
+			}
+			ImGui::End();
+		}
+
+		// ------------------------------------------------------------------------
+		/*! RenderGUI
+		*
+		*   Prepare and render the GUI
+		*/ //----------------------------------------------------------------------
+		void OpenGLPipeline::FlushObsoletes(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes) 
+		{
+			std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
+				std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
+				it.erase(x.second);
+
+				//If we don't have any other renderables, erase it
+				if (!it.size()) mGroupedRenderables.erase(x.first);
+				});
+		}
+
+		// ------------------------------------------------------------------------
+		/*! GroupRender
+		*
+		*   Prepare and render the GUI
+		*/ //----------------------------------------------------------------------
+		void OpenGLPipeline::GroupRender(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
+			const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it,
+			ShaderProgram* shader) 
+		{
+			for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
+				//If it isn't expired
+				if (auto renderable = it2->lock()) {
+					const std::shared_ptr<Object> parent = renderable->GetParent().lock();
+					glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
+						glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+						glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
+						glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
+						glm::scale(glm::mat4(1.0f), parent->GetScale());
+					shader->SetShaderUniform("uModel", &matrix);
+					reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
+				}
+				else {
+					obsoletes.insert(std::make_pair(it.first, it2));
+				}
+			}
+			FlushObsoletes(obsoletes);
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Render
+		*
+		*   Renders every object in the scene
+		*/ //----------------------------------------------------------------------
+		void OpenGLPipeline::Render() {
+			RenderGUI();
+			
 			RenderShadowMaps();
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
@@ -226,6 +299,8 @@ namespace Core {
 
 			LightingPass();
 			mGBuffer->BlitDepthBuffer(mFrameBuffer->GetHandle());
+			glEnable(GL_DEPTH_TEST);
+			mGBuffer->BlitDepthBuffer();
 			Skybox::sCurrentSky->Render(cam);
 
 			mFrameBuffer->Unbind();
@@ -262,6 +337,7 @@ namespace Core {
 			shadptr->SetShaderUniform("uLightCount", static_cast<int>(::Graphics::Primitives::Light::sLightReg));
 		}
 
+
 		// ------------------------------------------------------------------------
 		/*! Geometry Pass
 		*
@@ -292,7 +368,7 @@ namespace Core {
 							glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
 							glm::scale(glm::mat4(1.0f), parent->GetScale());
 						shader->SetShaderUniform("uModel", &matrix);
-						reinterpret_cast<ModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
+						reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
 					}
 					else {
 						obsoletes.insert(std::make_pair(it.first, it2));
@@ -300,10 +376,14 @@ namespace Core {
 				}
 				};
 
+			glDepthMask(GL_TRUE);
+			glDisable(GL_BLEND);
 			glEnable(GL_DEPTH_TEST);
 			glCullFace(GL_BACK);
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glEnable(GL_ALPHA_TEST);
+			glAlphaFunc(GL_GREATER, 0.1f);
 
 			{
 				glm::mat4 view = cam.GetViewMatrix();
@@ -313,11 +393,9 @@ namespace Core {
 				mGBuffer->ClearBuffer();
 
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), 
-					[this, &obsoletes, &projection, &view, &f_grouprender](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+					[this, &obsoletes, &projection, &view](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 
 						it, it.first->Get()->Bind();
-						it.first->Get()->SetShaderUniform("uTransform", &projection);
-						it.first->Get()->SetShaderUniform("uView", &view);
 
 					try {
 						it.first->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
@@ -330,12 +408,13 @@ namespace Core {
 						normals->Bind();
 					}
 					catch (...) {}
-					f_grouprender(it, it.first->Get());
-
+					GroupRender(obsoletes,it, it.first->Get());
 					});
-
-				f_flushobosoletes();
 			}
+
+			glDepthMask(GL_FALSE);
+			glDisable(GL_DEPTH_TEST);
+			glDisable(GL_ALPHA_TEST);
 		}
 
 		// ------------------------------------------------------------------------
@@ -345,6 +424,11 @@ namespace Core {
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::LightingPass() {
+			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+			glEnable(GL_BLEND);
+			glBlendEquation(GL_FUNC_ADD);
+			glBlendFunc(GL_ONE, GL_ONE);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
 			glActiveTexture(GL_TEXTURE1);
@@ -400,7 +484,7 @@ namespace Core {
 							glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
 							glm::scale(glm::mat4(1.0f), parent->GetScale());
 						shader->SetShaderUniform("uModel", &matrix);
-						reinterpret_cast<ModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
+						reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
 					}
 					else {
 						obsoletes.insert(std::make_pair(it.first, it2));
@@ -408,7 +492,7 @@ namespace Core {
 				}
 				};
 
-			glCullFace(GL_FRONT);
+			glViewport(0, 0, mDimensions.x * 4, mDimensions.y * 4);
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				mShadowBuffers[i].Bind();
 				mShadowBuffers[i].Clear(true);
@@ -422,12 +506,10 @@ namespace Core {
 					shadow->Bind();
 					shadow->SetShaderUniform("uProjection", &lightProjection);
 					shadow->SetShaderUniform("uView", &lightView);
-
-					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes, &f_grouprender](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
-						f_grouprender(it, shadow);
+					glCullFace(GL_FRONT);
+					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+						GroupRender(obsoletes,it, shadow);
 						});
-
-					f_flushobosoletes();
 				}
 
 				mShadowBuffers[i].Unbind();
@@ -493,6 +575,16 @@ namespace Core {
 			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &projection);
 			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), &cam.GetPositionRef());
 			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Directional Light Pass
+		*
+		*   Updates the Uniform Buffers on the GPU across Shaders
+		*/ //----------------------------------------------------------------------
+		void OpenGLPipeline::DirectionalLightPass() {	
+			mDirectionalLightShader->Get()->Bind();
+			RenderScreenQuad();
 		}
 	}
 }

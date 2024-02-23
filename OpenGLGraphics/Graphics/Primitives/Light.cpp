@@ -30,5 +30,21 @@ namespace Graphics {
 				sLightData[mIndex].mType = mData.mType;
 			}
 		}
+
+		// ------------------------------------------------------------------------
+		/*! Calculate Sphere of Influence
+		*
+		*   Gets the radious in which the light will affect the scene (with some bias)
+		*   Formula might be found at: https://ogldev.org/www/tutorial36/threshold.jpg
+		*/ //----------------------------------------------------------------------
+		float Light::CalculateSphereOfInfluence() const {
+			float MaxChannel = fmax(fmax(mData.mAmbient.x, mData.mAmbient.y), mData.mAmbient.z);
+			float diffusechannel = fmax(fmax(mData.mDiffuse.x, mData.mDiffuse.y), mData.mDiffuse.z);
+
+			float ret = (-mData.mAttenuation.y + sqrtf(mData.mAttenuation.y * mData.mAttenuation.y -
+				4 * mData.mAttenuation.z * (mData.mAttenuation.z - 256 * MaxChannel * diffusechannel)))
+				/ (2 * mData.mAttenuation.z);
+			return ret;
+		}
 	}
 }

@@ -9,6 +9,7 @@
 #include <fstream>
 #include "Importers.h"
 #include "Graphics/Primitives/Model.h"
+#include "Graphics/Primitives/GLBModel.h"
 #include "Graphics/Primitives/Texture.h"
 #include "Dependencies/Json/single_include/json.hpp"
 
@@ -139,6 +140,22 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		std::shared_ptr<IResource> ShaderImporter<Core::Graphics::Shader::EType::Fragment>::ImportFromFile(const std::string_view& filename) const {
 			return std::move(ProcessShader(filename, Core::Graphics::Shader::EType::Fragment));
+		}
+
+		DONTDISCARD std::shared_ptr<IResource> GLBImporter::ImportFromFile(const std::string_view& filename) const
+		{
+			using ::Graphics::Primitives::GLBModel;
+
+			PageAllocator<TResource<GLBModel>> resalloc;
+			PageAllocator<GLBModel> modealloc;
+
+			std::shared_ptr<TResource<GLBModel>> const rawResource(resalloc.New(1, modealloc.New(1, std::string(filename))), [resalloc, modealloc](TResource<GLBModel>* p) {
+				const auto ref = p->Get();
+				modealloc.deallocate(ref);
+				resalloc.deallocate(p);
+				});
+
+			return std::move(rawResource);
 		}
 	}
 }

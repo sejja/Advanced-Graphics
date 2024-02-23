@@ -12,6 +12,7 @@
 #include "Graphics/Primitives/Light.h"
 #include "Core/Singleton.h"
 #include "Graphics/Primitives/Skybox.h"
+#include "Graphics/Primitives/GLBModel.h"
 
 namespace Core {
 	SceneParser Scene::sParser;
@@ -33,6 +34,8 @@ namespace Core {
 			obj->SetName(x.name);
 			std::shared_ptr<Core::Graphics::ModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::ModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj);
 			renderer->SetMesh(resmg.GetResource<Core::Graphics::Model>(x.mesh.c_str()));
+			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj);
+			renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(x.mesh.c_str()));
 
 			if (x.name == "suzanne_mesh")
 				renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/Refractive.shader"));
@@ -51,9 +54,9 @@ namespace Core {
 			obj->SetPosition(x.pos);
 			obj->SetRotation(glm::vec3(0.f, 0.f, 0.f));
 			obj->SetScale({ 1.f, 1.f, 1.f });
-			std::shared_ptr<Core::Graphics::ModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::ModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj));
+			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj));
 			std::shared_ptr<::Graphics::Primitives::Light> light = std::move(std::make_shared<::Graphics::Primitives::Light>(obj));
-			renderer->SetMesh(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Model>("Content/Meshes/sphere_20_averaged.obj"));
+			renderer->SetMesh(Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
 			renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
 			light->SetPosition(x.pos);
 			light->mData.mDirection = x.dir;
@@ -78,7 +81,7 @@ namespace Core {
 			//else, it's a spot light
 			else light->mData.mType = ::Graphics::Primitives::Light::LightType::Spot;
 
-			std::weak_ptr< Core::Graphics::ModelRenderer<Core::GraphicsAPIS::OpenGL>> weakrend = renderer;
+			std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> weakrend = renderer;
 			std::weak_ptr< ::Graphics::Primitives::Light> lightrend = light;
 
 			obj->AddComponent(std::move(weakrend));

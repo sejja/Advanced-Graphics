@@ -37,17 +37,24 @@ namespace Core {
 		private:
 			void UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader);
 			void GeometryPass();
-			void _RenderGUI();
-			void CleanObsolates();
+
 			void LightingPass();
 			void RenderShadowMaps();
 			void RenderScreenQuad();
 			void UpdateUniformBuffers();
+			void DirectionalLightPass();
+
+			void RenderGUI();
+			void FlushObsoletes(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes);
+			void GroupRender(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
+				const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, 
+				ShaderProgram* shader);
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 			glm::lowp_u16vec2 mDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<GBuffer> mGBuffer;
+			Asset<ShaderProgram> mDirectionalLightShader;
 			std::unique_ptr<FrameBuffer> mFrameBuffer;
 
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
@@ -74,7 +81,7 @@ namespace Core {
 		*   Adds a Renderable into the pipeline
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::AddRenderable(const std::weak_ptr<Renderable>& renderer) {
-			mGroupedRenderables[(std::dynamic_pointer_cast<ModelRenderer<Core::GraphicsAPIS::OpenGL>>(renderer.lock()))->GetShaderProgram().lock()].push_back(renderer);
+			mGroupedRenderables[(std::dynamic_pointer_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(renderer.lock()))->GetShaderProgram().lock()].push_back(renderer);
 		}
 	}
 }

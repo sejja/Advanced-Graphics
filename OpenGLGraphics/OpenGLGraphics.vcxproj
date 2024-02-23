@@ -136,14 +136,14 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Dependencies\GLEW\Include;$(ProjectDir)Dependencies\SDL\Include;$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\TinyOBJLoader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Dependencies\GLEW\Include;$(ProjectDir)Dependencies\SDL\Include;$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\TinyOBJLoader;$(ProjectDir)Dependencies\Assimp\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLEW\Lib;$(ProjectDir)Dependencies\SDL\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;glew32.lib;opengl32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLEW\Lib;$(ProjectDir)Dependencies\SDL\Lib;$(ProjectDir)Dependencies\Assimp\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -154,7 +154,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Dependencies\GLEW\Include;$(ProjectDir)Dependencies\SDL\Include;$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\TinyOBJLoader;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Dependencies\GLEW\Include;$(ProjectDir)Dependencies\SDL\Include;$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\TinyOBJLoader;$(ProjectDir)Dependencies\Assimp\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -162,8 +162,8 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLEW\Lib;$(ProjectDir)Dependencies\SDL\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>SDL2.lib;glew32.lib;opengl32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLEW\Lib;$(ProjectDir)Dependencies\SDL\Lib;$(ProjectDir)Dependencies\Assimp\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -194,6 +194,8 @@
     <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Graphics\Architecture\GBuffer.cpp" />
+    <ClCompile Include="Graphics\Primitives\GLBMesh.cpp" />
+    <ClCompile Include="Graphics\Primitives\GLBModel.cpp" />
     <ClCompile Include="Parser.cpp" />
     <ClCompile Include="Graphics\Camera.cpp" />
     <ClCompile Include="Graphics\Primitives\Light.cpp" />
@@ -250,6 +252,8 @@
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
     <ClInclude Include="Graphics\Architecture\GBuffer.h" />
+    <ClInclude Include="Graphics\Primitives\GLBMesh.h" />
+    <ClInclude Include="Graphics\Primitives\GLBModel.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Dependencies\Json\include\adl_serializer.hpp" />
     <ClInclude Include="Dependencies\Json\include\byte_container_with_subtype.hpp" />
@@ -704,11 +708,16 @@
   <ItemGroup>
     <None Include="Content\Maps\Scene.level" />
     <None Include="Content\Meshes\backpack.mtl" />
+    <None Include="Content\Scenes\README.md" />
+    <None Include="Content\Scenes\Sponza.bin" />
+    <None Include="Content\Scenes\Sponza.gltf" />
     <None Include="Content\Shaders\DeferredGeometry.frag" />
     <None Include="Content\Shaders\DeferredGeometry.shader" />
     <None Include="Content\Shaders\DeferredLighting.frag" />
     <None Include="Content\Shaders\DeferredLighting.shader" />
     <None Include="Content\Shaders\DeferredLighting.vert" />
+    <None Include="Content\Shaders\DirectionalLightShader.frag" />
+    <None Include="Content\Shaders\DirectionalLight.shader" />
     <None Include="Content\Shaders\Refractive.frag" />
     <None Include="Content\Shaders\Refractive.shader" />
     <None Include="Content\Shaders\Shadow.frag" />
@@ -718,11 +727,7 @@
     <None Include="Content\Shaders\SkyBox.shader" />
     <None Include="Content\Shaders\SkyBox.vert" />
     <None Include="Content\Shaders\Textured.shader" />
-    <None Include="Content\Shaders\UV.frag" />
     <None Include="Content\Shaders\Transform.vert" />
-    <None Include="Content\Shaders\UVs.shader" />
-    <None Include="Content\Shaders\White.frag" />
-    <None Include="Content\Shaders\White.shader" />
     <None Include="Dependencies\GLM\detail\func_common.inl" />
     <None Include="Dependencies\GLM\detail\func_common_simd.inl" />
     <None Include="Dependencies\GLM\detail\func_exponential.inl" />
@@ -867,6 +872,75 @@
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
+    <Image Include="Content\Scenes\textures\10381718147657362067.jpg" />
+    <Image Include="Content\Scenes\textures\10388182081421875623.jpg" />
+    <Image Include="Content\Scenes\textures\11474523244911310074.jpg" />
+    <Image Include="Content\Scenes\textures\11490520546946913238.jpg" />
+    <Image Include="Content\Scenes\textures\11872827283454512094.jpg" />
+    <Image Include="Content\Scenes\textures\11968150294050148237.jpg" />
+    <Image Include="Content\Scenes\textures\1219024358953944284.jpg" />
+    <Image Include="Content\Scenes\textures\12501374198249454378.jpg" />
+    <Image Include="Content\Scenes\textures\13196865903111448057.jpg" />
+    <Image Include="Content\Scenes\textures\13824894030729245199.jpg" />
+    <Image Include="Content\Scenes\textures\13982482287905699490.jpg" />
+    <Image Include="Content\Scenes\textures\14118779221266351425.jpg" />
+    <Image Include="Content\Scenes\textures\14170708867020035030.jpg" />
+    <Image Include="Content\Scenes\textures\14267839433702832875.jpg" />
+    <Image Include="Content\Scenes\textures\14650633544276105767.jpg" />
+    <Image Include="Content\Scenes\textures\15295713303328085182.jpg" />
+    <Image Include="Content\Scenes\textures\15722799267630235092.jpg" />
+    <Image Include="Content\Scenes\textures\16275776544635328252.png" />
+    <Image Include="Content\Scenes\textures\16299174074766089871.jpg" />
+    <Image Include="Content\Scenes\textures\16885566240357350108.jpg" />
+    <Image Include="Content\Scenes\textures\17556969131407844942.jpg" />
+    <Image Include="Content\Scenes\textures\17876391417123941155.jpg" />
+    <Image Include="Content\Scenes\textures\2051777328469649772.jpg" />
+    <Image Include="Content\Scenes\textures\2185409758123873465.jpg" />
+    <Image Include="Content\Scenes\textures\2299742237651021498.jpg" />
+    <Image Include="Content\Scenes\textures\2374361008830720677.jpg" />
+    <Image Include="Content\Scenes\textures\2411100444841994089.jpg" />
+    <Image Include="Content\Scenes\textures\2775690330959970771.jpg" />
+    <Image Include="Content\Scenes\textures\2969916736137545357.jpg" />
+    <Image Include="Content\Scenes\textures\332936164838540657.jpg" />
+    <Image Include="Content\Scenes\textures\3371964815757888145.jpg" />
+    <Image Include="Content\Scenes\textures\3455394979645218238.jpg" />
+    <Image Include="Content\Scenes\textures\3628158980083700836.jpg" />
+    <Image Include="Content\Scenes\textures\3827035219084910048.jpg" />
+    <Image Include="Content\Scenes\textures\4477655471536070370.jpg" />
+    <Image Include="Content\Scenes\textures\4601176305987539675.jpg" />
+    <Image Include="Content\Scenes\textures\466164707995436622.jpg" />
+    <Image Include="Content\Scenes\textures\4675343432951571524.jpg" />
+    <Image Include="Content\Scenes\textures\4871783166746854860.jpg" />
+    <Image Include="Content\Scenes\textures\4910669866631290573.jpg" />
+    <Image Include="Content\Scenes\textures\4975155472559461469.jpg" />
+    <Image Include="Content\Scenes\textures\5061699253647017043.png" />
+    <Image Include="Content\Scenes\textures\5792855332885324923.jpg" />
+    <Image Include="Content\Scenes\textures\5823059166183034438.jpg" />
+    <Image Include="Content\Scenes\textures\6047387724914829168.jpg" />
+    <Image Include="Content\Scenes\textures\6151467286084645207.jpg" />
+    <Image Include="Content\Scenes\textures\6593109234861095314.jpg" />
+    <Image Include="Content\Scenes\textures\6667038893015345571.jpg" />
+    <Image Include="Content\Scenes\textures\6772804448157695701.jpg" />
+    <Image Include="Content\Scenes\textures\7056944414013900257.jpg" />
+    <Image Include="Content\Scenes\textures\715093869573992647.jpg" />
+    <Image Include="Content\Scenes\textures\7268504077753552595.jpg" />
+    <Image Include="Content\Scenes\textures\7441062115984513793.jpg" />
+    <Image Include="Content\Scenes\textures\755318871556304029.jpg" />
+    <Image Include="Content\Scenes\textures\759203620573749278.jpg" />
+    <Image Include="Content\Scenes\textures\7645212358685992005.jpg" />
+    <Image Include="Content\Scenes\textures\7815564343179553343.jpg" />
+    <Image Include="Content\Scenes\textures\8006627369776289000.png" />
+    <Image Include="Content\Scenes\textures\8051790464816141987.jpg" />
+    <Image Include="Content\Scenes\textures\8114461559286000061.jpg" />
+    <Image Include="Content\Scenes\textures\8481240838833932244.jpg" />
+    <Image Include="Content\Scenes\textures\8503262930880235456.jpg" />
+    <Image Include="Content\Scenes\textures\8747919177698443163.jpg" />
+    <Image Include="Content\Scenes\textures\8750083169368950601.jpg" />
+    <Image Include="Content\Scenes\textures\8773302468495022225.jpg" />
+    <Image Include="Content\Scenes\textures\8783994986360286082.jpg" />
+    <Image Include="Content\Scenes\textures\9288698199695299068.jpg" />
+    <Image Include="Content\Scenes\textures\9916269861720640319.jpg" />
+    <Image Include="Content\Scenes\textures\white.png" />
     <Image Include="Content\Textures\back.jpg" />
     <Image Include="Content\Textures\bottom.jpg" />
     <Image Include="Content\Textures\Brick.png" />
