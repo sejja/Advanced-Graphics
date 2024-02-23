@@ -15,7 +15,9 @@ void SceneView::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	glm::lowp_u16vec2 dim;
 	dim.x = static_cast<uint16_t>(viewportPanelSize.x);
 	dim.y = static_cast<uint16_t>(viewportPanelSize.y);
-	Singleton<SDLWindow>::Instance().SetDimensions(dim);
+	//Singleton<SDLWindow>::Instance().SetDimensions(dim);
+
+	//pipeline.SetDimensions(dim);
 
 	uint64_t textureID = pipeline.GetRenderFrameBuffer()->GetTextureHandle();
 	ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });

@@ -25,7 +25,7 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
             ImGui::MenuItem("Shadow Mapping", NULL, &show_shadow_mapping);
 
-            ImGui::MenuItem("Metrics/Debugger", NULL, &show_tool_metrics);
+            //ImGui::MenuItem("Metrics/Debugger", NULL, &show_tool_metrics);
 
             ImGui::EndMenu();
         }
