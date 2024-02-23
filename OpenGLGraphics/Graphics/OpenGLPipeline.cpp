@@ -57,9 +57,10 @@ namespace Core {
 			mFrameBuffer = std::make_unique<FrameBuffer>();
 			mFrameBuffer->Create();
 			mFrameBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
+			
 
 			//-------------------------
-			RendererShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredLighting.shader");
+			RendererShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Renderer.shader");
 			//-------------------------
 
 			float quadVertices[] = {
@@ -220,14 +221,27 @@ namespace Core {
 
 			mFrameBuffer->Unbind();
 
-			RendererShader->Get()->Bind();
-			RendererShader->Get()->SetShaderUniform("gamma", &gamma);
-			HDRTexture = mFrameBuffer->GetTextureHandle();
-			RendererShader->Get()->SetShaderUniform("screenTexture", &HDRTexture);
-
-			glBindVertexArray(mScreenQuadVAO);
-			glDisable(GL_DEPTH_TEST);
+			//RendererShader->Get()->Bind();
+			//If Gamma is always going to be 2.2, might as well set is as a constant on the shader
+			// //The reason why it's failing, is because it's not being used in the shader
+			//	mapped = vec3(..., vec3(1.f))
+			//	the first argument within the vec3 operator is already a vec3, so the second part is being discarded,
+			//		thus, rendering "gamma" unused
+			//RendererShader->Get()->SetShaderUniform("gamma", gamma);
+			
 			mFrameBuffer->BindTexture();
+			//We don't pass textures as uniforms, we bind them as
+			// texture->Bind();
+			//	which internally, binds glBindTexture()
+			//	The slots (layout = n) go through this order:
+			//		-0 Diffuse Map
+			//		-1 Normal Map
+			//		-2-9 Shadow Maps
+			//		-10-15 Skybox Textures
+			//RendererShader->Get()->SetShaderUniform("screenTexture", &HDRTexture);
+			
+			//glBindTexture(GL_TEXTURE_2D, HDRTexture);
+			//mFrameBuffer->Bind();
 
 			RenderScreenQuad();
 			//----------------------------------------------------
