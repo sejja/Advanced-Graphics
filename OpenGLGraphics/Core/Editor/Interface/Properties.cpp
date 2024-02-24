@@ -11,6 +11,11 @@
 #include "Core/Editor/SelectedObj.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 #include "Core/Editor/Interface/AssetIcon.h"
+#include <Graphics/Primitives/Model.h>
+#include <Graphics/Primitives/Light.h>
+#include <Core/ECSystem/Component.h>
+#include <Graphics/Primitives/Skybox.h>
+
 
 
 SelectedObj& selectedObjIns = Singleton<SelectedObj>::Instance();
@@ -190,8 +195,16 @@ void Properties::selectedObjectTree() {
 
         //OBJECT COMPONENTS
 
-        //obj->GetComponent<Mesh>()
+        //std::shared_ptr<Core::Graphics::Model> component = std::make_shared<Core::Graphics::Model>();
 
+        obj->AddComponent(std::make_shared<Core::Graphics::Model>());
+
+
+
+        //obj->GetComponent<Core::Graphics::Model>();
+
+
+        //printf("comps %d", comps.use_count());
 
         if (ImGui::Selectable(ICON_FA_CUBE " Mesh",false)) {
             selectedObjIns.SetSelectedObject(obj);
