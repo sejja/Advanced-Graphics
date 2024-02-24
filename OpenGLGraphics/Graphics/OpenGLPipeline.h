@@ -30,14 +30,16 @@ namespace Core {
 			inline void AddRenderable(const std::weak_ptr<Renderable>& renderer);
 			GBuffer* GetGBuffer();
 			FrameBuffer* GetRenderFrameBuffer();
-
 			GLuint GetRenderTexture();
 
 		private:
 			void UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader);
 			void GeometryPass();
-			void _RenderGUI();
-			void CleanObsolates();
+			void RenderGUI();
+			void FlushObsoletes(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes);
+			void GroupRender(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
+				const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it,
+				ShaderProgram* shader);
 			void LightingPass();
 			void RenderShadowMaps();
 			void RenderScreenQuad();
