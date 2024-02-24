@@ -103,25 +103,8 @@ namespace Core {
 			return mGBuffer.get();
 		}
 
-		FrameBuffer* OpenGLPipeline::GetRenderFrameBuffer()
-		{
-			if (AntiAliasing) {
-				return mSamplingBuffer.get();
-			}
-			else
-			{
-				return mFrameBuffer.get();
-			}
-		}
-
 		GLuint  OpenGLPipeline::GetRenderTexture() {
-			if (AntiAliasing) {
-				return mSamplingBuffer->GetTextureHandle();
-			}
-			else
-			{
-				return mFrameBuffer->GetTextureHandle();
-			}
+			return mFrameBuffer->GetTextureHandle();
 		}
 
 		// ------------------------------------------------------------------------
@@ -219,6 +202,14 @@ namespace Core {
 			ImGui::Begin("Exposure Window");
 			ImGui::SliderFloat("Exposure", &exposure, 0, 5);
 			ImGui::End();
+
+			ImGui::Begin("Anti-Aliasing");
+
+			if (ImGui::Button("Anti-Aliashing")) {
+				AntiAliasing = !AntiAliasing;
+				std::cout << (int)AntiAliasing << std::endl;
+			}
+			ImGui::End();
 		}
 
 
@@ -236,25 +227,39 @@ namespace Core {
 			UpdateUniformBuffers();
 			GeometryPass();
 
-			mHDRBuffer->Bind();
-			mHDRBuffer->Clear();
-			glEnable(GL_DEPTH_TEST);
-
-			LightingPass();
-			mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
-			Skybox::sCurrentSky->Render(cam);
-
-			if (AntiAliasing) 
+			if (AntiAliasing)
 			{
 				mSamplingBuffer->Bind();
 				mSamplingBuffer->Clear();
 			}
 			else
 			{
-				mFrameBuffer->Bind();
-				mFrameBuffer->Clear();
+				mHDRBuffer->Bind();
+				mHDRBuffer->Clear();
+			}
+			glEnable(GL_DEPTH_TEST);
+
+			LightingPass();
+			
+			if (AntiAliasing) 
+			{
+				mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
+			}
+			else 
+			{
+				mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 			}
 
+			Skybox::sCurrentSky->Render(cam);
+
+			if (AntiAliasing) 
+			{
+				glBindFramebuffer(GL_READ_FRAMEBUFFER, mSamplingBuffer->GetHandle());
+				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mHDRBuffer->GetHandle());
+				glBlitFramebuffer(0, 0, mDimensions.x, mDimensions.y, 0, 0, mDimensions.x, mDimensions.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+			}
+			mFrameBuffer->Bind();
+			mFrameBuffer->Clear();
 
 			mHDRBuffer->BindTexture();
 			RendererShader->Get()->Bind();
@@ -263,15 +268,12 @@ namespace Core {
 
 			if (AntiAliasing)
 			{
-				mSamplingBuffer->Unbind();
+				mFrameBuffer->Unbind();
 			}
 			else
 			{
 				mFrameBuffer->Unbind();
 			}
-
-
-
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
@@ -536,4 +538,5 @@ namespace Core {
 			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 		}
 	}
+
 }

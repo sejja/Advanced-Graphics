@@ -56,7 +56,7 @@ namespace Core {
 			GLuint mUniformBuffer;
 
 
-			GLboolean AntiAliasing = true;
+			GLboolean AntiAliasing = false;
 			Asset<ShaderProgram> RendererShader;
 			float exposure = 1;
 		};
