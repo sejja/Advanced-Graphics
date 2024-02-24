@@ -39,7 +39,7 @@ namespace Core {
 		#pragma endregion
 
 		#pragma region //Members
-		private:
+		protected:
 			GLuint mHandle;
 			GLuint mTexture;
 			GLuint mDepth;

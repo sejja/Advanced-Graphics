@@ -15,6 +15,7 @@
 #include "Tools/FrameBuffer.h"
 #include "Graphics/Architecture/GBuffer.h"
 #include "Graphics/Architecture/HDRBuffer.h"
+#include "Graphics/Architecture/SamplingBuffer.h"
 
 namespace Core {
 	namespace Graphics {
@@ -30,7 +31,7 @@ namespace Core {
 			GBuffer* GetGBuffer();
 			FrameBuffer* GetRenderFrameBuffer();
 
-			
+			GLuint GetRenderTexture();
 
 		private:
 			void UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader);
@@ -49,12 +50,15 @@ namespace Core {
 			std::unique_ptr<FrameBuffer> mFrameBuffer;
 			std::unique_ptr<HDRBuffer> mHDRBuffer;
 
+			std::unique_ptr<SamplingBuffer> mSamplingBuffer;
+
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			GLuint mUniformBuffer;
 
+
+			GLboolean AntiAliasing = true;
 			Asset<ShaderProgram> RendererShader;
 			float exposure = 1;
-			GLuint HDRTexture;
 		};
 
 		// ------------------------------------------------------------------------

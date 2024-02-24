@@ -22,6 +22,7 @@
 #include "Core/Editor/Editor.h"
 #include "Graphics/Tools/OpenGLInfo.h"
 
+
 namespace Core {
 	namespace Graphics {
 		static Primitives::Camera cam;
@@ -57,13 +58,17 @@ namespace Core {
 			mFrameBuffer = std::make_unique<FrameBuffer>();
 			mFrameBuffer->Create();
 			mFrameBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
+
 			mHDRBuffer = std::make_unique<HDRBuffer>();
 			mHDRBuffer->Create();
 			mHDRBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
-			
+			RendererShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Renderer.shader");
 
 			//-------------------------
-			RendererShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Renderer.shader");
+			glEnable(GL_MULTISAMPLE);
+			mSamplingBuffer = std::make_unique<SamplingBuffer>();
+			mSamplingBuffer->Create();
+			mSamplingBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
 			//-------------------------
 
 			float quadVertices[] = {
@@ -74,6 +79,7 @@ namespace Core {
 				 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
 			};
 			// setup plane VAO
+
 			glGenVertexArrays(1, &mScreenQuadVAO);
 			glGenBuffers(1, &mScreenQuadVAO);
 			glBindVertexArray(mScreenQuadVBO);
@@ -99,10 +105,24 @@ namespace Core {
 
 		FrameBuffer* OpenGLPipeline::GetRenderFrameBuffer()
 		{
-			return mFrameBuffer.get();
+			if (AntiAliasing) {
+				return mSamplingBuffer.get();
+			}
+			else
+			{
+				return mFrameBuffer.get();
+			}
 		}
 
-
+		GLuint  OpenGLPipeline::GetRenderTexture() {
+			if (AntiAliasing) {
+				return mSamplingBuffer->GetTextureHandle();
+			}
+			else
+			{
+				return mFrameBuffer->GetTextureHandle();
+			}
+		}
 
 		// ------------------------------------------------------------------------
 		/*! PreRender
@@ -224,39 +244,34 @@ namespace Core {
 			mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 			Skybox::sCurrentSky->Render(cam);
 
-			mFrameBuffer->Bind();
-			mFrameBuffer->Clear();
+			if (AntiAliasing) 
+			{
+				mSamplingBuffer->Bind();
+				mSamplingBuffer->Clear();
+			}
+			else
+			{
+				mFrameBuffer->Bind();
+				mFrameBuffer->Clear();
+			}
+
+
 			mHDRBuffer->BindTexture();
-			
 			RendererShader->Get()->Bind();
-			//----------------------------------------------------
-
-
-			//RendererShader->Get()->Bind();
-			//If Gamma is always going to be 2.2, might as well set is as a constant on the shader
-			// //The reason why it's failing, is because it's not being used in the shader
-			//	mapped = vec3(..., vec3(1.f))
-			//	the first argument within the vec3 operator is already a vec3, so the second part is being discarded,
-			//		thus, rendering "gamma" unused
 			RendererShader->Get()->SetShaderUniform("exposure", exposure);
-			
-			//We don't pass textures as uniforms, we bind them as
-			// texture->Bind();
-			//	which internally, binds glBindTexture()
-			//	The slots (layout = n) go through this order:
-			//		-0 Diffuse Map
-			//		-1 Normal Map
-			//		-2-9 Shadow Maps
-			//		-10-15 Skybox Textures
-			//RendererShader->Get()->SetShaderUniform("screenTexture", &HDRTexture);
-			
-			//glBindTexture(GL_TEXTURE_2D, HDRTexture);
-			//mFrameBuffer->Bind();
-
-			//RenderScreenQuad();
-			//----------------------------------------------------
 			RenderScreenQuad();
-			mFrameBuffer->Unbind();
+
+			if (AntiAliasing)
+			{
+				mSamplingBuffer->Unbind();
+			}
+			else
+			{
+				mFrameBuffer->Unbind();
+			}
+
+
+
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}

@@ -27,8 +27,14 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	ImGui::Begin("Scene");
 	ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	//habría que setear la vista de la camara de la escena a este viewport tmb
-	uint64_t textureID = pipeline.GetRenderFrameBuffer()->GetTextureHandle();
-	ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+	uint64_t textureID = pipeline.GetRenderTexture();
+
+	ImGui::Image(reinterpret_cast<void*>(pipeline.GetRenderTexture()), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+	//ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
+	//ImGui::Image(reinterpret_cast<void*>(-88), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+
 	ImGui::End();
 	
 
