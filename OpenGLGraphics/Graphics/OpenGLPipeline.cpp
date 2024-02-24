@@ -227,28 +227,15 @@ namespace Core {
 			UpdateUniformBuffers();
 			GeometryPass();
 
-			if (AntiAliasing)
-			{
-				mSamplingBuffer->Bind();
-				mSamplingBuffer->Clear();
-			}
-			else
-			{
-				mHDRBuffer->Bind();
-				mHDRBuffer->Clear();
-			}
+			//Bind and Clean
+			if (AntiAliasing){mSamplingBuffer->Bind();mSamplingBuffer->Clear();}
+			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
 			glEnable(GL_DEPTH_TEST);
 
 			LightingPass();
 			
-			if (AntiAliasing) 
-			{
-				mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
-			}
-			else 
-			{
-				mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
-			}
+			if (AntiAliasing)  mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
+			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 
 			Skybox::sCurrentSky->Render(cam);
 
@@ -258,6 +245,7 @@ namespace Core {
 				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mHDRBuffer->GetHandle());
 				glBlitFramebuffer(0, 0, mDimensions.x, mDimensions.y, 0, 0, mDimensions.x, mDimensions.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 			}
+
 			mFrameBuffer->Bind();
 			mFrameBuffer->Clear();
 
@@ -266,14 +254,9 @@ namespace Core {
 			RendererShader->Get()->SetShaderUniform("exposure", exposure);
 			RenderScreenQuad();
 
-			if (AntiAliasing)
-			{
-				mFrameBuffer->Unbind();
-			}
-			else
-			{
-				mFrameBuffer->Unbind();
-			}
+			if (AntiAliasing) mFrameBuffer->Unbind();
+			else mFrameBuffer->Unbind();
+
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
