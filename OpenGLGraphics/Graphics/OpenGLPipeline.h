@@ -14,6 +14,7 @@
 #include "Graphics/Primitives/Renderables.h"
 #include "Tools/FrameBuffer.h"
 #include "Graphics/Architecture/GBuffer.h"
+#include "Debug/DebugShapes.h"
 
 namespace Core {
 	namespace Graphics {
@@ -50,6 +51,7 @@ namespace Core {
 			Asset<ShaderProgram> mDirectionalLightShader;
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			GLuint mUniformBuffer;
+			std::unique_ptr<debug_system> mDebug;
 		};
 
 		// ------------------------------------------------------------------------

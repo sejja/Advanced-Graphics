@@ -696,6 +696,9 @@
     <None Include="Content\Scenes\README.md" />
     <None Include="Content\Scenes\Sponza.bin" />
     <None Include="Content\Scenes\Sponza.gltf" />
+    <None Include="Content\Shaders\DebugLines.frag" />
+    <None Include="Content\Shaders\DebugLines.shader" />
+    <None Include="Content\Shaders\DebugLines.vert" />
     <None Include="Content\Shaders\DeferredGeometry.frag" />
     <None Include="Content\Shaders\DeferredGeometry.shader" />
     <None Include="Content\Shaders\DeferredLighting.frag" />
@@ -713,6 +716,8 @@
     <None Include="Content\Shaders\SkyBox.vert" />
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\Transform.vert" />
+    <None Include="Content\Shaders\White.frag" />
+    <None Include="Content\Shaders\White.shader" />
     <None Include="Dependencies\GLM\detail\func_common.inl" />
     <None Include="Dependencies\GLM\detail\func_common_simd.inl" />
     <None Include="Dependencies\GLM\detail\func_exponential.inl" />

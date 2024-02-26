@@ -1,4 +1,5 @@
 #include "Light.h"
+#include <algorithm>
 
 namespace Graphics {
 	namespace Primitives {
@@ -37,13 +38,16 @@ namespace Graphics {
 		*   Gets the radious in which the light will affect the scene (with some bias)
 		*   Formula might be found at: https://ogldev.org/www/tutorial36/threshold.jpg
 		*/ //----------------------------------------------------------------------
-		float Light::CalculateSphereOfInfluence() const {
-			float MaxChannel = fmax(fmax(mData.mAmbient.x, mData.mAmbient.y), mData.mAmbient.z);
-			float diffusechannel = fmax(fmax(mData.mDiffuse.x, mData.mDiffuse.y), mData.mDiffuse.z);
+		float Light::BackedLightData::CalculateSphereOfInfluence() const {
+			glm::vec3 dif = mDiffuse * 255.f;
+			glm::vec3 atte = mAttenuation * 255.f;
+			glm::vec3 amb = mAmbient * 255.f;
+			float MaxChannel = fmax(fmax(amb.x, amb.y), amb.z);
+			float diffusechannel = fmax(fmax(dif.x, dif.y), dif.z);
 
-			float ret = (-mData.mAttenuation.y + sqrtf(mData.mAttenuation.y * mData.mAttenuation.y -
-				4 * mData.mAttenuation.z * (mData.mAttenuation.z - 256 * MaxChannel * diffusechannel)))
-				/ (2 * mData.mAttenuation.z);
+			float ret = (-atte.y + sqrtf(std::max(atte.y * atte.y -
+				4 * atte.z * (atte.z - 256 * MaxChannel * diffusechannel), 0.f)))
+				/ (2 * atte.z);
 			return ret;
 		}
 	}

@@ -54,6 +54,7 @@ namespace Core {
 			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
 			mGBuffer = std::make_unique<GBuffer>();
 			mDirectionalLightShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DirectionalLight.shader");
+			mDebug = std::make_unique<debug_system>(&cam);
 
 			float quadVertices[] = {
 				// positions        // texture Coords
@@ -190,6 +191,12 @@ namespace Core {
 			glEnable(GL_DEPTH_TEST);
 			mGBuffer->BlitDepthBuffer();
 			Skybox::sCurrentSky->Render(cam);
+			mDebug->change_camera(&cam);
+			for (auto& light : ::Graphics::Primitives::Light::sLightData) {
+				float radius = light.second.CalculateSphereOfInfluence();
+				printf("%f\n", radius);
+				mDebug->draw_sphere(light.second.mPosition, radius, glm::vec4(1.0, 0.85, 0.1, 1));
+			}
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -271,7 +278,7 @@ namespace Core {
 
 			{
 				glm::mat4 view = cam.GetViewMatrix();
-				glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
+				glm::mat4 projection = cam.GetProjectionMatrix();
 
 				mGBuffer->Bind();
 				mGBuffer->ClearBuffer();
@@ -452,7 +459,7 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::UpdateUniformBuffers() {
 			glm::mat4 view = cam.GetViewMatrix();
-			glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
+			glm::mat4 projection = cam.GetProjectionMatrix();
 		
 			glBindBuffer(GL_UNIFORM_BUFFER, mUniformBuffer);
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &view);

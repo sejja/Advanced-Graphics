@@ -27,6 +27,7 @@ namespace Graphics {
 				float mOutter;
 				float mFallOff;
 				LightType mType;
+				float CalculateSphereOfInfluence() const;
 			};
 		
 			Light(std::weak_ptr<Core::Object> parent);
@@ -36,7 +37,6 @@ namespace Graphics {
 			const glm::vec3& GetPosition() const { return mData.mPosition; }
 			const glm::vec3& GetmSpecular() const { return mData.mSpecular; }
 			glm::vec3 GetAttenuation() const { return mData.mAttenuation; }
-			float CalculateSphereOfInfluence() const;
 
 			void SetPosition(const glm::vec3& position) { mData.mPosition = position; }
 			void SetSpecular(const glm::vec3& color) { mData.mSpecular = color; }
