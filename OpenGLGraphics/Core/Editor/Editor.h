@@ -8,6 +8,9 @@
 #include "Graphics/OpenGLPipeline.h"
 #include "Interface/Properties.h"
 #include "Interface/Outliner.h"
+#include "Interface/AssetManager.h"
+#include "Interface/SceneView.h"
+#include "Interface/MainMenu.h"
 #include "Interface/TextEditor.h"
 
 
@@ -22,9 +25,12 @@ public:
 
 private:
     bool editorLocked;
+    MainMenu mainMenu;
     Properties properties;
-    //AssetManager assetManager;
+    AssetManager assetManager;
     Outliner outliner;
+    SceneView sceneView;
+
     TextEditor textEditor;
 
 

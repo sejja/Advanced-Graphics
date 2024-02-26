@@ -882,3 +882,52 @@ Rotation [ Lk ] X { 6.00 } Y { 0.00 } Z { 0.00 }
     > Elemento 4
         asdgasdg [ button ]
 4 items in scene
+(?)
+[ Copy "Hello, world!" to clipboard ]
+### Window options ###
+### Widgets ###
+### Layout & Scrolling ###
+### Popups & Modal windows ###
+### Tables & Columns ###
+### Inputs & Focus ###
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+nombre
+{ Search property }
+### Transform ###
+Location X { 14.00 } Y { 0.00 } Z { 0.00 }
+Rotation X { 14.00 } Y { 0.00 } Z { 0.00 }
+ Scale   X { 14.00 } Y { 0.00 } Z { 0.00 }
+### Light ###
+| Intensity | { 14.493 } |
+| Light Color | | | Source Range | { 39.130 } |
+| Source Length | { 39.131 } | { Search item } [ New Folder ]
+> Scene items
+    > Elemento 0
+        asdgasdg [ button ]
+    > Elemento 1
+        asdgasdg [ button ]
+    > Elemento 2
+        asdgasdg [ button ]
+    > Elemento 3
+        asdgasdg [ button ]
+    > Elemento 4
+        asdgasdg [ button ]
+4 items in scene

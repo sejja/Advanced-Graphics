@@ -90,11 +90,14 @@ namespace Core {
 			return mGBuffer.get();
 		}
 
+
 		FrameBuffer* OpenGLPipeline::GetRenderFrameBuffer()
 		{
 			return mFrameBuffer.get();
 		}
 
+
+		
 
 
 		// ------------------------------------------------------------------------
@@ -112,10 +115,12 @@ namespace Core {
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
 
+
 			// Create the docking environment
 			ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar |
 				ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
-				ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground;
+				ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground |
+				ImGuiWindowFlags_MenuBar;
 
 			ImGuiViewport* viewport = ImGui::GetMainViewport();
 			ImGui::SetNextWindowPos(viewport->Pos);
@@ -135,6 +140,11 @@ namespace Core {
 
 			ImGui::GetStyle().FrameRounding = 4.0f;
 			ImGui::GetStyle().GrabRounding = 4.0f;
+			ImGui::GetStyle().WindowBorderSize = 0.0f;
+			ImGui::GetStyle().WindowRounding = 7.0f;
+			//ImGui::GetStyle().AntiAliasedLines = true;
+			//ImGui::GetStyle().AntiAliasedFill = true;
+			
 
 			ImVec4* colors = ImGui::GetStyle().Colors;
 			colors[ImGuiCol_::ImGuiCol_Text] = { 0.95f, 0.96f, 0.98f, 1.00f };
@@ -186,8 +196,14 @@ namespace Core {
 			colors[ImGuiCol_::ImGuiCol_NavWindowingDimBg] = { 0.80f, 0.80f, 0.80f, 0.20f };
 			colors[ImGuiCol_::ImGuiCol_ModalWindowDimBg] = { 0.80f, 0.80f, 0.80f, 0.35f };
 
+
+
+
+
 			//Render editor
 			Singleton<Editor>::Instance().Render(*this);
+
+
 		}
 
 

@@ -3,16 +3,25 @@
 
 #include <string>
 
+enum class AssetType {
+	MODEL,
+	TEXTURE,
+	MATERIAL,
+	SHADER,
+	OTHER
+};
+
 class AssetIcon {
 	public:
-		std::string tipo;
-		std::string nombre;
-		std::string ruta;
+		AssetType tipo;
+		const char* nombre;
+		const char* ruta;
+		bool clicked;
 
 		AssetIcon();
-		AssetIcon(std::string p_tipo, std::string p_nombre, std::string p_ruta);
+		AssetIcon(AssetType p_tipo, const char* p_nombre, const char* p_ruta);
 
-		void dibujar();
+		void dibujar(bool dibujarToolTip);
 };
 
 #endif

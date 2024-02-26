@@ -30,6 +30,7 @@ namespace Core {
 			obj->SetPosition(x.pos);
 			obj->SetRotation(glm::radians(x.rot));
 			obj->SetScale(x.sca);
+			obj->SetName(x.name);
 			std::shared_ptr<Core::Graphics::ModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::ModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj);
 			renderer->SetMesh(resmg.GetResource<Core::Graphics::Model>(x.mesh.c_str()));
 
@@ -64,6 +65,9 @@ namespace Core {
 			light->mData.mOutter = x.outer;
 			light->mData.mFallOff = x.falloff;
 
+			//TEMPORAL PARA SABER SI ES LUZ HASTA NUEVO LEVEL 
+			obj->SetName(x.type + " Light_light");
+			
 			//If the light is a point light
 			if (x.type == "POINT") light->mData.mType = ::Graphics::Primitives::Light::LightType::Point;
 
@@ -102,12 +106,15 @@ namespace Core {
 			i++;
 			upload(obj);
 			mObjects.emplace_back(std::move(obj));
+			
+
 			});
 
 		std::shared_ptr<Core::Object> sky = std::move(std::make_shared<Core::Object>());
 		std::shared_ptr<Core::Graphics::Skybox> skycomp = std::make_shared<Core::Graphics::Skybox>(sky);
 		skycomp->CreateCubeMap();
 		sky->AddComponent(std::move(skycomp));
+		sky->SetName("Sky_bg");
 		mObjects.emplace_back(sky);
 
 	}
@@ -122,4 +129,5 @@ namespace Core {
 			x->Update();
 			});
 	}
+
 }

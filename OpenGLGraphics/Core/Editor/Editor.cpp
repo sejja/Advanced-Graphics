@@ -5,6 +5,10 @@
 #include <string>
 #include "Interface/Properties.h"
 #include "Interface/AssetManager.h"
+#include "Core/Window/SDLWindow.h"
+#include "Core/Editor/SelectedObj.h"
+#include "Core/Singleton.h"
+
 #include "Interface/TextEditor.h"
 
 Editor::Editor() : editorLocked(false) {}
@@ -21,20 +25,29 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     //Abre una demo de opciones de imgui
     ImGui::ShowDemoWindow();
 
-    AssetManager assetManager;
-    assetManager.Render();
-    properties.Render();
-    outliner.Render();
-    //auto lang = TextEditor::LanguageDefinition::Lua();
-    //textEditor.SetLanguageDefinition(lang);
-    ImGui::Begin("Text Editor");
-    ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-    textEditor.Render("Patata", ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, false);
-    
-    ImGui::Begin("Scene");
-    viewportPanelSize = ImGui::GetContentRegionAvail();
-    //habría que setear la vista de la camara de la escena a este viewport tmb
-    uint64_t textureID = pipeline.GetRenderFrameBuffer()->GetTextureHandle();
-    ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
-    ImGui::End();
+	//Singleton para gestionar objeto seleccionado
+	Singleton<SelectedObj>::Instance();
+
+	mainMenu.Render(pipeline);
+	assetManager.Render();
+	properties.Render();
+	outliner.Render();
+
+	//auto lang = TextEditor::LanguageDefinition::Lua();
+	//textEditor.SetLanguageDefinition(lang);
+	ImGui::Begin("Text Editor");
+	ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+	textEditor.Render("Patata", ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, false);
+
+	//SceneView
+	sceneView.Render(pipeline);
+	
+
+	
+
+
+	
+
+
 }
+

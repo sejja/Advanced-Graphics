@@ -30,9 +30,13 @@ namespace Core {
 		inline void SetPosition(const glm::vec3& pos);
 		inline void SetRotation(const glm::vec3& rot);
 		inline void SetScale(const glm::vec3& scale);
+		inline void SetName(const std::string name);
 		DONTDISCARD inline glm::vec3 GetPosition() const;
 		DONTDISCARD inline glm::vec3 GetRotation() const;
 		DONTDISCARD inline glm::vec3 GetScale() const;
+		DONTDISCARD inline std::string GetName() const;
+
+
 		inline void ForEachComponent(std::function<void(const std::shared_ptr<Core::Component>& comp)> func);
 		void Update();
 
@@ -50,6 +54,7 @@ namespace Core {
 	private:
 		Mathematics::Transformation mTransform;
 		std::vector<std::shared_ptr<Component>> mComponents;
+		std::string name;
 	#pragma endregion
 	};
 
@@ -79,6 +84,16 @@ namespace Core {
 	void Object::SetScale(const glm::vec3& sca) {
 		mTransform.mScale = sca;
 	}
+	// ------------------------------------------------------------------------
+	/*! Set Name
+	*
+	*  Sets the name of an object
+	*/ // ---------------------------------------------------------------------
+	void Object::SetName(const std::string meshName) {
+		name = meshName;
+	}
+
+
 
 	// ------------------------------------------------------------------------
 	/*! Get Position
@@ -88,6 +103,8 @@ namespace Core {
 	glm::vec3 Object::GetPosition() const {
 		return mTransform.mPostion;
 	}
+
+
 
 	// ------------------------------------------------------------------------
 	/*! Get Rotation
@@ -105,6 +122,15 @@ namespace Core {
 	*/ // ---------------------------------------------------------------------
 	glm::vec3 Object::GetScale() const {
 		return mTransform.mScale;
+	}
+
+	// ------------------------------------------------------------------------
+	/*! Get Name
+	*
+	*  Get the name of an object
+	*/ // ---------------------------------------------------------------------
+	std::string Object::GetName() const {
+		return name;
 	}
 
 	// ------------------------------------------------------------------------

@@ -1,5 +1,6 @@
 #include "Properties.h"
 #include <iostream>
+#include <format>
 #include "Dependencies/ImGui/imgui.h"
 #include "Core/ResourceManager.h"
 #include "Graphics/Primitives/Texture.h"
@@ -7,25 +8,48 @@
 #include "Dependencies/ImGui/imgui_internal.h"
 #include "Dependencies/ImGui/imgui_impl_opengl3.h"
 #include <Dependencies/ImGui/imgui_impl_sdl2.h>
+#include "Core/Editor/SelectedObj.h"
+#include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
+#include "Core/Editor/Interface/AssetIcon.h"
+
+
+SelectedObj& selectedObjIns = Singleton<SelectedObj>::Instance();
+
+
 
 
 void Properties::Render() {
-	ImGui::Begin("Properties");
+	ImGui::Begin(ICON_FA_SLIDERS " Properties");
 
 	// Property tool search input
 	static char str1[128] = "";
 
-	ImGui::InputTextWithHint("##SearchProperty", "Search property", str1, IM_ARRAYSIZE(str1));
+    objectOutlinerComp();
+
+
+	ImGui::InputTextWithHint("##SearchProperty", ICON_FA_MAGNIFYING_GLASS " Search property", str1, IM_ARRAYSIZE(str1));
 	ImGui::Spacing();
 
-	if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
-		TransformOptions();
-	}
 
-    if (ImGui::CollapsingHeader("Light", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+
+    if (selectedObjIns.GetSelectedObject()) {
+        if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+            TransformOptions();
+        }
+    }
+
+    if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "  Light", ImGuiTreeNodeFlags_DefaultOpen)) {
         LightingOptions();
     }
 
+    if (ImGui::CollapsingHeader(ICON_FA_BRUSH "  Material", ImGuiTreeNodeFlags_DefaultOpen)) {
+		MaterialsOptions();
+	}
+
+    if (ImGui::CollapsingHeader(ICON_FA_SHAPES "  Static Mesh", ImGuiTreeNodeFlags_DefaultOpen)) {
+        MeshOptions();
+    }
 
 
 
@@ -35,30 +59,36 @@ void Properties::Render() {
 void TextPaddingWBg(const char* text, ImVec4 bgColor) {
     ImVec2 labelSize = ImGui::CalcTextSize(text);
     ImVec2 startPos = ImGui::GetCursorScreenPos();
-    ImVec2 endPos = ImVec2(startPos.x + labelSize.x + 5.0f, startPos.y + labelSize.y + 6.0f);
+    ImVec2 endPos = ImVec2(startPos.x + labelSize.x + 4.5f, startPos.y + labelSize.y + 6.0f);
+    float borderRadius = 3.0f;
 
-    startPos.x -= 2.5f;
+    startPos.x -= 4.5f;
 
-    ImGui::GetWindowDrawList()->AddRectFilled(startPos, endPos, IM_COL32((int)(bgColor.x * 255), (int)(bgColor.y * 255), (int)(bgColor.z * 255), (int)(bgColor.w * 255))); // Fondo
+    ImGui::GetWindowDrawList()->AddRectFilled(startPos, endPos, IM_COL32((int)(bgColor.x * 255), (int)(bgColor.y * 255), (int)(bgColor.z * 255), (int)(bgColor.w * 255)), borderRadius); // Fondo
     ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), text);
 }
 
 
-void TransformRow(const char* title) {
+void TransformRow(const char* title,float& x_val, float& y_val, float& z_val) {
+    //TODO CONVERTIRLO EN UNA GRID
     static char defaultValue[16] = "0";
-    const float f32_zero = 0.f;
-    const float f32_one = 100.f;
+    const float f32_zero = -1000.f;
+    const float f32_one = 1000.f;
     const float dragJump = 0.5f;
     const float inputSize = 0.12f;
     float remainingWidth = ImGui::GetContentRegionAvail().x;
 
-    ImGui::Text(title); ImGui::SameLine();
+    ImGui::SetNextItemWidth(remainingWidth * inputSize);
 
-    auto folderText = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Content/Textures/back.jpg")->Get();
-    ImGui::ImageButton((void*)(intptr_t)folderText->GetTextureHandle(), ImVec2(13, 13));
+    ImGui::PushItemWidth(100);//No funciona
+    ImGui::Text(title); 
+    ImGui::PopItemWidth();
+    ImGui::SameLine();
 
 
-    static float  defaultX = 0.0f;
+    ImGui::Button(ICON_FA_LOCK);
+
+
     std::string XLabel = "X";
     char XID[32];
     sprintf(XID, "##%d%d", XLabel, title);
@@ -66,44 +96,151 @@ void TransformRow(const char* title) {
     TextPaddingWBg(XLabel.c_str(), ImVec4(1.0f, 0.5f, 0.5f, 0.7f));
     ImGui::SameLine();
     ImGui::SetNextItemWidth(remainingWidth * inputSize);
-    ImGui::DragScalar(XID, ImGuiDataType_Float, &defaultX, dragJump, &f32_zero, &f32_one, "%.2f");
+    ImGui::DragScalar(XID, ImGuiDataType_Float, &x_val, dragJump, &f32_zero, &f32_one, "%.2f");
 
 
-
-    static float  defaultY = 0.0f;
     std::string YLabel = "Y";
     std::string YID = "##Y" + std::string(title);
     ImGui::SameLine();
     TextPaddingWBg(YLabel.c_str(), ImVec4(0.5f, 1.0f, 0.5f, 0.7f));
     ImGui::SameLine();
     ImGui::SetNextItemWidth(remainingWidth * inputSize);
-    ImGui::DragScalar(YID.c_str(), ImGuiDataType_Float, &defaultY, dragJump, &f32_zero, &f32_one, "%.2f");
+    ImGui::DragScalar(YID.c_str(), ImGuiDataType_Float, &y_val, dragJump, &f32_zero, &f32_one, "%.2f");
 
-    static float  defaultZ = 0.0f;
     std::string ZLabel = "Z";
     std::string ZID = "##Z" + std::string(title);
     ImGui::SameLine();
     TextPaddingWBg(ZLabel.c_str(), ImVec4(0.5f, 0.5f, 1.0f, 0.7f));
     ImGui::SameLine();
     ImGui::SetNextItemWidth(remainingWidth * inputSize);
-    ImGui::DragScalar(ZID.c_str(), ImGuiDataType_Float, &defaultZ, dragJump, &f32_zero, &f32_one, "%.2f");
+    ImGui::DragScalar(ZID.c_str(), ImGuiDataType_Float, &z_val, dragJump, &f32_zero, &f32_one, "%.2f");
 
 
 
     auto IconTex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("../Assets/Icons/reload.png")->Get();
     ImGui::SameLine();
-    ImGui::ImageButton((void*)(intptr_t)IconTex->GetTextureHandle(), ImVec2(13, 13));
+
+    if (ImGui::Button(ICON_FA_ARROW_ROTATE_LEFT)) {
+        x_val = 0.0f;
+        y_val = 0.0f;
+        z_val = 0.0f;
+    };
+
+
+
+}
+
+
+void Properties::objectOutlinerComp() {
+    std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
+
+    //obj->GetComponent<Core::Graphics::Model>();
+
+    if (obj) {
+        float originalTextSize = ImGui::GetFontSize();
+       
+        ImGui::Text("%s %s", ICON_FA_CUBES, obj->GetName().c_str());
+        ImGui::SameLine();
+        if (ImGui::Button(ICON_FA_PLUS " Add")) {
+            ImGui::OpenPopup("new_component_modal");
+        }
+
+        if (ImGui::BeginPopup("new_component_modal"))
+        {
+            ImGui::SeparatorText("Components");
+
+            if (ImGui::Selectable(ICON_FA_CUBE " Mesh")) {
+				//obj->AddComponent<Core::Graphics::Mesh>();  
+            }
+            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light")) {
+                //obj->AddComponent<Core::Graphics::Light>();
+            }
+            
+            ImGui::EndPopup();
+        }
+
+
+
+        selectedObjectTree();
+        ImGui::Spacing();
+    }
 
 }
 
 
 
 
-void Properties::TransformOptions(){
-    TransformRow("Location");
-    TransformRow("Rotation");
-    TransformRow(" Scale  ");
+void Properties::selectedObjectTree() {
+    std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
+
+    ImGui::BeginChild("ResizableChild", ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 2), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeY);
+
+
+        std::string displayName = std::format("{} {} (Instance)", ICON_FA_CUBE, obj->GetName());
+
+
+
+        //el selcted seria obj== selobj and comp 
+        if (ImGui::Selectable(displayName.c_str(), true)) {
+            selectedObjIns.SetSelectedObject(obj);
+        }
+
+        ImGui::Indent();
+
+
+        //OBJECT COMPONENTS
+
+        //obj->GetComponent<Mesh>()
+
+
+        if (ImGui::Selectable(ICON_FA_CUBE " Mesh",false)) {
+            selectedObjIns.SetSelectedObject(obj);
+        }
+
+        if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light", false)) {
+            selectedObjIns.SetSelectedObject(obj);
+        }
+        ImGui::Unindent();
+
+
+    ImGui::EndChildFrame();
+
+
+
+
+    
+    
+    
+
+
 }
+
+
+
+
+
+
+void Properties::TransformOptions() {
+    
+    std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
+
+    
+    glm::vec3 curPos = obj->GetPosition();
+    glm::vec3 curRot = obj->GetRotation();
+    glm::vec3 curScale = obj->GetScale();
+    
+    TransformRow("Location", curPos[0], curPos[1], curPos[2]);
+    TransformRow("Rotation", curRot[0], curRot[1], curRot[2]);
+    TransformRow("  Scale    ", curScale[0], curScale[1], curScale[2]);
+
+    obj->SetPosition(curPos);
+    obj->SetRotation(curRot);
+    obj->SetScale(curScale);
+
+
+    
+}
+
 
 
 static void HelpMarker(const char* desc)
@@ -246,6 +383,105 @@ void Properties::LightingOptions() {
 
 
 
+}
+//TODO componetizar tabla y usar en todas los componentes
+
+static std::string nombreTexturaTemporal = "Textura def";
+
+void Properties::MaterialsOptions(){
+    static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
+    static ImVec2 cell_padding(4.0f, 8.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
+
+
+    ImGuiDragDropFlags flags = 0;
+    flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+
+    
+  
+    if (ImGui::BeginTable("materials_table", 2, flags1)) {
+
+        ImGui::TableNextRow();
+       
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Element 0");
+        ImGui::TableSetColumnIndex(1);
+
+       
+        auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Content\\Textures\\Brick.png")->Get();
+        ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+
+
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+
+        ImGui::Text(nombreTexturaTemporal.c_str());
+
+        ImGui::Button(ICON_FA_ARROW_TURN_UP);
+        ImGui::SameLine();
+        ImGui::Button(ICON_FA_FOLDER_OPEN);
+
+
+        ImGui::EndGroup();
+
+
+    }
+    ImGui::EndTable();
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
+            AssetIcon* iconPtr = (AssetIcon*)payload->Data;
+            nombreTexturaTemporal = iconPtr->nombre;
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+    ImGui::PopStyleVar();
+
+
+}
+
+void Properties::MeshOptions(){
+    /*
+    static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
+    static ImVec2 cell_padding(4.0f, 8.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
+
+    if (ImGui::BeginTable("mesh_table", 2, flags1)) {
+
+        ImGui::TableNextRow();
+
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Element 0");
+        ImGui::TableSetColumnIndex(1);
+
+
+        auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Content\\Textures\\Brick.png")->Get();
+        ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+
+
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+
+        if (ImGui::BeginCombo("", "Nombre textura")) {
+            ImGui::Selectable("Textura 1");
+            ImGui::Selectable("Textura 2");
+            ImGui::Selectable("Textura 3");
+            ImGui::EndCombo();
+        }
+
+        ImGui::Button(ICON_FA_ARROW_TURN_UP);
+        ImGui::SameLine();
+        ImGui::Button(ICON_FA_FOLDER_OPEN);
+
+
+        ImGui::EndGroup();
+
+
+    }
+    ImGui::EndTable();
+
+    ImGui::PopStyleVar();
+    */
 }
 
 
