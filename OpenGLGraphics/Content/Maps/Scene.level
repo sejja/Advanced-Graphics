@@ -79,12 +79,3 @@ spotAttenuation 20 80 50
 attenuation 1 1.0 1.0
 orbit 0 30 50
 sinusoidal 1 5 10
-
-light
-translate 10 30 50
-color 1 1 1
-lightType SPOT
-spotAttenuation 20 80 50
-attenuation 1 1.0 1.0	
-ambient 0.2
-direction 0 -1 0
