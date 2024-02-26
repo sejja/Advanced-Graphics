@@ -141,6 +141,8 @@ void Properties::objectOutlinerComp() {
 
     //obj->GetComponent<Core::Graphics::Model>();
 
+
+
     if (obj) {
         float originalTextSize = ImGui::GetFontSize();
        
@@ -197,7 +199,7 @@ void Properties::selectedObjectTree() {
 
         //std::shared_ptr<Core::Graphics::Model> component = std::make_shared<Core::Graphics::Model>();
 
-        obj->AddComponent(std::make_shared<Core::Graphics::Model>());
+        //obj->AddComponent(std::make_shared<Core::Graphics::Model>());
 
 
 

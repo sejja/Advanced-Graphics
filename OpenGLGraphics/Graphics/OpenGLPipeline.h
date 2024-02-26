@@ -31,6 +31,12 @@ namespace Core {
 			FrameBuffer* GetRenderFrameBuffer();
 			std::vector<FrameBuffer> GetShadowMappingBuffer() { return mShadowBuffers; };
 
+			//¿guarrada? no se , si seteo el mDimensions se jode todo
+			void setSceneFrameDimensions(const glm::lowp_u16vec2& dim) { sceneFrameDimensions = dim; }
+			float GetAspectRatio() { return static_cast<float>(sceneFrameDimensions.x) / static_cast<float>(sceneFrameDimensions.y); }
+
+			//float GetAspectRatio() { return static_cast<float>(mDimensions.x) / static_cast<float>(mDimensions.y); }
+
 
 			
 
@@ -52,6 +58,7 @@ namespace Core {
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 			glm::lowp_u16vec2 mDimensions;
+			glm::lowp_u16vec2 sceneFrameDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<GBuffer> mGBuffer;
 			Asset<ShaderProgram> mDirectionalLightShader;
@@ -59,6 +66,7 @@ namespace Core {
 
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			GLuint mUniformBuffer;
+
 		};
 
 		// ------------------------------------------------------------------------

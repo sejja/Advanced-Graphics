@@ -1,6 +1,8 @@
 #include "Renderables.h"
 #include "ShaderProgram.h"
 #include "Graphics/Camera.h"
+#include "Graphics/OpenGLPipeline.h"
+
 
 namespace Core {
 	namespace Graphics {
@@ -12,7 +14,7 @@ namespace Core {
 
 			void LoadCubeMap(std::string path);
 			void CreateCubeMap();
-			void Render(Core::Primitives::Camera& cam);
+			void Render(Core::Primitives::Camera& cam, Core::Graphics::OpenGLPipeline& pipeline);
 			void UploadSkyboxCubeMap();
 			static Skybox* sCurrentSky;
 		private:
