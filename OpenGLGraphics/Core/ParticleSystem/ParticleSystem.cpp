@@ -9,7 +9,6 @@ namespace Core
 		ParticleSystem::~ParticleSystem()
 		{
 			particles.reset();
-			~acceleration();
 
 		}
 
