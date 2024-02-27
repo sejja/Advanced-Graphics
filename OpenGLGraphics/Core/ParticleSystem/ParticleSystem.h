@@ -32,7 +32,8 @@ namespace Core
 				void Update() override;
 
 			protected:
-				std::weak_ptr<std::vector<Particle>> particles;
+				std::vector<Particle> particles;
+				virtual int ParticleFunction(Particle *p_particle);
 		};
 	}
 }
