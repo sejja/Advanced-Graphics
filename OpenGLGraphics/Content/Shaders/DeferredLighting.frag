@@ -121,7 +121,5 @@ void main() {
             reflect(-lightDir, normal)), 0.0), 32)));
    }
 
-
-
    FragColor =  texture(gAlbedoSpec, oUVs).rgba * vec4(totalLightShine, 1.0);
 } 

@@ -22,6 +22,7 @@
 #include "Core/Editor/Editor.h"
 #include "Graphics/Tools/OpenGLInfo.h"
 
+
 using namespace Core::Graphics;
 using namespace std;
 
@@ -38,7 +39,7 @@ namespace Core {
 			glEnable(GL_DEPTH_TEST);
 			glDepthFunc(GL_LESS);
 			glEnable(GL_CULL_FACE);
-			glEnable(GL_FRAMEBUFFER_SRGB);
+			//glEnable(GL_FRAMEBUFFER_SRGB);
 			glFrontFace(GL_CCW);
 			glDisable(GL_BLEND);
 			glDisable(GL_STENCIL_TEST);
@@ -155,7 +156,7 @@ namespace Core {
 						glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
 						glm::scale(glm::mat4(1.0f), parent->GetScale());
 					shader->SetShaderUniform("uModel", &matrix);
-					reinterpret_cast<ModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
+					reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
 				}
 				else {
 					obsoletes.insert(make_pair(it.first, it2));
@@ -280,50 +281,6 @@ namespace Core {
 
 
 		// ------------------------------------------------------------------------
-		/*! RenderGUI
-		*
-		*   Prepare and render the GUI
-		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::FlushObsoletes(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes) 
-		{
-			std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
-				std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
-				it.erase(x.second);
-
-				//If we don't have any other renderables, erase it
-				if (!it.size()) mGroupedRenderables.erase(x.first);
-				});
-		}
-
-		// ------------------------------------------------------------------------
-		/*! GroupRender
-		*
-		*   Prepare and render the GUI
-		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::GroupRender(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
-			const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it,
-			ShaderProgram* shader) 
-		{
-			for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
-				//If it isn't expired
-				if (auto renderable = it2->lock()) {
-					const std::shared_ptr<Object> parent = renderable->GetParent().lock();
-					glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
-						glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-						glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
-						glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
-						glm::scale(glm::mat4(1.0f), parent->GetScale());
-					shader->SetShaderUniform("uModel", &matrix);
-					reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
-				}
-				else {
-					obsoletes.insert(std::make_pair(it.first, it2));
-				}
-			}
-			FlushObsoletes(obsoletes);
-		}
-
-		// ------------------------------------------------------------------------
 		/*! Render
 		*
 		*   Renders every object in the scene
@@ -331,7 +288,6 @@ namespace Core {
 		void OpenGLPipeline::Render() {
 			RenderGUI();
 			
-			_RenderGUI();
 			RenderShadowMaps();
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
@@ -347,7 +303,7 @@ namespace Core {
 			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
 			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 
-			Skybox::sCurrentSky->Render(cam);
+			Skybox::sCurrentSky->Render(cam,*this);
 
 			if (AntiAliasing) 
 			{
@@ -443,7 +399,7 @@ namespace Core {
 
 				FlushObsoletes(obsoletes);
 			}
-		}
+		
 
 		// ------------------------------------------------------------------------
 		/*! Lighting Pass
@@ -453,10 +409,10 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::LightingPass() {
 			
-			glEnable(GL_BLEND);
-			glBlendEquation(GL_FUNC_ADD);
-			glBlendFunc(GL_ONE, GL_ONE);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			//glEnable(GL_BLEND);
+			//glBlendEquation(GL_FUNC_ADD);
+			//glBlendFunc(GL_ONE, GL_ONE);
+			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
 			glActiveTexture(GL_TEXTURE1);
@@ -490,7 +446,7 @@ namespace Core {
 		void OpenGLPipeline::RenderShadowMaps() {
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
-			glCullFace(GL_FRONT);
+			glCullFace(GL_NONE);
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				mShadowBuffers[i].Bind();
 				mShadowBuffers[i].Clear(true);
