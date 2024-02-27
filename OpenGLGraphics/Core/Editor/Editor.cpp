@@ -35,9 +35,7 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline) {
 
 	//auto lang = TextEditor::LanguageDefinition::Lua();
 	//textEditor.SetLanguageDefinition(lang);
-	ImGui::Begin("Text Editor");
-	ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-	textEditor.Render("Patata", ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, false);
+	textEditor.Render("Patata", false);
 
 	//SceneView
 	sceneView.Render(pipeline);

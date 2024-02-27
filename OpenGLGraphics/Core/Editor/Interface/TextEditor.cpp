@@ -1123,24 +1123,24 @@ void TextEditor::Render()
 	}
 }
 
-void TextEditor::Render(const char* aTitle, const ImVec2& aSize, bool aBorder)
+void TextEditor::ChangeFile(const char* aFile)
 {
+	fileToEdit = "Core/Editor/patata.txt";
+	firstTime = true;
+	SetText("");
+}
+
+void TextEditor::Render(const char* aTitle, bool aBorder)
+{
+	ImGui::Begin("Text Editor");
+	ImVec2 aSize = ImGui::GetContentRegionAvail();
 	 { // Save
 		if (ImGui::Button("Save")) {
 			std::ofstream t(fileToEdit);
 			t << GetText();
 		}
 		ImGui::SameLine();
-	}
-	{ // Swap
-		 if (ImGui::Button("Swap")) {
-			 fileToEdit = "Core/Editor/patata.txt";
-			 firstTime = true;
-			 SetText("");
-		 }
-
-		 ImGui::SameLine();
-		 ImGui::TextColored(ImVec4(1, 1, 0, 1), "File: %s", fileToEdit);
+		ImGui::TextColored(ImVec4(1, 1, 0, 1), "File: %s", fileToEdit);
 	}
 	std::ifstream t(fileToEdit);
 	if (t.good() && firstTime)
