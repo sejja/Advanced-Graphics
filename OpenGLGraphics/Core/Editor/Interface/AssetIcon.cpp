@@ -65,6 +65,20 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 		}
 	 
 	}
+	else if (tipo == AssetType::SHADER) {
+		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/folderAdd.png")->Get();
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		clicked = ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::PopStyleColor(1);
+		if (dibujarToolTip == false) {
+			if (ImGui::BeginDragDropSource()) {
+				//printf("Dragging");
+				dibujar(true);
+				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				ImGui::EndDragDropSource();
+			}
+		}
+	}
 	else {
 		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/other.png")->Get(); //Que cojones es la sintaxis de esta línea???
 		//ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
