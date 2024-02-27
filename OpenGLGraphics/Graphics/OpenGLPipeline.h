@@ -14,7 +14,8 @@
 #include "Graphics/Primitives/Renderables.h"
 #include "Tools/FrameBuffer.h"
 #include "Graphics/Architecture/GBuffer.h"
-
+#include "Graphics/Architecture/HDRBuffer.h"
+#include "Graphics/Architecture/SamplingBuffer.h"
 
 namespace Core {
 	namespace Graphics {
@@ -29,7 +30,7 @@ namespace Core {
 			inline void AddRenderable(const std::weak_ptr<Renderable>& renderer);
 			GBuffer* GetGBuffer();
 			FrameBuffer* GetRenderFrameBuffer();
-			std::vector<FrameBuffer> GetShadowMappingBuffer() { return mShadowBuffers; };
+			GLuint GetRenderTexture();
 
 			//¿guarrada? no se , si seteo el mDimensions se jode todo
 			void setSceneFrameDimensions(const glm::lowp_u16vec2& dim) { sceneFrameDimensions = dim; }
@@ -43,7 +44,11 @@ namespace Core {
 		private:
 			void UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader);
 			void GeometryPass();
-
+			void RenderGUI();
+			void FlushObsoletes(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes);
+			void GroupRender(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
+				const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it,
+				ShaderProgram* shader);
 			void LightingPass();
 			void RenderShadowMaps();
 			void RenderScreenQuad();
@@ -63,10 +68,17 @@ namespace Core {
 			std::unique_ptr<GBuffer> mGBuffer;
 			Asset<ShaderProgram> mDirectionalLightShader;
 			std::unique_ptr<FrameBuffer> mFrameBuffer;
+			std::unique_ptr<HDRBuffer> mHDRBuffer;
+
+			std::unique_ptr<SamplingBuffer> mSamplingBuffer;
 
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			GLuint mUniformBuffer;
 
+
+			GLboolean AntiAliasing = false;
+			Asset<ShaderProgram> RendererShader;
+			float exposure = 1;
 		};
 
 		// ------------------------------------------------------------------------

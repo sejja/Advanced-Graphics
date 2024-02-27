@@ -71,6 +71,13 @@ attenuation 0 0.0 0.01
 ambient 0.2
 direction -1 0 0
 
+light
+translate 50 0 55
+color 0 1 0
+lightType DIR	
+direction -1 0 0
+	
+light
 translate 50 30 50
 color 0 0 1
 lightType SPOT
