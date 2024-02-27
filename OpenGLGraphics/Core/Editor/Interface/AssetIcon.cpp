@@ -3,6 +3,7 @@
 #include "Core/Singleton.h"
 #include "Core/ResourceManager.h"
 #include "Graphics/Primitives/Texture.h"
+#include "Core/Editor/Editor.h"
 
 
 
@@ -53,7 +54,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 	else if (tipo == AssetType::TEXTURE) {
 		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(ruta)->Get(); //Que cojones es la sintaxis de esta línea???
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-		ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		clicked = ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::PopStyleColor(1);
 		if (dibujarToolTip == false) {
 			if (ImGui::BeginDragDropSource()) {
@@ -63,6 +64,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 				ImGui::EndDragDropSource();
 			}
 		}
+		
 	 
 	}
 	else if (tipo == AssetType::SHADER) {
@@ -77,6 +79,9 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
 				ImGui::EndDragDropSource();
 			}
+		}
+		if (clicked) {
+			Singleton<Core::Editor::Editor>::Instance().textEditor.ChangeFile(ruta);
 		}
 	}
 	else {

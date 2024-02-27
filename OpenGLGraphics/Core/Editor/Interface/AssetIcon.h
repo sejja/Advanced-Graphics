@@ -1,7 +1,7 @@
+#include "Core/Editor/Editor.h"
+
 #ifndef __ASSET_ICON_H__
 #define __ASSET_ICON_H__
-
-#include <string>
 
 enum class AssetType {
 	MODEL,

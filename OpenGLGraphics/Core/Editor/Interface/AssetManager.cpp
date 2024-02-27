@@ -1,10 +1,13 @@
 #include "AssetManager.h"
 #include "Dependencies/ImGui/imgui.h"
 #include "AssetIcon.h"
+#include "Core/Editor/Editor.h"
 
 
 void drawDropWindow();
 std::string texto = "No se ha droppeado nada";
+
+
 
 void AssetManager::Render() {
 	ImGui::Begin("Asset Manager");
@@ -16,6 +19,7 @@ void AssetManager::Render() {
 	const int numAssets = 20;
 	AssetIcon assets[20];
 	assets[1] = AssetIcon(AssetType::TEXTURE, "Textura", "Content\\Textures\\Brick.png");
+	assets[2] = AssetIcon(AssetType::SHADER, "Shader", "Content\\Shaders\\DeferredGeometry.frag");
 
 	int cont = 0;
 	for (int i = 0; i < numAssets; i++) { //TODO intentar centrar elementos

@@ -1125,7 +1125,7 @@ void TextEditor::Render()
 
 void TextEditor::ChangeFile(const char* aFile)
 {
-	fileToEdit = "Core/Editor/patata.txt";
+	fileToEdit = aFile;
 	firstTime = true;
 	SetText("");
 }

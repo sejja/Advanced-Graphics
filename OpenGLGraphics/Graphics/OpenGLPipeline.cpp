@@ -199,9 +199,9 @@ namespace Core {
 
 
 
-
+			
 			//Render editor
-			Singleton<Editor>::Instance().Render(*this);
+			Singleton<Core::Editor::Editor>::Instance().Render(*this);
 
 
 		}

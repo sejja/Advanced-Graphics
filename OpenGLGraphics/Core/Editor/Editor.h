@@ -13,28 +13,29 @@
 #include "Interface/MainMenu.h"
 #include "Interface/TextEditor.h"
 
+namespace Core {
+	namespace Editor {
 
+        class Editor {
+        public:
+            Editor();
 
-class Editor {
-public:
-    Editor();
+            void Render(Core::Graphics::OpenGLPipeline& pipeline);
 
-    void Render(Core::Graphics::OpenGLPipeline& pipeline);
+            bool IsEditorLocked();
 
-    bool IsEditorLocked();
+            MainMenu mainMenu;
+            Properties properties;
+            AssetManager assetManager;
+            Outliner outliner;
+            SceneView sceneView;
 
-private:
-    bool editorLocked;
-    MainMenu mainMenu;
-    Properties properties;
-    AssetManager assetManager;
-    Outliner outliner;
-    SceneView sceneView;
+            TextEditor textEditor;
 
-    TextEditor textEditor;
+        private:
+            bool editorLocked;
 
-
-};
-
-
+        };
+	}
+}
 #endif 
