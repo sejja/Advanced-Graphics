@@ -191,20 +191,7 @@ namespace Core {
 			glEnable(GL_DEPTH_TEST);
 			mGBuffer->BlitDepthBuffer();
 			Skybox::sCurrentSky->Render(cam);
-			mDebug->change_camera(&cam);
-			for (auto& light : ::Graphics::Primitives::Light::sLightData) {
-				float radius = light.second.CalculateSphereOfInfluence();
-				//mDebug->draw_sphere(light.second.mPosition, radius * 2, glm::vec4(1.0, 0.85, 0.1, 1));
-				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 2.f, 2000.f);
-				glm::mat4 lightView = glm::lookAt(light.second.mPosition, light.second.mDirection, glm::vec3(0, 1, 0));
-				glm::mat4 matrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.f)) *
-					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(0.0f, 0.0f, 1.0f)) *
-					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(1.0f, 0.0f, 0.0f)) *
-					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(0.0f, 1.0f, 0.0f)) *
-					glm::scale(glm::mat4(1.0f), glm::vec3(1.f, 1.f, 1.f));
-				mDebug->draw_frustum_lines(lightProjection * lightView * matrix, glm::vec4(1.0, 0.85, 0.1, 1));
-			}
-
+			DebugDraw();
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
@@ -412,6 +399,22 @@ namespace Core {
 
 				mShadowBuffers[i].Unbind();
 
+			}
+		}
+
+		void OpenGLPipeline::DebugDraw() {
+			mDebug->change_camera(&cam);
+			for (auto& light : ::Graphics::Primitives::Light::sLightData) {
+				float radius = light.second.CalculateSphereOfInfluence();
+				//mDebug->draw_sphere(light.second.mPosition, radius * 2, glm::vec4(1.0, 0.85, 0.1, 1));
+				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 2.f, 2000.f);
+				glm::mat4 lightView = glm::lookAt(light.second.mPosition, -light.second.mDirection, glm::vec3(0, 1, 0));
+				glm::mat4 matrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.f)) *
+					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(0.0f, 0.0f, 1.0f)) *
+					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(1.0f, 0.0f, 0.0f)) *
+					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(0.0f, 1.0f, 0.0f)) *
+					glm::scale(glm::mat4(1.0f), glm::vec3(1.f, 1.f, 1.f));
+				mDebug->draw_frustum_lines(lightProjection * lightView * matrix, glm::vec4(1.0, 0.85, 0.1, 1));
 			}
 		}
 

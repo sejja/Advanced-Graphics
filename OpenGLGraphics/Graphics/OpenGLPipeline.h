@@ -34,6 +34,7 @@ namespace Core {
 
 			void LightingPass();
 			void RenderShadowMaps();
+			void DebugDraw();
 			void RenderScreenQuad();
 			void UpdateUniformBuffers();
 			void DirectionalLightPass();
