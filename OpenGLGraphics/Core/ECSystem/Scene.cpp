@@ -12,6 +12,9 @@
 #include "Graphics/Primitives/Light.h"
 #include "Core/Singleton.h"
 #include "Graphics/Primitives/Skybox.h"
+#include "Core/ParticleSystem/ParticleManager.h"
+#include "Core/ParticleSystem/ParticleSystem.h"
+#include "Graphics/OpenGLPipeline.h"
 
 namespace Core {
 	SceneParser Scene::sParser;
@@ -21,7 +24,7 @@ namespace Core {
 	*
 	*   Creates a scene from a level file
 	*/ // ---------------------------------------------------------------------
-	void Scene::CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
+	void Scene::CreateScene(const std::string_view& file, Core::Graphics::OpenGLPipeline &pipe, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
 		sParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<ResourceManager>::Instance();
 
@@ -110,6 +113,11 @@ namespace Core {
 		sky->AddComponent(std::move(skycomp));
 		mObjects.emplace_back(sky);
 
+		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
+		std::shared_ptr<Core::Particles::ParticleSystem> testParticleSystem = std::make_shared<Core::Particles::ParticleSystem>(particleManager);
+		particleManager->AddComponent(std::move(testParticleSystem));
+		mObjects.emplace_back(particleManager);
+		pipe.SetParticleManager(particleManager);
 	}
 
 	// ------------------------------------------------------------------------

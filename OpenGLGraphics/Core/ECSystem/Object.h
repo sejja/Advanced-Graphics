@@ -47,7 +47,7 @@ namespace Core {
 	#pragma endregion
 
 	#pragma region //Members
-	private:
+	protected:
 		Mathematics::Transformation mTransform;
 		std::vector<std::shared_ptr<Component>> mComponents;
 	#pragma endregion

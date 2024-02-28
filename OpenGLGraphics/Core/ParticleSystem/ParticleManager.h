@@ -3,6 +3,8 @@
 
 #include "glm.hpp"
 #include "Core/ECSystem/Object.h"
+#include "Core/ParticleSystem/ParticleSystem.h"
+#include "Graphics/Camera.h"
 
 namespace Core
 {
@@ -10,7 +12,13 @@ namespace Core
 	{
 		class ParticleMangager : public Core::Object
 		{
-			void Update();
+		public:
+			ParticleMangager();
+			~ParticleMangager();
+
+			void AddComponent(std::shared_ptr<Core::Particles::ParticleSystem>&& component);
+			std::vector<std::shared_ptr<Component>>* GetParticleSystems();
+			void Render(Core::Primitives::Camera* camera);
 		};
 	}
 }

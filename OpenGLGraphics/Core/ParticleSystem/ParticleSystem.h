@@ -31,9 +31,14 @@ namespace Core
 
 				void Update() override;
 
+
+				virtual void Render() const override {
+					std::cout << "Unimplemented methdod Render of Default Particle System \n";
+				};
+
 			protected:
 				std::vector<Particle> particles;
-				virtual int ParticleFunction(Particle *p_particle);
+				int ParticleFunction(Particle *p_particle);
 		};
 	}
 }

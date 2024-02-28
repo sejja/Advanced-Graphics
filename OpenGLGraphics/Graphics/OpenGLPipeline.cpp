@@ -277,6 +277,7 @@ namespace Core {
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
+			RenderParticlesSystems();
 
 			//Bind and Clean
 			if (AntiAliasing) {mSamplingBuffer->Bind();mSamplingBuffer->Clear();}
@@ -509,6 +510,23 @@ namespace Core {
 			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &projection);
 			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), &cam.GetPositionRef());
 			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
+		}
+
+		void OpenGLPipeline::RenderParticlesSystems()
+		{
+			if (auto currentParticleManager = particleManager.lock()) 
+			{
+				currentParticleManager->Render(&cam);
+			}
+			else 
+			{
+				std::cout << "ERROR -> PARTICLEMANAGER WAS DESTROYED \n";
+			}
+
+		}
+
+		void OpenGLPipeline::SetParticleManager(std::shared_ptr<Core::Particles::ParticleMangager> particleManager) {
+			this->particleManager = particleManager;
 		}
 	}
 
