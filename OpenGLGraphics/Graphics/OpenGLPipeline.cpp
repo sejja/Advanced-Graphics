@@ -531,6 +531,7 @@ namespace Core {
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &view);
 			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &projection);
 			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), &cam.GetPositionRef());
+			//glBindBuffer(GL_UNIFORM_BUFFER, mFrameBuffer->GetHandle());
 			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 		}
 
