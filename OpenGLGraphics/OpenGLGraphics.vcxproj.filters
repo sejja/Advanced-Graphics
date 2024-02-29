@@ -45,7 +45,7 @@
     <ClCompile Include="Core\ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Assets\Importers.cpp">
+    <ClCompile Include="Core\Assets\ModelImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Primitives\Model.cpp">
@@ -127,6 +127,24 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Primitives\GLBModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\BloomRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Debug\DebugPrimitives.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Debug\DebugShapes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Primitives\GLBMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Assets\TextureImporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Assets\ShaderImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1349,7 +1367,7 @@
     <ClInclude Include="CommonDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Assets\Importers.h">
+    <ClInclude Include="Core\Assets\ModelImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Primitives\Model.h">
@@ -1557,6 +1575,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Primitives\GLBModel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\BloomRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Debug\DebugPrimitives.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Debug\DebugShapes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Primitives\GLBMesh.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Assets\TextureImporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Assets\ShaderImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -1991,6 +2027,19 @@
     <None Include="Content\Shaders\DeferredLighting.vert" />
     <None Include="Content\Shaders\DirectionalLightShader.frag" />
     <None Include="Content\Shaders\DirectionalLight.shader" />
+    <None Include="Content\Scenes\README.md" />
+    <None Include="Content\Scenes\Sponza.bin">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="Content\Scenes\Sponza.gltf" />
+    <None Include="Content\Shaders\DebugLines.frag" />
+    <None Include="Content\Shaders\DebugLines.shader" />
+    <None Include="Content\Shaders\DebugLines.vert" />
+    <None Include="Content\Shaders\ForwardRender.frag" />
+    <None Include="Content\Shaders\ForwardRender.shader" />
+    <None Include="Content\Shaders\ForwardRender.vert" />
+    <None Include="Content\Shaders\White.frag" />
+    <None Include="Content\Shaders\White.shader" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
@@ -2018,6 +2067,213 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Content\Textures\Brick.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\10381718147657362067.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\10388182081421875623.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\11474523244911310074.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\11490520546946913238.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\11872827283454512094.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\11968150294050148237.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\1219024358953944284.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\12501374198249454378.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\13196865903111448057.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\13824894030729245199.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\13982482287905699490.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\14118779221266351425.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\14170708867020035030.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\14267839433702832875.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\14650633544276105767.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\15295713303328085182.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\15722799267630235092.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\16275776544635328252.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\16299174074766089871.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\16885566240357350108.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\17556969131407844942.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\17876391417123941155.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\2051777328469649772.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\2185409758123873465.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\2299742237651021498.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\2374361008830720677.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\2411100444841994089.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\2775690330959970771.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\2969916736137545357.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\332936164838540657.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\3371964815757888145.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\3455394979645218238.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\3628158980083700836.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\3827035219084910048.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\4477655471536070370.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\4601176305987539675.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\466164707995436622.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\4675343432951571524.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\4871783166746854860.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\4910669866631290573.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\4975155472559461469.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\5061699253647017043.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\5792855332885324923.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\5823059166183034438.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\6047387724914829168.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\6151467286084645207.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\6593109234861095314.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\6667038893015345571.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\6772804448157695701.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\7056944414013900257.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\715093869573992647.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\7268504077753552595.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\7441062115984513793.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\755318871556304029.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\759203620573749278.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\7645212358685992005.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\7815564343179553343.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\8006627369776289000.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\8051790464816141987.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\8114461559286000061.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\8481240838833932244.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\8503262930880235456.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\8747919177698443163.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\8750083169368950601.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\8773302468495022225.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\8783994986360286082.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\9288698199695299068.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\9916269861720640319.jpg">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Scenes\textures\white.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

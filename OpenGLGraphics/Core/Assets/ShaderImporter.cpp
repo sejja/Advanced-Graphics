@@ -2,66 +2,20 @@
 //	Importers.cpp
 //	OpenGL Graphics
 //
-//	Created by Diego Revilla on 14/01/23
-//	Copyright © 2023. All Rights reserved
+//	Created by Diego Revilla on 23/02/24
+//	Copyright © 2024. All Rights reserved
 //
 
 #include <fstream>
-#include "Importers.h"
+#include "ShaderImporter.h"
 #include "Graphics/Primitives/Model.h"
 #include "Graphics/Primitives/GLBModel.h"
 #include "Graphics/Primitives/Texture.h"
 #include "Dependencies/Json/single_include/json.hpp"
+#include "Core/PageAllocator.h"
 
 namespace Core {
 	namespace Assets {
-		// ------------------------------------------------------------------------
-		/*! Import From File
-		*
-		*   Imports Models from File
-		*/ //----------------------------------------------------------------------
-		std::shared_ptr<IResource> ModelImporter::ImportFromFile(const std::string_view& filename) const {
-			using Core::Graphics::Model;
-
-			PageAllocator<TResource<Model>> resalloc;
-			PageAllocator<Model> modealloc;
-
-			std::shared_ptr<TResource<Model>> const rawResource(resalloc.New(1, modealloc.New()), [resalloc, modealloc](TResource<Model>* p) {
-				const auto ref = p->Get();
-				ref->Clear();
-				modealloc.deallocate(ref);
-				resalloc.deallocate(p);
-				});
-			rawResource->rawData->LoadFromFile(filename.data());
-
-			return std::move(rawResource);
-		}
-
-		// ------------------------------------------------------------------------
-		/*! Import From File
-		*
-		*   Imports Textures from File
-		*/ //----------------------------------------------------------------------
-		std::shared_ptr<IResource> Assets::TextureImporter::ImportFromFile(const std::string_view& filename) const {
-			using Core::Graphics::Texture;
-			PageAllocator<TResource<Texture>> resalloc;
-			PageAllocator<Texture> texalloc;
-
-			std::shared_ptr<TResource<Texture>> rawResource(resalloc.New(1, texalloc.New()), [](TResource<Texture>* p) {
-				PageAllocator<TResource<Texture>> resalloc;
-				PageAllocator<Texture> texalloc;
-				auto ptr = p->rawData.release();
-				texalloc.destroy(ptr);
-				texalloc.deallocate(ptr);
-				resalloc.destroy(p);
-				resalloc.deallocate(p);
-				});
-
-			rawResource->rawData->LoadFromFile(filename.data());
-
-			return std::move(rawResource);
-		}
-
 		// ------------------------------------------------------------------------
 		/*! Import From File
 		*
@@ -140,22 +94,6 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		std::shared_ptr<IResource> ShaderImporter<Core::Graphics::Shader::EType::Fragment>::ImportFromFile(const std::string_view& filename) const {
 			return std::move(ProcessShader(filename, Core::Graphics::Shader::EType::Fragment));
-		}
-
-		DONTDISCARD std::shared_ptr<IResource> GLBImporter::ImportFromFile(const std::string_view& filename) const
-		{
-			using ::Graphics::Primitives::GLBModel;
-
-			PageAllocator<TResource<GLBModel>> resalloc;
-			PageAllocator<GLBModel> modealloc;
-
-			std::shared_ptr<TResource<GLBModel>> const rawResource(resalloc.New(1, modealloc.New(1, std::string(filename))), [resalloc, modealloc](TResource<GLBModel>* p) {
-				const auto ref = p->Get();
-				modealloc.deallocate(ref);
-				resalloc.deallocate(p);
-				});
-
-			return std::move(rawResource);
 		}
 	}
 }
