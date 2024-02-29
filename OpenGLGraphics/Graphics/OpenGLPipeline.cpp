@@ -77,7 +77,7 @@ namespace Core {
 			glGenBuffers(1, &mUniformBuffer);
 
 			glBindBuffer(GL_UNIFORM_BUFFER, mUniformBuffer);
-			glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + sizeof(glm::vec3), NULL, GL_STATIC_DRAW);
+			glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + sizeof(glm::vec3) + sizeof(glm::vec2), NULL, GL_STATIC_DRAW);
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 			glBindBufferRange(GL_UNIFORM_BUFFER, 0, mUniformBuffer, 0, 2 * sizeof(glm::mat4) + sizeof(glm::vec3));
@@ -193,7 +193,6 @@ namespace Core {
 			glEnable(GL_DEPTH_TEST);
 			mGBuffer->BlitDepthBuffer();
 			Skybox::sCurrentSky->Render(cam);
-			DebugDraw();
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 		}
@@ -344,6 +343,21 @@ namespace Core {
 
 			mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
 			RenderScreenQuad();
+			/*glCullFace(GL_FRONT);
+			for (auto& light : ::Graphics::Primitives::Light::sLightData) {
+				float radius = light.second.CalculateSphereOfInfluence();
+				glm::mat4 matrix = glm::translate(glm::mat4(1.0f), light.second.mPosition) *
+					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(0.0f, 0.0f, 1.0f)) *
+					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(1.0f, 0.0f, 0.0f)) *
+					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(0.0f, 1.0f, 0.0f)) *
+					glm::scale(glm::mat4(1.0f), glm::vec3(radius * 2, radius * 2, radius * 2));
+				mLightSphereShader->Get()->Bind();
+				mLightSphereShader->Get()->SetShaderUniform("uModel", &matrix);
+				mLightSphere->Get()->Draw(*mLightSphereShader->Get());
+				//mDebug->draw_frustum_lines(lightProjection * lightView * matrix, glm::vec4(1.0, 0.85, 0.1, 1));
+			}
+			*/
+		
 		}
 
 		void OpenGLPipeline::RenderShadowMaps() {
@@ -480,6 +494,7 @@ namespace Core {
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &view);
 			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &projection);
 			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), &cam.GetPositionRef());
+			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + sizeof(glm::vec3), sizeof(glm::vec2), &mDimensions);
 			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 		}
 

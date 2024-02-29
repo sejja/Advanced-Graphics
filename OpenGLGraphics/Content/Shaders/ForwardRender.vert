@@ -8,6 +8,7 @@ layout (std140) uniform UniformBuffer {
 	mat4 ubView;
 	mat4 ubProjection;
     vec3 ubCameraPosition;
+	vec2 ubScreenSize;
 };
 uniform mat4 uModel;
 
