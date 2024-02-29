@@ -53,6 +53,8 @@ namespace Core {
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			GLuint mUniformBuffer;
 			std::unique_ptr<debug_system> mDebug;
+			Asset<::Graphics::Primitives::GLBModel> mLightSphere;
+			Asset<ShaderProgram> mLightSphereShader;
 		};
 
 		// ------------------------------------------------------------------------

@@ -708,6 +708,9 @@
     <None Include="Content\Shaders\DeferredLighting.vert" />
     <None Include="Content\Shaders\DirectionalLightShader.frag" />
     <None Include="Content\Shaders\DirectionalLight.shader" />
+    <None Include="Content\Shaders\ForwardRender.frag" />
+    <None Include="Content\Shaders\ForwardRender.shader" />
+    <None Include="Content\Shaders\ForwardRender.vert" />
     <None Include="Content\Shaders\Refractive.frag" />
     <None Include="Content\Shaders\Refractive.shader" />
     <None Include="Content\Shaders\Shadow.frag" />
