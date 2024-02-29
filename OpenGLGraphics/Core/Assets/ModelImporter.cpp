@@ -24,7 +24,7 @@ namespace Core {
 			const PageAllocator<TResource<GLBModel>> resalloc;
 			const PageAllocator<GLBModel> modealloc;
 
-			Asset<GLBModel> const rawResource(resalloc.New(1, 
+			Asset<GLBModel> rawResource(resalloc.New(1, 
 				modealloc.New(1, std::string(filename))), [resalloc, modealloc](TResource<GLBModel>* const p) {
 					const PageAllocator<TResource<GLBModel>> resalloc;
 					const PageAllocator<GLBModel> modealloc;
@@ -32,7 +32,7 @@ namespace Core {
 					resalloc.deallocate(p);
 				});
 
-			return std::move(rawResource);
+			return rawResource;
 		}
 	}
 }

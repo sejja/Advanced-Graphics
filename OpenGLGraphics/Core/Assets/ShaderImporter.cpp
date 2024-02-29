@@ -8,9 +8,7 @@
 
 #include <fstream>
 #include "ShaderImporter.h"
-#include "Graphics/Primitives/Model.h"
-#include "Graphics/Primitives/GLBModel.h"
-#include "Graphics/Primitives/Texture.h"
+#include "Graphics/Primitives/ShaderProgram.h"
 #include "Dependencies/Json/single_include/json.hpp"
 #include "Core/PageAllocator.h"
 
@@ -22,30 +20,27 @@ namespace Core {
 		*   Imports a Shader from File
 		*/ //----------------------------------------------------------------------
 		std::shared_ptr<IResource> ShaderProgramImporter::ImportFromFile(const std::string_view& filename) const {
-			using Core::Graphics::ShaderProgram;
-			using Core::Graphics::Shader;
+			using Graphics::ShaderProgram;
+			using Graphics::Shader;
 			using nlohmann::json;
 
-			PageAllocator<TResource<ShaderProgram>> resalloc;
-			PageAllocator<ShaderProgram> shadalloc;
+			const PageAllocator<TResource<ShaderProgram>> resalloc;
+			const PageAllocator<ShaderProgram> shadalloc;
 
 			std::ifstream file(filename.data());
 			json j = json::parse(file);
-			auto& resmg = Singleton<ResourceManager>::Instance();
+			ResourceManager& resmg = Singleton<ResourceManager>::Instance();
 
-			ShaderProgram* _shad = shadalloc.allocate();
-			AssetReference<Shader> vertex = std::move(resmg.GetResource<Shader>(j["Vertex"].get<std::string>().c_str()));
-			AssetReference<Shader> fragment = std::move(resmg.GetResource<Shader>(j["Fragment"].get<std::string>().c_str()));
+			ShaderProgram* const _shad = shadalloc.allocate();
 
-			shadalloc.construct(_shad, vertex, fragment);
-			std::shared_ptr<TResource<ShaderProgram>> const rawResource(resalloc.New(1, std::move(_shad)), [](TResource<ShaderProgram>* p) {
-				PageAllocator<TResource<ShaderProgram>> resalloc_;
-				PageAllocator<ShaderProgram> shadalloc_;
-				auto ptr = p->rawData.release();
-				shadalloc_.destroy(ptr);
-				shadalloc_.deallocate(ptr);
-				resalloc_.destroy(p);
-				resalloc_.deallocate(p);
+			shadalloc.construct(_shad, 
+				std::move(resmg.GetResource<Shader>(j["Vertex"].get<std::string>().c_str())), 
+				std::move(resmg.GetResource<Shader>(j["Fragment"].get<std::string>().c_str())));
+			std::shared_ptr<TResource<ShaderProgram>> rawResource(resalloc.New(1, _shad), [](TResource<ShaderProgram>* const p) {
+				const PageAllocator<TResource<ShaderProgram>> resalloc_;
+				const PageAllocator<ShaderProgram> shadalloc_;
+				shadalloc_.terminate(p->rawData.release());
+				resalloc_.terminate(p);
 				});
 
 			return std::move(rawResource);
@@ -56,23 +51,20 @@ namespace Core {
 		*
 		*   Allocates a single Shader (fragment or vertex)
 		*/ //----------------------------------------------------------------------
-		std::shared_ptr<IResource> ProcessShader(const std::string_view& filename, Core::Graphics::Shader::EType type) {
-			using Core::Graphics::Shader;
+		DONTDISCARD std::shared_ptr<IResource> ProcessShader(const std::string_view& filename, const Graphics::Shader::EType type) {
+			using Graphics::Shader;
 
-			PageAllocator<TResource<Shader>> resalloc;
-			PageAllocator<Shader> shadalloc;
+			const PageAllocator<TResource<Shader>> resalloc;
+			const PageAllocator<Shader> shadalloc;
 
 			Shader* const _shad = shadalloc.allocate();
 			shadalloc.construct(_shad, filename.data(), type);
 
-			std::shared_ptr<TResource<Shader>> rawResource(resalloc.New(1, std::move(_shad)), [](TResource<Shader>* p) {
-				PageAllocator<TResource<Shader>> resalloc_;
-				PageAllocator<Shader> shadalloc_;
-				auto ptr = p->rawData.release();
-				shadalloc_.destroy(ptr);
-				shadalloc_.deallocate(ptr);
-				resalloc_.destroy(p);
-				resalloc_.deallocate(p);
+			std::shared_ptr<TResource<Shader>> rawResource(resalloc.New(1, _shad), [](TResource<Shader>* const p) {
+				const PageAllocator<TResource<Shader>> resalloc_;
+				const PageAllocator<Shader> shadalloc_;
+				shadalloc_.terminate(p->rawData.release());
+				resalloc_.terminate(p);
 				});
 
 			return std::move(rawResource);
@@ -83,8 +75,8 @@ namespace Core {
 		*
 		*   Imports a Vertex Shader from File
 		*/ //----------------------------------------------------------------------
-		std::shared_ptr<IResource> ShaderImporter<Core::Graphics::Shader::EType::Vertex>::ImportFromFile(const std::string_view& filename) const {
-			return std::move(ProcessShader(filename, Core::Graphics::Shader::EType::Vertex));
+		std::shared_ptr<IResource> ShaderImporter<Graphics::Shader::EType::Vertex>::ImportFromFile(const std::string_view& filename) const {
+			return std::move(ProcessShader(filename, Graphics::Shader::EType::Vertex));
 		}
 
 		// ------------------------------------------------------------------------
@@ -92,8 +84,8 @@ namespace Core {
 		*
 		*   Imports a Vertex Shader from File
 		*/ //----------------------------------------------------------------------
-		std::shared_ptr<IResource> ShaderImporter<Core::Graphics::Shader::EType::Fragment>::ImportFromFile(const std::string_view& filename) const {
-			return std::move(ProcessShader(filename, Core::Graphics::Shader::EType::Fragment));
+		std::shared_ptr<IResource> ShaderImporter<Graphics::Shader::EType::Fragment>::ImportFromFile(const std::string_view& filename) const {
+			return std::move(ProcessShader(filename, Graphics::Shader::EType::Fragment));
 		}
 	}
 }
