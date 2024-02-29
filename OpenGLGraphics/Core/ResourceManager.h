@@ -29,7 +29,6 @@ public:
 template<typename Ty_>
 class TResource : public IResource {
 public:
-	TResource() = default;
 	TResource(Ty_* data) :
 		rawData(data){
 		
@@ -45,7 +44,7 @@ public:
 		return reinterpret_cast<Ty_*>(rawData.get());
 	}
 
-	std::unique_ptr<Ty_> rawData = nullptr;
+	std::unique_ptr<Ty_> rawData;
 };
 
 class ResourceManager {
