@@ -712,6 +712,8 @@
     <None Include="Content\Shaders\DeferredLighting.vert" />
     <None Include="Content\Shaders\DirectionalLightShader.frag" />
     <None Include="Content\Shaders\DirectionalLight.shader" />
+    <None Include="Content\Shaders\Downsampling.frag" />
+    <None Include="Content\Shaders\Downsampling.shader" />
     <None Include="Content\Shaders\ForwardRender.frag" />
     <None Include="Content\Shaders\ForwardRender.shader" />
     <None Include="Content\Shaders\ForwardRender.vert" />
@@ -725,6 +727,8 @@
     <None Include="Content\Shaders\SkyBox.vert" />
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\Transform.vert" />
+    <None Include="Content\Shaders\Upsampling.frag" />
+    <None Include="Content\Shaders\Upsampling.shader" />
     <None Include="Content\Shaders\White.frag" />
     <None Include="Content\Shaders\White.shader" />
     <None Include="Dependencies\GLM\detail\func_common.inl" />
