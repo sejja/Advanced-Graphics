@@ -188,6 +188,7 @@
     <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Graphics\Architecture\BloomRenderer.cpp" />
+    <ClCompile Include="Graphics\Architecture\Bloom\BloomFrameBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\GBuffer.cpp" />
     <ClCompile Include="Graphics\Debug\DebugPrimitives.cpp" />
     <ClCompile Include="Graphics\Debug\DebugShapes.cpp" />
@@ -240,6 +241,7 @@
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
     <ClInclude Include="Graphics\Architecture\BloomRenderer.h" />
+    <ClInclude Include="Graphics\Architecture\Bloom\BloomFrameBuffer.h" />
     <ClInclude Include="Graphics\Architecture\GBuffer.h" />
     <ClInclude Include="Graphics\Debug\DebugPrimitives.h" />
     <ClInclude Include="Graphics\Debug\DebugShapes.h" />
