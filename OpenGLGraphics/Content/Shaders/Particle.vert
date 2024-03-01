@@ -1,17 +1,13 @@
 #version 460 core
 layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec2 aSize;
-layout (location = 2) in vec4 aColor;
 
-uniform mat4 projection;
-uniform mat4 view;
 uniform mat4 model;
-
-out vec4 particleColor;
+uniform mat4 view;
+uniform mat4 projection;
 
 void main()
 {
     gl_Position = projection * view * model * vec4(aPos, 1.0);
-    gl_PointSize = aSize.x; // Asume que el tamaño de la partícula está en x
-    particleColor = aColor;
+    // Ajusta el tamaño de GL_Point aquí si es necesario, por ejemplo:
+    // gl_PointSize = tamaño deseado;
 }
