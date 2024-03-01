@@ -19,6 +19,8 @@ namespace Core
 			void AddComponent(std::shared_ptr<Core::Particles::ParticleSystem>&& component);
 			std::vector<std::shared_ptr<Component>>* GetParticleSystems();
 			void Render(Core::Primitives::Camera* camera);
+		private:
+			Core::Primitives::Camera* camera;
 		};
 	}
 }

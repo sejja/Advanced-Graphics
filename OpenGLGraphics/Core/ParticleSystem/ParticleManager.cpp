@@ -21,10 +21,12 @@ namespace Core
 
 		void ParticleMangager::Render(Core::Primitives::Camera* camera)
 		{
-			std::for_each(mComponents.begin(), mComponents.end(), [this](std::shared_ptr<Core::Component> component)
+			this->camera = camera;
+			std::for_each(mComponents.begin(), mComponents.end(), [this, camera](std::shared_ptr<Core::Component> component)
 				{
-					std::cout << "Render particles... \n";
+					//std::cout << "Render particles... \n";
 					std::shared_ptr<ParticleSystem> system = std::dynamic_pointer_cast<ParticleSystem>(component);
+					system.get()->SetCameraReference(camera);
 					system->Render();
 				}
 			);
