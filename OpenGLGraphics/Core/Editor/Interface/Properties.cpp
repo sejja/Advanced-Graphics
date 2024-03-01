@@ -15,10 +15,14 @@
 #include <Graphics/Primitives/Light.h>
 #include <Core/ECSystem/Component.h>
 #include <Graphics/Primitives/Skybox.h>
+#include "Core/Editor/Editor.h"
 
 
 
-SelectedObj& selectedObjIns = Singleton<SelectedObj>::Instance();
+
+//SelectedObj& selectedObjIns = Singleton<SelectedObj>::Instance();
+
+SelectedObj& selectedObjIns = Singleton<Editor>::Instance().GetSelectedObj();
 
 
 
@@ -28,25 +32,29 @@ void Properties::Render() {
 
 	// Property tool search input
 	static char str1[128] = "";
-
-    objectOutlinerComp();
-
-
 	ImGui::InputTextWithHint("##SearchProperty", ICON_FA_MAGNIFYING_GLASS " Search property", str1, IM_ARRAYSIZE(str1));
 	ImGui::Spacing();
 
-
-
+    
 
     if (selectedObjIns.GetSelectedObject()) {
+        //La lista de componentes del objeto seleccionado
+        objectOutliner();
+
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
             TransformOptions();
         }
     }
 
-    if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "  Light", ImGuiTreeNodeFlags_DefaultOpen)) {
-        LightingOptions();
+    std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
+
+    if (selectedObjIns.GetSelectedComponent() && lightComp) {
+        if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "  Light", ImGuiTreeNodeFlags_DefaultOpen)) {
+            LightingOptions();
+        }
     }
+
+
 
     if (ImGui::CollapsingHeader(ICON_FA_BRUSH "  Material", ImGuiTreeNodeFlags_DefaultOpen)) {
 		MaterialsOptions();
@@ -55,8 +63,6 @@ void Properties::Render() {
     if (ImGui::CollapsingHeader(ICON_FA_SHAPES "  Static Mesh", ImGuiTreeNodeFlags_DefaultOpen)) {
         MeshOptions();
     }
-
-
 
 	ImGui::End();
 }
@@ -90,9 +96,7 @@ void TransformRow(const char* title,float& x_val, float& y_val, float& z_val) {
     ImGui::PopItemWidth();
     ImGui::SameLine();
 
-
     ImGui::Button(ICON_FA_LOCK);
-
 
     std::string XLabel = "X";
     char XID[32];
@@ -120,8 +124,6 @@ void TransformRow(const char* title,float& x_val, float& y_val, float& z_val) {
     ImGui::SetNextItemWidth(remainingWidth * inputSize);
     ImGui::DragScalar(ZID.c_str(), ImGuiDataType_Float, &z_val, dragJump, &f32_zero, &f32_one, "%.2f");
 
-
-
     auto IconTex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("../Assets/Icons/reload.png")->Get();
     ImGui::SameLine();
 
@@ -130,48 +132,36 @@ void TransformRow(const char* title,float& x_val, float& y_val, float& z_val) {
         y_val = 0.0f;
         z_val = 0.0f;
     };
-
-
-
 }
 
 
-void Properties::objectOutlinerComp() {
+
+void Properties::objectOutliner() {
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
 
-    //obj->GetComponent<Core::Graphics::Model>();
-
-
-
     if (obj) {
-        float originalTextSize = ImGui::GetFontSize();
-       
-        ImGui::Text("%s %s", ICON_FA_CUBES, obj->GetName().c_str());
-        ImGui::SameLine();
+        ImGui::Text("%s %s", ICON_FA_CUBES, obj->GetName().c_str());ImGui::SameLine();
+
         if (ImGui::Button(ICON_FA_PLUS " Add")) {
             ImGui::OpenPopup("new_component_modal");
         }
+        if (ImGui::BeginPopup("new_component_modal")){
 
-        if (ImGui::BeginPopup("new_component_modal"))
-        {
             ImGui::SeparatorText("Components");
 
             if (ImGui::Selectable(ICON_FA_CUBE " Mesh")) {
-				//obj->AddComponent<Core::Graphics::Mesh>();  
+                auto renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj);
+                obj->AddComponent(std::move(renderer));
             }
             if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light")) {
-                //obj->AddComponent<Core::Graphics::Light>();
+				auto light = std::make_shared<Graphics::Primitives::Light>(obj);
+				obj->AddComponent(std::move(light));
             }
             
             ImGui::EndPopup();
         }
-
-
-
-        selectedObjectTree();
-        ImGui::Spacing();
+        selectedObjectTree();ImGui::Spacing();
     }
-
 }
 
 
@@ -180,66 +170,51 @@ void Properties::objectOutlinerComp() {
 void Properties::selectedObjectTree() {
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
 
-    ImGui::BeginChild("ResizableChild", ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 2), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeY);
+    std::vector<std::shared_ptr<Core::Component>> comps = obj->GetAllComponents();
 
+    printf("Componentes: %d\n", comps.size());
+
+    ImGui::BeginChild("ResizableChild", ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 2), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeY);
 
         std::string displayName = std::format("{} {} (Instance)", ICON_FA_CUBE, obj->GetName());
 
 
+        bool isRootSelectedObj = selectedObjIns.GetSelectedObject() == obj && (selectedObjIns.GetSelectedComponent() == NULL);
 
-        //el selcted seria obj== selobj and comp 
-        if (ImGui::Selectable(displayName.c_str(), true)) {
+        if (ImGui::Selectable(displayName.c_str(), isRootSelectedObj)) {
             selectedObjIns.SetSelectedObject(obj);
         }
 
         ImGui::Indent();
 
+        for (auto& comp : comps) {
+            bool isCompSelectedObj = selectedObjIns.GetSelectedComponent() == comp;
 
-        //OBJECT COMPONENTS
-
-        //std::shared_ptr<Core::Graphics::Model> component = std::make_shared<Core::Graphics::Model>();
-
-        //obj->AddComponent(std::make_shared<Core::Graphics::Model>());
-
-
-
-        //obj->GetComponent<Core::Graphics::Model>();
-
-
-        //printf("comps %d", comps.use_count());
-
-        if (ImGui::Selectable(ICON_FA_CUBE " Mesh",false)) {
-            selectedObjIns.SetSelectedObject(obj);
+            // Check if the component is a mesh
+            if (std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> modelComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(comp)) {
+                if (ImGui::Selectable(ICON_FA_CUBE " Mesh", isCompSelectedObj)) {
+                    selectedObjIns.SetSelectedComponent(comp);
+                }
+           }
+            // Check if the component is a light
+            else if (std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(comp)) {
+                if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light", isCompSelectedObj)) {
+					selectedObjIns.SetSelectedComponent(comp);
+				}
+			}
+			
         }
 
-        if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light", false)) {
-            selectedObjIns.SetSelectedObject(obj);
-        }
         ImGui::Unindent();
 
-
     ImGui::EndChildFrame();
-
-
-
-
-    
-    
-    
-
-
 }
 
 
 
-
-
-
 void Properties::TransformOptions() {
-    
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
 
-    
     glm::vec3 curPos = obj->GetPosition();
     glm::vec3 curRot = obj->GetRotation();
     glm::vec3 curScale = obj->GetScale();
@@ -251,9 +226,6 @@ void Properties::TransformOptions() {
     obj->SetPosition(curPos);
     obj->SetRotation(curRot);
     obj->SetScale(curScale);
-
-
-    
 }
 
 
@@ -270,13 +242,12 @@ static void HelpMarker(const char* desc)
     }
 }
 
-void colorPickerBtn() {
+void colorPickerBtn(static ImVec4 &color) {
 
     ImGuiColorEditFlags misc_flags = ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoBorder | ImGuiColorEditFlags_AlphaPreviewHalf;
-    static ImVec4 color = ImVec4(114.0f / 255.0f, 144.0f / 255.0f, 154.0f / 255.0f, 200.0f / 255.0f);
+    
     static ImVec4 backup_color;
 
-    // Generate a default palette. The palette will persist and can be edited.
     static bool saved_palette_init = true;
     static ImVec4 saved_palette[32] = {};
     if (saved_palette_init)
@@ -362,35 +333,63 @@ void Properties::LightingOptions() {
     static ImVec2 cell_padding(4.0f, 8.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
 
+    std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
+
+    glm::vec3 attenuation = lightComp->GetAttenuation(); // Constant , Linear , Quadratic
+
+    glm::vec3 specular = lightComp->GetSpecular();
+    ImVec4 color = ImVec4(specular.x, specular.y, specular.z, 1.0f);
 
     if (ImGui::BeginTable("light_table", 2, flags1)) {
 
+        //Light TYPE
+        const char* lightTypes[] = { "SPOT", "BBBB", "CCCC" };
+        static int item_current_idx = 0;
+        const char* initVal = lightTypes[item_current_idx];
         
         ImGui::TableNextRow();
-        static float intensity = 0.5f;
-        CreateSliderRow("Intensity", intensity,0.0f,100.0f);
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Light type");
+        ImGui::TableSetColumnIndex(1);
 
 
+        if (ImGui::BeginCombo("", initVal)) {
+
+            for (int n = 0; n < IM_ARRAYSIZE(lightTypes); n++)
+            {
+                const bool is_selected = (item_current_idx == n);
+                if (ImGui::Selectable(lightTypes[n], is_selected))
+                    item_current_idx = n;
+
+                if (is_selected)
+                    ImGui::SetItemDefaultFocus();
+            }
+            ImGui::EndCombo();
+        }
+        
+        ImGui::TableNextRow();
+        CreateSliderRow("Intensity", attenuation[0], 0.0f, 1.0f);
+
+        //COLOR DE LA LUZ
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Light Color");
         ImGui::TableSetColumnIndex(1);
-        colorPickerBtn(); //esta todo dentro por que solo el hue esta dentro no devuelve bien el clr
+        colorPickerBtn(color);
+
+        ImGui::TableNextRow(); 
+        CreateSliderRow("Source Range", attenuation[1], 0.0f, 1.0f);// Atennuation Quadratic
 
         ImGui::TableNextRow();
-        static float scrrange = 0.5f;
-        CreateSliderRow("Source Range", scrrange, 0.0f, 100.0f);
-
-        ImGui::TableNextRow();
-        static float scrlength = 0.5f;
-        CreateSliderRow("Source Length", scrlength, 0.0f, 100.0f);
-
-        
-
-
+        CreateSliderRow("Source Length", attenuation[2], 0.0f, 1.0f);// Attenuation Linear 
 
         ImGui::EndTable();
     }
+
+    lightComp->SetAttenuation(attenuation);
+
+    const glm::vec3& colorVec3 = *reinterpret_cast<const glm::vec3*>(&color);
+    lightComp->SetSpecular(colorVec3);
 
     ImGui::PopStyleVar();
 
@@ -456,47 +455,7 @@ void Properties::MaterialsOptions(){
 }
 
 void Properties::MeshOptions(){
-    /*
-    static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
-    static ImVec2 cell_padding(4.0f, 8.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
 
-    if (ImGui::BeginTable("mesh_table", 2, flags1)) {
-
-        ImGui::TableNextRow();
-
-        ImGui::TableSetColumnIndex(0);
-        ImGui::Text("Element 0");
-        ImGui::TableSetColumnIndex(1);
-
-
-        auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Content\\Textures\\Brick.png")->Get();
-        ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
-
-
-        ImGui::SameLine();
-        ImGui::BeginGroup();
-
-        if (ImGui::BeginCombo("", "Nombre textura")) {
-            ImGui::Selectable("Textura 1");
-            ImGui::Selectable("Textura 2");
-            ImGui::Selectable("Textura 3");
-            ImGui::EndCombo();
-        }
-
-        ImGui::Button(ICON_FA_ARROW_TURN_UP);
-        ImGui::SameLine();
-        ImGui::Button(ICON_FA_FOLDER_OPEN);
-
-
-        ImGui::EndGroup();
-
-
-    }
-    ImGui::EndTable();
-
-    ImGui::PopStyleVar();
-    */
 }
 
 

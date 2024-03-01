@@ -48,6 +48,8 @@ namespace Core {
 
 		template<typename T>
 		DONTDISCARD inline std::shared_ptr<T> GetComponent() const;
+
+		DONTDISCARD inline std::vector<std::shared_ptr<Core::Component>> GetAllComponents() const;
 	#pragma endregion
 
 	#pragma region //Members
@@ -179,10 +181,21 @@ namespace Core {
 		//Look for all components
 		for(auto& x : mComponents)
 			if(RTTI::IsA<T>(x.get()))
-				return x;
+				return std::reinterpret_pointer_cast<T>(x);
 
 		throw ObjectException("No such component");
 	}
+
+	// ------------------------------------------------------------------------
+	/*! Get All Components
+	*
+	*  Returns the vector of all components
+	*/ // ---------------------------------------------------------------------
+
+	inline std::vector<std::shared_ptr<Core::Component>> Object::GetAllComponents() const {
+		return mComponents;
+	}
+
 
 	// ------------------------------------------------------------------------
 	/*! For Each Component

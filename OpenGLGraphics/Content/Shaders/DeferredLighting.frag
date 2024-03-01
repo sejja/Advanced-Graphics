@@ -30,7 +30,7 @@ struct Light {
     int mType;
 };
 
-uniform Light uLight[8];
+uniform Light uLight[8]; 
 uniform int uLightCount;
 uniform vec3 uCameraPos;
 uniform mat4 uShadowMatrix[8];
