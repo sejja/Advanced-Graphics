@@ -52,10 +52,6 @@ namespace Core
 							shaderProgram->Get()->SetShaderUniform("model", &model);
 							shaderProgram->Get()->SetShaderUniform("view", &(camera->GetViewMatrix()));
 							shaderProgram->Get()->SetShaderUniform("projection", &projection);
-
-							glBindVertexArray(VAO);
-							glDrawArrays(GL_TRIANGLES, 0, 6);
-
 							//-------------------------------------------------------
 							glBindVertexArray(0);
 					});
