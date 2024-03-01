@@ -5,7 +5,7 @@ namespace Core
 {
 	namespace Particles
 	{
-		ParticleMangager::ParticleMangager(){}
+		ParticleMangager::ParticleMangager() {}
 		ParticleMangager::~ParticleMangager() {}
 
 		void ParticleMangager::AddComponent(std::shared_ptr<Core::Particles::ParticleSystem>&& component)
@@ -23,7 +23,9 @@ namespace Core
 		{
 			std::for_each(mComponents.begin(), mComponents.end(), [this](std::shared_ptr<Core::Component> component)
 				{
-					std::cout << "patata \n";
+					std::cout << "Render particles... \n";
+					std::shared_ptr<ParticleSystem> system = std::dynamic_pointer_cast<ParticleSystem>(component);
+					system->Render();
 				}
 			);
 		}
