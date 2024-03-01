@@ -17,24 +17,24 @@ namespace Graphics {
 	namespace Architecture {
 		namespace Bloom {
             class BloomFBO {
-                struct bloomMip {
+            public:
+                struct BloomMip {
                     glm::vec2 size;
                     glm::ivec2 intSize;
                     unsigned int texture;
                 };
-            public:
                 CLASS_EXCEPTION(BloomFBO)
                 BloomFBO();
                 ~BloomFBO();
                 bool Init(unsigned int windowWidth, unsigned int windowHeight, unsigned int mipChainLength);
                 void Destroy();
                 void BindForWriting();
-                const std::vector<bloomMip>& MipChain() const;
+                const std::vector<BloomMip>& MipChain() const;
 
             private:
                 bool mInit;
                 unsigned int mFBO;
-                std::vector<bloomMip> mMipChain;
+                std::vector<BloomMip> mMipChain;
             };
 		}
 	}

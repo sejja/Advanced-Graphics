@@ -83,6 +83,8 @@ namespace Core {
 			glBindBufferRange(GL_UNIFORM_BUFFER, 0, mUniformBuffer, 0, 2 * sizeof(glm::mat4) + sizeof(glm::vec3));
 			mLightSphere = Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj");
 			mLightSphereShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/ForwardRender.shader");
+			mBloomRenderer = std::make_unique<::Graphics::Architecture::Bloom::BloomRenderer>();
+			mBloomRenderer->Init(mDimensions.x, mDimensions.y);
 		}
 
 		// ------------------------------------------------------------------------

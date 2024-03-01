@@ -51,7 +51,7 @@ namespace Graphics {
 
                 //Create the target texture for every MIP
                 for (unsigned int i = 0; i < mipChainLength; i++) {
-                    bloomMip mip;
+                    BloomMip mip;
 
                     mipSize *= 0.5f;
                     mipIntSize /= 2;
@@ -120,7 +120,7 @@ namespace Graphics {
             *
             *   Returns the vector containing all the textures
             */ //----------------------------------------------------------------------
-            const std::vector<BloomFBO::bloomMip>& BloomFBO::MipChain() const {
+            const std::vector<BloomFBO::BloomMip>& BloomFBO::MipChain() const {
                 return mMipChain;
             }
 		}

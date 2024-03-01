@@ -9,13 +9,7 @@
 #version 460 core
 
 layout(binding = 0) uniform sampler2D srcTexture;
-
-layout (std140) uniform UniformBuffer {
-	mat4 ubView;
-	mat4 ubProjection;
-    vec3 ubCameraPosition;
-	vec2 ubScreenSize;
-};
+uniform vec2 srcResolution;
 
 in vec2 oUVs;
 layout (location = 0) out vec3 downsample;
@@ -27,7 +21,7 @@ layout (location = 0) out vec3 downsample;
 *   Downsample an image, removing pixels
 */ //----------------------------------------------------------------------
 void main() {
-    vec2 srcTexelSize = 1.0 / ubScreenSize;
+    vec2 srcTexelSize = 1.0 / srcResolution;
     float x = srcTexelSize.x;
     float y = srcTexelSize.y;
 

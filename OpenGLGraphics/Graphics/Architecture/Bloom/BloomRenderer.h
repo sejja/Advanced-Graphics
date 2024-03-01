@@ -32,6 +32,7 @@ namespace Graphics{
 
                 bool mInit;
                 BloomFBO mFBO;
+                GLuint mScreenQuadVAO, mScreenQuadVBO;
                 glm::ivec2 mSrcViewportSize;
                 glm::vec2 mSrcViewportSizeFloat;
                 Asset<Core::Graphics::ShaderProgram> mDownsampleShader;

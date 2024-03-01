@@ -25,9 +25,8 @@ namespace Core {
 			Asset<Texture> rawResource(resalloc.New(1, texalloc.New()), [](TResource<Texture>* const p) {
 				const PageAllocator<TResource<Texture>> resalloc;
 				const PageAllocator<Texture> texalloc;
-				auto ptr = p->rawData.release();
 				texalloc.terminate(p->rawData.release());
-				resalloc.terminate(p);
+				resalloc.deallocate(p);
 				});
 
 			rawResource->rawData->LoadFromFile(filename.data());

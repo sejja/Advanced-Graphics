@@ -15,6 +15,7 @@
 #include "Tools/FrameBuffer.h"
 #include "Graphics/Architecture/GBuffer.h"
 #include "Debug/DebugShapes.h"
+#include "Graphics/Architecture/Bloom/BloomRenderer.h"
 
 namespace Core {
 	namespace Graphics {
@@ -55,6 +56,7 @@ namespace Core {
 			std::unique_ptr<debug_system> mDebug;
 			Asset<::Graphics::Primitives::GLBModel> mLightSphere;
 			Asset<ShaderProgram> mLightSphereShader;
+			std::unique_ptr<::Graphics::Architecture::Bloom::BloomRenderer> mBloomRenderer;
 		};
 
 		// ------------------------------------------------------------------------
