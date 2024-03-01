@@ -22,6 +22,7 @@ namespace Core
 
 		void ParticleManager::Render(Core::Primitives::Camera* camera)
 		{
+			this->camera = camera;
 			std::cout << "Particle Manager render... \n";
 			std::for_each(mComponents.begin(), mComponents.end(), [this](std::shared_ptr<Component>& component)
 				{
@@ -29,6 +30,10 @@ namespace Core
 					renderable.get()->Render();
 				}
 			);
+		}
+		Core::Primitives::Camera* ParticleManager::getCameraReference()
+		{
+			return this->camera;
 		}
 	}
 }

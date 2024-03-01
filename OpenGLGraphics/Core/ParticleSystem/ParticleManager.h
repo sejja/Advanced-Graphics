@@ -6,6 +6,7 @@
 #include "Core/ParticleSystem/ParticleSystem.h"
 #include "Graphics/Camera.h"
 
+
 namespace Core
 {
 	namespace Particles 
@@ -19,6 +20,9 @@ namespace Core
 			void AddComponent(std::shared_ptr<Core::Particles::ParticleSystem>&& component);
 			std::vector<std::shared_ptr<Component>>* GetParticleSystems();
 			void Render(Core::Primitives::Camera* camera);
+			Core::Primitives::Camera* getCameraReference();
+		private:
+			Core::Primitives::Camera* camera;
 		};
 	}
 }
