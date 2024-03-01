@@ -14,6 +14,9 @@ namespace Core
 		public:
 			double fireHeight;
 			double radius;
+
+			FireSystem();
+			~FireSystem();
 		};
 	}
 }
