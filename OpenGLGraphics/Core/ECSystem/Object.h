@@ -9,7 +9,6 @@
 #ifndef _OBJECT__H_
 #define _OBJECT__H_
 
-#include <memory>
 #include <vector>
 #include <algorithm>
 #include <execution>
