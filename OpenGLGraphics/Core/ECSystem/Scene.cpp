@@ -22,7 +22,7 @@ namespace Core {
 	*
 	*   Creates a scene from a level file
 	*/ // ---------------------------------------------------------------------
-	void Scene::CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
+	void Scene::CreateScene(const std::string_view& file, const std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
 		sParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<ResourceManager>::Instance();
 
