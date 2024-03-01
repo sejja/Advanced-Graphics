@@ -29,7 +29,7 @@ namespace Core {
 			inline void Shutdown() override;
 			virtual void SetDimensions(const glm::lowp_u16vec2& dim) override;
 			inline void AddRenderable(const std::weak_ptr<Renderable>& renderer);
-			void SetParticleManager(std::shared_ptr<Core::Particles::ParticleMangager> particleManager);
+			void SetParticleManager(std::shared_ptr<Core::Particles::ParticleManager> particleManager);
 			GBuffer* GetGBuffer();
 			FrameBuffer* GetRenderFrameBuffer();
 			GLuint GetRenderTexture();
@@ -50,7 +50,7 @@ namespace Core {
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 
-			std::weak_ptr<Core::Particles::ParticleMangager> particleManager;
+			std::weak_ptr<Core::Particles::ParticleManager> particleManager;
 
 			glm::lowp_u16vec2 mDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;

@@ -26,10 +26,10 @@ int main() {
         obj->ForEachComponent([&app](const std::shared_ptr<Core::Component>& comp) {
 
             /*
-            std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::dynamic_pointer_cast<Core::Particles::ParticleMangager>(comp);
+            std::shared_ptr<Core::Particles::ParticleManager> particleManager = std::dynamic_pointer_cast<Core::Particles::ParticleManager>(comp);
             if (particleManager)
             {
-                app.GetPipelineRef().SetParticleManager(std::dynamic_pointer_cast<Core::Particles::ParticleMangager>(comp));
+                app.GetPipelineRef().SetParticleManager(std::dynamic_pointer_cast<Core::Particles::ParticleManager>(comp));
                 std::cout << "Se ha anadido ParticlesManager\n";
             }
             */
