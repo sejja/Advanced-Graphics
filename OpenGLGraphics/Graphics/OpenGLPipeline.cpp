@@ -525,7 +525,7 @@ namespace Core {
 
 		}
 
-		void OpenGLPipeline::SetParticleManager(std::shared_ptr<Core::Particles::ParticleManager> particleManager) {
+		void OpenGLPipeline::SetParticleManager(std::shared_ptr<Core::Particles::ParticleMangager> particleManager) {
 			this->particleManager = particleManager;
 		}
 	}

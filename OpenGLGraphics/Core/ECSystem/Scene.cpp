@@ -113,7 +113,7 @@ namespace Core {
 		sky->AddComponent(std::move(skycomp));
 		mObjects.emplace_back(sky);
 
-		std::shared_ptr<Core::Particles::ParticleManager> particleManager = std::move(std::make_shared<Core::Particles::ParticleManager>());
+		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
 		std::shared_ptr<Core::Particles::ParticleSystem> testParticleSystem = std::make_shared<Core::Particles::ParticleSystem>(particleManager);
 		particleManager->AddComponent(std::move(testParticleSystem));
 		mObjects.emplace_back(particleManager);
