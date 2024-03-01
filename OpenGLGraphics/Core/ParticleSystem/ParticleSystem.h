@@ -33,7 +33,6 @@ namespace Core
 
 				virtual void Render() const override {
 					std::for_each(particles.begin(), particles.end(), [this](Particle particle) 
-					std::for_each(particles.begin(), particles.end(), [this, shape](Particle particle)
 					{
 						std::cout << "Render Particle...\n";
 					});
