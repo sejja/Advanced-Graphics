@@ -48,9 +48,17 @@ namespace Core {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, mAlbedoSpecular, 0);
 
+			//Brightness color buffer
+			glGenTextures(1, &mBrightness);
+			glBindTexture(GL_TEXTURE_2D, mBrightness);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dim.x, dim.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, mBrightness, 0);
+
 			// - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
-			unsigned int attachments[3] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2 };
-			glDrawBuffers(3, attachments);
+			unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+			glDrawBuffers(4, attachments);
 ;
 			// create and attach depth buffer (renderbuffer)
 			unsigned int rboDepth;
@@ -132,6 +140,15 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		GLuint GBuffer::GetAlbedoTextureHandle() {
 			return mAlbedoSpecular;
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Geometry Pass
+		*
+		*   Returns the Handle for the birhgntess channel
+		*/ //----------------------------------------------------------------------
+		GLuint GBuffer::GetBrightnessTextureHandle() {
+			return mBrightness;
 		}
 
 		// ------------------------------------------------------------------------

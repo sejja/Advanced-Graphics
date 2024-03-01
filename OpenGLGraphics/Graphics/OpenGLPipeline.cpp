@@ -115,6 +115,9 @@ namespace Core {
 					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 				ImGui::Image((ImTextureID)mGBuffer->GetNormalTextureHandle(),
 					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
+				ImGui::SameLine();
+				ImGui::Image((ImTextureID)mGBuffer->GetBrightnessTextureHandle(),
+					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 			}
 			ImGui::End();
 
@@ -131,6 +134,12 @@ namespace Core {
 					else
 						i = 0;
 				}
+			}
+			ImGui::End();
+
+			if (ImGui::Begin("Bloom")) {
+				ImGui::Image((ImTextureID)mBloomRenderer->BloomTexture(),
+					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 			}
 			ImGui::End();
 		}
@@ -179,6 +188,10 @@ namespace Core {
 			FlushObsoletes(obsoletes);
 		}
 
+		void OpenGLPipeline::BloomPass() {
+			mBloomRenderer->RenderBloomTexture(mGBuffer->GetBrightnessTextureHandle(), 0.005f);
+		}
+
 		// ------------------------------------------------------------------------
 		/*! Render
 		*
@@ -192,6 +205,7 @@ namespace Core {
 			UpdateUniformBuffers();
 			GeometryPass();
 			LightingPass();
+			BloomPass();
 			glEnable(GL_DEPTH_TEST);
 			mGBuffer->BlitDepthBuffer();
 			Skybox::sCurrentSky->Render(cam);

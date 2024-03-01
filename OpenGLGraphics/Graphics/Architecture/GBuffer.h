@@ -29,11 +29,12 @@ namespace Core {
 			GLuint GetPositionTextureHandle();
 			GLuint GetNormalTextureHandle();
 			GLuint GetAlbedoTextureHandle();
+			GLuint GetBrightnessTextureHandle();
 			void ClearBuffer();
 
 		private:
 			GLuint mBuffer;
-			GLuint mPosition, mNormal, mAlbedoSpecular;
+			GLuint mPosition, mNormal, mAlbedoSpecular, mBrightness;
 			Asset<ShaderProgram> mLightingShader;
 		};
 	}
