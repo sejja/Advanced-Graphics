@@ -36,7 +36,7 @@ namespace Core {
 			shadalloc.construct(_shad, 
 				std::move(resmg.GetResource<Shader>(j["Vertex"].get<std::string>().c_str())), 
 				std::move(resmg.GetResource<Shader>(j["Fragment"].get<std::string>().c_str())));
-			std::shared_ptr<TResource<ShaderProgram>> rawResource(resalloc.New(1, _shad), [](TResource<ShaderProgram>* const p) {
+			Asset<ShaderProgram> rawResource(resalloc.New(1, _shad), [](TResource<ShaderProgram>* const p) {
 				const PageAllocator<TResource<ShaderProgram>> resalloc_;
 				const PageAllocator<ShaderProgram> shadalloc_;
 				shadalloc_.terminate(p->rawData.release());

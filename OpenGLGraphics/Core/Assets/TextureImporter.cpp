@@ -6,12 +6,8 @@
 //	Copyright © 2024. All Rights reserved
 //
 
-#include <fstream>
 #include "TextureImporter.h"
-#include "Graphics/Primitives/Model.h"
-#include "Graphics/Primitives/GLBModel.h"
 #include "Graphics/Primitives/Texture.h"
-#include "Dependencies/Json/single_include/json.hpp"
 #include "Core/PageAllocator.h"
 
 namespace Core {
@@ -23,17 +19,15 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		std::shared_ptr<IResource> Assets::TextureImporter::ImportFromFile(const std::string_view& filename) const {
 			using Core::Graphics::Texture;
-			PageAllocator<TResource<Texture>> resalloc;
-			PageAllocator<Texture> texalloc;
+			const PageAllocator<TResource<Texture>> resalloc;
+			const PageAllocator<Texture> texalloc;
 
-			std::shared_ptr<TResource<Texture>> rawResource(resalloc.New(1, texalloc.New()), [](TResource<Texture>* p) {
-				PageAllocator<TResource<Texture>> resalloc;
-				PageAllocator<Texture> texalloc;
+			Asset<Texture> rawResource(resalloc.New(1, texalloc.New()), [](TResource<Texture>* const p) {
+				const PageAllocator<TResource<Texture>> resalloc;
+				const PageAllocator<Texture> texalloc;
 				auto ptr = p->rawData.release();
-				texalloc.destroy(ptr);
-				texalloc.deallocate(ptr);
-				resalloc.destroy(p);
-				resalloc.deallocate(p);
+				texalloc.terminate(p->rawData.release());
+				resalloc.terminate(p);
 				});
 
 			rawResource->rawData->LoadFromFile(filename.data());
