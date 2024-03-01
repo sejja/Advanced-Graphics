@@ -52,10 +52,10 @@ namespace Core
 			});
 		}
 
-        int ParticleSystem::ParticleFunction(Particle* p_particle)
-        {
+		int ParticleSystem::ParticleFunction(Particle* p_particle)
+		{
             std::cout << "Unimplemented methdod ParticleFunction of Default Particle System \n";
-            return -1;
-        }
+			return -1;
+		}
 	}
 }

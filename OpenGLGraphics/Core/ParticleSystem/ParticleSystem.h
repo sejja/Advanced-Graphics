@@ -31,15 +31,12 @@ namespace Core
 
 				void Update() override;
 
+
 				virtual void Render() const override {
-					std::for_each(particles.begin(), particles.end(), [this](Particle particle) 
-					{
-						std::cout << "Render Particle...\n";
-					});
+					std::cout << "Unimplemented methdod Render of Default Particle System \n";
 				};
 
 			protected:
-				Asset<Core::Graphics::ShaderProgram> shaderProgram;
 				std::vector<Particle> particles;
 				int ParticleFunction(Particle *p_particle);
 		};

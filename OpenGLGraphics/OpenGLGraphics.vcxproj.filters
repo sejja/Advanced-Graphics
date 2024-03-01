@@ -2047,9 +2047,6 @@
     <None Include="Content\Shaders\Renderer.frag" />
     <None Include="Content\Shaders\Renderer.shader" />
     <None Include="Content\Shaders\Renderer.vert" />
-    <None Include="Content\Shaders\Particle.shader" />
-    <None Include="Content\Shaders\Particle.frag" />
-    <None Include="Content\Shaders\Particle.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
