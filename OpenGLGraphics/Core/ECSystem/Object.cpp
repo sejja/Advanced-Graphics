@@ -8,7 +8,6 @@
 
 #include "Object.h"
 #include "Component.h"
-#include "Core/PageAllocator.h"
 
 namespace Core {
 	// ------------------------------------------------------------------------
