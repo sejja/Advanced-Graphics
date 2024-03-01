@@ -13,6 +13,20 @@
 namespace Graphics {
 	namespace Architecture {
 		namespace Bloom {
+            // ------------------------------------------------------------------------
+            /*! Default Constructor
+            *
+            *   Constructs the Bloom FrameBuffer, setting it as uninitialized
+            */ //----------------------------------------------------------------------
+            BloomFBO::BloomFBO() : 
+                mInit(false) {}
+
+            // ------------------------------------------------------------------------
+            /*! Destructor
+            *
+            *   EMPTY FUNCTION
+            */ //----------------------------------------------------------------------
+            BloomFBO::~BloomFBO() {}
 
             // ------------------------------------------------------------------------
             /*! Init
@@ -20,6 +34,7 @@ namespace Graphics {
             *   Creates a Franebuffer with many sampling textures
             */ //----------------------------------------------------------------------
             bool BloomFBO::Init(unsigned int windowWidth, unsigned int windowHeight, unsigned int mipChainLength) {
+                //Check that it wasn't initted beafore
                 if(mInit)
                     throw BloomFBOException("Framebuffer was already 'Init'ed");
 
@@ -34,6 +49,7 @@ namespace Graphics {
                     throw BloomFBOException("Dimensions are too large");
                 }
 
+                //Create the target texture for every MIP
                 for (unsigned int i = 0; i < mipChainLength; i++) {
                     bloomMip mip;
 
@@ -72,6 +88,40 @@ namespace Graphics {
                 glBindFramebuffer(GL_FRAMEBUFFER, NULL);
                 mInit = true;
                 return true;
+            }
+
+            // ------------------------------------------------------------------------
+            /*! Destroy
+            *
+            *   Frees all of the MIP Target Textures
+            */ //----------------------------------------------------------------------
+            void BloomFBO::Destroy() {
+                //Free all textures, one by one
+                for (int i = 0; i < mMipChain.size(); i++) {
+                    glDeleteTextures(1, &mMipChain[i].texture);
+                    mMipChain[i].texture = 0;
+                }
+                glDeleteFramebuffers(1, &mFBO);
+                mFBO = 0;
+                mInit = false;
+            }
+
+            // ------------------------------------------------------------------------
+            /*! Bind For Writing
+            *
+            *   Binds the framebuffer for drawing into it
+            */ //----------------------------------------------------------------------
+            void BloomFBO::BindForWriting() {
+                glBindFramebuffer(GL_FRAMEBUFFER, mFBO);
+            }
+
+            // ------------------------------------------------------------------------
+            /*! Mip Chain
+            *
+            *   Returns the vector containing all the textures
+            */ //----------------------------------------------------------------------
+            const std::vector<BloomFBO::bloomMip>& BloomFBO::MipChain() const {
+                return mMipChain;
             }
 		}
 	}
