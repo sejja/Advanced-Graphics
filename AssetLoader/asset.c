@@ -20,7 +20,7 @@ Asset* createAsset(char* path) {
     strcpy(aTonkenizar, path);
     char* token = strtok(aTonkenizar, "\\");
     // printf(aTonkenizar);
-    char* previousValue;
+    char* previousValue = NULL;
     while(token != NULL) {
         // printf("%s\n", token);
         previousValue = token;

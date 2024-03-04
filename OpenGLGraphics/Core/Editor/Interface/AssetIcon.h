@@ -8,6 +8,7 @@ enum class AssetType {
 	TEXTURE,
 	MATERIAL,
 	SHADER,
+	FOLDER,
 	OTHER
 };
 
