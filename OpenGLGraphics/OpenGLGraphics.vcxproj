@@ -225,6 +225,7 @@
     <ClInclude Include="Core\ECSystem\Component.h" />
     <ClInclude Include="Core\ECSystem\Object.h" />
     <ClInclude Include="Core\Editor\Assets\Fonts\IconsFontAwesome.h" />
+    <ClInclude Include="Core\Editor\database.h" />
     <ClInclude Include="Core\Editor\Editor.h" />
     <ClInclude Include="Core\Editor\Interface\AssetIcon.h" />
     <ClInclude Include="Core\Editor\Interface\AssetManager.h" />
