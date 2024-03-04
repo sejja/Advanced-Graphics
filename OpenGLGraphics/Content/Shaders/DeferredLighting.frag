@@ -15,7 +15,8 @@ in vec2 oUVs;
 layout(binding = 0) uniform sampler2D gPosition;
 layout(binding = 1) uniform sampler2D gNormal;
 layout(binding = 2) uniform sampler2D gAlbedoSpec;
-layout(binding = 3) uniform sampler2D uShadowMaps[8];
+layout(binding = 3) uniform sampler2D bBloomTexture;
+layout(binding = 4) uniform sampler2D uShadowMaps[8];
 
 struct Light {
     vec3 mPosition;
@@ -63,6 +64,16 @@ float ShadowCalculation(vec4 fragPosLightSpace, int light, vec3 normal) {
 
     return shadow;
 } 
+
+// ------------------------------------------------------------------------
+/*! Bloom Calculation
+*
+*   Extracts the bloom color aberration from the final color and the bloom channel
+*/ //----------------------------------------------------------------------
+vec3 bloom(vec3 finalcolor) {
+    vec3 bloomColor = texture(bBloomTexture, oUVs).rgb;
+    return mix(finalcolor, bloomColor, 0.005); // linear interpolation
+}
 
 // ------------------------------------------------------------------------
 /*! Shader Entrypoint
@@ -120,6 +131,5 @@ void main() {
             uLight[i].mSpecular * pow(max(dot(normalize(uCameraPos - fragPos), 
             reflect(-lightDir, normal)), 0.0), 32)));
    }
-
-    FragColor = texture(gAlbedoSpec, oUVs) * vec4(totalLightShine, 1.0);
+    FragColor = texture(gAlbedoSpec, oUVs) * vec4(totalLightShine, 1.0) +  texture(bBloomTexture, oUVs).rgba;
 } 

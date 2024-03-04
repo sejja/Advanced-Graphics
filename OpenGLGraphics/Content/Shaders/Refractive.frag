@@ -37,5 +37,5 @@ void main() {
     gNormal = oNormal;
     // and the diffuse per-fragment color
     gAlbedoSpec.rgba = vec4(texture(uSkyBox, reflect(normalize(oPosition - ubCameraPosition), normalize(oNormal))).rgb, 1.0);
-    gBrightness = vec4(0, 1, 0, 1);
+    gBrightness = vec4(0, 0, 0.2, 0.2);
 }

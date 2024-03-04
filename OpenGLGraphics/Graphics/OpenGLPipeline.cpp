@@ -116,7 +116,7 @@ namespace Core {
 				ImGui::Image((ImTextureID)mGBuffer->GetNormalTextureHandle(),
 					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 				ImGui::SameLine();
-				ImGui::Image((ImTextureID)mGBuffer->GetBrightnessTextureHandle(),
+				ImGui::Image((ImTextureID)mBloomRenderer->BloomTexture(),
 					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 			}
 			ImGui::End();
@@ -134,12 +134,6 @@ namespace Core {
 					else
 						i = 0;
 				}
-			}
-			ImGui::End();
-
-			if (ImGui::Begin("Bloom")) {
-				ImGui::Image((ImTextureID)mBloomRenderer->BloomTexture(),
-					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 			}
 			ImGui::End();
 		}
@@ -204,8 +198,8 @@ namespace Core {
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
-			LightingPass();
 			BloomPass();
+			LightingPass();
 			glEnable(GL_DEPTH_TEST);
 			mGBuffer->BlitDepthBuffer();
 			Skybox::sCurrentSky->Render(cam);
@@ -336,6 +330,8 @@ namespace Core {
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetNormalTextureHandle());
 			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetAlbedoTextureHandle());
+			glActiveTexture(GL_TEXTURE3);
+			glBindTexture(GL_TEXTURE_2D, mBloomRenderer->BloomTexture());
 			mGBuffer->BindLightingShader();
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -344,7 +340,7 @@ namespace Core {
 			std::vector<glm::mat4> shadow_matrices;
 
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-				mShadowBuffers[i].BindTexture(3 + i);
+				mShadowBuffers[i].BindTexture(4 + i);
 				auto up = glm::normalize(glm::cross(glm::cross(-::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0, 1, 0)), -::Graphics::Primitives::Light::sLightData[i].mPosition));
 				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 2.f, 2000.f);
 				glm::mat4 lightView = glm::lookAt(::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0.0, -15, 50), glm::vec3(0, 1, 0));
@@ -372,7 +368,6 @@ namespace Core {
 				//mDebug->draw_frustum_lines(lightProjection * lightView * matrix, glm::vec4(1.0, 0.85, 0.1, 1));
 			}
 			*/
-		
 		}
 
 		void OpenGLPipeline::RenderShadowMaps() {

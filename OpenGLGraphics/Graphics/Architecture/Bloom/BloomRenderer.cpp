@@ -115,6 +115,35 @@ namespace Graphics {
                 return true;
             }
 
+            unsigned int quadVAO = 0;
+            unsigned int quadVBO;
+            void RenderScreenQuad()
+            {
+                if (quadVAO == 0)
+                {
+                    float quadVertices[] = {
+                        // positions        // texture Coords
+                        -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+                        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+                         1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+                         1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+                    };
+                    // setup plane VAO
+                    glGenVertexArrays(1, &quadVAO);
+                    glGenBuffers(1, &quadVBO);
+                    glBindVertexArray(quadVAO);
+                    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+                    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+                    glEnableVertexAttribArray(0);
+                    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+                    glEnableVertexAttribArray(1);
+                    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+                }
+                glBindVertexArray(quadVAO);
+                glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+                glBindVertexArray(0);
+            }
+
             // ------------------------------------------------------------------------
             /*! Render Downsamples
             *
@@ -140,9 +169,7 @@ namespace Graphics {
                         GL_TEXTURE_2D, mip.texture, 0);
 
                     // Render screen-filled quad of resolution of current mip
-                    glBindVertexArray(mScreenQuadVAO);
-                    glDrawArrays(GL_TRIANGLES, 0, 6);
-                    glBindVertexArray(0);
+                    RenderScreenQuad();
 
                     // Set current mip resolution as srcResolution for next iteration
                     mDownsampleShader->Get()->SetShaderUniform("srcResolution", &mip.size);
@@ -185,13 +212,11 @@ namespace Graphics {
                         GL_TEXTURE_2D, nextMip.texture, 0);
 
                     // Render screen-filled quad of resolution of current mip
-                    glBindVertexArray(mScreenQuadVAO);
-                    glDrawArrays(GL_TRIANGLES, 0, 6);
-                    glBindVertexArray(0);
+                    RenderScreenQuad();
                 }
 
                 // Disable additive blending
-                //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // Restore if this was default
+                glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA); // Restore if this was default
                 glDisable(GL_BLEND);
             }
 		}

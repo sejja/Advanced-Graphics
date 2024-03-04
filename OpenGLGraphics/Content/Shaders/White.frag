@@ -23,6 +23,7 @@ uniform vec3 uCameraPos;
 uniform mat4 uTransform;
 uniform mat4 uView;
 uniform mat4 uModel;
+uniform vec4 uColor;
 
 layout(binding = 0) uniform sampler2D uDiffuseTex;
 layout(binding = 1) uniform sampler2D uNormalTex;
