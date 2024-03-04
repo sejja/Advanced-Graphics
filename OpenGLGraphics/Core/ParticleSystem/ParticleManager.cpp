@@ -1,5 +1,6 @@
 #include "ParticleManager.h"
 #include <iostream>
+#include "ParticleSystem.h"
 
 namespace Core
 {
@@ -8,7 +9,7 @@ namespace Core
 		ParticleMangager::ParticleMangager() {}
 		ParticleMangager::~ParticleMangager() {}
 
-		void ParticleMangager::AddComponent(std::shared_ptr<Core::Particles::ParticleSystem>&& component)
+		void ParticleMangager::AddComponent(std::shared_ptr<Core::Component>&& component)
 		{
 			this->mComponents.push_back(component);
 		}
@@ -25,7 +26,7 @@ namespace Core
 			std::for_each(mComponents.begin(), mComponents.end(), [this, camera](std::shared_ptr<Core::Component> component)
 				{
 					//std::cout << "Render particles... \n";
-					std::shared_ptr<ParticleSystem> system = std::dynamic_pointer_cast<ParticleSystem>(component);
+					std::shared_ptr<Core::Particles::ParticleSystem> system = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(component);
 					system.get()->SetCameraReference(camera);
 					system->Render();
 				}

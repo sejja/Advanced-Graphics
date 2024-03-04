@@ -35,7 +35,6 @@ namespace Core
 				Core::Primitives::Camera* GetCameraReference();
 				void Update() override;
 
-
 				virtual void Render() const override {
 					shaderProgram->Get()->Bind();
 
@@ -47,7 +46,6 @@ namespace Core
 					{
 
 						//std::cout << "--->Render  particle \n";
-
 
 						glm::mat4 model = glm::mat4(1.0f);
 						model = glm::translate(model, particle.pos); // Mueve el objeto a (x, y, z) en el espacio mundial
