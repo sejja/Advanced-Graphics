@@ -1,6 +1,7 @@
 #include "Renderables.h"
 #include "ShaderProgram.h"
 #include "Graphics/Camera.h"
+#include "GLBModel.h"
 
 namespace Core {
 	namespace Graphics {
@@ -17,7 +18,7 @@ namespace Core {
 			static Skybox* sCurrentSky;
 		private:
 			Asset<ShaderProgram> mShaderProgram;
-			Asset<Model> mModel;
+			Asset<::Graphics::Primitives::GLBModel> mModel;
 			GLuint mMapHandle;
 		};
 	};

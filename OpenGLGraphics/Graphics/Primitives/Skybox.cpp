@@ -8,7 +8,7 @@ namespace Core {
         Skybox::Skybox(const std::weak_ptr<Object>& parent) :
             Component(parent) {
             mShaderProgram = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/SkyBox.shader");
-            mModel = Singleton<ResourceManager>::Instance().GetResource<Model>("Content/Meshes/cube_face.obj");
+            mModel = Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/cube_face.obj");
             sCurrentSky = this;
         }
 
@@ -78,8 +78,7 @@ namespace Core {
             mShaderProgram->Get()->SetShaderUniform("uTransform", &projection);
             mShaderProgram->Get()->SetShaderUniform("uView", &view);
 
-            glBindVertexArray(mModel->Get()->GetHandle());
-            glDrawArrays(GL_TRIANGLES, 0, mModel->Get()->GetVertexCount());
+            mModel->Get()->Draw(*mShaderProgram->Get());
 
             //Enable depth mask & culling again
             glEnable(GL_CULL_FACE);
