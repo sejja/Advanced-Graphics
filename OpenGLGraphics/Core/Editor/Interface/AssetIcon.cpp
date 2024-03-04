@@ -28,6 +28,8 @@ AssetIcon::AssetIcon(AssetType p_tipo, const char* p_nombre, const char* p_ruta)
 	nombre = p_nombre;
 	ruta = p_ruta;
 	clicked = false;
+	/*printf("%p\n", nombre);
+	printf("%s, %s\n", nombre, ruta);*/
 }
 
 void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente no llamar recursivamente a esta función
@@ -94,6 +96,8 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 
 	int centerOffset = 100 / 2 - ImGui::CalcTextSize(nombre).x / 2;
 	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + centerOffset);
+	//printf("%p\n", nombre);
+	//printf("%s\n", nombre);
 	ImGui::Text(nombre);
 	ImGui::EndGroup();
 

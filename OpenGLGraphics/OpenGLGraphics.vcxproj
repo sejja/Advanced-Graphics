@@ -171,6 +171,7 @@
     <ClCompile Include="Core\Assets\Importers.cpp" />
     <ClCompile Include="Core\ECSystem\Component.cpp" />
     <ClCompile Include="Core\ECSystem\Object.cpp" />
+    <ClCompile Include="Core\Editor\database.cpp" />
     <ClCompile Include="Core\Editor\Editor.cpp" />
     <ClCompile Include="Core\Editor\Interface\AssetIcon.cpp" />
     <ClCompile Include="Core\Editor\Interface\AssetManager.cpp" />
@@ -193,6 +194,7 @@
     <ClCompile Include="Dependencies\ImGui\imgui_impl_sdl2.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
+    <ClCompile Include="Dependencies\SQLite3\sqlite3.c" />
     <ClCompile Include="Graphics\Architecture\GBuffer.cpp" />
     <ClCompile Include="Graphics\Primitives\GLBMesh.cpp" />
     <ClCompile Include="Graphics\Primitives\GLBModel.cpp" />
@@ -252,6 +254,7 @@
     <ClInclude Include="Dependencies\ImGui\imstb_rectpack.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
+    <ClInclude Include="Dependencies\SQLite3\sqlite3.h" />
     <ClInclude Include="Graphics\Architecture\GBuffer.h" />
     <ClInclude Include="Graphics\Primitives\GLBMesh.h" />
     <ClInclude Include="Graphics\Primitives\GLBModel.h" />
