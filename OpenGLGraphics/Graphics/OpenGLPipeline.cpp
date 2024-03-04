@@ -81,7 +81,7 @@ namespace Core {
 				 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
 			};
 			// setup plane VAO
-
+			glEnable(GL_PROGRAM_POINT_SIZE);
 			glGenVertexArrays(1, &mScreenQuadVAO);
 			glGenBuffers(1, &mScreenQuadVAO);
 			glBindVertexArray(mScreenQuadVBO);

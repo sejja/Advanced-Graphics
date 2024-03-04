@@ -16,7 +16,7 @@ namespace Core
 		struct Particle
 		{
 			glm::vec3 pos;
-			glm::vec3 size;
+			float size;
 			glm::vec4 color;
 			unsigned int lifeTime = 0;
 		};
@@ -40,19 +40,22 @@ namespace Core
 
 					Core::Primitives::Camera* camReference = camera;
 					glm::mat4 view = camReference->GetViewMatrix();
-					glm::mat4 uProjection = projection;
+					glm::mat4 uProjection = this->projection;
 
-					std::for_each(particles.begin(), particles.end(), [this, view, uProjection](Particle particle) 
+					//glDisable(GL_DEPTH_TEST);
+					//glDisable(GL_CULL_FACE);
+
+					std::for_each(particles.begin(), particles.end(), [this, &view, &uProjection](Particle particle) 
 					{
 
 						//std::cout << "--->Render  particle \n";
-
 						glm::mat4 model = glm::mat4(1.0f);
 						model = glm::translate(model, particle.pos); // Mueve el objeto a (x, y, z) en el espacio mundial
-						model = glm::scale(model, particle.size); // Escala el objeto
-						shaderProgram->Get()->SetShaderUniform("model", &model);
-						shaderProgram->Get()->SetShaderUniform("view", &view);
-						shaderProgram->Get()->SetShaderUniform("projection", &uProjection);
+						
+						shaderProgram->Get()->SetShaderUniformMatrix4d("model", &model);
+						shaderProgram->Get()->SetShaderUniformMatrix4d("view", &view);
+						shaderProgram->Get()->SetShaderUniformMatrix4d("projection", &uProjection);
+						shaderProgram->Get()->SetShaderUniform("pointSize", particle.size);
 
 						// Vincula el VAO
 						glBindVertexArray(VAO);
