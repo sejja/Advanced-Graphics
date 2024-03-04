@@ -11,6 +11,7 @@
 #include "Interface/AssetManager.h"
 #include "Interface/SceneView.h"
 #include "Interface/MainMenu.h"
+#include "Core/Editor/SelectedObj.h"
 
 
 
@@ -22,6 +23,8 @@ public:
 
     bool IsEditorLocked();
 
+    SelectedObj& GetSelectedObj() { return selectedObj; }
+
 private:
     bool editorLocked;
     MainMenu mainMenu;
@@ -29,6 +32,11 @@ private:
     AssetManager assetManager;
     Outliner outliner;
     SceneView sceneView;
+
+    SelectedObj selectedObj;
+
+
+
 
 
 

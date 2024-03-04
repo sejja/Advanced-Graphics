@@ -65,12 +65,13 @@ orbit 0 -15 0
 light
 translate -50 0 55
 color 1 0 0
-lightType SPOT	
+lightType SPOT
 attenuation 0 0.0 0.01
 #sinusoidal 0 1 20
 ambient 0.2
 direction -1 0 0
 
+light
 translate 50 30 50
 color 0 0 1
 lightType SPOT

@@ -34,7 +34,7 @@ namespace Graphics {
 
 			void Update() override;
 			const glm::vec3& GetPosition() const { return mData.mPosition; }
-			const glm::vec3& GetmSpecular() const { return mData.mSpecular; }
+			const glm::vec3& GetSpecular() const { return mData.mSpecular; }
 			glm::vec3 GetAttenuation() const { return mData.mAttenuation; }
 			float CalculateSphereOfInfluence() const;
 

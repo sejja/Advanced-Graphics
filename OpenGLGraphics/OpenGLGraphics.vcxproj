@@ -196,6 +196,8 @@
     <ClCompile Include="Dependencies\ImGui\imgui_widgets.cpp" />
     <ClCompile Include="Dependencies\SQLite3\sqlite3.c" />
     <ClCompile Include="Graphics\Architecture\GBuffer.cpp" />
+    <ClCompile Include="Graphics\Architecture\HDRBuffer.cpp" />
+    <ClCompile Include="Graphics\Architecture\SamplingBuffer.cpp" />
     <ClCompile Include="Graphics\Primitives\GLBMesh.cpp" />
     <ClCompile Include="Graphics\Primitives\GLBModel.cpp" />
     <ClCompile Include="Parser.cpp" />
@@ -256,8 +258,6 @@
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
     <ClInclude Include="Dependencies\SQLite3\sqlite3.h" />
     <ClInclude Include="Graphics\Architecture\GBuffer.h" />
-    <ClInclude Include="Graphics\Primitives\GLBMesh.h" />
-    <ClInclude Include="Graphics\Primitives\GLBModel.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Dependencies\Json\include\adl_serializer.hpp" />
     <ClInclude Include="Dependencies\Json\include\byte_container_with_subtype.hpp" />
@@ -724,6 +724,9 @@
     <None Include="Content\Shaders\DirectionalLight.shader" />
     <None Include="Content\Shaders\Refractive.frag" />
     <None Include="Content\Shaders\Refractive.shader" />
+    <None Include="Content\Shaders\Renderer.frag" />
+    <None Include="Content\Shaders\Renderer.shader" />
+    <None Include="Content\Shaders\Renderer.vert" />
     <None Include="Content\Shaders\Shadow.frag" />
     <None Include="Content\Shaders\Shadow.shader" />
     <None Include="Content\Shaders\Shadow.vert" />

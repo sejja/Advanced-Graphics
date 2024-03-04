@@ -15,9 +15,9 @@ private:
     void MaterialsOptions();
     void MeshOptions();
 
-    //Estos ddos no deberian estar aqui
+
     void selectedObjectTree();
-    void objectOutlinerComp();
+    void objectOutliner();
 
 
 

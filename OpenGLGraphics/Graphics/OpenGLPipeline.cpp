@@ -22,7 +22,9 @@
 #include "Core/Editor/Editor.h"
 #include "Graphics/Tools/OpenGLInfo.h"
 
+
 using namespace Core::Graphics;
+using namespace std;
 
 namespace Core {
 	namespace Graphics {
@@ -37,7 +39,7 @@ namespace Core {
 			glEnable(GL_DEPTH_TEST);
 			glDepthFunc(GL_LESS);
 			glEnable(GL_CULL_FACE);
-			glEnable(GL_FRAMEBUFFER_SRGB);
+			//glEnable(GL_FRAMEBUFFER_SRGB);
 			glFrontFace(GL_CCW);
 			glDisable(GL_BLEND);
 			glDisable(GL_STENCIL_TEST);
@@ -61,7 +63,18 @@ namespace Core {
 			mFrameBuffer = std::make_unique<FrameBuffer>();
 			mFrameBuffer->Create();
 			mFrameBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
-			
+
+			mHDRBuffer = std::make_unique<HDRBuffer>();
+			mHDRBuffer->Create();
+			mHDRBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
+			RendererShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Renderer.shader");
+
+			//-------------------------
+			glEnable(GL_MULTISAMPLE);
+			mSamplingBuffer = std::make_unique<SamplingBuffer>();
+			mSamplingBuffer->Create();
+			mSamplingBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
+			//-------------------------
 
 			float quadVertices[] = {
 				// positions        // texture Coords
@@ -71,6 +84,7 @@ namespace Core {
 				 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
 			};
 			// setup plane VAO
+
 			glGenVertexArrays(1, &mScreenQuadVAO);
 			glGenBuffers(1, &mScreenQuadVAO);
 			glBindVertexArray(mScreenQuadVBO);
@@ -94,15 +108,9 @@ namespace Core {
 			return mGBuffer.get();
 		}
 
-
-		FrameBuffer* OpenGLPipeline::GetRenderFrameBuffer()
-		{
-			return mFrameBuffer.get();
+		GLuint  OpenGLPipeline::GetRenderTexture() {
+			return mFrameBuffer->GetTextureHandle();
 		}
-
-
-		
-
 
 		// ------------------------------------------------------------------------
 		/*! PreRender
@@ -113,6 +121,55 @@ namespace Core {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
+
+		/* FlushObsoletes
+		*
+		*   
+		*/ 
+		void OpenGLPipeline::FlushObsoletes(unordered_multimap<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes)
+		{
+			for_each(execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](pair<const Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> x) {
+
+				vector<weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
+				it.erase(x.second);
+
+				//If we don't have any other renderables, erase it
+				if (!it.size()) mGroupedRenderables.erase(x.first);
+				});
+		}
+
+		/* GroupRender
+		*
+		*   Prepare and render the GUI
+		*/ 
+		void OpenGLPipeline::GroupRender(unordered_multimap<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes,
+			const pair<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>>& it,
+			ShaderProgram* shader)
+		{
+			for (vector<weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
+				//If it isn't expired
+				if (auto renderable = it2->lock()) {
+					const shared_ptr<Object> parent = renderable->GetParent().lock();
+					glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
+						glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
+						glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
+						glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
+						glm::scale(glm::mat4(1.0f), parent->GetScale());
+					shader->SetShaderUniform("uModel", &matrix);
+					reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
+				}
+				else {
+					obsoletes.insert(make_pair(it.first, it2));
+				}
+			}
+			FlushObsoletes(obsoletes);
+		}
+
+
+		/* RenderGUI
+		*
+		*   Prepare and render the GUI
+		*/
 		void OpenGLPipeline::RenderGUI() {
 			
 			ImGui_ImplSDL2_NewFrame();
@@ -153,18 +210,18 @@ namespace Core {
 			ImVec4* colors = ImGui::GetStyle().Colors;
 			colors[ImGuiCol_::ImGuiCol_Text] = { 0.95f, 0.96f, 0.98f, 1.00f };
 			colors[ImGuiCol_::ImGuiCol_TextDisabled] = { 0.36f, 0.42f, 0.47f, 1.00f };
-			colors[ImGuiCol_::ImGuiCol_WindowBg] = { 0.11f, 0.15f, 0.17f, 1.00f };
-			colors[ImGuiCol_::ImGuiCol_ChildBg] = { 0.15f, 0.18f, 0.22f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_WindowBg] = { 0.02f, 0.045f, 0.055f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_ChildBg] = { 0.15f, 0.18f, 0.22f, 0.20f };
 			colors[ImGuiCol_::ImGuiCol_PopupBg] = { 0.08f, 0.08f, 0.08f, 0.94f };
 			colors[ImGuiCol_::ImGuiCol_Border] = { 0.08f, 0.10f, 0.12f, 1.00f };
 			colors[ImGuiCol_::ImGuiCol_BorderShadow] = { 0.00f, 0.00f, 0.00f, 0.00f };
-			colors[ImGuiCol_::ImGuiCol_FrameBg] = { 0.20f, 0.25f, 0.29f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_FrameBg] = { 0.20f, 0.25f, 0.29f, 0.50f };
 			colors[ImGuiCol_::ImGuiCol_FrameBgHovered] = { 0.12f, 0.20f, 0.28f, 1.00f };
 			colors[ImGuiCol_::ImGuiCol_FrameBgActive] = { 0.09f, 0.12f, 0.14f, 1.00f };
 			colors[ImGuiCol_::ImGuiCol_TitleBg] = { 0.09f, 0.12f, 0.14f, 0.65f };
 			colors[ImGuiCol_::ImGuiCol_TitleBgActive] = { 0.08f, 0.10f, 0.12f, 1.00f };
 			colors[ImGuiCol_::ImGuiCol_TitleBgCollapsed] = { 0.00f, 0.00f, 0.00f, 0.51f };
-			colors[ImGuiCol_::ImGuiCol_MenuBarBg] = { 0.15f, 0.18f, 0.22f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_MenuBarBg] = { 0.15f, 0.18f, 0.22f, 0.00f };
 			colors[ImGuiCol_::ImGuiCol_ScrollbarBg] = { 0.02f, 0.02f, 0.02f, 0.39f };
 			colors[ImGuiCol_::ImGuiCol_ScrollbarGrab] = { 0.20f, 0.25f, 0.29f, 1.00f };
 			colors[ImGuiCol_::ImGuiCol_ScrollbarGrabHovered] = { 0.18f, 0.22f, 0.25f, 1.00f };
@@ -172,11 +229,11 @@ namespace Core {
 			colors[ImGuiCol_::ImGuiCol_CheckMark] = { 0.28f, 0.56f, 1.00f, 1.00f };
 			colors[ImGuiCol_::ImGuiCol_SliderGrab] = { 0.28f, 0.56f, 1.00f, 1.00f };
 			colors[ImGuiCol_::ImGuiCol_SliderGrabActive] = { 0.37f, 0.61f, 1.00f, 1.00f };
-			colors[ImGuiCol_::ImGuiCol_Button] = { 0.20f, 0.25f, 0.29f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_Button] = { 0.20f, 0.25f, 0.29f, 0.70f };
 			colors[ImGuiCol_::ImGuiCol_ButtonHovered] = { 0.28f, 0.56f, 1.00f, 1.00f };
 			colors[ImGuiCol_::ImGuiCol_ButtonActive] = { 0.06f, 0.53f, 0.98f, 1.00f };
-			colors[ImGuiCol_::ImGuiCol_Header] = { 0.20f, 0.25f, 0.29f, 0.55f };
-			colors[ImGuiCol_::ImGuiCol_HeaderHovered] = { 0.26f, 0.59f, 0.98f, 0.80f };
+			colors[ImGuiCol_::ImGuiCol_Header] = { 0.20f, 0.25f, 0.29f, 0.35f };
+			colors[ImGuiCol_::ImGuiCol_HeaderHovered] = { 0.12f, 0.43f, 0.78f, 0.80f };
 			colors[ImGuiCol_::ImGuiCol_HeaderActive] = { 0.26f, 0.59f, 0.98f, 1.00f };
 			colors[ImGuiCol_::ImGuiCol_Separator] = { 0.20f, 0.25f, 0.29f, 1.00f };
 			colors[ImGuiCol_::ImGuiCol_SeparatorHovered] = { 0.10f, 0.40f, 0.75f, 0.78f };
@@ -207,55 +264,21 @@ namespace Core {
 			//Render editor
 			Singleton<Editor>::Instance().Render(*this);
 
+			ImGui::Begin("Exposure Window");
+			ImGui::SliderFloat("Exposure", &exposure, 0, 5);
+			ImGui::End();
 
-		}
+			ImGui::Begin("Anti-Aliasing");
 
-
-
-
-		// ------------------------------------------------------------------------
-		/*! RenderGUI
-		*
-		*   Prepare and render the GUI
-		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::FlushObsoletes(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes) 
-		{
-			std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
-				std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
-				it.erase(x.second);
-
-				//If we don't have any other renderables, erase it
-				if (!it.size()) mGroupedRenderables.erase(x.first);
-				});
-		}
-
-		// ------------------------------------------------------------------------
-		/*! GroupRender
-		*
-		*   Prepare and render the GUI
-		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::GroupRender(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
-			const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it,
-			ShaderProgram* shader) 
-		{
-			for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
-				//If it isn't expired
-				if (auto renderable = it2->lock()) {
-					const std::shared_ptr<Object> parent = renderable->GetParent().lock();
-					glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
-						glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-						glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
-						glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
-						glm::scale(glm::mat4(1.0f), parent->GetScale());
-					shader->SetShaderUniform("uModel", &matrix);
-					reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
-				}
-				else {
-					obsoletes.insert(std::make_pair(it.first, it2));
-				}
+			if (ImGui::Button("Anti-Aliashing")) {
+				AntiAliasing = !AntiAliasing;
+				std::cout << (int)AntiAliasing << std::endl;
 			}
-			FlushObsoletes(obsoletes);
+			ImGui::End();
 		}
+
+
+
 
 		// ------------------------------------------------------------------------
 		/*! Render
@@ -270,17 +293,34 @@ namespace Core {
 			UpdateUniformBuffers();
 			GeometryPass();
 
+			//Bind and Clean
+			if (AntiAliasing) {mSamplingBuffer->Bind();mSamplingBuffer->Clear();}
+			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
+			glEnable(GL_DEPTH_TEST);
+
+			LightingPass();
+			
+			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
+			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
+
+			Skybox::sCurrentSky->Render(cam,*this);
+
+			if (AntiAliasing) 
+			{
+				glBindFramebuffer(GL_READ_FRAMEBUFFER, mSamplingBuffer->GetHandle());
+				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mHDRBuffer->GetHandle());
+				glBlitFramebuffer(0, 0, mDimensions.x, mDimensions.y, 0, 0, mDimensions.x, mDimensions.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+			}
+
 			mFrameBuffer->Bind();
 			mFrameBuffer->Clear();
 
-			LightingPass();
-			mGBuffer->BlitDepthBuffer(mFrameBuffer->GetHandle());
-			glEnable(GL_DEPTH_TEST);
-			mGBuffer->BlitDepthBuffer();
-			Skybox::sCurrentSky->Render(cam,*this);
+			mHDRBuffer->BindTexture();
+			RendererShader->Get()->Bind();
+			RendererShader->Get()->SetShaderUniform("exposure", exposure);
+			RenderScreenQuad();
 
 			mFrameBuffer->Unbind();
-			mFrameBuffer->BindTexture();
 
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
@@ -322,38 +362,6 @@ namespace Core {
 		void OpenGLPipeline::GeometryPass() {
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
-			auto f_flushobosoletes = [this, &obsoletes]() {
-				std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
-					std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
-					it.erase(x.second);
-
-					//If we don't have any other renderables, erase it
-					if (!it.size()) mGroupedRenderables.erase(x.first);
-					});
-				};
-
-			auto f_grouprender = [&obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram* shader) {
-				//For each renderable in shader program
-				for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
-					//If it isn't expired
-					if (auto renderable = it2->lock()) {
-						const std::shared_ptr<Object> parent = renderable->GetParent().lock();
-						glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
-							glm::scale(glm::mat4(1.0f), parent->GetScale());
-						shader->SetShaderUniform("uModel", &matrix);
-						reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
-					}
-					else {
-						obsoletes.insert(std::make_pair(it.first, it2));
-					}
-				}
-				};
-
-			glDepthMask(GL_TRUE);
-			glDisable(GL_BLEND);
 			glEnable(GL_DEPTH_TEST);
 			glCullFace(GL_BACK);
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
@@ -385,13 +393,13 @@ namespace Core {
 					}
 					catch (...) {}
 					GroupRender(obsoletes,it, it.first->Get());
+
 					});
 			}
 
-			glDepthMask(GL_FALSE);
-			glDisable(GL_DEPTH_TEST);
-			glDisable(GL_ALPHA_TEST);
-		}
+				FlushObsoletes(obsoletes);
+			}
+		
 
 		// ------------------------------------------------------------------------
 		/*! Lighting Pass
@@ -401,10 +409,10 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::LightingPass() {
 			
-			glEnable(GL_BLEND);
-			glBlendEquation(GL_FUNC_ADD);
-			glBlendFunc(GL_ONE, GL_ONE);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			//glEnable(GL_BLEND);
+			//glBlendEquation(GL_FUNC_ADD);
+			//glBlendFunc(GL_ONE, GL_ONE);
+			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
 			glActiveTexture(GL_TEXTURE1);
@@ -438,37 +446,7 @@ namespace Core {
 		void OpenGLPipeline::RenderShadowMaps() {
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
-			auto f_flushobosoletes = [this, &obsoletes]() {
-				std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
-					std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
-					it.erase(x.second);
-
-					//If we don't have any other renderables, erase it
-					if (!it.size()) mGroupedRenderables.erase(x.first);
-					});
-				};
-
-			auto f_grouprender = [&obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram* shader) {
-				//For each renderable in shader program
-				for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
-					//If it isn't expired
-					if (auto renderable = it2->lock()) {
-						const std::shared_ptr<Object> parent = renderable->GetParent().lock();
-						glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
-							glm::scale(glm::mat4(1.0f), parent->GetScale());
-						shader->SetShaderUniform("uModel", &matrix);
-						reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
-					}
-					else {
-						obsoletes.insert(std::make_pair(it.first, it2));
-					}
-				}
-				};
-
-			glViewport(0, 0, mDimensions.x * 4, mDimensions.y * 4);
+			glCullFace(GL_NONE);
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				mShadowBuffers[i].Bind();
 				mShadowBuffers[i].Clear(true);
@@ -482,10 +460,12 @@ namespace Core {
 					shadow->Bind();
 					shadow->SetShaderUniform("uProjection", &lightProjection);
 					shadow->SetShaderUniform("uView", &lightView);
-					glCullFace(GL_FRONT);
+
 					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
-						GroupRender(obsoletes,it, shadow);
+						GroupRender(obsoletes ,it, shadow);
 						});
+
+					FlushObsoletes(obsoletes);
 				}
 
 				mShadowBuffers[i].Unbind();
@@ -551,6 +531,7 @@ namespace Core {
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &view);
 			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &projection);
 			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), &cam.GetPositionRef());
+			//glBindBuffer(GL_UNIFORM_BUFFER, mFrameBuffer->GetHandle());
 			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 		}
 
@@ -564,4 +545,5 @@ namespace Core {
 			RenderScreenQuad();
 		}
 	}
+
 }

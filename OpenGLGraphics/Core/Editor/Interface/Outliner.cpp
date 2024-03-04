@@ -6,9 +6,10 @@
 #include "Core/ECSystem/Scene.h"
 #include "Core/Editor/SelectedObj.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
+#include "Core/Editor/Editor.h"
 
 
-SelectedObj& selectedObj = Singleton<SelectedObj>::Instance();
+SelectedObj& selectedObj = Singleton<Editor>::Instance().GetSelectedObj();
 
 
 void Outliner::Render(){
@@ -89,6 +90,7 @@ void Outliner::Render(){
 
 			if (ImGui::Selectable(displayName.c_str(), isNodeSelected)) {
 				selectedObj.SetSelectedObject(obj);
+				selectedObj.SetSelectedComponent(nullptr);
 			}
 
 

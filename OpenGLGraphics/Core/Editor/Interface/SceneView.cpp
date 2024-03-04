@@ -19,9 +19,8 @@ void SceneView::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	//printf("Viewport size 1: %d, %d\n", dim.x, dim.y);
 
 	pipeline.setSceneFrameDimensions(dim);
-
-	uint64_t textureID = pipeline.GetRenderFrameBuffer()->GetTextureHandle();
-	ImGui::Image(reinterpret_cast<void*>(textureID), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
+	//pipeline.Render();
+	ImGui::Image(reinterpret_cast<void*>(pipeline.GetRenderTexture()), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 	ImGui::End();
 
 
