@@ -272,12 +272,12 @@ namespace Core {
 		//----------------------------------------------------------------------
 		void OpenGLPipeline::Render() {
 			
+			RenderParticlesSystems();
 			RenderGUI();
 			RenderShadowMaps();
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
-			RenderParticlesSystems();
 
 			//Bind and Clean
 			if (AntiAliasing) {mSamplingBuffer->Bind();mSamplingBuffer->Clear();}
