@@ -29,7 +29,7 @@ namespace Graphics {
                 bool Init(unsigned int windowWidth, unsigned int windowHeight, unsigned int mipChainLength);
                 void Destroy();
                 void BindForWriting();
-                const std::vector<BloomMip>& MipChain() const;
+                std::vector<BloomMip>& MipChain();
 
             private:
                 bool mInit;

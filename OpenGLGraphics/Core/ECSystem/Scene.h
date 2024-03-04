@@ -28,7 +28,7 @@ namespace Core {
 
 #pragma region //Variables
 	private:
-		static SceneParser sParser;
+		SceneParser mParser;
 		std::vector<std::shared_ptr<Object>> mObjects;
 #pragma endregion
 	};

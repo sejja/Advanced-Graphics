@@ -316,7 +316,6 @@ namespace Core {
 
 			glDepthMask(GL_FALSE);
 			glDisable(GL_DEPTH_TEST);
-			glDisable(GL_ALPHA_TEST);
 		}
 
 		// ------------------------------------------------------------------------

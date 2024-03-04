@@ -23,7 +23,7 @@ namespace Core {
 		*   Handles an event, which subsecuntly will call the required object
 		*/ // ---------------------------------------------------------------------
 		void EventHandler::mHandle(const Event& event) {
-			auto it = mHandlerCollection.find(typeid(event).name());
+			auto it = mHandlerCollection.find(typeid(event));
 
 			if (it != mHandlerCollection.end())
 				it->second->mHandle(event);

@@ -7,6 +7,7 @@
 //
 
 #include "BloomRenderer.h"
+#include <glew.h>
 
 namespace Graphics {
 	namespace Architecture {
@@ -85,22 +86,31 @@ namespace Graphics {
                 mUpsampleShader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Upsampling.shader");
 
                 float quadVertices[] = {
-                    // positions        // texture Coords
-                    -1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-                    -1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-                     1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-                     1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+                    // upper-left triangle
+                    -1.0f, -1.0f, 0.0f, 0.0f, // position, texcoord
+                    -1.0f,  1.0f, 0.0f, 1.0f,
+                     1.0f,  1.0f, 1.0f, 1.0f,
+                     // lower-right triangle
+                     -1.0f, -1.0f, 0.0f, 0.0f,
+                      1.0f,  1.0f, 1.0f, 1.0f,
+                      1.0f, -1.0f, 1.0f, 0.0f
                 };
-
                 glGenVertexArrays(1, &mScreenQuadVAO);
-                glGenBuffers(1, &mScreenQuadVAO);
-                glBindVertexArray(mScreenQuadVBO);
+                glGenBuffers(1, &mScreenQuadVBO);
+
+                glBindVertexArray(mScreenQuadVAO);
                 glBindBuffer(GL_ARRAY_BUFFER, mScreenQuadVBO);
-                glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+                glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+
+                // position attribute
+                glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
                 glEnableVertexAttribArray(0);
-                glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+
+                // texture coordinate
+                glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+                    (void*)(2 * sizeof(float)));
                 glEnableVertexAttribArray(1);
-                glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+                glBindVertexArray(0);
                 mInit = true;
                 return true;
             }
@@ -111,10 +121,11 @@ namespace Graphics {
             *   Renders all the Downsamples, before applying bloom
             */ // ---------------------------------------------------------------------
             void BloomRenderer::RenderDownsamples(unsigned int srcTexture) {
-                const std::vector<BloomFBO::BloomMip>& mipChain = mFBO.MipChain();
+                std::vector<BloomFBO::BloomMip>& mipChain = mFBO.MipChain();
 
                 mDownsampleShader->Get()->Bind();
-                mDownsampleShader->Get()->SetShaderUniform("srcResolution", &mSrcViewportSizeFloat);
+                auto id = glGetUniformLocation(mDownsampleShader->Get()->GetHandle(), "srcResolution");
+                glUniform2fv(id, 1, reinterpret_cast<float*>(&mSrcViewportSizeFloat));
 
                 // Bind srcTexture (HDR color buffer) as initial texture input
                 glActiveTexture(GL_TEXTURE0);
@@ -123,7 +134,7 @@ namespace Graphics {
                 // Progressively downsample through the mip chain
                 for (int i = 0; i < mipChain.size(); i++)
                 {
-                    const BloomFBO::BloomMip& mip = mipChain[i];
+                    BloomFBO::BloomMip& mip = mipChain[i];
                     glViewport(0, 0, mip.size.x, mip.size.y);
                     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
                         GL_TEXTURE_2D, mip.texture, 0);
@@ -135,6 +146,9 @@ namespace Graphics {
 
                     // Set current mip resolution as srcResolution for next iteration
                     mDownsampleShader->Get()->SetShaderUniform("srcResolution", &mip.size);
+       
+                    auto id = glGetUniformLocation(mDownsampleShader->Get()->GetHandle(), "srcResolution");
+                    glUniform2fv(id, 1, reinterpret_cast<float*>(&mip.size));
                     // Set current mip as texture input for next iteration
                     glBindTexture(GL_TEXTURE_2D, mip.texture);
                 }

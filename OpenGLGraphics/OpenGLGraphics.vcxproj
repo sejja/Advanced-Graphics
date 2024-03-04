@@ -704,6 +704,7 @@
     <None Include="Content\Scenes\README.md" />
     <None Include="Content\Scenes\Sponza.bin" />
     <None Include="Content\Scenes\Sponza.gltf" />
+    <None Include="Content\Shaders\BloomVert.vert" />
     <None Include="Content\Shaders\DebugLines.frag" />
     <None Include="Content\Shaders\DebugLines.shader" />
     <None Include="Content\Shaders\DebugLines.vert" />

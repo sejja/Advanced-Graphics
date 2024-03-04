@@ -120,7 +120,7 @@ namespace Graphics {
             *
             *   Returns the vector containing all the textures
             */ //----------------------------------------------------------------------
-            const std::vector<BloomFBO::BloomMip>& BloomFBO::MipChain() const {
+            std::vector<BloomFBO::BloomMip>& BloomFBO::MipChain() {
                 return mMipChain;
             }
 		}

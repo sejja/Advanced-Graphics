@@ -13,6 +13,7 @@
 #include <string>
 #include <typeinfo>
 #include <memory>
+#include "TypeInfo.h"
 
 namespace Core {
     namespace Events {
@@ -58,7 +59,7 @@ namespace Core {
 #pragma endregion
         private:
 #pragma region //Variables
-            std::map<std::string, std::unique_ptr<HandlerFunction>> mHandlerCollection;
+            std::map<TypeInfo, std::unique_ptr<HandlerFunction>> mHandlerCollection;
 #pragma endregion
         };
 

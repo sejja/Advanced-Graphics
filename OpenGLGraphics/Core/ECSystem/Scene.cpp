@@ -15,18 +15,16 @@
 #include "Graphics/Primitives/GLBModel.h"
 
 namespace Core {
-	SceneParser Scene::sParser;
-
 	// ------------------------------------------------------------------------
 	/*! Create Scene
 	*
 	*   Creates a scene from a level file
 	*/ // ---------------------------------------------------------------------
 	void Scene::CreateScene(const std::string_view& file, const std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
-		sParser.LoadDataFromFile(file.data());
+		mParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<ResourceManager>::Instance();
 
-		std::for_each(std::execution::unseq, sParser.objects.begin(), sParser.objects.end(), [this, &upload, &resmg](const SceneParser::Transform& x) {
+		std::for_each(std::execution::unseq, mParser.objects.begin(), mParser.objects.end(), [this, &upload, &resmg](const SceneParser::Transform& x) {
 			std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
 			obj->SetPosition(x.pos);
 			obj->SetRotation(glm::radians(x.rot));
@@ -46,7 +44,7 @@ namespace Core {
 
 		int i = 0;
 
-		std::for_each(std::execution::seq, sParser.lights.begin(), sParser.lights.end(), [this, &i, &upload](const SceneParser::Light& x) {
+		std::for_each(std::execution::seq, mParser.lights.begin(), mParser.lights.end(), [this, &i, &upload](const SceneParser::Light& x) {
 			std::shared_ptr<Core::Object> obj = std::move(std::make_shared<Core::Object>());
 			obj->SetPosition(x.pos);
 			obj->SetRotation(glm::vec3(0.f, 0.f, 0.f));

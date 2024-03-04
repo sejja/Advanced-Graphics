@@ -46,4 +46,5 @@ void main() {
     downsample += (a+c+g+i)*0.03125;
     downsample += (b+d+f+h)*0.0625;
     downsample += (j+k+l+m)*0.125;
+    downsample = vec3(srcResolution, 1);
 }
