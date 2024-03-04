@@ -10,28 +10,28 @@ namespace Core
                 // Partícula 1
                 {
                     glm::vec3(1.0f, 1.0f, 100.0f), // pos
-                    100.0f,       // size
+                    10.0f,       // size
                     glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), // color (rojo)
                     100                          // lifeTime
                 },
                 // Partícula 2
                 {
                     glm::vec3(1.0f, 0.0f, 100.0f), // pos
-                    100.5f,       // size
+                    10.0f,       // size
                     glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), // color (verde)
                     200                          // lifeTime
                 },
                 // Partícula 3
                 {
                     glm::vec3(-1.0f, 1.0f, 100.0f),// pos
-                    100.75f,     // size
+                    10.0f,     // size
                     glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), // color (azul)
                     150                          // lifeTime
                 },
                 // Partícula 4
                 {
                     glm::vec3(1.f, -1.0f, 100.0f),// pos
-                    100.2f,      // size
+                    10.0f,      // size
                     glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), // color (amarillo)
                     250                          // lifeTime
                 }

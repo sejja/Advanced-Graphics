@@ -271,13 +271,17 @@ namespace Core {
 		*/ 
 		//----------------------------------------------------------------------
 		void OpenGLPipeline::Render() {
-			
-			RenderParticlesSystems();
+
+			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+
 			RenderGUI();
 			RenderShadowMaps();
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
+
+			//RenderParticlesSystems();
 
 			//Bind and Clean
 			if (AntiAliasing) {mSamplingBuffer->Bind();mSamplingBuffer->Clear();}
@@ -290,6 +294,8 @@ namespace Core {
 			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 
 			Skybox::sCurrentSky->Render(cam);
+
+			RenderParticlesSystems();
 
 			if (AntiAliasing) 
 			{

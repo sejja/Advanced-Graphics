@@ -36,14 +36,18 @@ namespace Core
 				void Update() override;
 
 				virtual void Render() const override {
+
 					shaderProgram->Get()->Bind();
 
 					Core::Primitives::Camera* camReference = camera;
 					glm::mat4 view = camReference->GetViewMatrix();
 					glm::mat4 uProjection = this->projection;
 
-					//glDisable(GL_DEPTH_TEST);
-					//glDisable(GL_CULL_FACE);
+					glDisable(GL_DEPTH_TEST);
+					glDisable(GL_CULL_FACE);
+					//glEnable(GL_DEPTH_TEST);
+
+					//glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
 					std::for_each(particles.begin(), particles.end(), [this, &view, &uProjection](Particle particle) 
 					{
@@ -56,15 +60,19 @@ namespace Core
 						shaderProgram->Get()->SetShaderUniformMatrix4d("view", &view);
 						shaderProgram->Get()->SetShaderUniformMatrix4d("projection", &uProjection);
 						shaderProgram->Get()->SetShaderUniform("pointSize", particle.size);
+						shaderProgram->Get()->SetShaderUniform("particleColor", &particle.color);
 
 						// Vincula el VAO
 						glBindVertexArray(VAO);
 
 						// Dibuja las partículas
-						glDrawArrays(GL_POINTS, 0, static_cast<GLsizei>(particles.size()));
+						glDrawArrays(GL_POINTS, 0, 1);
 
 						glBindVertexArray(0);
 					});
+
+					glEnable(GL_DEPTH_TEST);
+					glEnable(GL_CULL_FACE);
 				};
 
 			protected:
