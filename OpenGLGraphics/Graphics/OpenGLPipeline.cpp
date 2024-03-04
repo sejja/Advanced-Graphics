@@ -282,8 +282,6 @@ namespace Core {
 						it, it.first->Get()->Bind();
 
 					try {
-						it.first->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
-						UploadLightDataToGPU(it.first);
 						auto tex = Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/Brick.png")->Get();
 						tex->SetTextureType(Texture::TextureType::eDiffuse);
 						tex->Bind();
@@ -339,7 +337,6 @@ namespace Core {
 				mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uShadowMatrix[" + std::to_string(i) + "]", shadow_matrices.data() + i);
 			}
 
-			mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
 			RenderScreenQuad();
 		}
 
@@ -376,6 +373,7 @@ namespace Core {
 				}
 				};
 
+			glCullFace(GL_NONE);
 			glViewport(0, 0, mDimensions.x * 4, mDimensions.y * 4);
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				mShadowBuffers[i].Bind();
@@ -390,7 +388,6 @@ namespace Core {
 					shadow->Bind();
 					shadow->SetShaderUniform("uProjection", &lightProjection);
 					shadow->SetShaderUniform("uView", &lightView);
-					glCullFace(GL_FRONT);
 					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 						GroupRender(obsoletes,it, shadow);
 						});
