@@ -705,6 +705,8 @@
     <None Include="Content\Scenes\Sponza.bin" />
     <None Include="Content\Scenes\Sponza.gltf" />
     <None Include="Content\Shaders\BloomVert.vert" />
+    <None Include="Content\Shaders\Blue.frag" />
+    <None Include="Content\Shaders\Blue.shader" />
     <None Include="Content\Shaders\DebugLines.frag" />
     <None Include="Content\Shaders\DebugLines.shader" />
     <None Include="Content\Shaders\DebugLines.vert" />
@@ -720,6 +722,8 @@
     <None Include="Content\Shaders\ForwardRender.frag" />
     <None Include="Content\Shaders\ForwardRender.shader" />
     <None Include="Content\Shaders\ForwardRender.vert" />
+    <None Include="Content\Shaders\Red.frag" />
+    <None Include="Content\Shaders\Red.shader" />
     <None Include="Content\Shaders\Refractive.frag" />
     <None Include="Content\Shaders\Refractive.shader" />
     <None Include="Content\Shaders\Shadow.frag" />

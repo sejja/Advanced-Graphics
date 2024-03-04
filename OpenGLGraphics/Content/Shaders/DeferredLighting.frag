@@ -70,9 +70,9 @@ float ShadowCalculation(vec4 fragPosLightSpace, int light, vec3 normal) {
 *
 *   Extracts the bloom color aberration from the final color and the bloom channel
 */ //----------------------------------------------------------------------
-vec3 bloom(vec3 finalcolor) {
-    vec3 bloomColor = texture(bBloomTexture, oUVs).rgb;
-    return mix(finalcolor, bloomColor, 0.005); // linear interpolation
+vec4 bloom(vec4 finalcolor) {
+    vec4 bloomColor = texture(bBloomTexture, oUVs).rgba;
+    return mix(finalcolor, bloomColor, 0.75); // linear interpolation
 }
 
 // ------------------------------------------------------------------------
@@ -131,5 +131,5 @@ void main() {
             uLight[i].mSpecular * pow(max(dot(normalize(uCameraPos - fragPos), 
             reflect(-lightDir, normal)), 0.0), 32)));
    }
-    FragColor = texture(gAlbedoSpec, oUVs) * vec4(totalLightShine, 1.0) +  texture(bBloomTexture, oUVs).rgba;
+    FragColor = bloom(texture(gAlbedoSpec, oUVs) * vec4(totalLightShine, 1.0));
 } 

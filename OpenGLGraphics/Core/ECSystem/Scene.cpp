@@ -52,7 +52,26 @@ namespace Core {
 			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj));
 			std::shared_ptr<::Graphics::Primitives::Light> light = std::move(std::make_shared<::Graphics::Primitives::Light>(obj));
 			renderer->SetMesh(Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
-			renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
+
+			//Switch by the light index (to switch behaviors)
+			switch (i % 4) {
+			case 0:
+				renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Blue.shader"));
+				break;
+
+			case 1:
+				renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
+				break;
+
+			case 2:
+				renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
+				break;
+
+			default:
+				renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
+				break;
+			}
+
 			light->SetPosition(x.pos);
 			light->mData.mDirection = x.dir;
 			light->mData.mAmbient = glm::vec3(x.amb, x.amb, x.amb);
