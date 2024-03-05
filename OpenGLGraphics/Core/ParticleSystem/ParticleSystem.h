@@ -16,9 +16,7 @@ namespace Core
 		struct Particle
 		{
 			glm::vec3 pos;
-			float size;
-			glm::vec4 color;
-			unsigned int lifeTime = 0;
+			glm::vec3 velocity;
 		};
 
 		class ParticleSystem : public Core::Graphics::Renderable
@@ -37,40 +35,30 @@ namespace Core
 
 				virtual void Render() const override {
 
+					//Bind shader program
 					shaderProgram->Get()->Bind();
 
-					Core::Primitives::Camera* camReference = camera;
-					glm::mat4 view = camReference->GetViewMatrix();
+					//Get camera projection and view
+					glm::mat4 view = camera->GetViewMatrix(); 
 					glm::mat4 uProjection = this->projection;
 
-					glDisable(GL_DEPTH_TEST);
-					glDisable(GL_CULL_FACE);
-					//glEnable(GL_DEPTH_TEST);
+					//Get default color of the system
+					glm::vec color = this->basecolor;
 
-					//glBindBuffer(GL_ARRAY_BUFFER, VBO);
+					//Set uniforms
+					shaderProgram->Get()->SetShaderUniformMatrix4d("view", &view);
+					shaderProgram->Get()->SetShaderUniformMatrix4d("projection", &uProjection);
+					shaderProgram->Get()->SetShaderUniform("pointSize", this->particleSize);
+					shaderProgram->Get()->SetShaderUniform("particleColor", &color);
 
-					std::for_each(particles.begin(), particles.end(), [this, &view, &uProjection](Particle particle) 
-					{
+					//Bind Vertex array
+					glBindVertexArray(VAO);
 
-						//std::cout << "--->Render  particle \n";
-						glm::mat4 model = glm::mat4(1.0f);
-						model = glm::translate(model, particle.pos); // Mueve el objeto a (x, y, z) en el espacio mundial
-						
-						shaderProgram->Get()->SetShaderUniformMatrix4d("model", &model);
-						shaderProgram->Get()->SetShaderUniformMatrix4d("view", &view);
-						shaderProgram->Get()->SetShaderUniformMatrix4d("projection", &uProjection);
-						shaderProgram->Get()->SetShaderUniform("pointSize", particle.size);
-						shaderProgram->Get()->SetShaderUniform("particleColor", &particle.color);
+					//Draw all particle in the same instance
+					glDrawArraysInstanced(GL_POINTS, 0, 1, this->particles.size());
 
-						glBindVertexArray(VAO);
-
-						glDrawArrays(GL_POINTS, 0, 1);
-					});
-
+					//Unbind
 					glBindVertexArray(0);
-
-					glEnable(GL_DEPTH_TEST);
-					glEnable(GL_CULL_FACE);
 				};
 
 			protected:
@@ -84,9 +72,10 @@ namespace Core
 			private:
 				//Test data
 				const unsigned int nParticlesTest = 20;
-				const float height = 1.0f;
-				const float width = 1.0f;
+				const float height = 10.0f;
+				const float width = 10.0f;
 				const float particleSize = 1.0f;
+				const glm::vec4 basecolor = glm::vec4(1.0f, 0.0f, 0.f, 1.0f);
 		};
 	}
 }
