@@ -31,6 +31,13 @@ struct Light {
     int mType;
 };
 
+layout (std140) uniform UniformBuffer {
+	mat4 ubView;
+	mat4 ubProjection;
+    vec3 ubCameraPosition;
+};
+
+
 uniform Light uLight[8];
 uniform int uLightCount;
 uniform vec3 uCameraPos;
@@ -125,11 +132,20 @@ void main() {
            }
 
 
-        totalLightShine += att * ((uLight[i].mAmbient + spotlight * 
+        totalLightShine +=
+            //atenuation
+            att 
+            //ambient
+            * ((uLight[i].mAmbient
+            //spotlight effect
+            + spotlight * 
+            //shadowmapping
             (1 - ShadowCalculation(uShadowMatrix[i] * vec4(fragPos, 1), i, normal)) 
-            * max(dot(normal, lightDir), 0.0) * uLight[i].mDiffuse + 
-            uLight[i].mSpecular * pow(max(dot(normalize(uCameraPos - fragPos), 
-            reflect(-lightDir, normal)), 0.0), 32)));
+            //difuse
+            * (max(dot(normal, lightDir), 0.0) * uLight[i].mDiffuse 
+            //specular
+            + uLight[i].mSpecular * pow(max(dot(normalize(ubCameraPosition - fragPos), 
+                reflect(-lightDir, normal)), 0.0), 32))));
    }
     FragColor = bloom(texture(gAlbedoSpec, oUVs) * vec4(totalLightShine, 1.0));
 } 

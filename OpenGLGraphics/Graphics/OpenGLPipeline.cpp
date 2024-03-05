@@ -345,7 +345,7 @@ namespace Core {
 				mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uShadowMatrix[" + std::to_string(i) + "]", shadow_mtrx.data() + i);
 			}
 
-			mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
+			
 			RenderScreenQuad();
 			/*glCullFace(GL_FRONT);
 			for (auto& light : ::Graphics::Primitives::Light::sLightData) {
