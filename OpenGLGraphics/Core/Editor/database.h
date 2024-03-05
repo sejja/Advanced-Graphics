@@ -6,16 +6,21 @@
 #include <iostream>
 #include <vector>
 
-class Database {
-public:
-	Database(std::string nombre);
-	~Database();
-	void closeConnection();
-	std::vector<AssetIcon> getFilesOfFolder(std::string nombre);
+namespace Core {
+	namespace Editor {
+		class Database {
+		public:
+			Database(std::string nombre);
+			~Database();
+			void closeConnection();
+			std::vector<AssetIcon> getFilesOfFolder(std::string nombre);
+			std::vector<AssetIcon> getFilesOfRoot();
 
-private:
-	sqlite3* connection;
-};
-
+		private:
+			sqlite3* connection;
+			void appendFilesOfStatement(std::string sql, std::vector<AssetIcon>& assets);
+		};
+	}
+}
 #endif
 

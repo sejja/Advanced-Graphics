@@ -80,6 +80,9 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 				ImGui::EndDragDropSource();
 			}
 		}
+		if (clicked) {
+			//assetManager.updateAssets()
+		}
 	}
 	else {
 		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/other.png")->Get(); //Que cojones es la sintaxis de esta línea???

@@ -10,8 +10,9 @@ std::string texto = "No se ha droppeado nada";
 
 AssetManager::AssetManager() {
 	printf("Intentado abrir base de datos\n");
-	Database db("database.db");
-	assets = db.getFilesOfFolder("Ruta");
+	Core::Editor::Database db("database.db");
+	//assets = db.getFilesOfFolder("Ruta");
+	assets = db.getFilesOfRoot();
 	db.closeConnection();
 }
 
