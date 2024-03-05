@@ -7,6 +7,8 @@
 //
 
 #include "EventDispatcher.h"
+#include <algorithm>
+#include <execution>
 
 namespace Core {
     namespace Events {
@@ -32,16 +34,15 @@ namespace Core {
         *  Unsubscribes a Listener from a specific Event
         */ // --------------------------------------------------------------------
         void EventDispatcher::Unsubscribe(Listener& who, const TypeInfo& what) {
-            auto it = mEventCollection.find(what);
+            const std::map<const TypeInfo, std::unordered_set<Listener*>>::iterator it = mEventCollection.find(what);
 
             //If we found the Event
             if (it != mEventCollection.end())
-                //For each Listener subscribed to the Event
-                for (auto x : it->second)
+                std::for_each(std::execution::par_unseq, it->second.begin(), it->second.end(), [&who, &it](Listener* x) {
                     //If the Listener is the one we want to unsubscribe
-                    if (typeid(*x).name() == typeid(who).name()) {
+                    if (typeid(*x).name() == typeid(who).name())
                         (*it).second.erase(x);
-                    }
+                });
         }
 
         // ------------------------------------------------------------------------
@@ -50,14 +51,15 @@ namespace Core {
         *  Once an event is called, it will call every single subscribed Listener
         */ // --------------------------------------------------------------------
         void EventDispatcher::TriggerEvent(const Event& event) const {
-            auto it = mEventCollection.find(event);
+            const std::map<const TypeInfo, std::unordered_set<Listener*>>::const_iterator it = mEventCollection.find(event);
 
             //If we found the Event
             if (it != mEventCollection.end())
-                //Call every subscribed object to the event
-                for (auto x : it->second) x->HandleEvent(event);
+                std::for_each(std::execution::par_unseq, it->second.begin(), it->second.end(), [&event](Listener* x) {
+                    x->HandleEvent(event);
+                });
         }
 
-        std::map<TypeInfo, std::unordered_set<Listener*>> EventDispatcher::mEventCollection;
+        std::map<const TypeInfo, std::unordered_set<Listener*>> EventDispatcher::mEventCollection;
     }
 }

@@ -33,7 +33,7 @@ namespace Core {
 
         private:
 #pragma region //Variables
-            static std::map<TypeInfo, std::unordered_set<Listener*>> mEventCollection;
+            static std::map<const TypeInfo, std::unordered_set<Listener*>> mEventCollection;
 #pragma endregion
         };
     }
