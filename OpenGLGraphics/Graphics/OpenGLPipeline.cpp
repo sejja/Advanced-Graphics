@@ -194,12 +194,12 @@ namespace Core {
 		void OpenGLPipeline::Render() {
 			RenderGUI();
 			
-			RenderShadowMaps();
+			std::vector<glm::mat4> shadow_mtrx = RenderShadowMaps();
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
 			BloomPass();
-			LightingPass();
+			LightingPass(shadow_mtrx);
 			glEnable(GL_DEPTH_TEST);
 			mGBuffer->BlitDepthBuffer();
 			Skybox::sCurrentSky->Render(cam);
@@ -318,7 +318,7 @@ namespace Core {
 		*   Using the buffers created on the geometry pass, we can 
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::LightingPass() {
+		void OpenGLPipeline::LightingPass(std::vector<glm::mat4>& shadow_mtrx) {
 			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 			glEnable(GL_BLEND);
 			glBlendEquation(GL_FUNC_ADD);
@@ -337,19 +337,12 @@ namespace Core {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			UploadLightDataToGPU(mGBuffer->GetLightingShader());
 
-			std::vector<glm::mat4> shadow_matrices;
-
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				mShadowBuffers[i].BindTexture(4 + i);
-				auto up = glm::normalize(glm::cross(glm::cross(-::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0, 1, 0)), -::Graphics::Primitives::Light::sLightData[i].mPosition));
-				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 2.f, 2000.f);
-				glm::mat4 lightView = glm::lookAt(::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0.0, -15, 50), glm::vec3(0, 1, 0));
-				glm::mat4 shadow_matrix = lightProjection * lightView;
-				shadow_matrices.push_back(shadow_matrix);
 			}
 
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-				mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uShadowMatrix[" + std::to_string(i) + "]", shadow_matrices.data() + i);
+				mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uShadowMatrix[" + std::to_string(i) + "]", shadow_mtrx.data() + i);
 			}
 
 			mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
@@ -370,7 +363,7 @@ namespace Core {
 			*/
 		}
 
-		void OpenGLPipeline::RenderShadowMaps() {
+		std::vector<glm::mat4> OpenGLPipeline::RenderShadowMaps() {
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
 			auto f_flushobosoletes = [this, &obsoletes]() {
@@ -403,6 +396,8 @@ namespace Core {
 				}
 				};
 
+			std::vector<glm::mat4> shadow_matrices;
+
 			glViewport(0, 0, mDimensions.x * 4, mDimensions.y * 4);
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				mShadowBuffers[i].Bind();
@@ -410,7 +405,9 @@ namespace Core {
 
 				auto up = glm::normalize(glm::cross(glm::cross(-::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0, 1, 0)), -::Graphics::Primitives::Light::sLightData[i].mPosition));
 				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 2.f, 2000.f);
-				glm::mat4 lightView = glm::lookAt(::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0.0, -15, 50), glm::vec3(0, 1, 0));
+				glm::mat4 lightView = glm::lookAt(::Graphics::Primitives::Light::sLightData[i].mPosition, ::Graphics::Primitives::Light::sLightData[i].mDirection, glm::vec3(0, 1, 0));
+				glm::mat4 shadow_matrix = lightProjection * lightView;
+				shadow_matrices.push_back(shadow_matrix);
 
 				{
 					const auto shadow = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Shadow.shader")->Get();
@@ -426,6 +423,8 @@ namespace Core {
 				mShadowBuffers[i].Unbind();
 
 			}
+
+			return shadow_matrices;
 		}
 
 		void OpenGLPipeline::DebugDraw() {

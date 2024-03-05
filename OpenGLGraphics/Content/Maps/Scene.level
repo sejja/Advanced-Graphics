@@ -63,27 +63,10 @@ orbit 0 -15 0
 
 #light data
 light
-translate -50 0 55
-color 1 0 0
+translate 50 20 55
+color 1 1 1
 lightType SPOT	
 attenuation 0 0.0 0.01
 #sinusoidal 0 1 20
-ambient 0.2
+ambient 0
 direction -1 0 0
-
-translate 50 30 50
-color 0 0 1
-lightType SPOT
-attenuation 1 0.0 0.0	
-direction 0 -1 0
-spotAttenuation 20 80 50
-orbit 0 30 50
-sinusoidal 1 5 10
-
-light
-translate 10 30 50
-color 1 1 1
-lightType SPOT
-attenuation 1 0.0 0.0		
-direction 0 -1 0
-spotAttenuation 0 10 1

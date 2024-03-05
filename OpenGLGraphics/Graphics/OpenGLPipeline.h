@@ -33,8 +33,8 @@ namespace Core {
 			void UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader);
 			void GeometryPass();
 
-			void LightingPass();
-			void RenderShadowMaps();
+			void LightingPass(std::vector<glm::mat4>& shadow_mtrx);
+			std::vector<glm::mat4> RenderShadowMaps();
 			void DebugDraw();
 			void RenderScreenQuad();
 			void UpdateUniformBuffers();
