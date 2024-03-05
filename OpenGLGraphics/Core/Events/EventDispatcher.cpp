@@ -2,8 +2,8 @@
 //	EventDispatcher.cpp
 //	OpenGL Graphics
 //
-//	Created by Diego Revilla on 23/03/23
-//	Copyright © 2023. All Rights reserved
+//	Created by Diego Revilla on 05/03/24
+//	Copyright © 2024. All Rights reserved
 //
 
 #include "EventDispatcher.h"
@@ -39,8 +39,9 @@ namespace Core {
                 //For each Listener subscribed to the Event
                 for (auto x : it->second)
                     //If the Listener is the one we want to unsubscribe
-                    if (typeid(*x).name() == typeid(who).name())
+                    if (typeid(*x).name() == typeid(who).name()) {
                         (*it).second.erase(x);
+                    }
         }
 
         // ------------------------------------------------------------------------

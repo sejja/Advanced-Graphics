@@ -2,8 +2,8 @@
 //	EventDispatcher.h
 //	OpenGL Graphics
 //
-//	Created by Diego Revilla on 23/03/23
-//	Copyright © 2023. All Rights reserved
+//	Created by Diego Revilla on 05/03/24
+//	Copyright © 2024. All Rights reserved
 //
 
 #ifndef _EVENT_DISPATCHER__H_
@@ -11,7 +11,7 @@
 
 #include "Event.h"
 #include "TypeInfo.h"
-#include <unordered_map>
+#include <map>
 #include <unordered_set>
 
 namespace Core {
