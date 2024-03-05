@@ -77,5 +77,9 @@ namespace Core
                 }
             }
         }
+        void ParticleSystem::init()
+        {
+            std::cout << "UNIMPLEMENTED METHOD INIT\n";
+        }
 	}
 }
