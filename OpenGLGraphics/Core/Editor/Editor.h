@@ -16,6 +16,7 @@
 
 
 class Editor {
+
 public:
     Editor();
 
@@ -27,18 +28,13 @@ public:
 
 private:
     bool editorLocked;
+    SelectedObj selectedObj;
+
     MainMenu mainMenu;
     Properties properties;
     AssetManager assetManager;
     Outliner outliner;
     SceneView sceneView;
-
-    SelectedObj selectedObj;
-
-
-
-
-
 
 };
 

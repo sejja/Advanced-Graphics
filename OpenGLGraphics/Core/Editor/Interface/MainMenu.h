@@ -13,6 +13,10 @@ public:
 private:
 	DebugTools debugTools;
 
+	void RenderFileMenu();
+	void RenderRemoteControlMenu();
+
+
 };
 
 #endif
