@@ -6,39 +6,22 @@ namespace Core
 	{
 		ParticleSystem::ParticleSystem(const std::weak_ptr<Object>& parent) : Renderable(parent){
 
-            Particle particles[4] = {
-                // Partícula 1
+            for (float x = (center.x - width/2); x < (center.x + width/2); x+=(width / nParticlesTest) )
+            {
+                for (float z = (center.z - width / 2); z < (center.z + width / 2); z += (width / nParticlesTest))
                 {
-                    glm::vec3(1.0f, 1.0f, 100.0f), // pos
-                    10.0f,       // size
-                    glm::vec4(1.0f, 0.0f, 0.0f, 1.0f), // color (rojo)
-                    100                          // lifeTime
-                },
-                // Partícula 2
-                {
-                    glm::vec3(1.0f, 0.0f, 100.0f), // pos
-                    10.0f,       // size
-                    glm::vec4(0.0f, 1.0f, 0.0f, 1.0f), // color (verde)
-                    200                          // lifeTime
-                },
-                // Partícula 3
-                {
-                    glm::vec3(-1.0f, 1.0f, 100.0f),// pos
-                    10.0f,     // size
-                    glm::vec4(0.0f, 0.0f, 1.0f, 1.0f), // color (azul)
-                    150                          // lifeTime
-                },
-                // Partícula 4
-                {
-                    glm::vec3(1.f, -1.0f, 100.0f),// pos
-                    10.0f,      // size
-                    glm::vec4(1.0f, 1.0f, 0.0f, 1.0f), // color (amarillo)
-                    250                          // lifeTime
-                }
-            };
+                    for(float y = center.y; y < (center.y + height); y += (height/nParticlesTest) )
+                    {
+                        Particle particle = {
+                            glm::vec3(x, y, z),//pos
+                            particleSize,
+                            glm::vec4(1.0f, 0.0f, 0.0f, 1.0f),
+                            100
+                        };
 
-            for (int i = 0; i < sizeof(particles) / sizeof(Particle); i++) {
-                this->particles.push_back(particles[i]);
+                        this->particles.push_back(particle);
+                    }
+                }
             }
 
             glGenVertexArrays(1, &VAO);
@@ -47,7 +30,7 @@ namespace Core
             glBindVertexArray(VAO);
 
             glBindBuffer(GL_ARRAY_BUFFER, VBO);
-            glBufferData(GL_ARRAY_BUFFER, this->particles.size() * sizeof(Particle), particles, GL_STATIC_DRAW);
+            glBufferData(GL_ARRAY_BUFFER, this->particles.size() * sizeof(Particle), this->particles.data(), GL_STATIC_DRAW);
 
             // Posición
             glEnableVertexAttribArray(0);

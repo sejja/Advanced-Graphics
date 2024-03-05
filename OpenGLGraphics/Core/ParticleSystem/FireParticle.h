@@ -14,6 +14,7 @@ namespace Core
 		public:
 			double fireHeight;
 			double radius;
+			const unsigned int nParticles = 5000;
 		};
 	}
 }

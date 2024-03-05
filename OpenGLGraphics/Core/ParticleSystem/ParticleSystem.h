@@ -24,7 +24,7 @@ namespace Core
 		class ParticleSystem : public Core::Graphics::Renderable
 		{
 			public:
-				glm::vec3 center;
+				glm::vec3 center = glm::vec3(0.0f, 0.0f, 40.0f);
 				glm::vec3 velocity;
 				glm::vec3 acceleration;
 
@@ -62,14 +62,12 @@ namespace Core
 						shaderProgram->Get()->SetShaderUniform("pointSize", particle.size);
 						shaderProgram->Get()->SetShaderUniform("particleColor", &particle.color);
 
-						// Vincula el VAO
 						glBindVertexArray(VAO);
 
-						// Dibuja las partículas
 						glDrawArrays(GL_POINTS, 0, 1);
-
-						glBindVertexArray(0);
 					});
+
+					glBindVertexArray(0);
 
 					glEnable(GL_DEPTH_TEST);
 					glEnable(GL_CULL_FACE);
@@ -82,6 +80,13 @@ namespace Core
 				int ParticleFunction(Particle *p_particle);
 				Core::Primitives::Camera* camera;
 				glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
+
+			private:
+				//Test data
+				const unsigned int nParticlesTest = 20;
+				const float height = 1.0f;
+				const float width = 1.0f;
+				const float particleSize = 1.0f;
 		};
 	}
 }
