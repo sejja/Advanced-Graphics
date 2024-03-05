@@ -1,6 +1,7 @@
 #include "MainMenu.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
-
+#include <Dependencies/Json/single_include/json.hpp>
+#include "Core/Network/Client.h"
 
 static bool show_tool_metrics = false;
 static bool show_shadow_mapping = false;
@@ -69,6 +70,31 @@ void MainMenu::RenderRemoteControlMenu(){
         if (!server_running) {
             ImGui::MenuItem("Host Server", NULL, &server_running);
 
+            if (ImGui::Button("Desconectar")) {
+                Client& client = Singleton<Client>::Instance();
+
+                if (client.isConnected()) {
+                    client.disconnectFromServer();
+                }
+            }
+            if (ImGui::Button("ENVIAR")) {
+            	//connect to server
+                
+                
+                
+                Client& client = Singleton<Client>::Instance();
+                // Ejemplo de envío de mensaje al servidor
+                json message;
+                message["text"] = "Hola, servidor!";
+                client.sendToServer(message);
+
+                client.sendToServer(message);
+
+
+                // Ejemplo de desconexión del servidor
+                //client.disconnectFromServer();
+            
+            }
 
             if (ImGui::BeginMenu("Connect to server")) {
 
@@ -78,7 +104,12 @@ void MainMenu::RenderRemoteControlMenu(){
                 for (int i = 0; i < 4; i++) {
                     ImGui::Text("127.0.0.%d", i);
                     ImGui::SameLine();
-                    ImGui::SmallButton("Connect");
+                    if( ImGui::SmallButton("Connect") ){
+                        printf("Connecting to 127.0.0.%d\n", i);
+                        Client& client = Singleton<Client>::Instance();
+                        
+                        client.connectToServer("127.0.0.1", 5555);
+                    }
                 }
                 ImGui::EndChild();
 

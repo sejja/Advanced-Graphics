@@ -169,8 +169,8 @@
   <ItemGroup>
     <ClCompile Include="Behaviors\AnimationComponent.cpp" />
     <ClCompile Include="Core\Assets\Importers.cpp" />
-    <ClCompile Include="Core\Connection\Client.cpp" />
-    <ClCompile Include="Core\Connection\Server.cpp" />
+    <ClCompile Include="Core\Network\Client.cpp" />
+    <ClCompile Include="Core\Network\Server.cpp" />
     <ClCompile Include="Core\ECSystem\Component.cpp" />
     <ClCompile Include="Core\ECSystem\Object.cpp" />
     <ClCompile Include="Core\Editor\database.cpp" />
@@ -228,8 +228,8 @@
     <ClInclude Include="CommonDefines.h" />
     <ClInclude Include="Core\AppWrapper.h" />
     <ClInclude Include="Core\Assets\Importers.h" />
-    <ClInclude Include="Core\Connection\Client.h" />
-    <ClInclude Include="Core\Connection\Server.h" />
+    <ClInclude Include="Core\Network\Client.h" />
+    <ClInclude Include="Core\Network\Server.h" />
     <ClInclude Include="Core\ECSystem\Component.h" />
     <ClInclude Include="Core\ECSystem\Object.h" />
     <ClInclude Include="Core\Editor\Assets\Fonts\IconsFontAwesome.h" />
