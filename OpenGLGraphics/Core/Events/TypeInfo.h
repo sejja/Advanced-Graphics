@@ -1,9 +1,9 @@
 //
 //	TypeInfo.h
-//	Dragon's Lake Test Task
+//	OpenGL Graphics
 //
-//	Created by Diego Revilla on 23/03/23
-//	Copyright © 2023 Dragon's Lake. All Rights reserved
+//	Created by Diego Revilla on 05/03/24
+//	Copyright © 2024. All Rights reserved
 //
 
 #ifndef _TYPE_INFO__H_
@@ -24,9 +24,9 @@ namespace Core {
 #pragma endregion
 
 #pragma region //Functions
-            DONTDISCARD inline bool operator==(const TypeInfo& rhs) const;
-            DONTDISCARD inline bool operator!=(const TypeInfo& rhs) const;
-            DONTDISCARD inline bool operator<(const TypeInfo& rhs) const;
+            DONTDISCARD constexpr inline bool operator==(const TypeInfo& rhs) const;
+            DONTDISCARD constexpr inline bool operator!=(const TypeInfo& rhs) const;
+            DONTDISCARD constexpr inline bool operator<(const TypeInfo& rhs) const;
 #pragma endregion
 
 #pragma region //Variables
@@ -49,7 +49,7 @@ namespace Core {
         *
         *   Checks if two TypeInfo's are the same
         */ // ---------------------------------------------------------------------
-        bool TypeInfo::operator==(const TypeInfo& rhs) const {
+        constexpr bool TypeInfo::operator==(const TypeInfo& rhs) const {
             return mName == rhs.mName;
         }
 
@@ -58,7 +58,7 @@ namespace Core {
         *
         *   Checks if two TypeInfo's are different
         */ // ---------------------------------------------------------------------
-        bool TypeInfo::operator!=(const TypeInfo& rhs) const {
+        constexpr bool TypeInfo::operator!=(const TypeInfo& rhs) const {
             return mName != rhs.mName;
         }
 
@@ -67,7 +67,7 @@ namespace Core {
         *
         *   Compares two Type Info's (So we can use it with a map)
         */ // ---------------------------------------------------------------------
-        bool TypeInfo::operator<(const TypeInfo& rhs)const {
+        constexpr bool TypeInfo::operator<(const TypeInfo& rhs) const {
             return mName < rhs.mName;
         }
     }
