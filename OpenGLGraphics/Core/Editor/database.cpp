@@ -56,7 +56,7 @@ namespace Core {
 				strcpy(ruta, rutaTemporal);
 
 				//std::string tipo = (const char*) sqlite3_column_text(stmt, 3);
-				assets.push_back(AssetIcon(AssetType::OTHER, nombre, ruta));
+				assets.push_back(AssetIcon(AssetType::FOLDER, nombre, ruta));
 			}
 			sqlite3_finalize(stmt);
 		}

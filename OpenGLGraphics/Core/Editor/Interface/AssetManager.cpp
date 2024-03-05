@@ -11,6 +11,7 @@ std::string texto = "No se ha droppeado nada";
 AssetManager::AssetManager() {
 	printf("Intentado abrir base de datos\n");
 	Core::Editor::Database db("database.db");
+	this->db = &db;
 	//assets = db.getFilesOfFolder("Ruta");
 	assets = db.getFilesOfRoot();
 	db.closeConnection();
@@ -31,6 +32,19 @@ void AssetManager::Render() {
 	for (int i = 0; i < assets.size(); i++) { //TODO intentar centrar elementos
 		//ImGui::Button("Boton", btSize);
 		assets[i].dibujar(false);
+		if (assets[i].clicked) {
+			switch (assets[i].tipo)
+			{
+			case AssetType::FOLDER:
+				printf("Carpeta\n");
+				assets = db->getFilesOfFolder(assets[i].ruta);
+				break;
+			default:
+				printf("Click\n");
+				break;
+			}
+			//printf("Click\n");
+		}
 		cont++;
 		//printf("%d;%d   ", numeroElementosFila, cont);
 		if (cont != numeroElementosFila)

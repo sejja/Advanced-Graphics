@@ -54,7 +54,7 @@ namespace Core {
 		void Camera::HandleEvent(const Events::Event& event) {
 
 
-			if (Singleton<Editor>::Instance().IsEditorLocked()) { return; }
+			if (Singleton<::Editor>::Instance().IsEditorLocked()) { return; }
 
 			if (RTTI::IsA<const InputManager::A_Down>(&event)) {
 				mPosition.x -= 1;

@@ -3,8 +3,7 @@
 
 #include <vector>
 #include "AssetIcon.h"
-
-class AssetIcon;
+#include "../database.h"
 
 class AssetManager {
 public:
@@ -14,6 +13,7 @@ public:
 private:
 	int elementosPorFila(int anchoVentana, int anchoElemento);
 	std::vector<AssetIcon> assets;
+	Core::Editor::Database* db;
 };
 
 #endif

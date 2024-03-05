@@ -2,7 +2,6 @@
 #define __ASSET_ICON_H__
 
 #include <string>
-#include "AssetManager.h"
 
 enum class AssetType {
 	MODEL,
