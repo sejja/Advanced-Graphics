@@ -2,16 +2,14 @@
 //	Event.h
 //	OpenGL Graphics
 //
-//	Created by Diego Revilla on 23/03/23
-//	Copyright © 2023. All Rights reserved
+//	Created by Diego Revilla on 04/03/24
+//	Copyright © 2024. All Rights reserved
 //
 
 #ifndef _EVENT__H_
 #define _EVENT__H_
 
 #include <map>
-#include <string>
-#include <typeinfo>
 #include <memory>
 #include "TypeInfo.h"
 

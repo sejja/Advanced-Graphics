@@ -2,8 +2,8 @@
 //	Scene.cpp
 //	OpenGL Graphics
 //
-//	Created by Diego Revilla on 20/03/23
-//	Copyright © 2023. All Rights reserved
+//	Created by Diego Revilla on 03/03/24
+//	Copyright © 2024. All Rights reserved
 //
 
 #include "Scene.h"

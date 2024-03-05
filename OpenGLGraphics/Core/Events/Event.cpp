@@ -2,8 +2,8 @@
 //	Event.cpp
 //	OpenGL Graphics
 //
-//	Created by Diego Revilla on 23/03/23
-//	Copyright © 2023. All Rights reserved
+//	Created by Diego Revilla on 05/03/24
+//	Copyright © 2024. All Rights reserved
 //
 
 #include "Event.h"
@@ -23,10 +23,10 @@ namespace Core {
 		*   Handles an event, which subsecuntly will call the required object
 		*/ // ---------------------------------------------------------------------
 		void EventHandler::mHandle(const Event& event) {
-			auto it = mHandlerCollection.find(typeid(event));
+			const std::map<TypeInfo, std::unique_ptr<HandlerFunction>>::const_iterator it = mHandlerCollection.find(typeid(event));
 
-			if (it != mHandlerCollection.end())
-				it->second->mHandle(event);
+			//If we have functions linked with that event, handle the calls
+			if (it != mHandlerCollection.end()) it->second->mHandle(event);
 		}
 
 		// ------------------------------------------------------------------------
