@@ -65,9 +65,12 @@ namespace Core
 				GLuint VAO, VBO;
 				Asset<Core::Graphics::ShaderProgram> shaderProgram;
 				std::vector<Particle> particles;
-				int ParticleFunction(Particle *p_particle);
 				Core::Primitives::Camera* camera;
 				glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
+
+				int ParticleFunction(Particle *p_particle);
+				void initTestParticles();
+				virtual void init();
 
 			private:
 				//Test data

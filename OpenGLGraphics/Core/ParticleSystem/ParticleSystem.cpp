@@ -6,21 +6,7 @@ namespace Core
 	{
 		ParticleSystem::ParticleSystem(const std::weak_ptr<Object>& parent) : Renderable(parent){
 
-            for (float x = (center.x - width/2); x < (center.x + width/2); x+=(width / nParticlesTest) )
-            {
-                for (float z = (center.z - width / 2); z < (center.z + width / 2); z += (width / nParticlesTest))
-                {
-                    for(float y = center.y; y < (center.y + height); y += (height/nParticlesTest) )
-                    {
-                        Particle particle = {
-                            glm::vec3(x, y, z),//pos
-                            glm::vec3(0,0,0)
-                        };
-
-                        this->particles.push_back(particle);
-                    }
-                }
-            }
+            initTestParticles(); 
 
             glGenVertexArrays(1, &VAO);
 
@@ -73,5 +59,23 @@ namespace Core
             //std::cout << "Unimplemented methdod ParticleFunction of Default Particle System \n";
 			return -1;
 		}
+        void ParticleSystem::initTestParticles()
+        {
+            for (float x = (center.x - width / 2); x < (center.x + width / 2); x += (width / nParticlesTest))
+            {
+                for (float z = (center.z - width / 2); z < (center.z + width / 2); z += (width / nParticlesTest))
+                {
+                    for (float y = center.y; y < (center.y + height); y += (height / nParticlesTest))
+                    {
+                        Particle particle = {
+                            glm::vec3(x, y, z),//pos
+                            glm::vec3(0,0,0)
+                        };
+
+                        this->particles.push_back(particle);
+                    }
+                }
+            }
+        }
 	}
 }
