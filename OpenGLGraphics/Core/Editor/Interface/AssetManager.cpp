@@ -1,10 +1,19 @@
 #include "AssetManager.h"
 #include "Dependencies/ImGui/imgui.h"
 #include "AssetIcon.h"
+#include "../database.h"
+#include <vector>
 
 
 void drawDropWindow();
 std::string texto = "No se ha droppeado nada";
+
+AssetManager::AssetManager() {
+	printf("Intentado abrir base de datos\n");
+	Database db("database.db");
+	assets = db.getFilesOfFolder("Ruta");
+	db.closeConnection();
+}
 
 void AssetManager::Render() {
 	ImGui::Begin("Asset Manager");
@@ -13,12 +22,12 @@ void AssetManager::Render() {
 	int numeroElementosFila = elementosPorFila(ImGui::GetWindowWidth(), 100);
 	//printf("%d", ImGui::GetWindowWidth());
 
-	const int numAssets = 20;
-	AssetIcon assets[20];
-	assets[1] = AssetIcon(AssetType::TEXTURE, "Textura", "Content\\Textures\\Brick.png");
+	//const int numAssets = 20;
+	//AssetIcon assets[20];
+	//assets[1] = AssetIcon(AssetType::TEXTURE, "Textura", "Content\\Textures\\Brick.png");
 
 	int cont = 0;
-	for (int i = 0; i < numAssets; i++) { //TODO intentar centrar elementos
+	for (int i = 0; i < assets.size(); i++) { //TODO intentar centrar elementos
 		//ImGui::Button("Boton", btSize);
 		assets[i].dibujar(false);
 		cont++;
@@ -48,7 +57,7 @@ int AssetManager::elementosPorFila(int anchoVentana, int anchoElemento)
 	return anchoVentana / (anchoElemento + offset);
 }
 
-//Write a method to make a ImGui window with a button of 300*300 size
+
 void drawDropWindow() { //Para eliminar en la verrsion final
 	ImGui::Begin("Drop Window");
 	ImGui::Button("Drop", ImVec2(300, 300));

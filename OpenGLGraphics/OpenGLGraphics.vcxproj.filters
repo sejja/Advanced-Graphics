@@ -141,22 +141,25 @@
     <ClCompile Include="Core\Editor\Interface\Properties.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Architecture\HDRBuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Editor\Interface\AssetIcon.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Editor\Interface\AssetManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Editor\Interface\Outliner.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Core\Editor\Interface\Properties.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Core\Editor\Interface\SceneView.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\database.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\Interface\DebugTools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\Interface\MainMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Primitives\GLBMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Primitives\GLBModel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\SQLite3\sqlite3.c">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Editor\Interface\DebugTools.cpp">
@@ -1610,42 +1613,6 @@
     <ClInclude Include="Core\Editor\Editor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\AppWrapper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Editor\Assets\Fonts\IconsFontAwesome.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Editor\Interface\AssetIcon.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Editor\Interface\AssetManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Editor\Interface\DebugTools.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Editor\Interface\MainMenu.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Editor\Interface\Outliner.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Editor\Interface\Properties.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Editor\Interface\SceneView.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Editor\SelectedObj.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Connection\Server.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Connection\Client.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\SDL\Include\SDL_config.h.cmake" />
@@ -2076,16 +2043,6 @@
     <None Include="Content\Shaders\DeferredLighting.frag" />
     <None Include="Content\Shaders\DeferredLighting.shader" />
     <None Include="Content\Shaders\DeferredLighting.vert" />
-    <None Include="Content\Scenes\README.md" />
-    <None Include="Content\Scenes\Sponza.bin">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="Content\Scenes\Sponza.gltf" />
-    <None Include="Content\Shaders\DirectionalLightShader.frag" />
-    <None Include="Content\Shaders\DirectionalLight.shader" />
-    <None Include="Content\Shaders\Renderer.frag" />
-    <None Include="Content\Shaders\Renderer.shader" />
-    <None Include="Content\Shaders\Renderer.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
