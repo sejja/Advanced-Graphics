@@ -10,11 +10,15 @@ std::string texto = "No se ha droppeado nada";
 
 AssetManager::AssetManager() {
 	printf("Intentado abrir base de datos\n");
-	Core::Editor::Database db("database.db");
-	this->db = &db;
+	//Core::Editor::Database db("database.db");
+	this->db = new Core::Editor::Database("database.db");
 	//assets = db.getFilesOfFolder("Ruta");
-	assets = db.getFilesOfRoot();
-	db.closeConnection();
+	assets = db->getFilesOfRoot();
+	//db.closeConnection();
+}
+
+AssetManager::~AssetManager() {
+	db->closeConnection();
 }
 
 void AssetManager::Render() {
@@ -37,6 +41,7 @@ void AssetManager::Render() {
 			{
 			case AssetType::FOLDER:
 				printf("Carpeta\n");
+				printf("%s\n", assets[i].ruta);
 				assets = db->getFilesOfFolder(assets[i].ruta);
 				break;
 			default:

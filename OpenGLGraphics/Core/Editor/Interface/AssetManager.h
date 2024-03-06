@@ -7,6 +7,7 @@
 
 class AssetManager {
 public:
+	~AssetManager();
 	AssetManager();
 	void Render();
 

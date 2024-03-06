@@ -13,15 +13,17 @@ namespace Core {
 		}
 
 		Database::~Database() {
-			sqlite3_close(connection);
+			closeConnection();
 		}
 
 		std::vector<AssetIcon> Database::getFilesOfFolder(std::string nombre) {
 			std::vector<AssetIcon> assets;
 			std::string sql = "SELECT * FROM CARPETA WHERE ID_CARPETA_SUPERIOR IN (SELECT ID FROM CARPETA WHERE RUTA ='" + nombre + "');";
+			//printf("%s\n", sql.c_str());
 			appendFilesOfStatement(sql, assets);
 
 			sql = "SELECT * FROM ASSET WHERE CARPETA IN (SELECT ID FROM CARPETA WHERE RUTA ='" + nombre + "');";
+			//printf("%s\n", sql.c_str());
 			appendFilesOfStatement(sql, assets);
 			return std::move(assets);
 		}
@@ -37,11 +39,13 @@ namespace Core {
 		}
 
 		void Database::closeConnection() {
+			printf("Cerrando base de datos\n");
 			sqlite3_close(connection);
 		}
 
 		void Database::appendFilesOfStatement(std::string sql, std::vector<AssetIcon>& assets) {
 			sqlite3_stmt* stmt;
+			printf("%s\n", sql.c_str());
 			int i = sqlite3_prepare_v2(connection, sql.c_str(), -1, &stmt, NULL);
 			std::cout << sqlite3_errstr(i) << std::endl;
 			while (sqlite3_step(stmt) == SQLITE_ROW) {
