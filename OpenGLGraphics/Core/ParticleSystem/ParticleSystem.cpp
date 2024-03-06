@@ -30,7 +30,6 @@ namespace Core
             glBindVertexArray(0);
 
             shaderProgram = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Particle.shader");
-
 		}
 
 		ParticleSystem::~ParticleSystem()

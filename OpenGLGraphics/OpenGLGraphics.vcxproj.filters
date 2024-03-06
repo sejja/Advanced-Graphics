@@ -153,6 +153,9 @@
     <ClCompile Include="Core\ParticleSystem\ParticleSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\ParticleSystem\FireSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -1607,7 +1610,7 @@
     <ClInclude Include="Core\ParticleSystem\ParticleSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\ParticleSystem\FireParticle.h">
+    <ClInclude Include="Core\ParticleSystem\FireSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2047,6 +2050,9 @@
     <None Include="Content\Shaders\Renderer.frag" />
     <None Include="Content\Shaders\Renderer.shader" />
     <None Include="Content\Shaders\Renderer.vert" />
+    <None Include="Content\Shaders\Particle.frag" />
+    <None Include="Content\Shaders\Particle.shader" />
+    <None Include="Content\Shaders\Particle.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />

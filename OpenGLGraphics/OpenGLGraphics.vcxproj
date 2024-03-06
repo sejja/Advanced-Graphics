@@ -181,6 +181,7 @@
     <ClCompile Include="Core\Events\TypeInfo.cpp" />
     <ClCompile Include="Core\InputManager.cpp" />
     <ClCompile Include="Core\ObjectAllocator.cpp" />
+    <ClCompile Include="Core\ParticleSystem\FireSystem.cpp" />
     <ClCompile Include="Core\ParticleSystem\ParticleManager.cpp" />
     <ClCompile Include="Core\ParticleSystem\ParticleSystem.cpp" />
     <ClCompile Include="Core\Pipeline.cpp" />
@@ -229,7 +230,7 @@
     <ClInclude Include="Core\Editor\Interface\Properties.h" />
     <ClInclude Include="Core\Events\Event.h" />
     <ClInclude Include="Core\Events\EventDispatcher.h" />
-    <ClInclude Include="Core\ParticleSystem\FireParticle.h" />
+    <ClInclude Include="Core\ParticleSystem\FireSystem.h" />
     <ClInclude Include="Core\ParticleSystem\ParticleManager.h" />
     <ClInclude Include="Core\ParticleSystem\ParticleSystem.h" />
     <ClInclude Include="Core\RTTI.h" />

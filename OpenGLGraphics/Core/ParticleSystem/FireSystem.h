@@ -10,11 +10,14 @@ namespace Core
 	{
 		class FireSystem : public ParticleSystem
 		{
-			
+			FireSystem(const std::weak_ptr<Object>& parent);
+			~FireSystem();
 		public:
 			double fireHeight;
 			double radius;
-			const unsigned int nParticles = 5000;
+		protected:
+			void init() override;
+		private:
 		};
 	}
 }
