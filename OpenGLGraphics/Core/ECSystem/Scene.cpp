@@ -14,6 +14,7 @@
 #include "Graphics/Primitives/Skybox.h"
 #include "Core/ParticleSystem/ParticleManager.h"
 #include "Core/ParticleSystem/ParticleSystem.h"
+#include "Core/ParticleSystem/FireSystem.h"
 #include "Graphics/OpenGLPipeline.h"
 
 namespace Core {
@@ -114,7 +115,7 @@ namespace Core {
 		mObjects.emplace_back(sky);
 
 		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
-		std::shared_ptr<Core::Particles::ParticleSystem> testParticleSystem = std::make_shared<Core::Particles::ParticleSystem>(particleManager);
+		std::shared_ptr<Core::Particles::FireSystem> testParticleSystem = std::make_shared<Core::Particles::FireSystem>(particleManager);
 		particleManager->AddComponent(std::move(testParticleSystem));
 		mObjects.emplace_back(particleManager);
 		pipe.SetParticleManager(particleManager);

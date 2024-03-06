@@ -9,7 +9,6 @@ uniform float pointSize;
 void main()
 {
     vec3 newPosition = instancePosition + instanceVelocity;
-
     gl_Position = projection * view * vec4(newPosition, 1.0);
     gl_PointSize = pointSize;
 }

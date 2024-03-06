@@ -22,9 +22,6 @@ namespace Core
 		class ParticleSystem : public Core::Graphics::Renderable
 		{
 			public:
-				glm::vec3 center = glm::vec3(0.0f, 0.0f, 40.0f);
-				glm::vec3 velocity;
-				glm::vec3 acceleration;
 
 				ParticleSystem(const std::weak_ptr<Object>& parent);
 				~ParticleSystem();
@@ -62,6 +59,12 @@ namespace Core
 				};
 
 			protected:
+				//Test data
+				const unsigned int nParticlesTest = 20;
+				float particleSize = 1.0f;
+				glm::vec4 basecolor = glm::vec4(1.0f, 0.0f, 0.f, 1.0f);
+				glm::vec3 center = glm::vec3(0.0f, 0.0f, 100.0f);
+
 				GLuint VAO, VBO;
 				Asset<Core::Graphics::ShaderProgram> shaderProgram;
 				std::vector<Particle> particles;
@@ -74,11 +77,8 @@ namespace Core
 
 			private:
 				//Test data
-				const unsigned int nParticlesTest = 20;
 				const float height = 10.0f;
 				const float width = 10.0f;
-				const float particleSize = 1.0f;
-				const glm::vec4 basecolor = glm::vec4(1.0f, 0.0f, 0.f, 1.0f);
 		};
 	}
 }
