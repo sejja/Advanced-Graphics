@@ -16,6 +16,7 @@
 #include <Core/ECSystem/Component.h>
 #include <Graphics/Primitives/Skybox.h>
 #include "Core/Editor/Editor.h"
+#include "Core/Network/Server.h"
 
 
 
@@ -172,7 +173,7 @@ void Properties::selectedObjectTree() {
 
     std::vector<std::shared_ptr<Core::Component>> comps = obj->GetAllComponents();
 
-    printf("Componentes: %d\n", comps.size());
+    //printf("Componentes: %d\n", comps.size());
 
     ImGui::BeginChild("ResizableChild", ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 2), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeY);
 
@@ -211,6 +212,12 @@ void Properties::selectedObjectTree() {
 }
 
 
+void sendToPeer(std::shared_ptr<Core::Object> obj) {
+    Server& server = Singleton<Server>::Instance();
+    if (server.isRunning()) {
+        server.sendObjectIfChanged(obj);
+    }
+}
 
 void Properties::TransformOptions() {
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
@@ -226,7 +233,11 @@ void Properties::TransformOptions() {
     obj->SetPosition(curPos);
     obj->SetRotation(curRot);
     obj->SetScale(curScale);
+
+    sendToPeer(obj);
+
 }
+
 
 
 

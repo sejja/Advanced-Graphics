@@ -83,7 +83,7 @@ void MainMenu::RenderRemoteControlMenu(){
             if (ImGui::Button("HOST server asdf")) {
 				//connect to server
 				Server& server = Singleton<Server>::Instance();
-                server.StartServer();
+                server.CreateServer();
             }
 
             if (ImGui::Button("ENVIAR")) {

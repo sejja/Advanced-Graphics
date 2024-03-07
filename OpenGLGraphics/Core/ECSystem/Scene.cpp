@@ -32,6 +32,7 @@ namespace Core {
 			obj->SetRotation(glm::radians(x.rot));
 			obj->SetScale(x.sca);
 			obj->SetName(x.name);
+			obj->SetID(x.name);//temp , tiene que ser unico
 
 			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj);
 			renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(x.mesh.c_str()));

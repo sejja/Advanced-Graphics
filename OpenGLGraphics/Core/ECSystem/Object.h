@@ -26,7 +26,9 @@ namespace Core {
 		CLASS_EXCEPTION(Object)
 	#pragma endregion
 
-	#pragma region //Functions
+	#pragma region 
+		//Functions
+		inline void SetID(const std::string& id);
 		inline void SetPosition(const glm::vec3& pos);
 		inline void SetRotation(const glm::vec3& rot);
 		inline void SetScale(const glm::vec3& scale);
@@ -35,6 +37,9 @@ namespace Core {
 		DONTDISCARD inline glm::vec3 GetRotation() const;
 		DONTDISCARD inline glm::vec3 GetScale() const;
 		DONTDISCARD inline std::string GetName() const;
+		DONTDISCARD inline std::string GetID() const;
+
+
 
 
 		inline void ForEachComponent(std::function<void(const std::shared_ptr<Core::Component>& comp)> func);
@@ -57,8 +62,19 @@ namespace Core {
 		Mathematics::Transformation mTransform;
 		std::vector<std::shared_ptr<Component>> mComponents;
 		std::string name;
+		std::string id;
 	#pragma endregion
 	};
+
+	// ------------------------------------------------------------------------
+	/*! Set ID
+	*
+	*  Sets the ID of a given object
+	*/ // ---------------------------------------------------------------------
+
+	void Object::SetID(const std::string& _id) {
+		id = _id;
+	}
 
 	// ------------------------------------------------------------------------
 	/*! Set Position
@@ -95,6 +111,14 @@ namespace Core {
 		name = meshName;
 	}
 
+	// ------------------------------------------------------------------------
+	/*! Get ID
+	*
+	*  Gets the id of an object
+	*/ // ---------------------------------------------------------------------
+	std::string Object::GetID() const {
+		return id;
+	}
 
 
 	// ------------------------------------------------------------------------

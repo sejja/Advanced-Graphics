@@ -2,6 +2,7 @@
 #include <iostream>
 #include <string>
 
+
 #pragma comment(lib, "ws2_32.lib")
 
 DWORD WINAPI ServerReceiverThread(LPVOID lpParam) {
@@ -15,6 +16,25 @@ DWORD WINAPI ServerReceiverThread(LPVOID lpParam) {
             std::cout << "Received from client: " << buffer << std::endl;
         }
     }
+}
+
+DWORD WINAPI StartServerThread(LPVOID lpParam) {
+    Server* serverInstance = static_cast<Server*>(lpParam);
+    if (serverInstance)
+        return serverInstance->StartServer();
+    return 1; //ERROR
+}
+
+int Server::CreateServer() {
+    // Crear hilo para iniciar el servidor
+    HANDLE serverThread = CreateThread(NULL, 0, StartServerThread, this, 0, NULL);
+    if (serverThread == NULL) {
+        std::cerr << "Failed to create server thread." << std::endl;
+        return 1;
+    }
+
+    // CloseHandle(serverThread); // Si quieres liberar el handle aquí
+    return 0;
 }
 
 int Server::StartServer() {
@@ -79,4 +99,42 @@ void Server::KillServer() {
 void Server::sendToClient(const json& message) {
     std::string serialized_message = message.dump();
     send(clientSocket, serialized_message.c_str(), serialized_message.length(), 0);
+}
+
+
+void Server::sendObjectIfChanged(const std::shared_ptr<Core::Object>& obj) {
+
+    glm::vec3 curPos = obj->GetPosition();
+    glm::vec3 curRot = obj->GetRotation();
+    glm::vec3 curScale = obj->GetScale();
+
+    
+    bool positionChanged = true;
+    bool rotationChanged = true;
+    bool scaleChanged = true;
+
+
+    if (lastSentObject != NULL) {
+        positionChanged = curPos != lastSentObject->GetPosition();
+        rotationChanged = curRot != lastSentObject->GetRotation();
+        scaleChanged = curScale != lastSentObject->GetScale();
+	}
+
+    
+    if (positionChanged || rotationChanged || scaleChanged) {
+      
+        printf("Sending object properties to client\n");
+        json data = {
+            {"type", "object_transform"},
+            {"id", obj->GetID()},
+            {"position", {curPos.x, curPos.y, curPos.z}},
+            {"rotation", {curRot.x, curRot.y, curRot.z}},
+            {"scale", {curScale.x, curScale.y, curScale.z}}
+        };
+
+        sendToClient(data);
+
+        lastSentObject = std::make_shared<Core::Object>(*obj);
+    }
+    
 }
