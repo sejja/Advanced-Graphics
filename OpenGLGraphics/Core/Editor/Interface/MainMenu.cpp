@@ -2,6 +2,8 @@
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 #include <Dependencies/Json/single_include/json.hpp>
 #include "Core/Network/Client.h"
+#include "Core/Network/Server.h"
+
 
 static bool show_tool_metrics = false;
 static bool show_shadow_mapping = false;
@@ -77,6 +79,13 @@ void MainMenu::RenderRemoteControlMenu(){
                     client.disconnectFromServer();
                 }
             }
+
+            if (ImGui::Button("HOST server asdf")) {
+				//connect to server
+				Server& server = Singleton<Server>::Instance();
+                server.StartServer();
+            }
+
             if (ImGui::Button("ENVIAR")) {
             	//connect to server
                 

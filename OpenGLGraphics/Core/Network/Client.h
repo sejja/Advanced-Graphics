@@ -1,5 +1,5 @@
-#ifndef __REMOTECLIENT__H__
-#define __REMOTECLIENT__H__
+#ifndef __NETWORKCLIENT__H__
+#define __NETWORKCLIENT__H__
 
 #include <winsock2.h>
 #include <WS2tcpip.h>

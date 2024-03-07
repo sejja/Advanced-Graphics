@@ -229,6 +229,7 @@
     <ClInclude Include="Core\AppWrapper.h" />
     <ClInclude Include="Core\Assets\Importers.h" />
     <ClInclude Include="Core\Network\Client.h" />
+    <ClInclude Include="Core\Network\Common.h" />
     <ClInclude Include="Core\Network\Server.h" />
     <ClInclude Include="Core\ECSystem\Component.h" />
     <ClInclude Include="Core\ECSystem\Object.h" />

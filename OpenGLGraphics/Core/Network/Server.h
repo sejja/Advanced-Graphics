@@ -1,8 +1,11 @@
-#ifndef __REMOTESERVER__H__
-#define __REMOTESERVER__H__
+#ifndef __NETWORKSERVER__H__
+#define __NETWORKSERVER__H__
 
 
+#include <winsock2.h>
+#include <WS2tcpip.h>
 #include <Dependencies/Json/single_include/json.hpp>
+#include <windows.h>
 
 using json = nlohmann::json;
 
@@ -11,16 +14,17 @@ class Server{
 
 public:
 
-	void StartServer();
+	int StartServer();
 	void KillServer();
 
 
-	void broadcastMessage(const json& message);
+	void sendToClient(const json& message);
 
 private:
-
-	void CreateServer();
-	void DestroyServer();
+	WSADATA WSAData;
+	SOCKET serverSocket, clientSocket;
+	SOCKADDR_IN serverAddr, clientAddr;
+	int serverPort = 5555;
 
 };
 
