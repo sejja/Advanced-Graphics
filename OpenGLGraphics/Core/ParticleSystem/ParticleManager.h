@@ -1,3 +1,7 @@
+/*
+*	Made by Lingfeng during his most autistics moments
+*/
+
 #ifndef _PARTICLEMANAGER_
 #define _PARTICLEMANAGER_
 

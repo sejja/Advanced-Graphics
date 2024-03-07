@@ -4,9 +4,11 @@ namespace Core
 {
 	namespace Particles
 	{
+        /*It does not initiate particles, only the VBO, BAO and ShaderProgram*/
 		ParticleSystem::ParticleSystem(const std::weak_ptr<Object>& parent) : Renderable(parent){
             //initTestParticles(); 
-            //init();
+            std::cout << "ERROR: DEFAULT PARTICLESYSTEM HAS NO PARTICLES \n";
+            Init();
 		}
 
 		ParticleSystem::~ParticleSystem()
@@ -23,37 +25,33 @@ namespace Core
             return camera;
         }
 
+        void ParticleSystem::SetSystemCenter(glm::vec3 newCenter)
+        {
+            center = newCenter;
+        }
+
+        glm::vec3 ParticleSystem::GetSystemCenter()
+        {
+            return this->center;
+        }
+
+        /*It does nothing by default*/
         void ParticleSystem::Update()
 		{
+            return;
 			std::for_each(particles.begin(), particles.end(), [this](Core::Particles::Particle& particle) {
 				ParticleFunction(&particle);
 			});
 		}
 
+        /*It does nothing by default, in case of activate it on Update() it has a CPU cost*/
 		int ParticleSystem::ParticleFunction(Particle* p_particle)
 		{
             //std::cout << "Unimplemented methdod ParticleFunction of Default Particle System \n";
 			return -1;
 		}
-        void ParticleSystem::initTestParticles()
-        {
-            for (float x = (center.x - width / 2); x < (center.x + width / 2); x += (width / nParticlesTest))
-            {
-                for (float z = (center.z - width / 2); z < (center.z + width / 2); z += (width / nParticlesTest))
-                {
-                    for (float y = center.y; y < (center.y + height); y += (height / nParticlesTest))
-                    {
-                        Particle particle = {
-                            glm::vec3(x, y, z),//pos
-                            glm::vec3(10.f,10.f,10.f)
-                        };
-                        this->particles.push_back(particle);
 
-                    }
-                }
-            }
-        }
-        void ParticleSystem::init()
+        void ParticleSystem::Init()
         {
             glGenVertexArrays(1, &VAO);
 
@@ -77,6 +75,12 @@ namespace Core
             glBindVertexArray(0);
 
             shaderProgram = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Particle.shader");
+        }
+
+        /*Initiate the vector or particles*/
+        void ParticleSystem::InitParticles()
+        {
+            std::cout << "ERROR: UNIMPLEMENTED FUNCTION INITPARTICLES\n";
         }
 
 	}

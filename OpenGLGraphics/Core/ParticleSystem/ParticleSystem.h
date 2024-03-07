@@ -28,8 +28,10 @@ namespace Core
 				
 				void SetCameraReference(Core::Primitives::Camera* camera);
 				Core::Primitives::Camera* GetCameraReference();
-				void Update() override;
+				void SetSystemCenter(glm::vec3 newCenter);
+				glm::vec3 GetSystemCenter();
 
+				void Update() override;
 				virtual void Render() const override {
 
 					//Bind shader program
@@ -39,14 +41,17 @@ namespace Core
 					glm::mat4 view = camera->GetViewMatrix(); 
 					glm::mat4 uProjection = this->projection;
 
-					//Get default color of the system
-					glm::vec color = this->basecolor;
+					//New instance of systemProperties
+					glm::vec4 color = this->basecolor;
+					glm::vec3 systemCenter = this->center;
+					float pointSize = this->particleSize;
 
 					//Set uniforms
 					shaderProgram->Get()->SetShaderUniformMatrix4d("view", &view);
 					shaderProgram->Get()->SetShaderUniformMatrix4d("projection", &uProjection);
-					shaderProgram->Get()->SetShaderUniform("pointSize", this->particleSize);
+					shaderProgram->Get()->SetShaderUniform("pointSize", pointSize);
 					shaderProgram->Get()->SetShaderUniform("particleColor", &color);
+					shaderProgram->Get()->SetShaderUniform("center", &systemCenter);
 
 					//Bind Vertex array
 					glBindVertexArray(VAO);
@@ -59,11 +64,16 @@ namespace Core
 				};
 
 			protected:
-				//Test data
-				const unsigned int nParticlesTest = 20;
+				//1.0f by default
 				float particleSize = 1.0f;
+				// Red by default
 				glm::vec4 basecolor = glm::vec4(1.0f, 0.0f, 0.f, 1.0f);
-				glm::vec3 center = glm::vec3(0.0f, 0.0f, 100.0f);
+				// (0,0,0) by default
+				glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f);
+				//10f by default
+				const float height = 10.0f;
+				//10f by default
+				const float width = 10.0f;
 
 				GLuint VAO, VBO;
 				Asset<Core::Graphics::ShaderProgram> shaderProgram;
@@ -72,13 +82,8 @@ namespace Core
 				glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
 
 				int ParticleFunction(Particle *p_particle);
-				void initTestParticles();
-				virtual void init();
-
-			private:
-				//Test data
-				const float height = 10.0f;
-				const float width = 10.0f;
+				virtual void Init();
+				virtual void InitParticles();
 		};
 	}
 }
