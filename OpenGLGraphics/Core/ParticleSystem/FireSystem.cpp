@@ -7,8 +7,10 @@ namespace Core {
 		FireSystem::FireSystem(const std::weak_ptr<Object>& parent): ParticleSystem(parent) {
             InitParticles();
             Init();
-            particleSize = 2.0f; //No funciona
-            SetSystemCenter(glm::vec3(0.0f, 0.0f, 100.0f)); //No funciona
+            particleSize = 4.0f; 
+            baseColor = NormalizeRGBA(255, 35, 0, 255);
+            acceleration = glm::vec3(0.0f, 1.0f, 0.0f);
+            SetSystemCenter(glm::vec3(0.0f, -15.0f, 0.0f)); 
 		}
 		FireSystem::~FireSystem()
 		{
@@ -52,8 +54,7 @@ namespace Core {
         void FireSystem::AddNewParticle(float x, float y, float z)
         {
             Particle particle = {
-                glm::vec3(x, y, z),//pos
-                glm::vec3(0.f,0.f,0.f) //vel
+                glm::vec3(x, y, z)//pos
             };
             this->particles.push_back(particle);
         }

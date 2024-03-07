@@ -1,5 +1,5 @@
 /*
-*	Made by Lingfeng during his most autistics moments
+*	Made by Lingfeng during his autistics moments
 */
 
 #ifndef _PARTICLEMANAGER_

@@ -16,7 +16,6 @@ namespace Core
 		struct Particle
 		{
 			glm::vec3 pos;
-			glm::vec3 velocity;
 		};
 
 		class ParticleSystem : public Core::Graphics::Renderable
@@ -42,9 +41,13 @@ namespace Core
 					glm::mat4 uProjection = this->projection;
 
 					//New instance of systemProperties
-					glm::vec4 color = this->basecolor;
+					glm::vec4 color = this->baseColor;
 					glm::vec3 systemCenter = this->center;
+					glm::vec3 acceleration = this->acceleration;
 					float pointSize = this->particleSize;
+					float SystemSigma = this->sigma;
+					int SystemDelta = this->delta;
+					std::cout << SystemDelta << "\n";
 
 					//Set uniforms
 					shaderProgram->Get()->SetShaderUniformMatrix4d("view", &view);
@@ -52,6 +55,9 @@ namespace Core
 					shaderProgram->Get()->SetShaderUniform("pointSize", pointSize);
 					shaderProgram->Get()->SetShaderUniform("particleColor", &color);
 					shaderProgram->Get()->SetShaderUniform("center", &systemCenter);
+					shaderProgram->Get()->SetShaderUniform("delta", SystemDelta);
+					shaderProgram->Get()->SetShaderUniform("sigma", &SystemSigma);
+					shaderProgram->Get()->SetShaderUniform("acceleration", &acceleration);
 
 					//Bind Vertex array
 					glBindVertexArray(VAO);
@@ -64,16 +70,22 @@ namespace Core
 				};
 
 			protected:
-				//1.0f by default
-				float particleSize = 1.0f;
-				// Red by default
-				glm::vec4 basecolor = glm::vec4(1.0f, 0.0f, 0.f, 1.0f);
 				// (0,0,0) by default
 				glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f);
+				//(0,0,0) by default
+				glm::vec3 acceleration = glm::vec3(0.0f, 0.0f, 0.0f);
+				// Red by default
+				glm::vec4 baseColor = glm::vec4(1.0f, 0.0f, 0.f, 1.0f);
 				//10f by default
-				const float height = 10.0f;
+				float height = 10.0f;
 				//10f by default
-				const float width = 10.0f;
+				float width = 10.0f;
+				//1.0f by default
+				float particleSize = 1.0f;
+				//0.005f by default
+				float sigma = 0.005f;
+				//Clock, increase with each update
+				int delta = 0;
 
 				GLuint VAO, VBO;
 				Asset<Core::Graphics::ShaderProgram> shaderProgram;
@@ -84,6 +96,7 @@ namespace Core
 				int ParticleFunction(Particle *p_particle);
 				virtual void Init();
 				virtual void InitParticles();
+				glm::vec4 NormalizeRGBA(int R, int G, int B, int A);
 		};
 	}
 }

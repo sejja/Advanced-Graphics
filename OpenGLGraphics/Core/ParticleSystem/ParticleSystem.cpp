@@ -38,6 +38,7 @@ namespace Core
         /*It does nothing by default*/
         void ParticleSystem::Update()
 		{
+            delta++;
             return;
 			std::for_each(particles.begin(), particles.end(), [this](Core::Particles::Particle& particle) {
 				ParticleFunction(&particle);
@@ -67,11 +68,6 @@ namespace Core
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)offsetof(Particle, pos));
             glVertexAttribDivisor(0, 1);
 
-            // Configure shift velocity
-            glEnableVertexAttribArray(1);
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Particle), (void*)offsetof(Particle, velocity));
-            glVertexAttribDivisor(1, 1);
-
             glBindVertexArray(0);
 
             shaderProgram = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Particle.shader");
@@ -81,6 +77,15 @@ namespace Core
         void ParticleSystem::InitParticles()
         {
             std::cout << "ERROR: UNIMPLEMENTED FUNCTION INITPARTICLES\n";
+        }
+
+        glm::vec4 ParticleSystem::NormalizeRGBA(int R, int G, int B, int A)
+        {
+            float red = (R / 255.0f);
+            float green = (G / 255.0f);
+            float blue = (B / 255.0f);
+            float alpha = (A / 255.0f);
+            return glm::vec4( red, green, blue, alpha);
         }
 
 	}

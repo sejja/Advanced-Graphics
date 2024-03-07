@@ -19,14 +19,14 @@ namespace Core
 
 			void InitParticles() override ;
 			glm::vec3 GetAbsolutePos(glm::vec3 relativePoint);
-
+			
 			float gap = 0.5f;
 
 		private:
 
-			float radiusA = 10.0f;
-			float radiusB = 30.0f;
-			float radiusC = 10.0f;
+			float radiusA = 20.0f;
+			float radiusB = 5.0f;
+			float radiusC = 15.0f;
 
 			bool IsElipsoid(float x, float y, float z);
 			void AddNewParticle(float x, float y, float z);
