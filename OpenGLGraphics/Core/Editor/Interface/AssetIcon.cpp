@@ -38,7 +38,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 	//ImGui::Button("Hola", ImVec2(100, 100));
 
 	if (tipo == AssetType::MODEL) {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/folderAdd.png")->Get();
+		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/model.png")->Get();
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 		clicked = ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::PopStyleColor(1);
@@ -68,7 +68,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 	 
 	}
 	else if (tipo == AssetType::FOLDER) {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/folderAdd.png")->Get();
+		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/folder.png")->Get();
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 		clicked = ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::PopStyleColor(1);

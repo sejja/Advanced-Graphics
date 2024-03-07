@@ -5,6 +5,7 @@
 #include "Interface/AssetIcon.h"
 #include <iostream>
 #include <vector>
+#include "Interface/AssetIcon.h"
 
 namespace Core {
 	namespace Editor {
@@ -18,7 +19,9 @@ namespace Core {
 
 		private:
 			sqlite3* connection;
-			void appendFilesOfStatement(std::string sql, std::vector<AssetIcon>& assets);
+			void appendFilesOfStatement(std::string sql, std::vector<AssetIcon>& assets, bool folder);
+			AssetType getAssetType(const char* tipo);
+
 		};
 	}
 }
