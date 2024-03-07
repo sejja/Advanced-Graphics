@@ -7,6 +7,7 @@
 #include <fstream>
 
 #include "TextEditor.h"
+#include "Core/Editor/ShaderCompiler/clientWindows.h"
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "Dependencies/ImGui/imgui.h"
@@ -1138,6 +1139,15 @@ void TextEditor::Render(const char* aTitle, bool aBorder)
 		if (ImGui::Button("Save")) {
 			std::ofstream t(fileToEdit);
 			t << GetText();
+			t.close();
+		}
+		ImGui::SameLine();
+		if (ImGui::Button("Compile")) {
+			std::ofstream t(fileToEdit);
+			t << GetText();
+			t.close();
+			
+
 		}
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), "File: %s", fileToEdit);

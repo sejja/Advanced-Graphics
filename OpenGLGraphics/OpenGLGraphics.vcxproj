@@ -142,7 +142,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;glew32.lib;opengl32.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLEW\Lib;$(ProjectDir)Dependencies\SDL\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -180,6 +180,7 @@
     <ClCompile Include="Core\Editor\Interface\Properties.cpp" />
     <ClCompile Include="Core\Editor\Interface\SceneView.cpp" />
     <ClCompile Include="Core\Editor\Interface\TextEditor.cpp" />
+    <ClCompile Include="Core\Editor\ShaderCompiler\clientWindows.c" />
     <ClCompile Include="Core\Events\Event.cpp" />
     <ClCompile Include="Core\Events\EventDispatcher.cpp" />
     <ClCompile Include="Core\Events\TypeInfo.cpp" />
@@ -234,6 +235,7 @@
     <ClInclude Include="Core\Editor\Interface\SceneView.h" />
     <ClInclude Include="Core\Editor\SelectedObj.h" />
     <ClInclude Include="Core\Editor\Interface\TextEditor.h" />
+    <ClInclude Include="Core\Editor\ShaderCompiler\clientWindows.h" />
     <ClInclude Include="Core\Events\Event.h" />
     <ClInclude Include="Core\Events\EventDispatcher.h" />
     <ClInclude Include="Core\RTTI.h" />
@@ -867,6 +869,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Core\Editor\patata.txt" />
+    <Text Include="Core\Editor\ShaderCompiler\patata.txt" />
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>
