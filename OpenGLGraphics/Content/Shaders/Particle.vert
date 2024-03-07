@@ -19,7 +19,7 @@ void main()
     
     vec3 Vec = instanceVelocity +  (delta * acceleration);
 
-    vec3 newPosition = absolutePos + (sigma * Vec);
+    vec3 newPosition = absolutePos + (sigma * Vec); //falta capar delta, en este caso al ser la velocidad inicial muy bajo el valor de sigma practicamente lo anula
 
     gl_Position = projection * view * vec4(newPosition, 1.0);
     gl_PointSize = pointSize;
