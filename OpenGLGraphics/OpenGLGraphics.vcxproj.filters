@@ -186,6 +186,9 @@
     <ClCompile Include="Graphics\Architecture\HDRBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Network\Common.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -2337,8 +2340,5 @@
     <Image Include="Content\Scenes\textures\white.png">
       <Filter>Resource Files</Filter>
     </Image>
-  </ItemGroup>
-  <ItemGroup>
-    <Font Include="D:\Asier\Descargas\uni-sans-regular\Uni Sans Regular\Uni Sans Regular.ttf" />
   </ItemGroup>
 </Project>

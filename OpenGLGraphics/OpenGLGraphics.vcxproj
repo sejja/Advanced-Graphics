@@ -170,6 +170,7 @@
     <ClCompile Include="Behaviors\AnimationComponent.cpp" />
     <ClCompile Include="Core\Assets\Importers.cpp" />
     <ClCompile Include="Core\Network\Client.cpp" />
+    <ClCompile Include="Core\Network\Common.cpp" />
     <ClCompile Include="Core\Network\Server.cpp" />
     <ClCompile Include="Core\ECSystem\Component.cpp" />
     <ClCompile Include="Core\ECSystem\Object.cpp" />

@@ -26,14 +26,12 @@ DWORD WINAPI StartServerThread(LPVOID lpParam) {
 }
 
 int Server::CreateServer() {
-    // Crear hilo para iniciar el servidor
     HANDLE serverThread = CreateThread(NULL, 0, StartServerThread, this, 0, NULL);
     if (serverThread == NULL) {
         std::cerr << "Failed to create server thread." << std::endl;
         return 1;
     }
-
-    // CloseHandle(serverThread); // Si quieres liberar el handle aquí
+    // CloseHandle(serverThread);
     return 0;
 }
 
@@ -90,7 +88,6 @@ int Server::StartServer() {
 }
 
 void Server::KillServer() {
-    // Cerrar sockets
     closesocket(clientSocket);
     closesocket(serverSocket);
     WSACleanup();
