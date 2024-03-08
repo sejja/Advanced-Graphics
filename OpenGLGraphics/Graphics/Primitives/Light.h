@@ -17,6 +17,7 @@ namespace Graphics {
 			};
 
 			struct BackedLightData {
+				BackedLightData() : mPosition(0.0f), mDirection(0.0f), mAmbient(0.0f), mDiffuse(0.0f), mSpecular(0.0f), mAttenuation(0.0f), mInner(0.0f), mOutter(0.0f), mFallOff(0.0f), mType(LightType::Point) {}
 				glm::vec3 mPosition;
 				glm::vec3 mDirection;
 				glm::vec3 mAmbient;
