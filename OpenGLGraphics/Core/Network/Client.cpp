@@ -46,7 +46,7 @@ void Client::connectToServer(const char* ip, int port){
     std::cout << "Connected to server." << std::endl;
 
     // Crear hilo para recibir mensajes del servidor
-    HANDLE receiverThread = CreateThread(NULL, 0, ReceiverThread, &clientSocket, 0, NULL);
+    HANDLE receiverThread = CreateThread(NULL, 0, ReceiveThread, &clientSocket, 0, NULL);
 
 }
 
@@ -56,35 +56,9 @@ void Client::disconnectFromServer(){
 	std::cout << "Disconnected from server." << std::endl;
 }
 
-void Client::sendToServer(const json& message){
-    std::string serialized_message = message.dump();
-    send(clientSocket, serialized_message.c_str(), serialized_message.length(), 0);
-}
 
 
 
 
 
-DWORD __stdcall Client::receiveFromServer(LPVOID lpParam){
-    SOCKET clientSocket = *((SOCKET*)lpParam);
-    char buffer[1024];
-    int bytesReceived;
-    while (true) {
-        bytesReceived = recv(clientSocket, buffer, 1024, 0);
-        if (bytesReceived > 0) {
-            buffer[bytesReceived] = '\0';
-            json received_message = json::parse(buffer);
-            std::cout << "Received: " << received_message["text"] << std::endl;
-        }
-        else if (bytesReceived == 0) {
-            std::cout << "Server disconnected." << std::endl;
-            break;
-        }
-        else {
-            std::cerr << "Receive failed." << std::endl;
-            break;
-        }
-    }
-    return 0;
-}
 

@@ -95,9 +95,9 @@ void MainMenu::RenderRemoteControlMenu(){
                 // Ejemplo de envío de mensaje al servidor
                 json message;
                 message["text"] = "Hola, servidor!";
-                client.sendToServer(message);
+                client.sendToPeer(message);
 
-                client.sendToServer(message);
+                client.sendToPeer(message);
 
 
                 // Ejemplo de desconexión del servidor

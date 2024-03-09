@@ -82,7 +82,7 @@ int Server::StartServer() {
     std::cout << "Client connected." << std::endl;
 
     // Crear hilo para recibir mensajes del cliente
-    HANDLE receiverThread = CreateThread(NULL, 0, ServerReceiverThread, &clientSocket, 0, NULL);
+    HANDLE receiverThread = CreateThread(NULL, 0, ReceiveThread, &clientSocket, 0, NULL);
 
     return 0;
 }
@@ -93,45 +93,4 @@ void Server::KillServer() {
     WSACleanup();
 }
 
-void Server::sendToClient(const json& message) {
-    std::string serialized_message = message.dump();
-    send(clientSocket, serialized_message.c_str(), serialized_message.length(), 0);
-}
 
-
-void Server::sendObjectIfChanged(const std::shared_ptr<Core::Object>& obj) {
-
-    glm::vec3 curPos = obj->GetPosition();
-    glm::vec3 curRot = obj->GetRotation();
-    glm::vec3 curScale = obj->GetScale();
-
-    
-    bool positionChanged = true;
-    bool rotationChanged = true;
-    bool scaleChanged = true;
-
-
-    if (lastSentObject != NULL) {
-        positionChanged = curPos != lastSentObject->GetPosition();
-        rotationChanged = curRot != lastSentObject->GetRotation();
-        scaleChanged = curScale != lastSentObject->GetScale();
-	}
-
-    
-    if (positionChanged || rotationChanged || scaleChanged) {
-      
-        printf("Sending object properties to client\n");
-        json data = {
-            {"type", "object_transform"},
-            {"id", obj->GetID()},
-            {"position", {curPos.x, curPos.y, curPos.z}},
-            {"rotation", {curRot.x, curRot.y, curRot.z}},
-            {"scale", {curScale.x, curScale.y, curScale.z}}
-        };
-
-        sendToClient(data);
-
-        lastSentObject = std::make_shared<Core::Object>(*obj);
-    }
-    
-}

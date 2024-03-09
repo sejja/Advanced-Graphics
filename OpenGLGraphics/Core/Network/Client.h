@@ -5,32 +5,29 @@
 #include <WS2tcpip.h>
 #include <Dependencies/Json/single_include/json.hpp>
 #include <windows.h>
+#include "Common.h"
 
 
 using json = nlohmann::json;
 
-class Client {
+class Client : public Common {
 
 public:
 
 	void connectToServer(const char* ip, int port);
 	void disconnectFromServer();
-	void sendToServer(const json& message);
-
+	
 	bool isConnected() const { return clientSocket != INVALID_SOCKET; }
 
-	
 
 
 
 private:
 	char* serverIP;
 	int serverPort;
-	SOCKET clientSocket;
 
-	DWORD WINAPI receiveFromServer(LPVOID lpParam);
+	//DWORD WINAPI receiveFromServer(LPVOID lpParam);
 
-	//DWORD WINAPI ReceiverThread(LPVOID lpParam);
 
 
 };
