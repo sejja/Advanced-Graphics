@@ -45,9 +45,11 @@ namespace Core
 					glm::vec3 systemCenter = this->center;
 					glm::vec3 acceleration = this->acceleration;
 					float pointSize = this->particleSize;
-					float SystemSigma = this->sigma;
-					int SystemDelta = this->delta;
-					std::cout << SystemDelta << "\n";
+					float systemSigma = this->sigma;
+					float systemHeight = this->height;
+					float systemWidth = this->width;
+					int systemDelta = this->delta;
+					std::cout << systemDelta << "\n";
 
 					//Set uniforms
 					shaderProgram->Get()->SetShaderUniformMatrix4d("view", &view);
@@ -55,9 +57,11 @@ namespace Core
 					shaderProgram->Get()->SetShaderUniform("pointSize", pointSize);
 					shaderProgram->Get()->SetShaderUniform("particleColor", &color);
 					shaderProgram->Get()->SetShaderUniform("center", &systemCenter);
-					shaderProgram->Get()->SetShaderUniform("delta", SystemDelta);
-					shaderProgram->Get()->SetShaderUniform("sigma", &SystemSigma);
+					shaderProgram->Get()->SetShaderUniform("delta", systemDelta);
+					shaderProgram->Get()->SetShaderUniform("sigma", &systemSigma);
 					shaderProgram->Get()->SetShaderUniform("acceleration", &acceleration);
+					shaderProgram->Get()->SetShaderUniform("height", &systemHeight);
+					//shaderProgram->Get()->SetShaderUniform("width", &systemWidth);
 
 					//Bind Vertex array
 					glBindVertexArray(VAO);
@@ -77,7 +81,7 @@ namespace Core
 				// Red by default
 				glm::vec4 baseColor = glm::vec4(1.0f, 0.0f, 0.f, 1.0f);
 				//10f by default
-				float height = 10.0f;
+				float height = 20.0f;
 				//10f by default
 				float width = 10.0f;
 				//1.0f by default
