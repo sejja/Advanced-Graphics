@@ -67,6 +67,34 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 		}
 	 
 	}
+	else if (tipo == AssetType::MATERIAL) {
+		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/material.png")->Get(); //Que cojones es la sintaxis de esta línea???
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		clicked = ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::PopStyleColor(1);
+		if (dibujarToolTip == false) {
+			if (ImGui::BeginDragDropSource()) {
+				//printf("Dragging");
+				dibujar(true);
+				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				ImGui::EndDragDropSource();
+			}
+		}
+	}
+	else if (tipo == AssetType::SHADER) {
+		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/shader.png")->Get(); //Que cojones es la sintaxis de esta línea???
+		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
+		clicked = ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::PopStyleColor(1);
+		if (dibujarToolTip == false) {
+			if (ImGui::BeginDragDropSource()) {
+				//printf("Dragging");
+				dibujar(true);
+				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				ImGui::EndDragDropSource();
+			}
+		}
+	}
 	else if (tipo == AssetType::FOLDER) {
 		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/folder.png")->Get();
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
