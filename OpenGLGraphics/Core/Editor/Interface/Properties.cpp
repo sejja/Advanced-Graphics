@@ -17,6 +17,7 @@
 #include <Graphics/Primitives/Skybox.h>
 #include "Core/Editor/Editor.h"
 #include "Core/Network/Server.h"
+#include "Core/Network/Client.h"
 
 
 
@@ -214,9 +215,15 @@ void Properties::selectedObjectTree() {
 
 void sendToPeer(std::shared_ptr<Core::Object> obj) {
     Server& server = Singleton<Server>::Instance();
+    Client& client = Singleton<Client>::Instance();
+
     if (server.isRunning()) {
         server.sendObjectIfChanged(obj);
     }
+    else if (client.isConnected()) {
+		client.sendObjectIfChanged(obj);
+	}
+    
 }
 
 void Properties::TransformOptions() {
