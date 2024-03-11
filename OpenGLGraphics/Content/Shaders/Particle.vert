@@ -11,10 +11,17 @@ uniform float sigma;
 uniform float height;
 uniform int delta;
 
+const float e = 2.7182818284f;
+
 float newPos (float labse){
     vec3 absolutePos = instancePosition + center;
     return (absolutePos.y + labse*sigma*(instancePosition.y + acceleration.y*labse));
 }
+
+float newRelation (float x){
+    return ( ( -e*sqrt(x)*log(x) ) / 2 );
+}
+
 
 void main()
 {
@@ -29,12 +36,14 @@ void main()
     float k = (limit + absolutePos.y)/sigma;
 
     float deltaLimit = (-v0+sqrt(pow(v0,2)-4*a*k))/(2*a); //Bhaskara equation
-
+    float ymax = newPos(deltaLimit);
     if(labse > deltaLimit){
         labse = mod(labse, deltaLimit);
     }
 
     float yf = newPos(labse);
+
+    float r = newRelation( (yf - (absolutePos.y + v0) )/(ymax- (absolutePos.y + v0) ) );
 
     vec3 newPosition = vec3(absolutePos.x, yf, absolutePos.z);
 
