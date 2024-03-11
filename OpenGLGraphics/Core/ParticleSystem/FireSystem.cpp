@@ -10,6 +10,7 @@ namespace Core {
             particleSize = 4.0f; 
             baseColor = NormalizeRGBA(255, 35, 0, 255);
             acceleration = glm::vec3(0.0f, 1.0f, 0.0f);
+            height = radiusB*2;
             SetSystemCenter(glm::vec3(0.0f, -15.0f, 0.0f)); 
 		}
 		FireSystem::~FireSystem()
