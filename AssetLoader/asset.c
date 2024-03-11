@@ -43,7 +43,10 @@ Asset* createAsset(char* path) {
     // asset->type = OTHER;
     // return asset;
 
-    if (strcmp(extension, "obj") == 0) {
+    //printf("%s\n", extension);
+
+    if (strcmp(extension, "obj") == 0) { //Faltan otros tipos
+        
         asset->type = MODEL;
     }
     else if (strcmp(extension, "png") == 0) {
@@ -67,11 +70,39 @@ int saveAsset(Asset* asset, sqlite3* database, int parentFolder) {
     //printf("Saving asset\n");
     sqlite3_stmt* stmt;
     char stmtString[300];
+    char* type = "OTHER";
+    
+    printf("%d\n", asset->type);
+
+    switch (asset->type)
+    {
+    case (MODEL): {
+        type = "MODEL";
+        break;
+    }
+    case (TEXTURE): {
+        type = "TEXTURE";
+        break;
+    }
+    case (MATERIAL): {
+        type = "MATERIAL";
+        break;
+    }
+    case (SHADER): {
+        type = "SHADER";
+        break;
+    }
+    default: {
+        type = "OTHER";
+        break;
+    }
+    }
+
     if (parentFolder != 0) {
-        sprintf(stmtString, "INSERT INTO ASSET(NOMBRE, RUTA, CARPETA) VALUES('%s', '%s', '%d');", asset->name, asset->path, parentFolder); //FALTA TIPO y carpeta
+        sprintf(stmtString, "INSERT INTO ASSET(NOMBRE, RUTA, TIPO, CARPETA) VALUES('%s', '%s', '%s', '%d');", asset->name, asset->path, type, parentFolder); //FALTA TIPO y carpeta
     }
     else {
-        sprintf(stmtString, "INSERT INTO ASSET(NOMBRE, RUTA) VALUES('%s', '%s');", asset->name, asset->path);
+        sprintf(stmtString, "INSERT INTO ASSET(NOMBRE, RUTA, TIPO) VALUES('%s', '%s', '%s');", asset->name, asset->path, type);
     }
      //FALTA TIPO y carpeta
     //const char* hola = "Hola";
