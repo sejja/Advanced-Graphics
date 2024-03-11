@@ -26,7 +26,6 @@ namespace Core {
 		#pragma region //Functions
 			DONTDISCARD inline glm::mat4 GetViewMatrix() const;
 			DONTDISCARD inline glm::mat4 GetProjectionMatrix() const;
-			void HandleEvent(const Events::Event& event) override;
 			DONTDISCARD glm::vec3 inline GetPosition() const;
 			DONTDISCARD inline glm::vec3& GetPositionRef();
 			

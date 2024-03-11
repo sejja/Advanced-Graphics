@@ -2,8 +2,8 @@
 //	TypeInfo.cpp
 //	Dragon's Lake Test Task
 //
-//	Created by Diego Revilla on 23/03/23
-//	Copyright © 2023 Dragon's Lake. All Rights reserved
+//	Created by Diego Revilla on 23/03/24
+//	Copyright © 2024 Dragon's Lake. All Rights reserved
 //
 
 #include "TypeInfo.h"

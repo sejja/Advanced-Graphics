@@ -24,8 +24,8 @@ namespace Core {
         *
         *  Subscribe a Listener to an specific Event
         */ // ---------------------------------------------------------------------
-        void EventDispatcher::Subscribe(Listener& who, const TypeInfo& what) {
-            mEventCollection[what].insert(&who);
+        void EventDispatcher::Subscribe(Listener& who, const TypeInfo& what, const function_t& fun) {
+            mEventCollection[what].insert(std::make_pair(&who, fun));
         }
 
         // ------------------------------------------------------------------------
@@ -34,14 +34,14 @@ namespace Core {
         *  Unsubscribes a Listener from a specific Event
         */ // --------------------------------------------------------------------
         void EventDispatcher::Unsubscribe(Listener& who, const TypeInfo& what) {
-            const std::map<const TypeInfo, std::unordered_set<Listener*>>::iterator it = mEventCollection.find(what);
+            const container_t::iterator it = mEventCollection.find(what);
 
             //If we found the Event
             if (it != mEventCollection.end())
-                std::for_each(std::execution::par_unseq, it->second.begin(), it->second.end(), [&who, &it](Listener* x) {
+                std::for_each(std::execution::par_unseq, it->second.begin(), it->second.end(), [&who, &it](const std::pair<Listener*, function_t>& x) {
                     //If the Listener is the one we want to unsubscribe
-                    if (typeid(*x).name() == typeid(who).name())
-                        (*it).second.erase(x);
+                    if (typeid(*x.first).name() == typeid(who).name())
+                        (*it).second.erase(x.first);
                 });
         }
 
@@ -51,15 +51,15 @@ namespace Core {
         *  Once an event is called, it will call every single subscribed Listener
         */ // --------------------------------------------------------------------
         void EventDispatcher::TriggerEvent(const Event& event) const {
-            const std::map<const TypeInfo, std::unordered_set<Listener*>>::const_iterator it = mEventCollection.find(event);
+            const container_t::const_iterator it = mEventCollection.find(event);
 
             //If we found the Event
             if (it != mEventCollection.end())
-                std::for_each(std::execution::par_unseq, it->second.begin(), it->second.end(), [&event](Listener* x) {
-                    x->HandleEvent(event);
+                std::for_each(std::execution::par_unseq, it->second.begin(), it->second.end(), [&event](const std::pair<Listener*, function_t>& x) {
+                    x.second(event);
                 });
         }
 
-        std::map<const TypeInfo, std::unordered_set<Listener*>> EventDispatcher::mEventCollection;
+        EventDispatcher::container_t EventDispatcher::mEventCollection;
     }
 }
