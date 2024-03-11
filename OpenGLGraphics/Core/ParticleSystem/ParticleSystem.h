@@ -30,6 +30,9 @@ namespace Core
 				void SetSystemCenter(glm::vec3 newCenter);
 				glm::vec3 GetSystemCenter();
 
+				float q_rsqrt(float number);
+				float RandomFloat(float a, float b);
+
 				void Update() override;
 				virtual void Render() const override {
 
@@ -49,7 +52,7 @@ namespace Core
 					float systemHeight = this->height;
 					float systemWidth = this->width;
 					int systemDelta = this->delta;
-					std::cout << systemDelta << "\n";
+					//std::cout << systemDelta << "\n";
 
 					//Set uniforms
 					shaderProgram->Get()->SetShaderUniformMatrix4d("view", &view);
