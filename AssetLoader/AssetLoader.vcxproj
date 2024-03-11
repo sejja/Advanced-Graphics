@@ -128,6 +128,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="asset.c" />
+    <ClCompile Include="folder.c" />
     <ClCompile Include="main.c" />
     <ClCompile Include="prueba1.c" />
     <ClCompile Include="sqlite3.c" />
@@ -135,6 +136,7 @@
   <ItemGroup>
     <ClInclude Include="asset.h" />
     <ClInclude Include="sqlite3.h" />
+    <ClInclude Include="folder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

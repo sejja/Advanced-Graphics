@@ -1,7 +1,7 @@
-#include "sqlite3.h"
-
 #ifndef ASSET_H
 #define ASSET_H
+
+#include "sqlite3.h"
 
 enum AssetType
 {
@@ -21,6 +21,6 @@ typedef struct
 
 Asset* createAsset(char* path);
 void destroyAsset(Asset* asset);
-int saveAsset(Asset* asset, sqlite3* database);
+int saveAsset(Asset* asset, sqlite3* database, int parentFolder);
 
 #endif

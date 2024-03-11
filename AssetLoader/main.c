@@ -4,8 +4,10 @@
 #include <wchar.h>
 #include "asset.h"
 #include "sqlite3.h"
+#include "folder.h"
 
-void cargarDirectorio(char incomePath[], sqlite3* database);
+void cargarDirectorio(char incomePath[], sqlite3* database, int folderCode);
+void emptyDatabase(sqlite3* database);
 
 int main() {
 
@@ -19,10 +21,16 @@ int main() {
 
     //Conexión con base de datos
     sqlite3* database;
+    
+    
+
     int i = sqlite3_open("database.db", &database);
+    printf("Database pointer: %p\n", database);
     printf("Codigo Apertura: %s\n", sqlite3_errstr(i)); 
 
-    sqlite3_stmt* ppStmt;
+    emptyDatabase(database);
+
+    //sqlite3_stmt* ppStmt;
     // i = sqlite3_prepare_v2(database, "INSERT INTO ASSET('NOMBRE', 'RUTA') VALUES ('AAAA','AAAA')", -1, &ppStmt, NULL);
     // printf("Codigo preparacion: %s\n", sqlite3_errstr(i)); 
     // sqlite3_step(ppStmt);
@@ -30,17 +38,24 @@ int main() {
     // sqlite3_finalize(ppStmt);
     // printf("Codigo cierre query: %s\n", sqlite3_errstr(i));
 
-    cargarDirectorio(actualPath, database);
+    
+    Folder* folder = createFolder(actualPath, 0);
+    //saveFolder(folder, database);
+    char* sqlString[300];
+    sprintf(sqlString, "INSERT INTO CARPETA(ID, NOMBRE, RUTA) VALUES(%d, '%s', '%s');", folder->code, folder->name, folder->path);
+    sqlite3_stmt* stmt;
+    sqlite3_prepare_v2(database, sqlString, -1, &stmt, NULL);
+    i = sqlite3_step(stmt);
+    printf("Excuted. Code: %d\n", i);
+    printf("Error String: %s\n", sqlite3_errstr(i));
+    sqlite3_finalize(stmt);
+    printf("Asset saved\n");
+    destroyFolder(folder);
+    
+    cargarDirectorio(actualPath, database, 0);
 
-    // printf("Hola");
-    // char assetStr[] = "ho\\joe.obj";
-    // Asset* asset = createAsset(assetStr);
-    // printf("%p", asset);
-    // printf("%s - %s\n", asset->name, asset->path);
-    // if (asset->type == OTHER) {
-    //     printf("El tipo es el correcto");
-    // }
-    // printf("No se ha cerrado la base de datos");
+    
+
     sqlite3_close(database);
     printf("Codigo cierre base de datos: %s\n", sqlite3_errstr(i));  
     printf("Se acabo");
@@ -54,7 +69,9 @@ char* toCharString(wchar_t* wString) {
     return charString;
 }
 
-void cargarDirectorio(char incomePath[], sqlite3* database) {
+void cargarDirectorio(char incomePath[], sqlite3* database, int folderCode) {
+    printf("Folder code: %d\n", folderCode);
+    //printf("Database pointer: %p\n", database);
     const char* path[100];
     WIN32_FIND_DATAW data;
 
@@ -92,32 +109,40 @@ void cargarDirectorio(char incomePath[], sqlite3* database) {
         {
             wprintf(L"Es un directorio: {\n");
             printf("Path: %s\n", newPath);
-            //Cast data.cFileName to char*
-            // sprintf(newPath, "%s\\%s", incomePath, toCharString(data.cFileName));
 
+            Folder* folder = createFolder(newPath, folderCode + 1);
+            saveFolder(folder, database, folderCode);
+            destroyFolder(folder);
 
-
-            cargarDirectorio(newPath, database);
+            cargarDirectorio(newPath, database, folderCode + 1);
 
             printf("}\n");
         } else {
 
+            //printf("Folder code %d", folderCode);
             Asset* asset = createAsset(newPath);
-            // printf("%p\n", asset);
-            // printf("%s - %s\n", asset->name, asset->path);
             if (asset->type == OTHER) {
                 printf("El tipo es el correcto\n");
             }
-            saveAsset(asset, database);
-            // printf("Hola1");
+            saveAsset(asset, database, folderCode);
             destroyAsset(asset);
             free(asset);
             asset = NULL;
-            // printf("Hola");
         }
     }
 
     FindClose(handle);
 
 
+}
+
+void emptyDatabase(sqlite3* database) {
+    char* sqlString = "DELETE FROM ASSET;";
+    //sqlite3_stmt* stmt;
+    int i = sqlite3_exec(database, sqlString, NULL, NULL, NULL);
+    printf("Error code %s", sqlite3_errstr(i));
+    char* sqlString2 = "DELETE FROM CARPETA;";
+    //sqlite3_stmt* stmt2;
+    i = sqlite3_exec(database, sqlString2, NULL, NULL, NULL);
+    printf("Error code %s", sqlite3_errstr(i));
 }

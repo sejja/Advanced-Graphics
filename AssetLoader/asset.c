@@ -62,25 +62,26 @@ Asset* createAsset(char* path) {
     return asset;
 }
 
-int saveAsset(Asset* asset, sqlite3* database) {
-    printf("Saving asset\n");
+int saveAsset(Asset* asset, sqlite3* database, int parentFolder) {
+    //printf("Database pointer: %p\n", database);
+    //printf("Saving asset\n");
     sqlite3_stmt* stmt;
     char stmtString[300];
-    sprintf(stmtString, "INSERT INTO ASSET(NONBRE, RUTA) VALUES('%s','%s');", "bbbb", "bbbb"); //FALTA TIPO y carpeta
-    const char* hola = "Hola";
+    if (parentFolder != 0) {
+        sprintf(stmtString, "INSERT INTO ASSET(NOMBRE, RUTA, CARPETA) VALUES('%s', '%s', '%d');", asset->name, asset->path, parentFolder); //FALTA TIPO y carpeta
+    }
+    else {
+        sprintf(stmtString, "INSERT INTO ASSET(NOMBRE, RUTA) VALUES('%s', '%s');", asset->name, asset->path);
+    }
+     //FALTA TIPO y carpeta
+    //const char* hola = "Hola";
     printf("SQL statement: %s\n", stmtString);
-    sqlite3_prepare_v2(database, "INSERT INTO ASSET(NONBRE, RUTA) VALUES('1111','11111')", -1, &stmt, NULL);
+    sqlite3_prepare_v2(database, stmtString, -1, &stmt, NULL);
     // printf(i);
     // printf("Statement prepared\n");
     int i = sqlite3_step(stmt);
-    printf("Excuted. Code: %d\n", i);
-    printf("Error String: %s\n", sqlite3_errstr(i));
+    //printf("Excuted. Code: %d\n", i);
+    //printf("Error String: %s\n", sqlite3_errstr(i));
     sqlite3_finalize(stmt);
     printf("Asset saved\n");
-    // sqlite3_exec(database, stmtString, 0,0,0);
-
-    // Commit the changes
-    // const char* commitStatement = "COMMIT;";
-    // sqlite3_exec(database, commitStatement, 0, 0, 0);
-    // printf("Changes committed\n");
 }
