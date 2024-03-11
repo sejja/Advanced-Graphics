@@ -28,7 +28,6 @@ int main() {
             //If the object is a renderable
             if (renderable) app.GetPipelineRef().AddRenderable(renderable);
             });
-
         });
     //app.mScene.UploadObjectsToPipeline(app.GetPipelineRef());
 
