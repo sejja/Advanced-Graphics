@@ -25,7 +25,7 @@ void main()
     /*
     vec3 instanceAcceleration = ((centerTop - absolutePos) + acceleration);
     vec3 instanceVelocity = vec3(instancePosition.x, abs(instancePosition.y), instancePosition.z);
-    
+    s
     float labse = delta * 1.0f;
     //if(delta > 20){
         //labse = mod(delta, 20);
