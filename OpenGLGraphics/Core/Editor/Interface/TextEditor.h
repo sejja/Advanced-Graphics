@@ -13,6 +13,7 @@
 #include <glew.h>
 #include "Dependencies/ImGui/imgui.h"
 
+
 class TextEditor
 {
 public:

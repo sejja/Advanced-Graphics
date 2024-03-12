@@ -1,6 +1,5 @@
 #ifndef CLIENTWINDOWS_H
 #define CLIENTWINDOWS_H
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <winsock2.h>
@@ -10,8 +9,8 @@
 #define PORT 50050
 #define SA struct sockaddr
 
-void patata();
-void sendFile(SOCKET sockfd);
-void receiveModifiedFile(SOCKET sockfd);
 
-#endif 
+extern void connectToServer(const char* filePath);
+extern void sendFile(SOCKET sockfd);
+extern void receiveModifiedFile(SOCKET sockfd, const char* filePath);
+#endif // CLIENTWINDOWS_H

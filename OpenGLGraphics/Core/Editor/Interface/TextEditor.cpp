@@ -7,10 +7,16 @@
 #include <fstream>
 
 #include "TextEditor.h"
+
+extern "C" {
 #include "Core/Editor/ShaderCompiler/clientWindows.h"
+}
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "Dependencies/ImGui/imgui.h"
+
+#undef max
+#undef min
 
 // TODO
 // - multiline comments vs single-line: latter is blocking start of a ML
@@ -1141,14 +1147,17 @@ void TextEditor::Render(const char* aTitle, bool aBorder)
 			t << GetText();
 			t.close();
 		}
+		
 		ImGui::SameLine();
 		if (ImGui::Button("Compile")) {
 			std::ofstream t(fileToEdit);
 			t << GetText();
 			t.close();
+			// Use C File ClientWindows to connect to server and send the file
+			connectToServer(fileToEdit);
 			
-
 		}
+
 		ImGui::SameLine();
 		ImGui::TextColored(ImVec4(1, 1, 0, 1), "File: %s", fileToEdit);
 	}

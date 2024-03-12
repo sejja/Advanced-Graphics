@@ -4,7 +4,7 @@ void sendFile(SOCKET sockfd) {
     char* buffer = malloc(MAX);
     FILE* fp;
 
-    if (fopen_s(&fp, "patata.txt", "rb") != 0) { // Open file in binary read mode
+    if (fopen_s(&fp, "Content/Shaders/Skybox.frag", "rb") != 0) { // Open file in binary read mode
         printf("Error opening file.\n");
         free(buffer);
         return;
@@ -40,7 +40,7 @@ void sendFile(SOCKET sockfd) {
     free(buffer);
 }
 
-void receiveModifiedFile(SOCKET sockfd) {
+void receiveModifiedFile(SOCKET sockfd, const char* filePath) {
     char* buffer = malloc(MAX);
     FILE* fp;
 
@@ -49,7 +49,7 @@ void receiveModifiedFile(SOCKET sockfd) {
         return;
     }
 
-    if (fopen_s(&fp, "received_file.spv", "wb") != 0) {
+    if (fopen_s(&fp, "Content/Shaders/Skybox.spv", "wb") != 0) {
         printf("Error opening file for writing.\n");
         free(buffer);
         return;
@@ -75,7 +75,7 @@ void receiveModifiedFile(SOCKET sockfd) {
     free(buffer);
 }
 
-void patata() {
+void connectToServer(const char* filePath) {
     WSADATA wsaData;
     SOCKET sockfd;
     struct sockaddr_in client;
@@ -121,7 +121,7 @@ void patata() {
     sendFile(sockfd);
 
     // Function to receive modified file from server
-    receiveModifiedFile(sockfd);
+    receiveModifiedFile(sockfd,filePath);
 
     // close the socket
     closesocket(sockfd);

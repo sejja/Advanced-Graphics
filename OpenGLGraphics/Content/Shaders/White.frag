@@ -34,3 +34,9 @@ void main() {
     // and the diffuse per-fragment color
     gAlbedoSpec.rgba = vec4(1, 1, 1, 1);
 }
+
+
+
+
+
+
