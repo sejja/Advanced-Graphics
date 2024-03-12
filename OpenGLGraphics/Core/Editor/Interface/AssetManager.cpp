@@ -3,6 +3,7 @@
 #include "AssetIcon.h"
 #include "../database.h"
 #include <vector>
+#include "../Editor.h"
 
 
 void drawDropWindow();
@@ -11,14 +12,13 @@ std::string texto = "No se ha droppeado nada";
 AssetManager::AssetManager() {
 	printf("Intentado abrir base de datos\n");
 	//Core::Editor::Database db("database.db");
-	this->db = new Core::Editor::Database("database.db");
+	//this->db = new Core::Editor::Database("database.db");
 	//assets = db.getFilesOfFolder("Ruta");
-	assets = db->getFilesOfRoot();
-	//db.closeConnection();
-}
+	//assets = db->getFilesOfRoot();
+	
+	//Singleton<Editor>::Instance().database->getFilesOfRoot();
 
-AssetManager::~AssetManager() {
-	db->closeConnection();
+	//db.closeConnection();
 }
 
 void AssetManager::Render() {
@@ -42,7 +42,8 @@ void AssetManager::Render() {
 			case AssetType::FOLDER:
 				printf("Carpeta\n");
 				printf("%s\n", assets[i].ruta);
-				assets = db->getFilesOfFolder(assets[i].ruta);
+				//assets = editor->database->getFilesOfFolder(assets[i].ruta);
+				assets = Singleton<Editor>::Instance().database->getFilesOfFolder(assets[i].ruta);
 				break;
 			default:
 				printf("Click\n");
@@ -94,4 +95,8 @@ void drawDropWindow() { //Para eliminar en la verrsion final
 	}
 	ImGui::Text(texto.c_str());
 	ImGui::End();
+}
+
+void AssetManager::init() {
+	assets = Singleton<Editor>::Instance().database->getFilesOfRoot();
 }

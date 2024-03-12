@@ -7,14 +7,13 @@
 
 class AssetManager {
 public:
-	~AssetManager();
 	AssetManager();
 	void Render();
+	void init();
 
 private:
 	int elementosPorFila(int anchoVentana, int anchoElemento);
 	std::vector<AssetIcon> assets;
-	Core::Editor::Database* db;
 };
 
 #endif
