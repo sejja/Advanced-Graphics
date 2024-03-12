@@ -8,7 +8,7 @@ namespace Core {
             InitParticles();
             Init();
             shaderProgram = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/FireParticle.shader");
-            particleSize = 4.0f; 
+            particleSize = 2.0f; 
             baseColor = NormalizeRGBA(252, 186, 3, 255);
             acceleration = glm::vec3(0.0f, 0.5f, 0.0f);
             height = radiusB*2;

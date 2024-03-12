@@ -14,6 +14,7 @@ uniform int delta;
 
 const float e = 2.7182818284f;
 
+out vec3 absolutePos;
 out vec3 finalParticlePos;
 out float r;
 
@@ -29,7 +30,7 @@ float newRelation (float x){
 void main()
 {
     //Set constants points
-    const vec3 absolutePos = instancePosition + center;
+    absolutePos = instancePosition + center;
     const vec3 centerTop = vec3(center.x, center.y + height/2, center.z );
 
     float a = acceleration.y;
@@ -51,6 +52,6 @@ void main()
 
     gl_Position = projection * view * vec4(finalParticlePos, 1.0);
 
-    float finalParticleSize =  ((pointSize - 1.0f)*r);
+    float finalParticleSize =  (pointSize * r);
     gl_PointSize = finalParticleSize;
 }
