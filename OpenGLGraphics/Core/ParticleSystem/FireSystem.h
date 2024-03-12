@@ -24,7 +24,7 @@ namespace Core
 
 		private:
 
-			float radiusA = 20.0f;
+			float radiusA = 10.0f;
 			float radiusB = 5.0f;
 			float radiusC = 15.0f;
 

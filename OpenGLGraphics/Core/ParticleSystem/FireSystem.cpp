@@ -7,8 +7,9 @@ namespace Core {
 		FireSystem::FireSystem(const std::weak_ptr<Object>& parent): ParticleSystem(parent) {
             InitParticles();
             Init();
-            particleSize = 2.0f; 
-            baseColor = NormalizeRGBA(255, 35, 0, 255);
+            shaderProgram = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/FireParticle.shader");
+            particleSize = 4.0f; 
+            baseColor = NormalizeRGBA(252, 186, 3, 255);
             acceleration = glm::vec3(0.0f, 0.5f, 0.0f);
             height = radiusB*2;
             SetSystemCenter(glm::vec3(0.0f, -15.0f, 75.0f)); 
@@ -31,7 +32,7 @@ namespace Core {
                     {
                         if (IsElipsoid(x, y, z))
                         {
-                            AddNewParticle(RandomFloat(x + gap, x - gap), RandomFloat(y + gap, y - gap), RandomFloat(z + gap, z - gap));
+                            AddNewParticle(RandomFloat(x + gap, x - gap), RandomFloat(y + gap, y - gap), RandomFloat(z + gap, z - gap)); //This is a discrete ~ normal distribution
                         }
                     }
                 }
@@ -45,12 +46,9 @@ namespace Core {
 
         bool FireSystem::IsElipsoid(float x, float y, float z)
         {
-            float limitX = radiusA * sqrt(1 - pow((y / radiusB), 2) - pow((z / radiusC), 2) );
-            float limitY = radiusB * sqrt(1 - pow((x / radiusA), 2) - pow((z / radiusC), 2) );
-            float limitZ = radiusC * sqrt(1 - pow((x / radiusA), 2) - pow((y / radiusB), 2) );
-
-            bool ret = ((x < limitX) && (y < limitY) && (z < limitZ));
-            return ret;
+            return (( (x * q_rsqrt(1 - pow((y / radiusB), 2) - pow((z / radiusC), 2))) < radiusA ) &&
+                    ( (y * q_rsqrt(1 - pow((x / radiusA), 2) - pow((z / radiusC), 2))) < radiusB ) &&
+                    ( (z * q_rsqrt(1 - pow((x / radiusA), 2) - pow((y / radiusB), 2))) < radiusC ));
         }
 
         void FireSystem::AddNewParticle(float x, float y, float z)

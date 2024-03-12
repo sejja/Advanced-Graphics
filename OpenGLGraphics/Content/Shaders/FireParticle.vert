@@ -1,17 +1,21 @@
+/* Made by Lingfeng, but nobody knows how it works, good luck if you want to understand it
+*/
 #version 460 core
 layout (location = 0) in vec3 instancePosition; // Relative position
 
 uniform mat4 view;
 uniform mat4 projection;
 uniform vec3 center; //This is an absolute position of the center of the system
-uniform vec3 acceleration; //This is an offset over acceleration
+uniform vec3 acceleration;
 uniform float pointSize;
 uniform float sigma;
-//uniform float width;
 uniform float height;
 uniform int delta;
 
 const float e = 2.7182818284f;
+
+out vec3 finalParticlePos;
+out float r;
 
 float newPos (float labse){
     vec3 absolutePos = instancePosition + center;
@@ -21,7 +25,6 @@ float newPos (float labse){
 float newRelation (float x){
     return ( ( -e*sqrt(x)*log(x) ) / 2 );
 }
-
 
 void main()
 {
@@ -37,16 +40,17 @@ void main()
 
     float deltaLimit = (-v0+sqrt(pow(v0,2)-4*a*k))/(2*a); //Bhaskara equation
     float ymax = newPos(deltaLimit);
+
     if(labse > deltaLimit){
         labse = mod(labse, deltaLimit);
     }
 
     float yf = newPos(labse);
+    r = newRelation( (yf - (absolutePos.y) )/(ymax- (absolutePos.y) ) );
+    finalParticlePos = vec3(absolutePos.x + (instancePosition.x*r) , yf, absolutePos.z + (instancePosition.z*r));
 
-    float r = newRelation( (yf - (absolutePos.y + v0) )/(ymax- (absolutePos.y + v0) ) );
+    gl_Position = projection * view * vec4(finalParticlePos, 1.0);
 
-    vec3 newPosition = vec3(absolutePos.x, yf, absolutePos.z);
-
-    gl_Position = projection * view * vec4(newPosition, 1.0);
-    gl_PointSize = pointSize;
+    float finalParticleSize =  ((pointSize - 1.0f)*r);
+    gl_PointSize = finalParticleSize;
 }

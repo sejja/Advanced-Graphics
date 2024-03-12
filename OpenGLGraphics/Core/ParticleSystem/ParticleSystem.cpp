@@ -94,8 +94,6 @@ namespace Core
             glVertexAttribDivisor(0, 1);
 
             glBindVertexArray(0);
-
-            shaderProgram = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Particle.shader");
         }
 
         /*Initiate the vector or particles*/

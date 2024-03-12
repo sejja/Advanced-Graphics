@@ -2050,9 +2050,9 @@
     <None Include="Content\Shaders\Renderer.frag" />
     <None Include="Content\Shaders\Renderer.shader" />
     <None Include="Content\Shaders\Renderer.vert" />
-    <None Include="Content\Shaders\Particle.frag" />
-    <None Include="Content\Shaders\Particle.shader" />
-    <None Include="Content\Shaders\Particle.vert" />
+    <None Include="Content\Shaders\FireParticle.frag" />
+    <None Include="Content\Shaders\FireParticle.shader" />
+    <None Include="Content\Shaders\FireParticle.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
