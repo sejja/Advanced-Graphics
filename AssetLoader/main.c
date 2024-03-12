@@ -96,7 +96,7 @@ void cargarDirectorio(char incomePath[], sqlite3* database, int folderCode) {
     while (FindNextFileW(handle, &data)) {
         wprintf(L"%s\n", data.cFileName);
 
-        char newPath[100];
+        char newPath[200];
         strcpy(newPath, incomePath);
 
         strcat(newPath, "\\");

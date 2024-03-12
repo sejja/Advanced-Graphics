@@ -4,6 +4,7 @@
 #include "../database.h"
 #include <vector>
 #include "../Editor.h"
+#include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 
 
 void drawDropWindow();
@@ -25,12 +26,18 @@ void AssetManager::Render() {
 	ImGui::Begin("Asset Manager");
 
 	ImVec2 btSize = ImVec2(100, 100);
-	int numeroElementosFila = elementosPorFila(ImGui::GetWindowWidth(), 100);
+	int numeroElementosFila = elementosPorFila(ImGui::GetWindowWidth(), 100); //Esto se puede optimizar
 	//printf("%d", ImGui::GetWindowWidth());
 
 	//const int numAssets = 20;
 	//AssetIcon assets[20];
 	//assets[1] = AssetIcon(AssetType::TEXTURE, "Textura", "Content\\Textures\\Brick.png");
+
+
+	//Dibujar el menú para regresar
+	ImGui::BeginGroup();
+	ImGui::Button("PrevFold");
+	ImGui::EndGroup();
 
 	int cont = 0;
 	for (int i = 0; i < assets.size(); i++) { //TODO intentar centrar elementos

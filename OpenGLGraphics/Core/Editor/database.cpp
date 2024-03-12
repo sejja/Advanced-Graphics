@@ -79,7 +79,7 @@ namespace Core {
 				return AssetType::MODEL;
 			}
 			else if (strcmp(tipo, "TEXTURE") == 0) {
-				return AssetType::OTHER;
+				return AssetType::TEXTURE;
 			}
 			else if (strcmp(tipo, "MATERIAL") == 0) {
 				return AssetType::MATERIAL;

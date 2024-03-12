@@ -16,7 +16,7 @@ void destroyAsset(Asset* asset) {
 Asset* createAsset(char* path) {
     // printf(path);
     // printf("Creando Asset");
-    char aTonkenizar[100];
+    char aTonkenizar[200];
     strcpy(aTonkenizar, path);
     char* token = strtok(aTonkenizar, "\\");
     // printf(aTonkenizar);
