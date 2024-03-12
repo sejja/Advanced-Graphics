@@ -7,11 +7,11 @@ namespace Core {
 		FireSystem::FireSystem(const std::weak_ptr<Object>& parent): ParticleSystem(parent) {
             InitParticles();
             Init();
-            particleSize = 4.0f; 
+            particleSize = 2.0f; 
             baseColor = NormalizeRGBA(255, 35, 0, 255);
-            acceleration = glm::vec3(0.0f, 1.0f, 0.0f);
+            acceleration = glm::vec3(0.0f, 0.5f, 0.0f);
             height = radiusB*2;
-            SetSystemCenter(glm::vec3(0.0f, -15.0f, 0.0f)); 
+            SetSystemCenter(glm::vec3(0.0f, -15.0f, 75.0f)); 
 		}
 		FireSystem::~FireSystem()
 		{
@@ -31,7 +31,7 @@ namespace Core {
                     {
                         if (IsElipsoid(x, y, z))
                         {
-                            AddNewParticle(x, y, z);
+                            AddNewParticle(RandomFloat(x + gap, x - gap), RandomFloat(y + gap, y - gap), RandomFloat(z + gap, z - gap));
                         }
                     }
                 }
@@ -48,6 +48,7 @@ namespace Core {
             float limitX = radiusA * sqrt(1 - pow((y / radiusB), 2) - pow((z / radiusC), 2) );
             float limitY = radiusB * sqrt(1 - pow((x / radiusA), 2) - pow((z / radiusC), 2) );
             float limitZ = radiusC * sqrt(1 - pow((x / radiusA), 2) - pow((y / radiusB), 2) );
+
             bool ret = ((x < limitX) && (y < limitY) && (z < limitZ));
             return ret;
         }

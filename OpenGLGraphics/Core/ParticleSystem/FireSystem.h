@@ -20,7 +20,7 @@ namespace Core
 			void InitParticles() override ;
 			glm::vec3 GetAbsolutePos(glm::vec3 relativePoint);
 			
-			float gap = 0.5f;
+			float gap = 0.9f;
 
 		private:
 
