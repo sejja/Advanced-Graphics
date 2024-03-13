@@ -19,10 +19,8 @@ namespace Graphics {
 			struct BackedLightData {
 				glm::vec3 mPosition;
 				glm::vec3 mDirection;
-				glm::vec3 mAmbient;
-				glm::vec3 mDiffuse;
-				glm::vec3 mSpecular;
-				glm::vec3 mAttenuation;
+				glm::vec3 mColor;
+				float mRadius;
 				float mInner;
 				float mOutter;
 				float mFallOff;
@@ -35,12 +33,8 @@ namespace Graphics {
 
 			void Update() override;
 			const glm::vec3& GetPosition() const { return mData.mPosition; }
-			const glm::vec3& GetmSpecular() const { return mData.mSpecular; }
-			glm::vec3 GetAttenuation() const { return mData.mAttenuation; }
 
 			void SetPosition(const glm::vec3& position) { mData.mPosition = position; }
-			void SetSpecular(const glm::vec3& color) { mData.mSpecular = color; }
-			void SetAttenuation(glm::vec3 intensity) { mData.mAttenuation = intensity; }
 
 			static std::unordered_map<std::size_t, BackedLightData> sLightData;
 			static std::size_t sLightReg;

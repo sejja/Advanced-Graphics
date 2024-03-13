@@ -21,10 +21,9 @@ layout(binding = 4) uniform sampler2D uShadowMaps[8];
 struct Light {
     vec3 mPosition;
     vec3 mDirection;
-    vec3 mAmbient;
-    vec3 mDiffuse;
-    vec3 mSpecular;
+    vec3 mColor;
     vec3 mAttenuation;
+    float mRadius;
     float mInnerAngle;
     float mOutterAngle;
     float mFallOff;
@@ -97,7 +96,7 @@ void main() {
     //Add per-light color using the Blinn-Phong equations
     for(int i = 0; i < uLightCount; i++) { 
         vec3 lightDir;
-        float att = 1;
+        float att = pow(smoothstep(uLight[i].mRadius, 0, length(uLight[i].mPosition - fragPos)), uLight[i].mFallOff);
         float dist;
         float spotlight =1;
 
@@ -110,13 +109,10 @@ void main() {
             case 0:
                 lightDir = normalize(uLight[i].mPosition - fragPos); 
                 dist = length(lightDir);
-                att = min(1.f / (uLight[i].mAttenuation.x + uLight[i].mAttenuation.y * dist + uLight[i].mAttenuation.z * dist * dist), 1.0f);
                 break;
             default:
                 lightDir = normalize(uLight[i].mPosition - fragPos); 
                 dist = length(lightDir);
-                att = min(1.f / (uLight[i].mAttenuation.x + uLight[i].mAttenuation.y * dist + uLight[i].mAttenuation.z * dist * dist), 1.0f);
-       
                 const float aplha = dot(-lightDir, normalize(uLight[i].mDirection));
 
                 //If the outer anngle is larger than the perpendicularity between the incident lightray and the viewers vector
@@ -136,15 +132,13 @@ void main() {
             //atenuation
             att 
             //ambient
-            * ((uLight[i].mAmbient
-            //spotlight effect
-            + spotlight * 
+            * ((spotlight * 
             //shadowmapping
             (1 - ShadowCalculation(uShadowMatrix[i] * vec4(fragPos, 1), i, normal)) 
             //difuse
-            * (max(dot(normal, lightDir), 0.0) * uLight[i].mDiffuse 
+            * (max(dot(normal, lightDir), 0.0) * uLight[i].mColor 
             //specular
-            + uLight[i].mSpecular * pow(max(dot(normalize(ubCameraPosition - fragPos), 
+            + uLight[i].mColor * pow(max(dot(normalize(ubCameraPosition - fragPos), 
                 reflect(-lightDir, normal)), 0.0), 32))));
    }
     FragColor = bloom(texture(gAlbedoSpec, oUVs) * vec4(totalLightShine, 1.0));

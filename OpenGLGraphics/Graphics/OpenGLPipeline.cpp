@@ -96,7 +96,6 @@ namespace Core {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 
-
 		// ------------------------------------------------------------------------
 		/*! RenderGUI
 		*
@@ -220,10 +219,8 @@ namespace Core {
 			
 				shadptr->SetShaderUniform((id + "].mPosition").c_str(), &::Graphics::Primitives::Light::sLightData[i].mPosition);
 				shadptr->SetShaderUniform((id + "].mDirection").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDirection);
-				shadptr->SetShaderUniform((id + "].mAmbient").c_str(), &::Graphics::Primitives::Light::sLightData[i].mAmbient);
-				shadptr->SetShaderUniform((id + "].mDiffuse").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDiffuse);
-				shadptr->SetShaderUniform((id + "].mSpecular").c_str(), &::Graphics::Primitives::Light::sLightData[i].mSpecular);
-				shadptr->SetShaderUniform((id + "].mAttenuation").c_str(), &::Graphics::Primitives::Light::sLightData[i].mAttenuation);
+				shadptr->SetShaderUniform((id + "].mColor").c_str(), &::Graphics::Primitives::Light::sLightData[i].mColor);
+				shadptr->SetShaderUniform((id + "].mRadius").c_str(), &::Graphics::Primitives::Light::sLightData[i].mRadius);
 				shadptr->SetShaderUniform((id + "].mInnerAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mInner);
 				shadptr->SetShaderUniform((id + "].mOutterAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mOutter);
 				shadptr->SetShaderUniform((id + "].mFallOff").c_str(), &::Graphics::Primitives::Light::sLightData[i].mFallOff);
@@ -361,6 +358,20 @@ namespace Core {
 				//mDebug->draw_frustum_lines(lightProjection * lightView * matrix, glm::vec4(1.0, 0.85, 0.1, 1));
 			}
 			*/
+
+			for (auto & light : ::Graphics::Primitives::Light::sLightData) {
+				float radius = light.second.CalculateSphereOfInfluence();
+				glm::mat4 matrix = glm::translate(glm::mat4(1.0f), light.second.mPosition) *
+					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(0.0f, 0.0f, 1.0f)) *
+					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(1.0f, 0.0f, 0.0f)) *
+					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(0.0f, 1.0f, 0.0f)) *
+					glm::scale(glm::mat4(1.0f), glm::vec3(radius * 2, radius * 2, radius * 2));
+				//mDebug->draw_sphere(light.second.mPosition, radius, glm::vec4(1.0, 0.85, 0.1, 1));
+				//mLightSphereShader->Get()->Bind();
+				//mLightSphereShader->Get()->SetShaderUniform("uModel", &matrix);
+				//mLightSphere->Get()->Draw(*mLightSphereShader->Get());
+				//mDebug->draw_frustum_lines(lightProjection * lightView * matrix, glm::vec4(1.0, 0.85, 0.1, 1));
+			}
 		}
 
 		std::vector<glm::mat4> OpenGLPipeline::RenderShadowMaps() {
@@ -439,9 +450,6 @@ namespace Core {
 					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(1.0f, 0.0f, 0.0f)) *
 					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(0.0f, 1.0f, 0.0f)) *
 					glm::scale(glm::mat4(1.0f), glm::vec3(radius *2, radius*2, radius*2));
-				mLightSphereShader->Get()->Bind();
-				mLightSphereShader->Get()->SetShaderUniform("uModel", &matrix);
-				mLightSphere->Get()->Draw(*mLightSphereShader->Get());
 				//mDebug->draw_frustum_lines(lightProjection * lightView * matrix, glm::vec4(1.0, 0.85, 0.1, 1));
 			}
 		}

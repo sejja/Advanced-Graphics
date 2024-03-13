@@ -74,10 +74,8 @@ namespace Core {
 
 			light->SetPosition(x.pos);
 			light->mData.mDirection = x.dir;
-			light->mData.mAmbient = glm::vec3(x.amb, x.amb, x.amb);
-			light->mData.mDiffuse = x.col;
-			light->SetSpecular(x.col);
-			light->SetAttenuation(x.att);
+			light->mData.mColor = x.col;
+			light->mData.mRadius = 120.f;
 			light->mData.mInner = x.inner;
 			light->mData.mOutter = x.outer;
 			light->mData.mFallOff = x.falloff;

@@ -27,7 +27,7 @@ namespace Core {
         public:
 #pragma region //Functions
 			using function_t = std::function<void(const Event&)>;
-            using container_t = std::map<const TypeInfo, std::unordered_multimap<Listener*, function_t>>;
+            using container_t = std::map<const TypeInfo, std::unordered_map<Listener*, function_t>>;
 #pragma endregion
 #pragma region //Functions
             void Subscribe(Listener& who, const TypeInfo& what, const function_t& fun);

@@ -21,10 +21,8 @@ namespace Graphics {
 				auto parent = GetParent().lock();
 				sLightData[mIndex].mPosition = parent->GetPosition();
 				sLightData[mIndex].mDirection = mData.mDirection;
-				sLightData[mIndex].mAmbient = mData.mAmbient;
-				sLightData[mIndex].mDiffuse = mData.mDiffuse;
-				sLightData[mIndex].mSpecular = mData.mSpecular;
-				sLightData[mIndex].mAttenuation = mData.mAttenuation;
+				sLightData[mIndex].mColor = mData.mColor;
+				sLightData[mIndex].mRadius = mData.mRadius;
 				sLightData[mIndex].mInner = mData.mInner;
 				sLightData[mIndex].mOutter = mData.mOutter;
 				sLightData[mIndex].mFallOff = mData.mFallOff;
@@ -39,16 +37,14 @@ namespace Graphics {
 		*   Formula might be found at: https://ogldev.org/www/tutorial36/threshold.jpg
 		*/ //----------------------------------------------------------------------
 		float Light::BackedLightData::CalculateSphereOfInfluence() const {
-			glm::vec3 dif = mDiffuse * 255.f;
-			glm::vec3 atte = mAttenuation * 255.f;
-			glm::vec3 amb = mAmbient * 255.f;
-			float MaxChannel = fmax(fmax(amb.x, amb.y), amb.z);
+			glm::vec3 dif = mColor;
+			float MaxChannel = fmax(fmax(dif.x, dif.y), dif.z);
 			float diffusechannel = fmax(fmax(dif.x, dif.y), dif.z);
 
-			float ret = (-atte.y + sqrtf(std::max(atte.y * atte.y -
-				4 * atte.z * (atte.z - 256 * MaxChannel * diffusechannel), 0.f)))
-				/ (2 * atte.z);
-			return ret;
+			float ret = (-mRadius + sqrtf(std::max(mRadius * mRadius -
+				4 * mRadius * (mRadius - 256 * MaxChannel * mRadius), 0.f)))
+				/ (2 * mRadius);
+			return mRadius;
 		}
 	}
 }
