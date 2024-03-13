@@ -2,8 +2,8 @@
 //  SDL_Window.cpp
 //  OpenGL Graphics
 //
-//  Created by Diego Revilla on 11/03/23
-//  Copyright � 2023. All rights reserved.
+//  Created by Diego Revilla on 13/03/24
+//  Copyright � 2024. All rights reserved.
 //
 
 #include <glew.h>
@@ -18,7 +18,7 @@
 *   Initializes the Destructor (What a thing)
 */ //----------------------------------------------------------------------
 SDLWindow::SDLWindow() noexcept :
-    mWindow(nullptr, SDL_DestroyWindow), mDimensions({0, 0}) {
+    mWindow(nullptr, SDL_DestroyWindow), mDimensions({0, 0}), mContext(NULL) {
 }
 
 // ------------------------------------------------------------------------

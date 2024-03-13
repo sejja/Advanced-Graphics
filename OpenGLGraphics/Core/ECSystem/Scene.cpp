@@ -75,7 +75,7 @@ namespace Core {
 			light->SetPosition(x.pos);
 			light->mData.mDirection = x.dir;
 			light->mData.mColor = x.col;
-			light->mData.mRadius = 30.f;
+			light->mData.mRadius = 60.f;
 			light->mData.mInner = x.inner;
 			light->mData.mOutter = x.outer;
 			light->mData.mFallOff = x.falloff;

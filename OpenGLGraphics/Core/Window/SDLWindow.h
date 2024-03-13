@@ -2,8 +2,8 @@
 //  SDL_Window.h
 //  OpenGL Graphics
 //
-//  Created by Diego Revilla on 11/03/23
-//  Copyright � 2023. All rights reserved.
+//  Created by Diego Revilla on 13/03/24
+//  Copyright � 2024. All rights reserved.
 //
 
 #ifndef _SDL_WINDOW__H_
@@ -46,7 +46,7 @@ private:
 *
 *   Returns the Dimensions of the Window
 */ //----------------------------------------------------------------------
-glm::lowp_u16vec2 inline SDLWindow::GetDimensions() const {
+glm::lowp_u16vec2 SDLWindow::GetDimensions() const {
 	return mDimensions;
 }
 
