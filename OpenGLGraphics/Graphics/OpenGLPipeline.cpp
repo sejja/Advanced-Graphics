@@ -213,7 +213,6 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader) {
 			Core::Graphics::ShaderProgram* shadptr = shader.lock()->Get();
-
 			for (size_t i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
 				const std::string id = "uLight[" + std::to_string(i);
 			
@@ -366,7 +365,7 @@ namespace Core {
 					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(1.0f, 0.0f, 0.0f)) *
 					glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(0.0f, 1.0f, 0.0f)) *
 					glm::scale(glm::mat4(1.0f), glm::vec3(radius * 2, radius * 2, radius * 2));
-				//mDebug->draw_sphere(light.second.mPosition, radius * 2, glm::vec4(1.0, 0.85, 0.1, 1));
+				mDebug->draw_sphere(light.second.mPosition,  radius, glm::vec4(1.0, 0.85, 0.1, 1));
 				//mLightSphereShader->Get()->Bind();
 				//mLightSphereShader->Get()->SetShaderUniform("uModel", &matrix);
 				//mLightSphere->Get()->Draw(*mLightSphereShader->Get());

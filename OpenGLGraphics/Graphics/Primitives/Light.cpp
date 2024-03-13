@@ -37,14 +37,7 @@ namespace Graphics {
 		*   Formula might be found at: https://ogldev.org/www/tutorial36/threshold.jpg
 		*/ //----------------------------------------------------------------------
 		float Light::BackedLightData::CalculateSphereOfInfluence() const {
-			glm::vec3 dif = mColor;
-			float MaxChannel = fmax(fmax(dif.x, dif.y), dif.z);
-			float diffusechannel = fmax(fmax(dif.x, dif.y), dif.z);
-
-			float ret = (-mRadius + sqrtf(std::max(mRadius * mRadius -
-				4 * mRadius * (mRadius - 256 * MaxChannel * mRadius), 0.f)))
-				/ (2 * mRadius);
-			return mRadius;
+			return mRadius * 2;
 		}
 	}
 }

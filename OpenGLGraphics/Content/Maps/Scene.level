@@ -70,30 +70,3 @@ attenuation 1 1 1
 #sinusoidal 0 1 20
 ambient 0
 direction -1 0 0
-
-light
-translate -50 0 55
-color 1 0 0
-lightType SPOT	
-attenuation 1 1 1
-#sinusoidal 0 1 20
-ambient 0
-direction 1 0 0
-
-light
-translate 10 30 50
-color 0 0 1
-lightType SPOT	
-attenuation 1 1 1
-#sinusoidal 0 1 20
-ambient 0
-direction 0 -1 0
-
-light
-translate -10 30 50
-color 0 1 0
-lightType SPOT	
-attenuation 1 1 1
-#sinusoidal 0 1 20
-ambient 0
-direction 0 -1 0
