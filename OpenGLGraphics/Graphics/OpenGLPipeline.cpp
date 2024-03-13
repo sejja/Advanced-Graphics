@@ -50,24 +50,6 @@ namespace Core {
 			mDirectionalLightShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DirectionalLight.shader");
 			mDebug = std::make_unique<debug_system>(&cam);
 
-			float quadVertices[] = {
-				// positions        // texture Coords
-				-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-				-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-				 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-			};
-			// setup plane VAO
-			glGenVertexArrays(1, &mScreenQuadVAO);
-			glGenBuffers(1, &mScreenQuadVAO);
-			glBindVertexArray(mScreenQuadVBO);
-			glBindBuffer(GL_ARRAY_BUFFER, mScreenQuadVBO);
-			glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-
 			glGenBuffers(1, &mUniformBuffer);
 
 			glBindBuffer(GL_UNIFORM_BUFFER, mUniformBuffer);
@@ -75,10 +57,9 @@ namespace Core {
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 			glBindBufferRange(GL_UNIFORM_BUFFER, 0, mUniformBuffer, 0, 2 * sizeof(glm::mat4) + sizeof(glm::vec3));
-			mLightSphere = Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj");
-			mLightSphereShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/ForwardRender.shader");
 			mBloomRenderer = std::make_unique<::Graphics::Architecture::Bloom::BloomRenderer>();
 			mBloomRenderer->Init(mDimensions.x, mDimensions.y);
+			mLightPass = std::make_unique<::Graphics::Architecture::LightPass>();
 		}
 
 		// ------------------------------------------------------------------------
@@ -177,7 +158,7 @@ namespace Core {
 			UpdateUniformBuffers();
 			GeometryPass();
 			BloomPass();
-			LightingPass(shadow_mtrx);
+			mLightPass->RenderLights(*mGBuffer, *mBloomRenderer, shadow_mtrx);
 			glEnable(GL_DEPTH_TEST);
 			mGBuffer->BlitDepthBuffer();
 			Skybox::sCurrentSky->Render(cam);
@@ -262,48 +243,6 @@ namespace Core {
 			glDisable(GL_DEPTH_TEST);
 		}
 
-		// ------------------------------------------------------------------------
-		/*! Lighting Pass
-		*
-		*   Using the buffers created on the geometry pass, we can 
-		*		compute the lighting for each pixel
-		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::LightingPass(std::vector<glm::mat4>& shadow_mtrx) {
-			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
-			glEnable(GL_BLEND);
-			glBlendEquation(GL_FUNC_ADD);
-			glBlendFunc(GL_ONE, GL_ONE);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetPositionTextureHandle());
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetNormalTextureHandle());
-			glActiveTexture(GL_TEXTURE2);
-			glBindTexture(GL_TEXTURE_2D, mGBuffer->GetAlbedoTextureHandle());
-			glActiveTexture(GL_TEXTURE3);
-			glBindTexture(GL_TEXTURE_2D, mBloomRenderer->BloomTexture());
-			mGBuffer->BindLightingShader();
-			glViewport(0, 0, mDimensions.x, mDimensions.y);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			for(int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-				auto shadptr = mGBuffer->GetLightingShader()->Get();
-				const std::string id = "uLight";
-
-				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &::Graphics::Primitives::Light::sLightData[i].mPosition);
-				shadptr->SetShaderUniform((id + ".mDirection").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDirection);
-				shadptr->SetShaderUniform((id + ".mColor").c_str(), &::Graphics::Primitives::Light::sLightData[i].mColor);
-				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &::Graphics::Primitives::Light::sLightData[i].mRadius);
-				shadptr->SetShaderUniform((id + ".mInnerAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mInner);
-				shadptr->SetShaderUniform((id + ".mOutterAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mOutter);
-				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &::Graphics::Primitives::Light::sLightData[i].mFallOff);
-				shadptr->SetShaderUniform((id + ".mType").c_str(), static_cast<int>(::Graphics::Primitives::Light::sLightData[i].mType));
-				::Graphics::Primitives::Light::sLightData[i].mShadowMap.BindTexture(4);
-				mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uShadowMatrix", shadow_mtrx.data() + i);
-				RenderScreenQuad();
-			}
-		}
-
 		std::vector<glm::mat4> OpenGLPipeline::RenderShadowMaps() {
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
@@ -379,40 +318,6 @@ namespace Core {
 		}
 
 		// ------------------------------------------------------------------------
-		/*! Render Screen Quad
-		*
-		*   Renders a Quad on the screen that covers the whole viewport
-		*/ //----------------------------------------------------------------------
-		unsigned int quadVAO = 0;
-		unsigned int quadVBO;
-		void OpenGLPipeline::RenderScreenQuad()
-		{
-			if (quadVAO == 0)
-			{
-				float quadVertices[] = {
-					// positions        // texture Coords
-					-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
-					-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-					 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
-					 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-				};
-				// setup plane VAO
-				glGenVertexArrays(1, &quadVAO);
-				glGenBuffers(1, &quadVBO);
-				glBindVertexArray(quadVAO);
-				glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
-				glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
-				glEnableVertexAttribArray(0);
-				glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-				glEnableVertexAttribArray(1);
-				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-			}
-			glBindVertexArray(quadVAO);
-			glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-			glBindVertexArray(0);
-		}
-
-		// ------------------------------------------------------------------------
 		/*! Update Uniform Buffers
 		*
 		*   Updates the Uniform Buffers on the GPU across Shaders
@@ -427,16 +332,6 @@ namespace Core {
 			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), &cam.GetPositionRef());
 			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + sizeof(glm::vec3), sizeof(glm::vec2), &mDimensions);
 			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
-		}
-
-		// ------------------------------------------------------------------------
-		/*! Directional Light Pass
-		*
-		*   Updates the Uniform Buffers on the GPU across Shaders
-		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::DirectionalLightPass() {	
-			mDirectionalLightShader->Get()->Bind();
-			RenderScreenQuad();
 		}
 	}
 }

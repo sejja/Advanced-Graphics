@@ -34,7 +34,7 @@ namespace Graphics {
 
 		void Light::GenerateShadowMap() {
 			sLightData[mIndex].mShadowMap.Create();
-			sLightData[mIndex].mShadowMap.CreateRenderTexture({ 1072 * 4, 780 * 4 }, false);
+			sLightData[mIndex].mShadowMap.CreateRenderTexture({ 1078 * 4, 780 * 4 }, false);
 		}
 
 		// ------------------------------------------------------------------------

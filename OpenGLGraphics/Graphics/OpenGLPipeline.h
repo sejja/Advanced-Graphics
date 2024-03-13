@@ -16,6 +16,7 @@
 #include "Graphics/Architecture/GBuffer.h"
 #include "Debug/DebugShapes.h"
 #include "Graphics/Architecture/Bloom/BloomRenderer.h"
+#include "Graphics/Architecture/LightPass.h"
 
 namespace Core {
 	namespace Graphics {
@@ -34,12 +35,8 @@ namespace Core {
 			void UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader);
 			void GeometryPass();
 
-			void LightingPass(std::vector<glm::mat4>& shadow_mtrx);
 			std::vector<glm::mat4> RenderShadowMaps();
-			void DebugDraw();
-			void RenderScreenQuad();
 			void UpdateUniformBuffers();
-			void DirectionalLightPass();
 
 			void RenderGUI();
 			void FlushObsoletes(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes);
@@ -51,12 +48,10 @@ namespace Core {
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 			glm::vec2 mDimensions;
 			std::unique_ptr<GBuffer> mGBuffer;
+			std::unique_ptr<::Graphics::Architecture::LightPass> mLightPass;
 			Asset<ShaderProgram> mDirectionalLightShader;
-			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			GLuint mUniformBuffer;
 			std::unique_ptr<debug_system> mDebug;
-			Asset<::Graphics::Primitives::GLBModel> mLightSphere;
-			Asset<ShaderProgram> mLightSphereShader;
 			std::unique_ptr<::Graphics::Architecture::Bloom::BloomRenderer> mBloomRenderer;
 		};
 

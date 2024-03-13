@@ -129,9 +129,6 @@
     <ClCompile Include="Graphics\Primitives\GLBModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Architecture\BloomRenderer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\Debug\DebugPrimitives.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -145,6 +142,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Assets\ShaderImporter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\Bloom\BloomFrameBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\Bloom\BloomRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\LightPass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1577,9 +1583,6 @@
     <ClInclude Include="Graphics\Primitives\GLBModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Architecture\BloomRenderer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\Debug\DebugPrimitives.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1593,6 +1596,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Assets\ShaderImporter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\Bloom\BloomFrameBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\Bloom\BloomRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\LightPass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2040,6 +2052,15 @@
     <None Include="Content\Shaders\ForwardRender.vert" />
     <None Include="Content\Shaders\White.frag" />
     <None Include="Content\Shaders\White.shader" />
+    <None Include="Content\Shaders\BloomVert.vert" />
+    <None Include="Content\Shaders\Blue.frag" />
+    <None Include="Content\Shaders\Blue.shader" />
+    <None Include="Content\Shaders\Downsampling.frag" />
+    <None Include="Content\Shaders\Downsampling.shader" />
+    <None Include="Content\Shaders\Red.frag" />
+    <None Include="Content\Shaders\Red.shader" />
+    <None Include="Content\Shaders\Upsampling.frag" />
+    <None Include="Content\Shaders\Upsampling.shader" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
