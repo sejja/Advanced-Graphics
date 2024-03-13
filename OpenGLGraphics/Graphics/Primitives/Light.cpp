@@ -9,6 +9,7 @@ namespace Graphics {
 		Light::Light(std::weak_ptr<Core::Object> parent) : 
 			Component(parent), mIndex(sLightReg++) {
 			sLightData.insert({ mIndex, mData });
+			GenerateShadowMap();
 		}
 
 		Light::~Light() {
@@ -27,7 +28,13 @@ namespace Graphics {
 				sLightData[mIndex].mOutter = mData.mOutter;
 				sLightData[mIndex].mFallOff = mData.mFallOff;
 				sLightData[mIndex].mType = mData.mType;
+				sLightData[mIndex].mShadowCaster = mData.mShadowCaster;
 			}
+		}
+
+		void Light::GenerateShadowMap() {
+			sLightData[mIndex].mShadowMap.Create();
+			sLightData[mIndex].mShadowMap.CreateRenderTexture({ 1072 * 4, 780 * 4 }, false);
 		}
 
 		// ------------------------------------------------------------------------

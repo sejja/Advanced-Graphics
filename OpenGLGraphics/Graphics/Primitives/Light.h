@@ -5,6 +5,7 @@
 #include "Core/ECSystem/Component.h"
 #include <unordered_map>
 #include <memory>
+#include "Graphics/Tools/FrameBuffer.h"
 
 namespace Graphics {
 	namespace Primitives {
@@ -24,13 +25,16 @@ namespace Graphics {
 				float mInner;
 				float mOutter;
 				float mFallOff;
+				bool mShadowCaster;
 				LightType mType;
 				float CalculateSphereOfInfluence() const;
+				Core::Graphics::FrameBuffer mShadowMap;
 			};
 		
 			Light(std::weak_ptr<Core::Object> parent);
 			~Light();
 
+			void GenerateShadowMap();
 			void Update() override;
 			const glm::vec3& GetPosition() const { return mData.mPosition; }
 

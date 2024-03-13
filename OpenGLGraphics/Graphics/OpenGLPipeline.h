@@ -49,7 +49,6 @@ namespace Core {
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 			glm::vec2 mDimensions;
-			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<GBuffer> mGBuffer;
 			Asset<ShaderProgram> mDirectionalLightShader;
 			GLuint mScreenQuadVAO, mScreenQuadVBO;

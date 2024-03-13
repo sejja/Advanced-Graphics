@@ -40,18 +40,6 @@ namespace Core {
 			glDisable(GL_BLEND);
 			glDisable(GL_STENCIL_TEST);
 			glClearColor(0.f, 0.f, 0.f, 0.f);
-			mShadowBuffers.emplace_back();
-			mShadowBuffers.emplace_back();
-			mShadowBuffers.emplace_back();
-			mShadowBuffers.emplace_back();
-			mShadowBuffers[0].Create();
-			mShadowBuffers[0].CreateRenderTexture({mDimensions.x * 4, mDimensions.y * 4}, false);
-			mShadowBuffers[1].Create();
-			mShadowBuffers[1].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
-			mShadowBuffers[2].Create();
-			mShadowBuffers[2].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
-			mShadowBuffers[3].Create();
-			mShadowBuffers[3].CreateRenderTexture({ mDimensions.x * 4, mDimensions.y * 4 }, false);
 			mGBuffer = std::make_unique<GBuffer>();
 			mDirectionalLightShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DirectionalLight.shader");
 			mDebug = std::make_unique<debug_system>(&cam);
@@ -120,21 +108,6 @@ namespace Core {
 			}
 			ImGui::End();
 
-			if (ImGui::Begin("Shadow Mapping")) {
-				int i = 0;
-				for (FrameBuffer& buff : mShadowBuffers) {
-					ImGui::Image((ImTextureID)buff.GetTextureHandle(),
-						ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-
-					if (i < 1) {
-						ImGui::SameLine();
-						i++;
-					}
-					else
-						i = 0;
-				}
-			}
-			ImGui::End();
 		}
 
 		// ------------------------------------------------------------------------
@@ -207,30 +180,6 @@ namespace Core {
 		}
 
 		// ------------------------------------------------------------------------
-		/*! Upload Light Data to GPU
-		*
-		*   Uploads the light data to the shader
-		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader) {
-			Core::Graphics::ShaderProgram* shadptr = shader.lock()->Get();
-			for (size_t i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-				const std::string id = "uLight[" + std::to_string(i);
-			
-				shadptr->SetShaderUniform((id + "].mPosition").c_str(), &::Graphics::Primitives::Light::sLightData[i].mPosition);
-				shadptr->SetShaderUniform((id + "].mDirection").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDirection);
-				shadptr->SetShaderUniform((id + "].mColor").c_str(), &::Graphics::Primitives::Light::sLightData[i].mColor);
-				shadptr->SetShaderUniform((id + "].mRadius").c_str(), &::Graphics::Primitives::Light::sLightData[i].mRadius);
-				shadptr->SetShaderUniform((id + "].mInnerAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mInner);
-				shadptr->SetShaderUniform((id + "].mOutterAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mOutter);
-				shadptr->SetShaderUniform((id + "].mFallOff").c_str(), &::Graphics::Primitives::Light::sLightData[i].mFallOff);
-				shadptr->SetShaderUniform((id + "].mType").c_str(), static_cast<int>(::Graphics::Primitives::Light::sLightData[i].mType));
-			}
-
-			shadptr->SetShaderUniform("uLightCount", static_cast<int>(::Graphics::Primitives::Light::sLightReg));
-		}
-
-
-		// ------------------------------------------------------------------------
 		/*! Geometry Pass
 		*
 		*   Draws the geometry on the G-Buffer
@@ -291,7 +240,6 @@ namespace Core {
 
 					try {
 						it.first->Get()->SetShaderUniform("uCameraPos", &cam.GetPositionRef());
-						UploadLightDataToGPU(it.first);
 						auto tex = Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/Brick.png")->Get();
 						tex->SetTextureType(Texture::TextureType::eDiffuse);
 						tex->Bind();
@@ -331,18 +279,23 @@ namespace Core {
 			mGBuffer->BindLightingShader();
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			UploadLightDataToGPU(mGBuffer->GetLightingShader());
 
-			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-				mShadowBuffers[i].BindTexture(4 + i);
+			for(int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
+				auto shadptr = mGBuffer->GetLightingShader()->Get();
+				const std::string id = "uLight";
+
+				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &::Graphics::Primitives::Light::sLightData[i].mPosition);
+				shadptr->SetShaderUniform((id + ".mDirection").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDirection);
+				shadptr->SetShaderUniform((id + ".mColor").c_str(), &::Graphics::Primitives::Light::sLightData[i].mColor);
+				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &::Graphics::Primitives::Light::sLightData[i].mRadius);
+				shadptr->SetShaderUniform((id + ".mInnerAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mInner);
+				shadptr->SetShaderUniform((id + ".mOutterAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mOutter);
+				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &::Graphics::Primitives::Light::sLightData[i].mFallOff);
+				shadptr->SetShaderUniform((id + ".mType").c_str(), static_cast<int>(::Graphics::Primitives::Light::sLightData[i].mType));
+				::Graphics::Primitives::Light::sLightData[i].mShadowMap.BindTexture(4);
+				mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uShadowMatrix", shadow_mtrx.data() + i);
+				RenderScreenQuad();
 			}
-
-			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-				mGBuffer->GetLightingShader()->Get()->SetShaderUniform("uShadowMatrix[" + std::to_string(i) + "]", shadow_mtrx.data() + i);
-			}
-
-			
-			RenderScreenQuad();
 		}
 
 		std::vector<glm::mat4> OpenGLPipeline::RenderShadowMaps() {
@@ -382,8 +335,8 @@ namespace Core {
 
 			glViewport(0, 0, mDimensions.x * 4, mDimensions.y * 4);
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-				mShadowBuffers[i].Bind();
-				mShadowBuffers[i].Clear(true);
+				::Graphics::Primitives::Light::sLightData[i].mShadowMap.Bind();
+				::Graphics::Primitives::Light::sLightData[i].mShadowMap.Clear(true);
 
 				auto up = glm::normalize(glm::cross(glm::cross(-::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0, 1, 0)), -::Graphics::Primitives::Light::sLightData[i].mPosition));
 				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 2.f, 2000.f);
@@ -402,7 +355,7 @@ namespace Core {
 						});
 				}
 
-				mShadowBuffers[i].Unbind();
+				::Graphics::Primitives::Light::sLightData[i].mShadowMap.Unbind();
 
 			}
 
