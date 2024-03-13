@@ -38,11 +38,13 @@ namespace Core {
 
             //If we found the Event
             if (it != mEventCollection.end())
-                std::for_each(std::execution::par_unseq, it->second.begin(), it->second.end(), [&who, &it](const std::pair<Listener*, function_t>& x) {
-                    //If the Listener is the one we want to unsubscribe
-                    if (typeid(*x.first).name() == typeid(who).name())
-                        (*it).second.erase(x.first);
-                });
+                //Erase the Listener from the Event
+                for(auto& x : it->second)
+                    //If we found the Listener
+                    if (typeid(*x.first).name() == typeid(who).name()) {
+                        it->second.erase(x.first);
+						break;
+                    }
         }
 
         // ------------------------------------------------------------------------

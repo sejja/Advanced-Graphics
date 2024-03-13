@@ -21,6 +21,7 @@ namespace Core {
 	namespace Graphics {
 		class OpenGLPipeline : public Pipeline {
 		public:
+			~OpenGLPipeline();
 			void Init() override;
 			void PreRender() override;
 			void Render() override;

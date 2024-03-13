@@ -26,6 +26,12 @@ namespace Core {
 	namespace Graphics {
 		static Primitives::Camera cam;
 
+		OpenGLPipeline::~OpenGLPipeline() {
+			ImGui_ImplOpenGL3_Shutdown();
+			ImGui_ImplSDL2_Shutdown();
+			ImGui::DestroyContext();
+		}
+
 		// ------------------------------------------------------------------------
 		/*! Init
 		*
