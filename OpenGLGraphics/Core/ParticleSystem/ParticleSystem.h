@@ -89,8 +89,8 @@ namespace Core
 				float width = 10.0f;
 				//1.0f by default
 				float particleSize = 1.0f;
-				//0.005f by default
-				float sigma = 0.005f;
+				//0.05f by default
+				float sigma = 0.05f;
 				//Clock, increase with each update
 				int delta = 0;
 

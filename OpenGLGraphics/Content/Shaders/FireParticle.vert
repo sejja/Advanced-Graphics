@@ -16,6 +16,7 @@ const float e = 2.7182818284f;
 
 out vec3 absolutePos;
 out vec3 finalParticlePos;
+out vec3 instancePos;
 out float r;
 
 float newPos (float labse){
@@ -30,6 +31,7 @@ float newRelation (float x){
 void main()
 {
     //Set constants points
+    instancePos = instancePosition;
     absolutePos = instancePosition + center;
     const vec3 centerTop = vec3(center.x, center.y + height/2, center.z );
 
