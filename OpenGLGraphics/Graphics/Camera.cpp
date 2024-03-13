@@ -74,6 +74,8 @@ namespace Core {
 			else if (RTTI::IsA<const InputManager::Space_Down>(&event)) {
 				mPosition.y += 1;
 			}
+
+			std::cout << "X = " << mPosition.x << "; Y = " << mPosition.y << "; Z = " << mPosition.z << "\n";
 		}
 	}
 }

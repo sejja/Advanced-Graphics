@@ -188,6 +188,9 @@
     <ClCompile Include="Core\Events\TypeInfo.cpp" />
     <ClCompile Include="Core\InputManager.cpp" />
     <ClCompile Include="Core\ObjectAllocator.cpp" />
+    <ClCompile Include="Core\ParticleSystem\FireSystem.cpp" />
+    <ClCompile Include="Core\ParticleSystem\ParticleManager.cpp" />
+    <ClCompile Include="Core\ParticleSystem\ParticleSystem.cpp" />
     <ClCompile Include="Core\Pipeline.cpp" />
     <ClCompile Include="Core\ResourceManager.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
@@ -247,6 +250,9 @@
     <ClInclude Include="Core\Editor\SelectedObj.h" />
     <ClInclude Include="Core\Events\Event.h" />
     <ClInclude Include="Core\Events\EventDispatcher.h" />
+    <ClInclude Include="Core\ParticleSystem\FireSystem.h" />
+    <ClInclude Include="Core\ParticleSystem\ParticleManager.h" />
+    <ClInclude Include="Core\ParticleSystem\ParticleSystem.h" />
     <ClInclude Include="Core\RTTI.h" />
     <ClInclude Include="Core\Events\TypeInfo.h" />
     <ClInclude Include="Core\InputManager.h" />
@@ -728,6 +734,12 @@
     <None Include="Content\Shaders\DeferredLighting.vert" />
     <None Include="Content\Shaders\DirectionalLightShader.frag" />
     <None Include="Content\Shaders\DirectionalLight.shader" />
+    <None Include="Content\Shaders\FireParticle.frag" />
+    <None Include="Content\Shaders\FireParticle.shader">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+    </None>
+    <None Include="Content\Shaders\FireParticle.vert" />
     <None Include="Content\Shaders\Refractive.frag" />
     <None Include="Content\Shaders\Refractive.shader" />
     <None Include="Content\Shaders\Renderer.frag" />

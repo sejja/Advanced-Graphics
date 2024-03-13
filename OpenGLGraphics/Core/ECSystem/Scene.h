@@ -14,13 +14,16 @@
 #include <execution>
 #include "Parser.h"
 #include "Graphics/Primitives/Renderables.h"
+#include "Core/ParticleSystem/ParticleManager.h"
+#include <iostream>
+#include "Graphics/OpenGLPipeline.h"
 
 namespace Core {
 	class Renderable;
 	class Scene {
 #pragma region //Functions
 	public:
-		void CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Object>& obj)>);
+		void CreateScene(const std::string_view& file, Core::Graphics::OpenGLPipeline& pipe, std::function<void(const std::shared_ptr<Object>& obj)>);
 		void Tick();
 
 		template<typename PIPE>
@@ -41,7 +44,7 @@ namespace Core {
 	};
 
 	// ------------------------------------------------------------------------
-	/*! Get Resource
+	/*! Get Resource THIS FUNCTION IS OBSOLETE AND IT HAS REFERENCES PROBLEMS
 	*
 	*   Gets a resource given the name
 	*/ // ---------------------------------------------------------------------
@@ -49,14 +52,19 @@ namespace Core {
 	void Scene::UploadObjectsToPipeline(PIPE& pipe) {
 		using namespace Core;
 
-		std::for_each(std::execution::unseq, mObjects.begin(), mObjects.end(), [&pipe](const std::shared_ptr<Object>& obj) {
-			std::for_each(std::execution::unseq, obj->mComponents.begin(), obj->mComponents.end(), [&pipe](const std::shared_ptr<Component>& comp) {
-				std::shared_ptr<Renderable> renderable = std::dynamic_pointer_cast<Renderable>(comp);
+		std::for_each(std::execution::unseq, mObjects.begin(), mObjects.end(), [&pipe](const std::shared_ptr<Object>& obj) 
+			{
+				std::for_each(std::execution::unseq, obj->mComponents.begin(), obj->mComponents.end(), [&pipe](const std::shared_ptr<Component>& comp) 
+					{
+					std::shared_ptr<Renderable> renderable = std::dynamic_pointer_cast<Renderable>(comp);
 
-				//If the object is a renderable
-				if (renderable) pipe.AddRenderable(std::dynamic_pointer_cast<Renderable>(comp));
-				});
-			});
+					//If the object is a renderable
+					if (renderable) pipe.AddRenderable(std::dynamic_pointer_cast<Renderable>(comp));
+					}
+				);
+
+			}
+		);
 	}
 }
 

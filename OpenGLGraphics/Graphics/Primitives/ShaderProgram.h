@@ -38,6 +38,7 @@ namespace Core {
 			void inline SetShaderUniform(const std::string_view& name, int* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, float* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, glm::mat4* value, const int count = 1);
+			void inline SetShaderUniformMatrix4d(const std::string_view& name, glm::mat4* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, glm::mat3* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, glm::vec2* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, glm::vec3* value, const int count = 1);
@@ -100,7 +101,9 @@ namespace Core {
 		void ShaderProgram::SetShaderUniform(const std::string_view& name, glm::mat4* value, const int count) {
 			glUniformMatrix4fv(getUniformLocation(name), count, GL_FALSE, reinterpret_cast<float*>(value));
 		}
-
+		void ShaderProgram::SetShaderUniformMatrix4d(const std::string_view& name, glm::mat4* value, const int count) {
+			glUniformMatrix4fv(getUniformLocation(name), count, GL_FALSE, reinterpret_cast<float*>(value));
+		}
 		// ------------------------------------------------------------------------
 		/*! Set Shader Uniform
 		*

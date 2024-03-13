@@ -186,6 +186,18 @@
     <ClCompile Include="Graphics\Architecture\HDRBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Architecture\SamplingBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ParticleSystem\ParticleManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ParticleSystem\ParticleSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ParticleSystem\FireSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Network\Common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1655,6 +1667,18 @@
     <ClInclude Include="Core\Editor\Interface\SceneView.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Architecture\SamplingBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ParticleSystem\ParticleManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ParticleSystem\ParticleSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ParticleSystem\FireSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Core\Editor\SelectedObj.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2104,6 +2128,9 @@
     <None Include="Content\Shaders\Renderer.frag" />
     <None Include="Content\Shaders\Renderer.shader" />
     <None Include="Content\Shaders\Renderer.vert" />
+    <None Include="Content\Shaders\FireParticle.frag" />
+    <None Include="Content\Shaders\FireParticle.shader" />
+    <None Include="Content\Shaders\FireParticle.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
