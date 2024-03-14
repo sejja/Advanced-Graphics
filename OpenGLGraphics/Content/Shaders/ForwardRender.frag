@@ -15,5 +15,4 @@ out vec4 FragColor;
 *   Given already rendered geometry (gAlbedo), light the scene *Does magic*
 */ //----------------------------------------------------------------------
 void main() {
-	FragColor = vec4(1, 0, 0, 0.3);
 } 

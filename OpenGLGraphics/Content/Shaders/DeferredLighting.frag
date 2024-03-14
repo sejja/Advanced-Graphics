@@ -28,6 +28,7 @@ struct Light {
     float mOutterAngle;
     float mFallOff;
     int mType;
+    bool mCastShadows;
 };
 
 layout (std140) uniform UniformBuffer {
@@ -76,7 +77,7 @@ float ShadowCalculation(vec4 fragPosLightSpace, vec3 normal) {
 */ //----------------------------------------------------------------------
 vec4 bloom(vec4 finalcolor) {
     vec4 bloomColor = texture(bBloomTexture, oUVs).rgba;
-    return mix(finalcolor, bloomColor, 0.75); // linear interpolation
+    return mix(finalcolor, bloomColor, 0.05); // linear interpolation
 }
 
 // ------------------------------------------------------------------------
@@ -90,6 +91,11 @@ void main() {
     const vec3 normal = texture(gNormal, oUVs).rgb;
  
     vec3 totalLightShine = vec3(0, 0, 0);
+
+    float shadow = 1;
+
+    if(uLight.mCastShadows)
+        shadow = 1 - ShadowCalculation(uShadowMatrix * vec4(fragPos, 1), normal);
     
     vec3 lightDir;
         float att = pow(smoothstep(uLight.mRadius, 0, length(uLight.mPosition - fragPos)), uLight.mFallOff);
@@ -130,7 +136,7 @@ void main() {
             //ambient
             * ((spotlight * 
             //shadowmapping
-            (1 - ShadowCalculation(uShadowMatrix * vec4(fragPos, 1), normal)) 
+            (shadow) 
             //difuse
             * (max(dot(normal, lightDir), 0.0) * uLight.mColor 
             //specular

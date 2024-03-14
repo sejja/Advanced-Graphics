@@ -74,11 +74,19 @@ namespace Core {
 
 			light->SetPosition(x.pos);
 			light->mData.mDirection = x.dir;
+			if(i < 4)
 			light->mData.mColor = x.col;
-			light->mData.mRadius = 20.f;
+			else
+			light->mData.mColor = glm::vec3(((double)rand() / (RAND_MAX)) + 1, ((double)rand() / (RAND_MAX)) + 1, ((double)rand() / (RAND_MAX)) + 1);
+			light->mData.mRadius = x.att.x;
 			light->mData.mInner = x.inner;
 			light->mData.mOutter = x.outer;
 			light->mData.mFallOff = x.falloff;
+
+			if(i < 4)
+				light->mData.mShadowCaster = 1;
+			else
+				light->mData.mShadowCaster = 0;
 
 			//If the light is a point light
 			if (x.type == "POINT") light->mData.mType = ::Graphics::Primitives::Light::LightType::Point;

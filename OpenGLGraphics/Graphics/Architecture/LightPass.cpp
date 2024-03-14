@@ -44,7 +44,7 @@ namespace Graphics {
 		*   Using the buffers created on the geometry pass, we can
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
-		void LightPass::RenderLights(Core::Graphics::GBuffer& gBuffer, Bloom::BloomRenderer& bloomRend, const std::vector<glm::mat4>& shadow_mtx) {
+		void LightPass::RenderLights(Core::Graphics::GBuffer& gBuffer, Bloom::BloomRenderer& bloomRend, std::vector<glm::mat4>& shadow_mtx) {
 			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 			glEnable(GL_BLEND);
 			glBlendEquation(GL_FUNC_ADD);
@@ -75,9 +75,15 @@ namespace Graphics {
 				shadptr->SetShaderUniform((id + ".mOutterAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mOutter);
 				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &::Graphics::Primitives::Light::sLightData[i].mFallOff);
 				shadptr->SetShaderUniform((id + ".mType").c_str(), static_cast<int>(::Graphics::Primitives::Light::sLightData[i].mType));
-				::Graphics::Primitives::Light::sLightData[i].mShadowMap.BindTexture(4);
-				gBuffer.GetLightingShader()->Get()->SetShaderUniform("uShadowMatrix", shadow_mtx.data() + i);
+				shadptr->SetShaderUniform((id + ".mCastShadows").c_str(), static_cast<int>(::Graphics::Primitives::Light::sLightData[i].mShadowCaster));
+				if (::Graphics::Primitives::Light::sLightData[i].mShadowCaster) {
+					shadptr->SetShaderUniform("uShadowMatrix", shadow_mtx.data() + i);
+					::Graphics::Primitives::Light::sLightData[i].mShadowMap.BindTexture(4);
+				}
+				glEnable(GL_CULL_FACE);
 				RenderScreenQuad();
+				glCullFace(GL_BACK);
+
 			}
 		}
 

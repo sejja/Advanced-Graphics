@@ -25,7 +25,7 @@ namespace Graphics {
 			LightPass();
 			~LightPass();
 
-			void RenderLights(Core::Graphics::GBuffer& gBuffer, Bloom::BloomRenderer& bloomRend, const std::vector<glm::mat4>& shadow_mtx);
+			void RenderLights(Core::Graphics::GBuffer& gBuffer, Bloom::BloomRenderer& bloomRend, std::vector<glm::mat4>& shadow_mtx);
 			void RenderScreenQuad();
 			void StencilPass(Primitives::Light::BackedLightData& data);
 			GLuint mScreenQuadVAO, mScreenQuadVBO;

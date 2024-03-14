@@ -25,7 +25,7 @@ namespace Graphics {
 				float mInner;
 				float mOutter;
 				float mFallOff;
-				bool mShadowCaster;
+				int mShadowCaster;
 				LightType mType;
 				float CalculateSphereOfInfluence() const;
 				Core::Graphics::FrameBuffer mShadowMap;

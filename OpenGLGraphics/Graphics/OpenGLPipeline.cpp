@@ -94,7 +94,6 @@ namespace Core {
 					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 			}
 			ImGui::End();
-
 		}
 
 		// ------------------------------------------------------------------------
@@ -280,6 +279,7 @@ namespace Core {
 
 			glViewport(0, 0, mDimensions.x * 4, mDimensions.y * 4);
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
+				if(!::Graphics::Primitives::Light::sLightData[i].mShadowCaster) continue;
 				::Graphics::Primitives::Light::sLightData[i].mShadowMap.Bind();
 				::Graphics::Primitives::Light::sLightData[i].mShadowMap.Clear(true);
 
