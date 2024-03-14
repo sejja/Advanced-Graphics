@@ -84,7 +84,7 @@ namespace Core {
 				 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
 			};
 			// setup plane VAO
-
+			glEnable(GL_PROGRAM_POINT_SIZE);
 			glGenVertexArrays(1, &mScreenQuadVAO);
 			glGenBuffers(1, &mScreenQuadVAO);
 			glBindVertexArray(mScreenQuadVBO);
@@ -293,6 +293,8 @@ namespace Core {
 			UpdateUniformBuffers();
 			GeometryPass();
 
+			//RenderParticlesSystems();
+
 			//Bind and Clean
 			if (AntiAliasing) {mSamplingBuffer->Bind();mSamplingBuffer->Clear();}
 			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
@@ -304,6 +306,8 @@ namespace Core {
 			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 
 			Skybox::sCurrentSky->Render(cam,*this);
+
+			RenderParticlesSystems();
 
 			if (AntiAliasing) 
 			{
@@ -543,6 +547,23 @@ namespace Core {
 		void OpenGLPipeline::DirectionalLightPass() {	
 			mDirectionalLightShader->Get()->Bind();
 			RenderScreenQuad();
+		}
+
+		void OpenGLPipeline::RenderParticlesSystems()
+		{
+			if (auto currentParticleManager = particleManager.lock()) 
+			{
+				currentParticleManager->Render(&cam);
+			}
+			else 
+			{
+				std::cout << "ERROR -> PARTICLEMANAGER WAS DESTROYED \n";
+			}
+
+		}
+
+		void OpenGLPipeline::SetParticleManager(std::shared_ptr<Core::Particles::ParticleMangager> particleManager) {
+			this->particleManager = particleManager;
 		}
 	}
 

@@ -16,6 +16,7 @@
 #include "Graphics/Architecture/GBuffer.h"
 #include "Graphics/Architecture/HDRBuffer.h"
 #include "Graphics/Architecture/SamplingBuffer.h"
+#include "Core/ParticleSystem/ParticleManager.h"
 
 using namespace Core::Graphics;
 
@@ -31,6 +32,7 @@ namespace Core {
 			inline void Shutdown() override;
 			virtual void SetDimensions(const glm::lowp_u16vec2& dim) override;
 			inline void AddRenderable(const std::weak_ptr<Renderable>& renderer);
+			void SetParticleManager(std::shared_ptr<Core::Particles::ParticleMangager> particleManager);
 			GBuffer* GetGBuffer();
 			FrameBuffer* GetRenderFrameBuffer();
 			GLuint GetRenderTexture();
@@ -55,9 +57,13 @@ namespace Core {
 			void RenderShadowMaps();
 			void RenderScreenQuad();
 			void UpdateUniformBuffers();
+			void RenderParticlesSystems();
 			void DirectionalLightPass();
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
+
+			std::weak_ptr<Core::Particles::ParticleMangager> particleManager;
+
 			glm::lowp_u16vec2 mDimensions;
 			glm::lowp_u16vec2 sceneFrameDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
@@ -65,11 +71,10 @@ namespace Core {
 			Asset<ShaderProgram> mDirectionalLightShader;
 			std::unique_ptr<FrameBuffer> mFrameBuffer;
 			std::unique_ptr<HDRBuffer> mHDRBuffer;
-
 			std::unique_ptr<SamplingBuffer> mSamplingBuffer;
+			GLuint mUniformBuffer;
 
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
-			GLuint mUniformBuffer;
 
 
 			GLboolean AntiAliasing = false;
