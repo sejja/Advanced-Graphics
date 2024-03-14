@@ -447,6 +447,7 @@ namespace Core {
 			RenderScreenQuad();
 		}
 
+
 		void OpenGLPipeline::RenderShadowMaps() {
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
@@ -466,7 +467,7 @@ namespace Core {
 					shadow->SetShaderUniform("uView", &lightView);
 
 					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
-						GroupRender(obsoletes ,it, shadow);
+						GroupRender(obsoletes, it, shadow);
 						});
 
 					FlushObsoletes(obsoletes);

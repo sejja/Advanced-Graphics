@@ -50,6 +50,7 @@ void Properties::Render() {
 
     std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
 
+
     if (selectedObjIns.GetSelectedComponent() && lightComp) {
         if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "  Light", ImGuiTreeNodeFlags_DefaultOpen)) {
             LightingOptions();
@@ -204,6 +205,11 @@ void Properties::selectedObjectTree() {
 					selectedObjIns.SetSelectedComponent(comp);
 				}
 			}
+            else {
+                if (ImGui::Selectable(ICON_FA_FIRE" Mubi", isCompSelectedObj)) {
+                    selectedObjIns.SetSelectedComponent(comp);
+                }
+            }
 			
         }
 

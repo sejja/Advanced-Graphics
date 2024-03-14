@@ -6,7 +6,9 @@ namespace Core
 {
 	namespace Particles
 	{
-		ParticleMangager::ParticleMangager() {}
+		ParticleMangager::ParticleMangager() {
+			SetName("ParticleManager");
+		}
 		ParticleMangager::~ParticleMangager() {}
 
 		/*Add a ParticleSystem as a component*/

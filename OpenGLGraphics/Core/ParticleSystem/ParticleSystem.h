@@ -24,6 +24,7 @@ namespace Core
 
 				ParticleSystem(const std::weak_ptr<Object>& parent);
 				~ParticleSystem();
+
 				
 				void SetCameraReference(Core::Primitives::Camera* camera);
 				Core::Primitives::Camera* GetCameraReference();
