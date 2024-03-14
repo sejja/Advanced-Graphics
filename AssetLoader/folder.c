@@ -45,7 +45,13 @@ int saveFolder(Folder* folder, sqlite3* database, int parentFolderCode) {
     //printf("Saving folder\n");
     sqlite3_stmt* stmt;
     char stmtString[300];
-    sprintf(stmtString, "INSERT INTO CARPETA(ID, NOMBRE, RUTA, ID_CARPETA_SUPERIOR) VALUES(%d, '%s', '%s', '%d');", folder->code, folder->name, folder->path, parentFolderCode);
+    if (parentFolderCode == 0) {
+        sprintf(stmtString, "INSERT INTO CARPETA(ID, NOMBRE, RUTA) VALUES(%d, '%s', '%s');", folder->code, folder->name, folder->path);
+    }
+    else {
+        sprintf(stmtString, "INSERT INTO CARPETA(ID, NOMBRE, RUTA, ID_CARPETA_SUPERIOR) VALUES(%d, '%s', '%s', '%d');", folder->code, folder->name, folder->path, parentFolderCode);
+    }
+    
     //const char* hola = "Hola";
     printf("SQL statement: %s\n", stmtString);
     sqlite3_prepare_v2(database, stmtString, -1, &stmt, NULL);

@@ -9,15 +9,19 @@
 void cargarDirectorio(char incomePath[], sqlite3* database, int folderCode);
 void emptyDatabase(sqlite3* database);
 
-int main() {
+int main(int argc, char* argv[]) {
 
-    char actualPath[100];
+    char* actualPath;
 
-    _getcwd(actualPath, sizeof(actualPath));
+    /*_getcwd(actualPath, sizeof(actualPath));
 
     printf("El directorio actual es: %s\n", actualPath);
 
-    strcat(actualPath, "\\folderI");
+    strcat(actualPath, "\\folderI");*/
+
+    actualPath = argv[1];
+
+    printf("%s\n", actualPath);
 
     //Conexión con base de datos
     sqlite3* database;
@@ -39,9 +43,9 @@ int main() {
     // printf("Codigo cierre query: %s\n", sqlite3_errstr(i));
 
     
-    Folder* folder = createFolder(actualPath, 0);
+    Folder* folder = createFolder(actualPath, 0); //Esto igual no tiene sentido
     //saveFolder(folder, database);
-    char* sqlString[300];
+    /*char* sqlString[300];
     sprintf(sqlString, "INSERT INTO CARPETA(ID, NOMBRE, RUTA) VALUES(%d, '%s', '%s');", folder->code, folder->name, folder->path);
     sqlite3_stmt* stmt;
     sqlite3_prepare_v2(database, sqlString, -1, &stmt, NULL);
@@ -50,7 +54,7 @@ int main() {
     printf("Error String: %s\n", sqlite3_errstr(i));
     sqlite3_finalize(stmt);
     printf("Asset saved\n");
-    destroyFolder(folder);
+    destroyFolder(folder);*/
     
     cargarDirectorio(actualPath, database, 0);
 

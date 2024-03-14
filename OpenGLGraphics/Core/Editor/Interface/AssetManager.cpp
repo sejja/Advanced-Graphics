@@ -12,14 +12,6 @@ std::string texto = "No se ha droppeado nada";
 
 AssetManager::AssetManager() {
 	printf("Intentado abrir base de datos\n");
-	//Core::Editor::Database db("database.db");
-	//this->db = new Core::Editor::Database("database.db");
-	//assets = db.getFilesOfFolder("Ruta");
-	//assets = db->getFilesOfRoot();
-	
-	//Singleton<Editor>::Instance().database->getFilesOfRoot();
-
-	//db.closeConnection();
 }
 
 void AssetManager::Render() {
@@ -36,9 +28,26 @@ void AssetManager::Render() {
 
 	//Dibujar el menú para regresar
 	ImGui::BeginGroup();
-	ImGui::Button("PrevFold");
+	//ImGui::PushStyleColor(ImGuiCol_);
+	if (ImGui::Button(ICON_FA_ARROW_UP, ImVec2(25, 25))) {
+		gotoPreviousFolder();
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_HOUSE, ImVec2(25, 25))) {
+		init();
+	}
+
+	ImGui::SameLine();
+	ImGui::BeginGroup();
+	ImGui::Dummy(ImVec2(0,1));
+	ImGui::Text(folder.ruta);
 	ImGui::EndGroup();
 
+	ImGui::EndGroup();
+
+	ImGui::Separator();
+
+	ImGui::BeginGroup();
 	int cont = 0;
 	for (int i = 0; i < assets.size(); i++) { //TODO intentar centrar elementos
 		//ImGui::Button("Boton", btSize);
@@ -47,10 +56,7 @@ void AssetManager::Render() {
 			switch (assets[i].tipo)
 			{
 			case AssetType::FOLDER:
-				printf("Carpeta\n");
-				printf("%s\n", assets[i].ruta);
-				//assets = editor->database->getFilesOfFolder(assets[i].ruta);
-				assets = Singleton<Editor>::Instance().database->getFilesOfFolder(assets[i].ruta);
+				changeDirectory(i);
 				break;
 			default:
 				printf("Click\n");
@@ -72,11 +78,23 @@ void AssetManager::Render() {
 	}
 
 	ImGui::NewLine();
+	ImGui::EndGroup();
 	ImGui::End();
 
 	drawDropWindow();
 
 	
+}
+
+void AssetManager::changeDirectory(int i)
+{
+	printf("Carpeta\n");
+	previousFolders.push(folder);
+	folder = assets[i];
+	printf("%s\n", assets[i].ruta);
+	//assets = editor->database->getFilesOfFolder(assets[i].ruta);
+	// Aquí queda memoria sin liberar??
+	assets = Singleton<Editor>::Instance().database->getFilesOfFolder(assets[i].ruta);
 }
 
 int AssetManager::elementosPorFila(int anchoVentana, int anchoElemento)
@@ -106,4 +124,24 @@ void drawDropWindow() { //Para eliminar en la verrsion final
 
 void AssetManager::init() {
 	assets = Singleton<Editor>::Instance().database->getFilesOfRoot();
+	folder = AssetIcon(); //Esto cambiar
+	folder.ruta = "Core";
+}
+
+void AssetManager::gotoPreviousFolder() {
+	switch (previousFolders.size()) {
+	case 0:
+		break;
+	case 1:
+		folder = previousFolders.top();
+		previousFolders.pop();
+		assets = Singleton<Editor>::Instance().database->getFilesOfRoot();
+		break;
+	default:
+		folder = previousFolders.top();
+		previousFolders.pop();
+		assets = Singleton<Editor>::Instance().database->getFilesOfFolder(folder.ruta);
+		break;
+	}
+	
 }
