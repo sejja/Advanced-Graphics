@@ -167,7 +167,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Behaviors\AnimationComponent.cpp" />
     <ClCompile Include="Core\Assets\ModelImporter.cpp" />
     <ClCompile Include="Core\Assets\ShaderImporter.cpp" />
     <ClCompile Include="Core\Assets\TextureImporter.cpp" />
@@ -216,7 +215,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
-    <ClInclude Include="Behaviors\AnimationComponent.h" />
     <ClInclude Include="Core\Allocator.h" />
     <ClInclude Include="CommonDefines.h" />
     <ClInclude Include="Core\Assets\ModelImporter.h" />

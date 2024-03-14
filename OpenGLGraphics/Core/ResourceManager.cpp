@@ -102,7 +102,7 @@ void ResourceManager::RemoveResource(raw_text name) noexcept {
 void ResourceManager::ShutDown() {
 	std::for_each(importers.begin(), importers.end(), [](const std::pair<std::string, IResourceImporter*>& x)
 		{
-			Allocator<IResourceImporter>::deallocate(x.second);
+			Core::Allocator<IResourceImporter>::deallocate(x.second);
 		});
 
 	resources.clear();
