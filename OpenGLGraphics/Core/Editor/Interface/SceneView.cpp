@@ -16,7 +16,7 @@ void SceneView::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	dim.x = static_cast<uint16_t>(viewportPanelSize.x);
 	dim.y = static_cast<uint16_t>(viewportPanelSize.y);
 
-	//printf("Viewport size 1: %d, %d\n", dim.x, dim.y);
+	printf("Viewport size 1: %d, %d\n", dim.x, dim.y);
 
 	pipeline.setSceneFrameDimensions(dim);
 	//pipeline.Render();
