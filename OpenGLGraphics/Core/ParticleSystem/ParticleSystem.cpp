@@ -35,6 +35,15 @@ namespace Core
             return this->center;
         }
 
+        float ParticleSystem::getHeigth()
+		{
+			return this->height;
+		}
+
+        void ParticleSystem::setHeigth(float newHeigth) {
+            this->height = newHeigth;
+        }
+
         /* Doom fast reverse squareroot
         */
         float ParticleSystem::q_rsqrt(float number)

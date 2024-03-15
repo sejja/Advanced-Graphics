@@ -31,6 +31,9 @@ namespace Core
 				void SetSystemCenter(glm::vec3 newCenter);
 				glm::vec3 GetSystemCenter();
 
+				float getHeigth();
+				void setHeigth(float newHeigth);	
+
 				float q_rsqrt(float number);
 				float RandomFloat(float a, float b);
 

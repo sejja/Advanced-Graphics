@@ -18,8 +18,7 @@
 #include "Core/Editor/Editor.h"
 #include "Core/Network/Server.h"
 #include "Core/Network/Client.h"
-
-
+#include "Core/ParticleSystem/ParticleSystem.h"
 
 
 //SelectedObj& selectedObjIns = Singleton<SelectedObj>::Instance();
@@ -45,6 +44,15 @@ void Properties::Render() {
 
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
             TransformOptions();
+        }
+    }
+
+    if (selectedObjIns.GetSelectedComponent()) {
+        //La lista de componentes del objeto seleccionado
+        objectOutliner();
+        
+        if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Particle Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ParticleTransform();
         }
     }
 
@@ -231,6 +239,29 @@ void sendToPeer(std::shared_ptr<Core::Object> obj) {
 	}
     
 }
+
+void Properties::ParticleTransform() {
+    
+
+    std::shared_ptr<Core::Component> particleComp = selectedObjIns.GetSelectedComponent();
+    std::shared_ptr<Core::Particles::ParticleSystem> particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(particleComp);
+
+    glm::vec3 curCenter = particleSystem->GetSystemCenter();
+    float preY = curCenter[1];
+    float curHeight = particleSystem->getHeigth();
+
+
+    TransformRow("Center", curCenter[0], curCenter[1], curCenter[2]);
+
+    //particleSystem->setHeigth(curCenter[1] - preY - curHeight);
+    particleSystem->SetSystemCenter(curCenter);
+    
+
+
+}
+
+
+
 
 void Properties::TransformOptions() {
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
