@@ -8,6 +8,7 @@ namespace Core
 	{
 		ParticleMangager::ParticleMangager() {
 			SetName("ParticleManager");
+			SetID("PARTICLE_MANAGER");
 		}
 		ParticleMangager::~ParticleMangager() {}
 

@@ -31,52 +31,58 @@ SelectedObj& selectedObjIns = Singleton<Editor>::Instance().GetSelectedObj();
 void Properties::Render() {
 	ImGui::Begin(ICON_FA_SLIDERS " Properties");
 
+    std::shared_ptr<Core::Particles::ParticleSystem> particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(selectedObjIns.GetSelectedComponent());
+    std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
+    std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
+
 	// Property tool search input
-	static char str1[128] = "";
-	ImGui::InputTextWithHint("##SearchProperty", ICON_FA_MAGNIFYING_GLASS " Search property", str1, IM_ARRAYSIZE(str1));
-	ImGui::Spacing();
+	static char search_input_field[128] = "";
+	ImGui::InputTextWithHint("##SearchProperty", ICON_FA_MAGNIFYING_GLASS " Search property", search_input_field, IM_ARRAYSIZE(search_input_field));
+    ImGui::Spacing();
 
-    
-
-    if (selectedObjIns.GetSelectedObject()) {
+    if (selectedObjIns.GetSelectedObject() && !particleSystem) {
         //La lista de componentes del objeto seleccionado
         objectOutliner();
+    }
+    
+    if (meshComp) {
 
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
             TransformOptions();
         }
-    }
 
-    if (selectedObjIns.GetSelectedComponent()) {
-        //La lista de componentes del objeto seleccionado
-        objectOutliner();
-        
-        if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Particle Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
-            ParticleTransform();
+        if (ImGui::CollapsingHeader(ICON_FA_BRUSH "  Material", ImGuiTreeNodeFlags_DefaultOpen)) {
+            MaterialsOptions();
+        }
+
+        if (ImGui::CollapsingHeader(ICON_FA_SHAPES "  Static Mesh", ImGuiTreeNodeFlags_DefaultOpen)) {
+            MeshOptions();
         }
     }
-
-    std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
-
-
-    if (selectedObjIns.GetSelectedComponent() && lightComp) {
+    else if (lightComp) {
         if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "  Light", ImGuiTreeNodeFlags_DefaultOpen)) {
             LightingOptions();
         }
     }
 
+    else if (particleSystem) {
 
+        if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Particle Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ParticleTransform();
+        }
 
-    if (ImGui::CollapsingHeader(ICON_FA_BRUSH "  Material", ImGuiTreeNodeFlags_DefaultOpen)) {
-		MaterialsOptions();
 	}
 
-    if (ImGui::CollapsingHeader(ICON_FA_SHAPES "  Static Mesh", ImGuiTreeNodeFlags_DefaultOpen)) {
-        MeshOptions();
-    }
+    else {
+		ImGui::Text("No component selected");
+	}
+
+
 
 	ImGui::End();
 }
+
+
 
 void TextPaddingWBg(const char* text, ImVec4 bgColor) {
     ImVec2 labelSize = ImGui::CalcTextSize(text);
@@ -92,7 +98,7 @@ void TextPaddingWBg(const char* text, ImVec4 bgColor) {
 
 
 void TransformRow(const char* title,float& x_val, float& y_val, float& z_val) {
-    //TODO CONVERTIRLO EN UNA GRID
+    //TODO: CONVERTIRLO EN UNA GRID
     static char defaultValue[16] = "0";
     const float f32_zero = -1000.f;
     const float f32_one = 1000.f;
@@ -241,7 +247,6 @@ void sendToPeer(std::shared_ptr<Core::Object> obj) {
 }
 
 void Properties::ParticleTransform() {
-    
 
     std::shared_ptr<Core::Component> particleComp = selectedObjIns.GetSelectedComponent();
     std::shared_ptr<Core::Particles::ParticleSystem> particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(particleComp);
@@ -255,8 +260,6 @@ void Properties::ParticleTransform() {
 
     //particleSystem->setHeigth(curCenter[1] - preY - curHeight);
     particleSystem->SetSystemCenter(curCenter);
-    
-
 
 }
 
