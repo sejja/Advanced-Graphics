@@ -102,6 +102,7 @@ namespace Core {
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 			glBindBufferRange(GL_UNIFORM_BUFFER, 0, mUniformBuffer, 0, 2 * sizeof(glm::mat4) + sizeof(glm::vec3));
+			Singleton<::Editor>::Instance().assetManager.init();
 		}
 
 		GBuffer* OpenGLPipeline::GetGBuffer() {
@@ -262,7 +263,7 @@ namespace Core {
 
 
 			//Render editor
-			Singleton<Editor>::Instance().Render(*this);
+			Singleton<::Editor>::Instance().Render(*this);
 
 			ImGui::Begin("Exposure Window");
 			ImGui::SliderFloat("Exposure", &exposure, 0, 5);

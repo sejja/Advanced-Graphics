@@ -12,6 +12,7 @@
 #include "Interface/SceneView.h"
 #include "Interface/MainMenu.h"
 #include "Core/Editor/SelectedObj.h"
+#include "database.h"
 
 
 
@@ -19,12 +20,16 @@ class Editor {
 
 public:
     Editor();
+    ~Editor();
 
     void Render(Core::Graphics::OpenGLPipeline& pipeline);
 
     bool IsEditorLocked();
+    Core::Editor::Database* database;
+    AssetManager assetManager;
 
     SelectedObj& GetSelectedObj() { return selectedObj; }
+    
 
 private:
     bool editorLocked;
@@ -32,7 +37,7 @@ private:
 
     MainMenu mainMenu;
     Properties properties;
-    AssetManager assetManager;
+    
     Outliner outliner;
     SceneView sceneView;
 

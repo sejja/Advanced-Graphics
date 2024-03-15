@@ -4,9 +4,13 @@
 #include "Core/Window/SDLWindow.h"
 #include "Core/Editor/SelectedObj.h"
 #include "Core/Singleton.h"
+#include "database.h"
 
 
-Editor::Editor() : editorLocked(false) {}
+Editor::Editor() : editorLocked(false) {
+	this->database = new Core::Editor::Database("../AssetLoader/database.db");
+	//assetManager = std::make_unique < AssetManager >();
+}
 
 bool Editor::IsEditorLocked() {
 	return editorLocked;
@@ -39,5 +43,10 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	
 
 
+}
+
+Editor::~Editor() {
+	database->closeConnection();
+	delete database;
 }
 
