@@ -1,10 +1,23 @@
 #include "clientWindows.h"
 
-void sendFile(SOCKET sockfd) {
+char* changeExtension(char* myStr) {
+    char* retStr;
+    char* lastExt;
+    if (myStr == NULL) return NULL;
+    if ((retStr = malloc(strlen(myStr) + 5)) == NULL) return NULL;
+    strcpy(retStr, myStr);
+    lastExt = strrchr(retStr, '.');
+    if (lastExt != NULL)
+        *lastExt = '\0';
+    strcat(retStr, ".spv");
+    return retStr;
+}
+
+void sendFile(SOCKET sockfd, const char* filePath) {
     char* buffer = malloc(MAX);
     FILE* fp;
 
-    if (fopen_s(&fp, "Content/Shaders/Skybox.frag", "rb") != 0) { // Open file in binary read mode
+    if (fopen_s(&fp, filePath, "rb") != 0) { 
         printf("Error opening file.\n");
         free(buffer);
         return;
@@ -40,16 +53,17 @@ void sendFile(SOCKET sockfd) {
     free(buffer);
 }
 
-void receiveModifiedFile(SOCKET sockfd, const char* filePath) {
+void receiveModifiedFile(SOCKET sockfd, const char filePath[]) {
     char* buffer = malloc(MAX);
     FILE* fp;
+    const char* modifiedFilePath = changeExtension(filePath);
 
     if (buffer == NULL) {
         printf("Error allocating memory for buffer.\n");
         return;
     }
 
-    if (fopen_s(&fp, "Content/Shaders/Skybox.spv", "wb") != 0) {
+    if (fopen_s(&fp, modifiedFilePath, "wb") != 0) {
         printf("Error opening file for writing.\n");
         free(buffer);
         return;
@@ -118,7 +132,7 @@ void connectToServer(const char* filePath) {
         printf("Connected to the server..\n");
 
     // Function to send file to server
-    sendFile(sockfd);
+    sendFile(sockfd, filePath);
 
     // Function to receive modified file from server
     receiveModifiedFile(sockfd,filePath);

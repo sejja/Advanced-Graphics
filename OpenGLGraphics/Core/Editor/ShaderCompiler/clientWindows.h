@@ -9,8 +9,8 @@
 #define PORT 50050
 #define SA struct sockaddr
 
-
+char* changeExtension(char* myStr);
 extern void connectToServer(const char* filePath);
-extern void sendFile(SOCKET sockfd);
-extern void receiveModifiedFile(SOCKET sockfd, const char* filePath);
+extern void sendFile(SOCKET sockfd, const char* filePath);
+extern void receiveModifiedFile(SOCKET sockfd, const char filePath[]);
 #endif // CLIENTWINDOWS_H

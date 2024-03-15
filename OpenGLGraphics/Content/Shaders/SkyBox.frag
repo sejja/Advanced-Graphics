@@ -22,3 +22,4 @@ layout(binding = 0) uniform samplerCube uSkyBox;
 void main() {    
     FragColor = texture(uSkyBox, oUVs);
 }
+
