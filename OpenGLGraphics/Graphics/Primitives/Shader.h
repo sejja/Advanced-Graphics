@@ -33,6 +33,7 @@ namespace Core {
 		#pragma region //Methods
 			void SetShaderType(const EType type, const bool createDeviceShader = false);
 			inline GLuint GetGLHandle() const noexcept;
+			void ReloadShaderSPIRV(const std::string_view& filename, EType type);
 
 		private:
 			char* LoadSource(const std::string_view& filename) const noexcept;

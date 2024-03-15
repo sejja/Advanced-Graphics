@@ -5,7 +5,9 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
-
+#include "Core/ResourceManager.h"
+#include "Graphics/Primitives/Shader.h"
+#include "Graphics/Primitives/ShaderProgram.h"
 #include "TextEditor.h"
 
 extern "C" {
@@ -58,7 +60,7 @@ TextEditor::TextEditor()
 	, mIgnoreImGuiChild(false)
 	, mShowWhitespaces(true)
 	, mStartTime(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count())
-	, fileToEdit("Content/Shaders/White.frag")
+	, fileToEdit("Content/Shaders/DeferredGeometry.frag")
 	, firstTime(true)
 {
 	SetPalette(GetDarkPalette());
@@ -316,6 +318,19 @@ int TextEditor::InsertTextAt(Coordinates& /* inout */ aWhere, const char* aValue
 	}
 
 	return totalLines;
+}
+
+char* TextEditor::changeExtension(const char* myStr, const char* changeStr) {
+	char* retStr;
+	char* lastExt;
+	if (myStr == NULL) return NULL;
+	if ((retStr = (char*)malloc(strlen(myStr) + 5)) == NULL) return NULL;
+	strcpy(retStr, myStr);
+	lastExt = strrchr(retStr, '.');
+	if (lastExt != NULL)
+		*lastExt = '\0';
+	strcat(retStr, changeStr);
+	return retStr;
 }
 
 void TextEditor::AddUndo(UndoRecord& aValue)
@@ -1154,7 +1169,14 @@ void TextEditor::Render(const char* aTitle, bool aBorder)
 			t << GetText();
 			t.close();
 			// Use C File ClientWindows to connect to server and send the file
-			connectToServer(fileToEdit);
+			if (connectToServer(fileToEdit)) {
+				// If compile succesful, load shader
+				auto vert = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Shader>("Content/Shaders/Transform.vert");
+				auto frag = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Shader>(fileToEdit);
+				frag->Get()->ReloadShaderSPIRV(changeExtension(fileToEdit,".spv"), Core::Graphics::Shader::EType::Fragment);
+				vert->Get()->ReloadShaderSPIRV("Content/Shaders/Transform.spv", Core::Graphics::Shader::EType::Vertex);
+				Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>(changeExtension(fileToEdit,".shader"))->Get()->ReloadShader(vert, frag);
+			}
 			
 		}
 

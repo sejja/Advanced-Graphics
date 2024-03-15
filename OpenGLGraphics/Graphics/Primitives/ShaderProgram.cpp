@@ -9,6 +9,7 @@
 #include <glew.h>
 #include "Core/ResourceManager.h"
 #include "ShaderProgram.h"
+#include <iostream>
 
 namespace Core {
 	namespace Graphics {
@@ -44,11 +45,43 @@ namespace Core {
 
 				GLint status;
 				glGetProgramiv(mHandle, GL_LINK_STATUS, &status);
+
+				if (status == GL_FALSE)
+				{
+					GLint maxLength = 0;
+					glGetProgramiv(mHandle, GL_INFO_LOG_LENGTH, &maxLength);
+
+					// The maxLength includes the NULL character
+					std::vector<GLchar> infoLog(maxLength);
+					glGetProgramInfoLog(mHandle, maxLength, &maxLength, infoLog.data());
+					std::cout << "Shader Program Linking Failed: " << infoLog.data() << std::endl;
+
+					// The program is useless now. So delete it.
+					glDeleteProgram(mHandle);
+
+				}
 				
 				if (status == GL_FALSE) throw ShaderProgramException("Shader Program Failed to Link");
 			}
 		}
 
+		void ShaderProgram::ReloadShader(Asset<Shader>& vertexShader, Asset<Shader>& fragmentShader) {
+			if(mHandle) {
+				glDeleteProgram(mHandle);
+			}
+
+			mHandle = glCreateProgram();
+			glAttachShader(mHandle, vertexShader->Get()->GetGLHandle());
+			glAttachShader(mHandle, fragmentShader->Get()->GetGLHandle());
+			glLinkProgram(mHandle);
+
+			GLint status;
+			glGetProgramiv(mHandle, GL_LINK_STATUS, &status);
+
+			if (status == GL_FALSE) 
+				throw ShaderProgramException("Shader Program Failed to Link");
+
+		}	
 		// ------------------------------------------------------------------------
 		/*! Get Uniform Location
 		*

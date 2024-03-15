@@ -12,15 +12,15 @@ layout (location = 0) out vec3 gPosition;
 layout (location = 1) out vec3 gNormal;
 layout (location = 2) out vec4 gAlbedoSpec;
 
-in vec2 oUVs;
-in vec3 oNormal;
-in vec3 oPosition;
-in vec3 oTangent;
-in vec3 oBitangent;
+layout (location = 5) in vec2 oUVs;
+layout (location = 6) in vec3 oNormal;
+layout (location = 7) in vec3 oPosition;
+layout (location = 8) in vec3 oTangent;
+layout (location = 9) in vec3 oBitangent;
 
-uniform mat4 uModel;
+layout(location = 0) uniform mat4 uModel;
 
-layout (std140) uniform UniformBuffer {
+layout (std140, binding = 0) uniform UniformBuffer {
 	mat4 ubView;
 	mat4 ubProjection;
     vec3 ubCameraPosition;
@@ -39,3 +39,23 @@ void main() {
     // and the diffuse per-fragment color
     gAlbedoSpec.rgba = texture(uDiffuseTex, oUVs).rgba;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

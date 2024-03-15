@@ -89,7 +89,7 @@ void receiveModifiedFile(SOCKET sockfd, const char filePath[]) {
     free(buffer);
 }
 
-void connectToServer(const char* filePath) {
+int connectToServer(const char* filePath) {
     WSADATA wsaData;
     SOCKET sockfd;
     struct sockaddr_in client;
@@ -141,5 +141,5 @@ void connectToServer(const char* filePath) {
     closesocket(sockfd);
     WSACleanup();
 
-    return;
+    return 1;
 }

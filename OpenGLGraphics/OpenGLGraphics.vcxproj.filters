@@ -2060,10 +2060,7 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="Content\Shaders\Transform.vert" />
-    <None Include="Content\Shaders\UV.frag" />
     <None Include="Content\Maps\Scene.level" />
-    <None Include="Content\Shaders\Textured.shader" />
-    <None Include="Content\Shaders\UVs.shader" />
     <None Include="Content\Shaders\White.frag" />
     <None Include="Content\Shaders\White.shader" />
     <None Include="Content\Shaders\Shadow.frag" />
