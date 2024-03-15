@@ -25,7 +25,7 @@ namespace Core
 		private:
 
 			float radiusA = 5.0f;
-			float radiusB = 1.0f;
+			float radiusB = 2.0f;
 			float radiusC = 5.0f;
 
 			bool IsElipsoid(float x, float y, float z);
