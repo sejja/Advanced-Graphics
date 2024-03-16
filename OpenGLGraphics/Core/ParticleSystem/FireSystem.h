@@ -13,7 +13,11 @@ namespace Core
 		public:
 
 			FireSystem(const std::weak_ptr<Object>& parent);
+			FireSystem(const std::weak_ptr<Object>& parent, float radiusA, float radiusB, float radiusC, float gap, float height, float acceleration);
 			~FireSystem();
+			
+			void ChangeFireSize(float radiusA, float radiusB, float radiusC, float gap, float height);
+			glm::vec3 GetRadiusVector();
 
 		protected:
 

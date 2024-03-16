@@ -4,6 +4,11 @@
 
 namespace Core {
 	namespace Particles {
+
+		/// <summary>
+		/// Default builder, default center = (0.0f, 0.0f, 75.0f)
+		/// </summary>
+		/// <param name="parent"></param>
 		FireSystem::FireSystem(const std::weak_ptr<Object>& parent): ParticleSystem(parent) {
             InitParticles();
             Init();
@@ -13,12 +18,56 @@ namespace Core {
             acceleration = glm::vec3(0.0f, 0.5f, 0.0f);
             SetSystemCenter(glm::vec3(0.0f, 0.0f, 75.0f)); 
 		}
+
+        /*The center of the system is in 0,0,0 by default*/
+        FireSystem::FireSystem(const std::weak_ptr<Object>& parent, float radiusA, float radiusB, float radiusC, float gap, float height, float acceleration) : ParticleSystem(parent)
+        {
+            this->radiusA = radiusA;
+            this->radiusB = radiusB;
+            this->radiusC = radiusC;
+            this->gap = gap;
+            this->height = height;
+            this->acceleration = glm::vec3(0.0f, acceleration, 0.0f);
+
+            InitParticles();
+            Init();
+
+            shaderProgram = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/FireParticle.shader");
+
+            particleSize = 4.0f;
+            baseColor = NormalizeRGBA(252, 186, 3, 255);
+        }
+
 		FireSystem::~FireSystem()
 		{
             glDeleteVertexArrays(1, &VAO);
             glDeleteBuffers(1, &VBO);
             shaderProgram->Get()->~ShaderProgram();
 		}
+
+        void FireSystem::ChangeFireSize(float radiusA, float radiusB, float radiusC, float gap, float height)
+        {
+            glDeleteVertexArrays(1, &VAO);
+            glDeleteBuffers(1, &VBO);
+
+            this->radiusA = radiusA;
+            this->radiusB = radiusB;
+            this->radiusC = radiusC;
+            this->gap = gap;
+            this->height = height;
+
+            InitParticles();
+            Init();
+        }
+
+        /// <summary>
+        ///  There is only getters for the radius and not setters 
+        /// </summary>
+        /// <returns> (x = radiusA, y = radiusB, z = radiusC) </returns>
+        glm::vec3 FireSystem::GetRadiusVector()
+        {
+            return glm::vec3(this->radiusA, this->radiusB, this->radiusC);
+        }
 
         /*This function initiate a elipsoid*/
         void FireSystem::InitParticles()
