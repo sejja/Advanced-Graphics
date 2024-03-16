@@ -1,8 +1,6 @@
 #version 460 core
 out vec4 FragColor;
 
-//layout (location = 0) in vec3 instancePosition;
-
 uniform vec4 particleColor; //This is the base color
 uniform float height;
 

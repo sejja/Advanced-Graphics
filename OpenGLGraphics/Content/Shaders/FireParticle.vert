@@ -1,5 +1,6 @@
 /* Made by Lingfeng, but nobody knows how it works, good luck if you want to understand it
 */
+
 #version 460 core
 layout (location = 0) in vec3 instancePosition; // Relative position
 
@@ -20,40 +21,42 @@ out vec3 instancePos;
 out float r;
 
 float newPos (float labse){
-    vec3 absolutePos = instancePosition + center;
-    return (absolutePos.y + labse*sigma*(instancePosition.y + acceleration.y*labse));
+    return (instancePosition.y + labse*sigma*(instancePosition.y + acceleration.y*labse));
 }
 
 float newRelation (float x){
-    return ( ( -e*sqrt(x)*log(x) ) / 2 );
+    return ( ( e*sqrt(x)*log(x) ) / -2.0f );
 }
 
 void main()
 {
-    //Set constants points
+    
+    // Some output for the frag shader
     instancePos = instancePosition;
     absolutePos = instancePosition + center;
-    const vec3 centerTop = vec3(center.x, center.y + height/2, center.z );
 
-    float a = acceleration.y;
+    // Calculate deltaLimit 
     float v0 = instancePosition.y;
-    float limit = centerTop.y;
+    float a = acceleration.y;
+    float k = (height - instancePosition.y)/sigma;
+    float deltaLimit = ( -v0+sqrt( (v0*v0) + (4*a*k) ) ) / (2*a); //Bhaskara equation
+
+    // Get the module
     float labse = delta * 1.0f;
-    float k = (limit + absolutePos.y)/sigma;
+    labse = mod(labse, deltaLimit);
 
-    float deltaLimit = (-v0+sqrt(pow(v0,2)-4*a*k))/(2*a); //Bhaskara equation
-    float ymax = newPos(deltaLimit);
-
-    if(labse > deltaLimit){
-        labse = mod(labse, deltaLimit);
-    }
-
+    // New relative y-axis vector
     float yf = newPos(labse);
-    r = newRelation( (yf - (absolutePos.y) )/(ymax- (absolutePos.y) ) );
-    finalParticlePos = vec3(absolutePos.x + (instancePosition.x*r) , yf, absolutePos.z + (instancePosition.z*r));
 
+    // Some math aproximation
+    r = newRelation( (yf - instancePosition.y)/height );
+
+    // The final pos
+    finalParticlePos = vec3(center.x + instancePosition.x*(1 + r), center.y + yf, center.z + instancePosition.z*(1 + r));
     gl_Position = projection * view * vec4(finalParticlePos, 1.0);
 
+    // The final particle size
     float finalParticleSize =  (pointSize * r);
     gl_PointSize = finalParticleSize;
+
 }
