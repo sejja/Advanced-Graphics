@@ -461,6 +461,9 @@ void Properties::LightingOptions() {
 static std::string nombreTexturaTemporal = "Textura def";
 
 void Properties::MaterialsOptions(){
+
+    std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
+
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
     static ImVec2 cell_padding(4.0f, 8.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
@@ -487,6 +490,7 @@ void Properties::MaterialsOptions(){
         ImGui::SameLine();
         ImGui::BeginGroup();
 
+
         ImGui::Text(nombreTexturaTemporal.c_str());
 
         ImGui::Button(ICON_FA_ARROW_TURN_UP);
@@ -503,6 +507,10 @@ void Properties::MaterialsOptions(){
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* iconPtr = (AssetIcon*)payload->Data;
             nombreTexturaTemporal = iconPtr->nombre;
+            printf("RUTA: %s\n", iconPtr->ruta);
+            auto nuevaTex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(iconPtr->ruta)->Get();
+
+            
         }
         ImGui::EndDragDropTarget();
     }

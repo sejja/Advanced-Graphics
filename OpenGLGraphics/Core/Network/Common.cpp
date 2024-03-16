@@ -3,6 +3,34 @@
 #include "Core/ECSystem/Scene.h"
 #include "Core/AppWrapper.h"
 
+enum class MessageType {
+    ObjectTransform,
+    ObjectCreation,
+    ObjectDeletion,
+    ObjectProperty,
+    Unknown
+};
+
+
+//Convierte el string del tipo de mensaje a un enum
+MessageType getMessageType(const std::string& typeStr) {
+    if (typeStr == "object_transform") {
+        return MessageType::ObjectTransform;
+    }
+    else if (typeStr == "object_creation") {
+        return MessageType::ObjectCreation;
+    }
+    else if (typeStr == "object_deletion") {
+        return MessageType::ObjectDeletion;
+    }
+    else if (typeStr == "object_property") {
+        return MessageType::ObjectProperty;
+    }
+    else {
+        return MessageType::Unknown;
+    }
+}
+
 
 
 DWORD WINAPI Common::ReceiveThread(LPVOID lpParam){
@@ -27,29 +55,37 @@ DWORD WINAPI Common::ReceiveThread(LPVOID lpParam){
 
             // Ver q tipo de msg es
             if (receivedJson.contains("type")) {
-				std::string type = receivedJson["type"];
-                if (type == "object_transform") {
-                    // Actualizar la posición del objeto 
-                    //TODO: Separar en archivo aparte
+
+                MessageType messageType = getMessageType(receivedJson["type"]);
+
+                switch (messageType) {
+                case MessageType::ObjectTransform:
+                    // Actualizar la posición del objeto
                     transformObject(receivedJson);
-				}
-                else if (type == "object_creation") {
-                    //crear objeto
+                    break;
+                case MessageType::ObjectCreation:
+                    // Crear objeto
+                    //createObject(receivedJson);
+                    break;
+                case MessageType::ObjectDeletion:
+                    // Borrar objeto
+                    //deleteObject(receivedJson);
+                    break;
+                case MessageType::ObjectProperty:
+                    // Cambiar propiedad de objeto, luz , textura, etc
+                    //changeObjectProperty(receivedJson);
+                    break;
+                case MessageType::Unknown:
+                    std::cerr << "Tipo de mensaje rarete: :???? -> " << receivedJson["type"] << std::endl;
+                    break;
                 }
-                else if (type == "object_deletion") {
-					//borrar objeto
-				}
-                else if (type == "object_property") {
-                    //cambiar propiedad de objeto, luz , textura, etc
-                }
-                else {
-					std::cerr << "Unknown type: " << type << std::endl;
-				}
-			}
+            }
+
 
         }
     }
 }
+
 
 
 
@@ -65,9 +101,8 @@ void Common::sendObjectIfChanged(const std::shared_ptr<Core::Object>& obj){
     glm::vec3 curScale = obj->GetScale();
 
 
-    bool positionChanged = true;
-    bool rotationChanged = true;
-    bool scaleChanged = true;
+    bool positionChanged = true, rotationChanged = true, scaleChanged = true;
+
 
 
     if (lastSentObject != NULL) {
