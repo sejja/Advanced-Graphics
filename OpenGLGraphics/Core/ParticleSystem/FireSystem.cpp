@@ -60,6 +60,8 @@ namespace Core {
             Init();
         }
 
+
+
         /// <summary>
         ///  There is only getters for the radius and not setters 
         /// </summary>
@@ -67,6 +69,15 @@ namespace Core {
         glm::vec3 FireSystem::GetRadiusVector()
         {
             return glm::vec3(this->radiusA, this->radiusB, this->radiusC);
+        }
+
+        float FireSystem::GetFireGap()
+        {
+			return this->gap;
+		}
+        float FireSystem::GetFireHeight()
+        {
+            return this->height;
         }
 
         /*This function initiate a elipsoid*/

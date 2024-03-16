@@ -17,12 +17,19 @@ namespace Core
 			~FireSystem();
 			
 			void ChangeFireSize(float radiusA, float radiusB, float radiusC, float gap, float height);
+			glm::vec3 getFireSize();
+
 			glm::vec3 GetRadiusVector();
+			float GetFireGap();
+			float GetFireHeight();
+
 
 		protected:
 
 			void InitParticles() override ;
 			glm::vec3 GetAbsolutePos(glm::vec3 relativePoint);
+
+			
 			
 			float gap = 0.7f;
 

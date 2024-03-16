@@ -8,6 +8,7 @@ enum class MessageType {
     ObjectCreation,
     ObjectDeletion,
     ObjectProperty,
+    ParticleTransform,
     Unknown
 };
 
@@ -26,6 +27,9 @@ MessageType getMessageType(const std::string& typeStr) {
     else if (typeStr == "object_property") {
         return MessageType::ObjectProperty;
     }
+    else if (typeStr == "particle_transform") {
+		return MessageType::ParticleTransform;
+	}
     else {
         return MessageType::Unknown;
     }
@@ -75,6 +79,10 @@ DWORD WINAPI Common::ReceiveThread(LPVOID lpParam){
                     // Cambiar propiedad de objeto, luz , textura, etc
                     //changeObjectProperty(receivedJson);
                     break;
+                case MessageType::ParticleTransform:
+                    // Actualizar la posición de una particula
+					transformParticle(receivedJson);
+					break;
                 case MessageType::Unknown:
                     std::cerr << "Tipo de mensaje rarete: :???? -> " << receivedJson["type"] << std::endl;
                     break;
@@ -93,6 +101,34 @@ void Common::sendToPeer(const json& message){
     std::string serialized_message = message.dump();
     send(clientSocket, serialized_message.c_str(), serialized_message.length(), 0);
 }
+
+
+void Common::sendParticleIfChanged(const std::shared_ptr<Core::Particles::ParticleSystem>& particleSys) {
+    glm::vec3 curCenter = particleSys->GetSystemCenter();
+    //mas cosas de las particulas... color , tamaño, etc
+
+    bool centerChanged = true;
+
+    if (lastSentParticleSys != NULL) {
+		centerChanged = curCenter != lastSentParticleSys->GetSystemCenter();
+	}
+
+    if (centerChanged) {
+		printf("Sending particle system properties to client\n");
+        json data = {
+			{"type", "particle_transform"},
+			{"id", particleSys->GetID()},
+			{"center", {curCenter.x, curCenter.y, curCenter.z}}
+
+		};
+
+		sendToPeer(data);
+
+		lastSentParticleSys = std::make_shared<Core::Particles::ParticleSystem>(*particleSys);
+	}
+}
+
+
 
 void Common::sendObjectIfChanged(const std::shared_ptr<Core::Object>& obj){
 
@@ -142,6 +178,22 @@ std::shared_ptr<Core::Object> getObjectByID(const std::string& objectID) {
 
 }
 
+std::shared_ptr<Core::Particles::ParticleSystem> getParticleSysByID(const std::string& objectID) {
+    Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
+    for (const auto& obj : scene.GetObjects()) {
+        if (obj->GetID() == "PARTICLE_MANAGER") {
+            for (const auto& comp : obj->GetAllComponents()) {
+                std::shared_ptr<Core::Particles::ParticleSystem> particleSys = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(comp);
+                if ( particleSys->GetID() == objectID) {
+					return particleSys;
+				}
+			}
+
+        }
+    }
+    return NULL;
+
+}
 
 void Common::transformObject(const json& data) {
     std::shared_ptr<Core::Object> obj = getObjectByID(data["id"]);
@@ -158,3 +210,16 @@ void Common::transformObject(const json& data) {
 		std::cerr << "Object not found" << std::endl;
 	}
 }
+
+
+void Common::transformParticle(const json& data) {
+	std::shared_ptr<Core::Particles::ParticleSystem> particleSys = getParticleSysByID(data["id"]);
+
+    if (particleSys != NULL) {
+		glm::vec3 newCenter = { data["center"][0], data["center"][1], data["center"][2] };
+		particleSys->SetSystemCenter(newCenter);
+	}
+    else {
+		std::cerr << "Particle system not found" << std::endl;
+	}
+}   

@@ -66,6 +66,8 @@ void Outliner::Render(){
 
 			// de momento así por que los objetos de la escena no tienen un tipo
 			// y probablemente se va a cambiar la estructura pronto
+
+			//TODO: asignar un tipo a cada objeto de la escena
 			if (obj->GetName().find("_mesh") != std::string::npos){
 				displayName.erase(displayName.length() - 5);
 				displayName[0] = std::toupper(displayName[0]);

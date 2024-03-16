@@ -15,6 +15,7 @@ private:
     void LightingOptions();
     void MaterialsOptions();
     void MeshOptions();
+    void FireSize();
 
 
     void selectedObjectTree();

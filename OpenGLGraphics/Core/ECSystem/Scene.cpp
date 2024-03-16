@@ -37,6 +37,7 @@ namespace Core {
 			obj->SetScale(x.sca);
 			obj->SetName(x.name);
 			obj->SetID(x.name);//temp , tiene que ser unico
+			//obj->SetType() tiene que ser un enum
 
 			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj);
 			renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(x.mesh.c_str()));

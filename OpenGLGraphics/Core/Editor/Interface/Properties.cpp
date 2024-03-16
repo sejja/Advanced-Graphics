@@ -19,6 +19,7 @@
 #include "Core/Network/Server.h"
 #include "Core/Network/Client.h"
 #include "Core/ParticleSystem/ParticleSystem.h"
+#include "Core/ParticleSystem/FireSystem.h"
 
 
 //SelectedObj& selectedObjIns = Singleton<SelectedObj>::Instance();
@@ -69,6 +70,7 @@ void Properties::Render() {
 
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Particle Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
             ParticleTransform();
+            FireSize();
         }
 
 	}
@@ -76,7 +78,7 @@ void Properties::Render() {
     else {
 		ImGui::Text("No component selected");
 	}
-
+    
 
 
 	ImGui::End();
@@ -246,20 +248,34 @@ void sendToPeer(std::shared_ptr<Core::Object> obj) {
     
 }
 
+void sendToPeer(std::shared_ptr<Core::Particles::ParticleSystem> particleSys) {
+	Server& server = Singleton<Server>::Instance();
+	Client& client = Singleton<Client>::Instance();
+
+
+    if (server.isRunning()) {
+		server.sendParticleIfChanged(particleSys);
+	}
+    else if (client.isConnected()) {
+		client.sendParticleIfChanged(particleSys);
+	}
+}
+
 void Properties::ParticleTransform() {
 
     std::shared_ptr<Core::Component> particleComp = selectedObjIns.GetSelectedComponent();
-    std::shared_ptr<Core::Particles::ParticleSystem> particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(particleComp);
+    std::shared_ptr<Core::Particles::FireSystem> particleSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(particleComp);
 
     glm::vec3 curCenter = particleSystem->GetSystemCenter();
-    float preY = curCenter[1];
-    float curHeight = particleSystem->getHeigth();
-
 
     TransformRow("Center", curCenter[0], curCenter[1], curCenter[2]);
 
-    //particleSystem->setHeigth(curCenter[1] - preY - curHeight);
     particleSystem->SetSystemCenter(curCenter);
+
+    
+
+    sendToPeer(particleSystem);
+
 
 }
 
@@ -287,18 +303,6 @@ void Properties::TransformOptions() {
 
 
 
-
-static void HelpMarker(const char* desc)
-{
-    ImGui::TextDisabled("(?)");
-    if (ImGui::BeginItemTooltip())
-    {
-        ImGui::PushTextWrapPos(ImGui::GetFontSize() * 35.0f);
-        ImGui::TextUnformatted(desc);
-        ImGui::PopTextWrapPos();
-        ImGui::EndTooltip();
-    }
-}
 
 void colorPickerBtn(static ImVec4 &color) {
 
@@ -520,7 +524,46 @@ void Properties::MaterialsOptions(){
 
 }
 
-void Properties::MeshOptions(){
+void Properties::MeshOptions(){}
+
+void Properties::FireSize(){   
+    static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
+    static ImVec2 cell_padding(4.0f, 8.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
+
+    
+    std::shared_ptr<Core::Particles::FireSystem> fireSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(selectedObjIns.GetSelectedComponent());
+
+    glm::vec3 curRadius = fireSystem->GetRadiusVector();
+    float curGap = fireSystem->GetFireGap();
+    float curHeight = fireSystem->getHeigth();
+
+
+    TransformRow("  Radius    ", curRadius[0], curRadius[1], curRadius[2]);
+
+
+    if (ImGui::BeginTable("fire_size_table", 2, flags1)) {
+
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Height");
+        ImGui::TableSetColumnIndex(1);
+        ImGui::SliderFloat("##Height", &curHeight, 0.0f, 100.0f, "%.3f");
+
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Gap");
+        ImGui::TableSetColumnIndex(1);
+        ImGui::SliderFloat("##Gap", &curGap, 0.0f, 1.0f, "%.3f");
+        
+        ImGui::EndTable();
+    }
+
+    ImGui::PopStyleVar();
+
+    fireSystem->ChangeFireSize(curRadius[0], curRadius[1], curRadius[2], curGap, curHeight);
+
+
 
 }
 

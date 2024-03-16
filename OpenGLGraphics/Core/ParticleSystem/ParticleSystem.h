@@ -38,6 +38,25 @@ namespace Core
 				float RandomFloat(float a, float b);
 
 				void Update() override;
+
+
+				std::string GetName() {return this->name;}
+				std::string GetID() { return this->id; }
+
+				void SetBaseColor(glm::vec4 newColor) { baseColor = newColor; }
+				glm::vec4 GetBaseColor() { return baseColor; }
+
+				void SetParticleSize(float newSize) { particleSize = newSize; }
+				float GetParticleSize() { return particleSize; }
+
+
+
+
+
+				//---------------------------------------------------------------------
+				//Render the particle system
+				//---------------------------------------------------------------------
+
 				virtual void Render() const override {
 
 					//Bind shader program
@@ -97,6 +116,10 @@ namespace Core
 				float sigma = 0.005f;
 				//Clock, increase with each update
 				int delta = 0;
+
+				//name and id , hardcoded for now
+				std::string name;
+				std::string id;
 
 				GLuint VAO, VBO;
 				Asset<Core::Graphics::ShaderProgram> shaderProgram;

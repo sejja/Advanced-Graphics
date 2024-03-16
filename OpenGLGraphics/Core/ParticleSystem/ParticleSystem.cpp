@@ -8,6 +8,8 @@ namespace Core
 		ParticleSystem::ParticleSystem(const std::weak_ptr<Object>& parent) : Renderable(parent){
             //initTestParticles(); 
             std::cout << "ERROR: DEFAULT PARTICLESYSTEM HAS NO PARTICLES \n";
+            this->name = "fuego";
+            this->id = "fuego";
             Init();
 		}
 
