@@ -56,6 +56,7 @@ namespace Core {
             this->gap = gap;
             this->height = height;
 
+            this->particles.clear();
             InitParticles();
             Init();
         }
