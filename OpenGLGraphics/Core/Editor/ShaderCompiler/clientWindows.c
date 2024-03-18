@@ -91,7 +91,6 @@ void receiveModifiedFile(SOCKET sockfd, const char filePath[]) {
 
 int connectToServer(const char* filePath) {
     WSADATA wsaData;
-    SOCKET sockfd;
     struct sockaddr_in client;
 
     // Initialize Winsock
@@ -131,15 +130,15 @@ int connectToServer(const char* filePath) {
     else
         printf("Connected to the server..\n");
 
-    // Function to send file to server
-    sendFile(sockfd, filePath);
-
-    // Function to receive modified file from server
-    receiveModifiedFile(sockfd,filePath);
-
     // close the socket
-    closesocket(sockfd);
-    WSACleanup();
+    //closesocket(sockfd);
+    //WSACleanup();
 
     return 1;
+}
+
+int compile(const char* filePath) {
+	sendFile(sockfd, filePath);
+	receiveModifiedFile(sockfd, filePath);
+	return 1;
 }

@@ -66,6 +66,7 @@ TextEditor::TextEditor()
 	SetPalette(GetDarkPalette());
 	SetLanguageDefinition(LanguageDefinition::HLSL());
 	mLines.push_back(Line());
+	connectToServer();
 }
 
 TextEditor::~TextEditor()
@@ -1169,7 +1170,7 @@ void TextEditor::Render(const char* aTitle, bool aBorder)
 			t << GetText();
 			t.close();
 			// Use C File ClientWindows to connect to server and send the file
-			if (connectToServer(fileToEdit)) {
+			if (compile(fileToEdit)) {
 				// If compile succesful, load shader
 				auto vert = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Shader>("Content/Shaders/Transform.vert");
 				auto frag = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Shader>(fileToEdit);

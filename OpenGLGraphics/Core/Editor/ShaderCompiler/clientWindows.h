@@ -8,9 +8,11 @@
 #define MAX 1024*256
 #define PORT 50050
 #define SA struct sockaddr
+SOCKET sockfd;
 
 char* changeExtension(char* myStr);
-extern int connectToServer(const char* filePath);
+extern int connectToServer();
+extern int compile(const char* filePath);
 extern void sendFile(SOCKET sockfd, const char* filePath);
 extern void receiveModifiedFile(SOCKET sockfd, const char filePath[]);
 #endif // CLIENTWINDOWS_H
