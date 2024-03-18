@@ -27,7 +27,7 @@ int main() {
             std::shared_ptr<Core::Graphics::Renderable> renderable = std::dynamic_pointer_cast<Core::Graphics::Renderable>(comp);
 
             //If the object is a renderable
-            if (renderable) app.GetPipelineRef().AddRenderable(renderable);
+            if (renderable) app.GetPipeline().AddRenderable(renderable);
             });
         });
 

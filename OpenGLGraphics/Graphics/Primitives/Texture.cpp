@@ -8,7 +8,7 @@
 
 #include "Texture.h"
 #include "stb.h"
-#include "../../Core/Allocator.h"
+#include "Core/Memory/Allocator.h"
 
 #define STB_IMAGE_IMPLEMENTATION 
 #include "stb_image.h"

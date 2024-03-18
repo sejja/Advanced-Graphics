@@ -9,7 +9,7 @@
 #ifndef _ALLOCATOR__H_
 #define _ALLOCATOR__H_
 
-#include "../CommonDefines.h"
+#include "CommonDefines.h"
 #include <algorithm>
 
 namespace Core {

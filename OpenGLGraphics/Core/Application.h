@@ -2,19 +2,17 @@
 //	Application.h
 //	OpenGL Graphics
 //
-//	Created by Diego Revilla on 16/01/23
-//	Copyright © 2023. All Rights reserved
+//	Created by Diego Revilla on 18/03/24
+//	Copyright © 2024. All Rights reserved
 //
 
 #ifndef _APPLICATION__H_
 #define _APPLICATION__H_
 
 #include <functional>
-#include <type_traits>
 #include "Core/Window.h"
 #include "Core/Pipeline.h"
 #include "Core/ECSystem/Scene.h"
-#include "Core/ResourceManager.h"
 #include "Core/InputManager.h"
 #include "Core/Singleton.h"
 
@@ -31,8 +29,8 @@ namespace Core {
 		~GraphicApplication();
 		void Run() override;
 		inline void SetTickFunction(const std::function<void()>& tick);
-		void SetDimensions(const glm::lowp_u16vec2& dim);
-		inline PIPELINE& GetPipelineRef();
+		void SetDimensions(const glm::lowp_u16vec2& dim) noexcept;
+		DONTDISCARD constexpr inline PIPELINE& GetPipeline() noexcept;
 
 	private:
 		WINDOW mWindow;
@@ -45,7 +43,7 @@ namespace Core {
 		static_assert(std::is_base_of<Core::Window, WINDOW>::value);
 		static_assert(std::is_base_of<Core::Pipeline, PIPELINE>::value);
 		Singleton<ResourceManager>::Instance().Initialize();
-		SetDimensions({ 1072, 780 });
+		SetDimensions({ 1600, 900 });
 		mWindow.Create();
 		mPipe.Init();
 	}
@@ -68,8 +66,12 @@ namespace Core {
 	*/ //----------------------------------------------------------------------
 	template<class WINDOW, class PIPELINE>
 	void GraphicApplication<WINDOW, PIPELINE>::Run() {
+		Core::InputManager& inptmgr = Singleton<Core::InputManager>::Instance();	
+
+		//Main Loop
 		while (mWindow.Present()) {
-			Singleton<Core::InputManager>::Instance().ProcessInput();
+			inptmgr.ProcessInput();
+			//If we have a ticking function
 			if (mTick) mTick();
 			mPipe.PreRender();
 			mPipe.Render();
@@ -93,7 +95,7 @@ namespace Core {
 	*   Set the window and pipeline resolution
 	*/ //----------------------------------------------------------------------
 	template<class WINDOW, class PIPELINE>
-	void GraphicApplication<WINDOW, PIPELINE>::SetDimensions(const glm::lowp_u16vec2& dim) {
+	void GraphicApplication<WINDOW, PIPELINE>::SetDimensions(const glm::lowp_u16vec2& dim) noexcept {
 		mWindow.SetDimensions(dim);
 		mPipe.SetDimensions(dim);
 	}
@@ -104,7 +106,7 @@ namespace Core {
 	*   Returns a Reference to the Pipeline
 	*/ //----------------------------------------------------------------------
 	template<class WINDOW, class PIPELINE>
-	PIPELINE& GraphicApplication<WINDOW, PIPELINE>::GetPipelineRef() {
+	constexpr PIPELINE& GraphicApplication<WINDOW, PIPELINE>::GetPipeline() noexcept {
 		return mPipe;
 	}
 }

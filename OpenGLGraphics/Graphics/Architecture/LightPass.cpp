@@ -59,7 +59,7 @@ namespace Graphics {
 			glActiveTexture(GL_TEXTURE3);
 			glBindTexture(GL_TEXTURE_2D, bloomRend.BloomTexture());
 			gBuffer.BindLightingShader();
-			glViewport(0, 0, 1072, 780);
+			glViewport(0, 0, 1600, 900);
 			glEnable(GL_STENCIL_TEST);
 
 			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {

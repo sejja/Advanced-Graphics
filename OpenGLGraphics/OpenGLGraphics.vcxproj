@@ -215,7 +215,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
-    <ClInclude Include="Core\Allocator.h" />
+    <ClInclude Include="Core\Memory\Allocator.h" />
     <ClInclude Include="CommonDefines.h" />
     <ClInclude Include="Core\Assets\ModelImporter.h" />
     <ClInclude Include="Core\Assets\ShaderImporter.h" />

@@ -20,7 +20,7 @@ namespace Core {
 		GBuffer::GBuffer() {
 			mLightingShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredLighting.shader");
 			auto dim = Singleton<SDLWindow>::Instance().GetDimensions();
-			dim = { 1072, 780 };
+			dim = { 1600, 900 };
 			glGenFramebuffers(1, &mBuffer);
 			glBindFramebuffer(GL_FRAMEBUFFER, mBuffer);
 
@@ -106,7 +106,7 @@ namespace Core {
 			glBindFramebuffer(GL_READ_FRAMEBUFFER, mBuffer);
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0); // write to default framebuffer
 			glBlitFramebuffer(
-				0, 0, 1072, 780, 0, 0, 1072, 780, GL_DEPTH_BUFFER_BIT, GL_NEAREST
+				0, 0, 1600, 900, 0, 0, 1600, 900, GL_DEPTH_BUFFER_BIT, GL_NEAREST
 			);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}

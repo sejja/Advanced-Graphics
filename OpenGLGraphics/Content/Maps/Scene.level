@@ -12,7 +12,7 @@ camUp 0 1 0
 object floor
 translate 0 -10 0
 rotation 0 0 0
-scale 500 500 500
+scale 100 100 100
 mesh Content/Scenes/Minecraft/vokselia.gltf 
 
 #light data
@@ -23,4 +23,4 @@ lightType DIR
 attenuation 600 0.1 0.00
 #sinusoidal 0 1 20
 ambient 0
-direction 1 0 0
+direction 0.3 -0.6 -0.7
