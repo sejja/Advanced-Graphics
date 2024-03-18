@@ -18,7 +18,6 @@ namespace Core {
 		*   Constructs a G-Buffer, with 3 Textures (Position, Normal, Albedo)
 		*/ //----------------------------------------------------------------------
 		GBuffer::GBuffer() {
-			mLightingShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredLighting.shader");
 			auto dim = Singleton<SDLWindow>::Instance().GetDimensions();
 			dim = { 1600, 900 };
 			glGenFramebuffers(1, &mBuffer);
@@ -93,10 +92,6 @@ namespace Core {
 			glBindFramebuffer(GL_FRAMEBUFFER, mBuffer);
 		}
 
-		void GBuffer::BindLightingShader() {
-			mLightingShader->Get()->Bind();
-		}
-
 		// ------------------------------------------------------------------------
 		/*! Blit Depth Buffer
 		*
@@ -109,10 +104,6 @@ namespace Core {
 				0, 0, 1600, 900, 0, 0, 1600, 900, GL_DEPTH_BUFFER_BIT, GL_NEAREST
 			);
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		}
-
-		Asset<ShaderProgram> GBuffer::GetLightingShader() {
-			return mLightingShader;
 		}
 
 		// ------------------------------------------------------------------------

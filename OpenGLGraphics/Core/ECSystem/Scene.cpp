@@ -9,7 +9,9 @@
 #include "Scene.h"
 #include "Behaviors/AnimationComponent.h"
 #include "Core/Pipeline.h"
-#include "Graphics/Primitives/Light.h"
+#include "Graphics/Primitives/Lights/DirectionalLight.h"
+#include "Graphics/Primitives/Lights/PointLight.h"
+#include "Graphics/Primitives/Lights/SpotLight.h"
 #include "Core/Singleton.h"
 #include "Graphics/Primitives/Skybox.h"
 #include "Graphics/Primitives/GLBModel.h"
@@ -50,7 +52,7 @@ namespace Core {
 			obj->SetRotation(glm::vec3(0.f, 0.f, 0.f));
 			obj->SetScale({ 1.f, 1.f, 1.f });
 			//std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj));
-			std::shared_ptr<::Graphics::Primitives::Light> light = std::move(std::make_shared<::Graphics::Primitives::Light>(obj));
+			std::shared_ptr<::Graphics::Primitives::Light> light;
 			//renderer->SetMesh(Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
 
 			//Switch by the light index (to switch behaviors)
@@ -72,31 +74,34 @@ namespace Core {
 				break;
 			}*/
 
-			light->SetPosition(x.pos);
-			light->mData.mDirection = x.dir;
-			if(i < 4)
-			light->mData.mColor = x.col;
-			else
-			light->mData.mColor = glm::vec3(((double)rand() / (RAND_MAX)) + 1, ((double)rand() / (RAND_MAX)) + 1, ((double)rand() / (RAND_MAX)) + 1);
-			light->mData.mRadius = x.att.x;
-			light->mData.mInner = x.inner;
-			light->mData.mOutter = x.outer;
-			light->mData.mFallOff = x.falloff;
-
-			if(i < 4)
-				light->mData.mShadowCaster = 1;
-			else
-				light->mData.mShadowCaster = 0;
-
 			//If the light is a point light
-			if (x.type == "POINT") light->mData.mType = ::Graphics::Primitives::Light::LightType::Point;
+			if (x.type == "POINT") {
+				light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
+				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mRadius = x.att.x;
+				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mInner = x.inner;
+				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mOutter = x.outer;
+				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mFallOff = x.falloff;
+			}
 
 			//If the light is a directional light
-			else if (x.type == "DIR")
-				light->mData.mType = ::Graphics::Primitives::Light::LightType::Directional;
+			else if (x.type == "DIR") {
+				light = std::move(std::make_shared<::Graphics::Primitives::DirectionalLight>(obj));
+				((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)light->mData)->mDirection = x.dir;
+			}
 
 			//else, it's a spot light
-			else light->mData.mType = ::Graphics::Primitives::Light::LightType::Spot;
+			else {
+				light = std::move(std::make_shared<::Graphics::Primitives::SpotLight>(obj));
+				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mShadowCaster = 1;
+				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mRadius = x.att.x;
+				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mInner = x.inner;
+				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mOutter = x.outer;
+				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mFallOff = x.falloff;
+				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mDirection = x.dir;
+			}
+
+			light->SetPosition(x.pos);
+			light->mData->mColor = x.col;
 
 			//std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> weakrend = renderer;
 			std::weak_ptr< ::Graphics::Primitives::Light> lightrend = light;

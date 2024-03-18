@@ -23,9 +23,7 @@ namespace Core {
 			GBuffer();
 			~GBuffer();
 			void Bind();
-			void BindLightingShader();
 			void BlitDepthBuffer();
-			Asset<ShaderProgram> GetLightingShader();
 			GLuint GetPositionTextureHandle();
 			GLuint GetNormalTextureHandle();
 			GLuint GetAlbedoTextureHandle();
@@ -35,7 +33,6 @@ namespace Core {
 		private:
 			GLuint mBuffer;
 			GLuint mPosition, mNormal, mAlbedoSpecular, mBrightness;
-			Asset<ShaderProgram> mLightingShader;
 		};
 	}
 }

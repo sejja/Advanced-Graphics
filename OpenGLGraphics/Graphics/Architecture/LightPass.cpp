@@ -6,11 +6,17 @@
 //
 
 #include "LightPass.h"
-#include "Graphics/Primitives/Light.h"
+#include "Graphics/Primitives/Lights/Light.h"
 #include "gtc/matrix_transform.hpp"
+#include "Graphics/Primitives/ShaderProgram.h"
 
 namespace Graphics {
 	namespace Architecture {
+
+		std::unordered_map<std::size_t, ::Graphics::Primitives::DirectionalLight::DirectionalLightData*> LightPass::sDirectionalLightData;
+		std::unordered_map<std::size_t, ::Graphics::Primitives::SpotLight::SpotLightData*> LightPass::sSpotLightData;
+		std::unordered_map<std::size_t, ::Graphics::Primitives::PointLight::PointLightData*> LightPass::sPointLightData;
+
 		LightPass::LightPass() {
 			float quadVertices[] = {
 				// positions        // texture Coords
@@ -31,11 +37,43 @@ namespace Graphics {
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 			mLightSphere = Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj");
 			mLightSphereShader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/ForwardRender.shader");
+			mDirectionalShader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredDirectionalLighting.shader");
+			mPointShader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredPointLighting.shader");
+			mSpotShader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredSpotLighting.shader");
 		}
 		
 		LightPass::~LightPass() {
 			glDeleteVertexArrays(1, &mScreenQuadVAO);
 			glDeleteBuffers(1, &mScreenQuadVBO);
+		}
+
+		void LightPass::RenderShadowMaps(const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
+			std::vector<glm::mat4> shadow_matrices;
+
+			glViewport(0, 0, 1600, 900);
+			for ( auto& x : sSpotLightData) {
+				if (!x.second->mShadowCaster) continue;
+				x.second->mShadowMap.Bind();
+				x.second->mShadowMap.Clear(true);
+
+				auto up = glm::normalize(glm::cross(glm::cross(-x.second->mPosition, glm::vec3(0, 1, 0)), -x.second->mPosition));
+				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 2.f, 2000.f);
+				glm::mat4 lightView = glm::lookAt(x.second->mPosition, x.second->mDirection, glm::vec3(0, 1, 0));
+				glm::mat4 shadow_matrix = lightProjection * lightView;
+				shadow_matrices.push_back(shadow_matrix);
+
+				{
+					const auto shadow = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Shadow.shader")->Get();
+					shadow->Bind();
+					shadow->SetShaderUniform("uProjection", &lightProjection);
+					shadow->SetShaderUniform("uView", &lightView);
+					glCullFace(GL_NONE);
+					rend_func(shadow);
+				}
+
+				x.second->mShadowMap.Unbind();
+				x.second->mShadowMatrix = shadow_matrix;
+			}
 		}
 
 		// ------------------------------------------------------------------------
@@ -44,7 +82,7 @@ namespace Graphics {
 		*   Using the buffers created on the geometry pass, we can
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
-		void LightPass::RenderLights(Core::Graphics::GBuffer& gBuffer, Bloom::BloomRenderer& bloomRend, std::vector<glm::mat4>& shadow_mtx) {
+		void LightPass::RenderLights(Core::Graphics::GBuffer& gBuffer, Bloom::BloomRenderer& bloomRend) {
 			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 			glEnable(GL_BLEND);
 			glBlendEquation(GL_FUNC_ADD);
@@ -58,44 +96,68 @@ namespace Graphics {
 			glBindTexture(GL_TEXTURE_2D, gBuffer.GetAlbedoTextureHandle());
 			glActiveTexture(GL_TEXTURE3);
 			glBindTexture(GL_TEXTURE_2D, bloomRend.BloomTexture());
-			gBuffer.BindLightingShader();
 			glViewport(0, 0, 1600, 900);
 			glEnable(GL_STENCIL_TEST);
 
-			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-				StencilPass(::Graphics::Primitives::Light::sLightData[i]);
-				auto shadptr = gBuffer.GetLightingShader()->Get();
+			auto shadptr = mDirectionalShader->Get();
+			const std::string id = "uLight";
+			shadptr->Bind();
+
+			for (auto& x : sDirectionalLightData) {
+				shadptr->SetShaderUniform((id + ".mDirection").c_str(), &x.second->mDirection);
+				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x.second->mColor);
+				//shadptr->SetShaderUniform((id + ".mCastShadows").c_str(), static_cast<int>(x.second->mShadowCaster));
+				glEnable(GL_CULL_FACE);
+				RenderScreenQuad();
+				glCullFace(GL_BACK);
+			}
+
+			for (auto& x : sSpotLightData) {
+				StencilPass(x.second->mPosition, x.second->CalculateSphereOfInfluence());
+				auto shadptr = mSpotShader->Get();
 				const std::string id = "uLight";
 				shadptr->Bind();
-				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &::Graphics::Primitives::Light::sLightData[i].mPosition);
-				shadptr->SetShaderUniform((id + ".mDirection").c_str(), &::Graphics::Primitives::Light::sLightData[i].mDirection);
-				shadptr->SetShaderUniform((id + ".mColor").c_str(), &::Graphics::Primitives::Light::sLightData[i].mColor);
-				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &::Graphics::Primitives::Light::sLightData[i].mRadius);
-				shadptr->SetShaderUniform((id + ".mInnerAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mInner);
-				shadptr->SetShaderUniform((id + ".mOutterAngle").c_str(), &::Graphics::Primitives::Light::sLightData[i].mOutter);
-				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &::Graphics::Primitives::Light::sLightData[i].mFallOff);
-				shadptr->SetShaderUniform((id + ".mType").c_str(), static_cast<int>(::Graphics::Primitives::Light::sLightData[i].mType));
-				shadptr->SetShaderUniform((id + ".mCastShadows").c_str(), static_cast<int>(::Graphics::Primitives::Light::sLightData[i].mShadowCaster));
-				if (::Graphics::Primitives::Light::sLightData[i].mShadowCaster) {
-					shadptr->SetShaderUniform("uShadowMatrix", shadow_mtx.data() + i);
-					::Graphics::Primitives::Light::sLightData[i].mShadowMap.BindTexture(4);
+				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &x.second->mPosition);
+				shadptr->SetShaderUniform((id + ".mDirection").c_str(), &x.second->mDirection);
+				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x.second->mColor);
+				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x.second->mRadius);
+				shadptr->SetShaderUniform((id + ".mInnerAngle").c_str(), &x.second->mInner);
+				shadptr->SetShaderUniform((id + ".mOutterAngle").c_str(), &x.second->mOutter);
+				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x.second->mFallOff);
+				shadptr->SetShaderUniform((id + ".mCastShadows").c_str(), static_cast<int>(x.second->mShadowCaster));
+				if (x.second->mShadowCaster) {
+					shadptr->SetShaderUniform("uShadowMatrix", &x.second->mShadowMatrix);
+					x.second->mShadowMap.BindTexture(4);
 				}
 				glEnable(GL_CULL_FACE);
 				RenderScreenQuad();
 				glCullFace(GL_BACK);
+			}
 
+			for(auto& x : sPointLightData) {
+				StencilPass(x.second->mPosition, x.second->CalculateSphereOfInfluence());
+				shadptr = mPointShader->Get();
+				shadptr->Bind();
+				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &x.second->mPosition);
+				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x.second->mColor);
+				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x.second->mRadius);
+				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x.second->mFallOff);
+				//shadptr->SetShaderUniform((id + ".mCastShadows").c_str(), static_cast<int>(x.second->mShadowCaster));
+				glEnable(GL_CULL_FACE);
+				RenderScreenQuad();
+				glCullFace(GL_BACK);
 			}
 		}
 
-		void LightPass::StencilPass(Primitives::Light::BackedLightData& data) {
+		void LightPass::StencilPass(glm::vec3& pos, float sphere) {
 			glEnable(GL_DEPTH_TEST);
 			glDisable(GL_CULL_FACE);
 			glClear(GL_STENCIL_BUFFER_BIT);
 			glStencilFunc(GL_ALWAYS, 0, 0);
 			glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
 			glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
-			float radius = data.CalculateSphereOfInfluence();
-			glm::mat4 matrix = glm::translate(glm::mat4(1.0f), data.mPosition) *
+			float radius = sphere;
+			glm::mat4 matrix = glm::translate(glm::mat4(1.0f), pos) *
 				glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(0.0f, 0.0f, 1.0f)) *
 				glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(1.0f, 0.0f, 0.0f)) *
 				glm::rotate(glm::mat4(1.0f), 0.f, glm::vec3(0.0f, 1.0f, 0.0f)) *

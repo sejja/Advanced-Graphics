@@ -12,7 +12,7 @@
 #include "Graphics/Camera.h"
 #include "Graphics/Primitives/Texture.h"
 #include "Core/InputManager.h"
-#include "Graphics/Primitives/Light.h"
+#include "Graphics/Primitives/Lights/Light.h"
 #include "Core/Singleton.h"
 #include "Graphics/Primitives/Texture.h"
 #include "Graphics/Primitives/Skybox.h"
@@ -152,12 +152,12 @@ namespace Core {
 		void OpenGLPipeline::Render() {
 			RenderGUI();
 			
-			std::vector<glm::mat4> shadow_mtrx = RenderShadowMaps();
+			RenderShadowMaps();
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
 			BloomPass();
-			mLightPass->RenderLights(*mGBuffer, *mBloomRenderer, shadow_mtrx);
+			mLightPass->RenderLights(*mGBuffer, *mBloomRenderer);
 			glEnable(GL_DEPTH_TEST);
 			mGBuffer->BlitDepthBuffer();
 			Skybox::sCurrentSky->Render(cam);
@@ -232,7 +232,7 @@ namespace Core {
 			glDisable(GL_DEPTH_TEST);
 		}
 
-		std::vector<glm::mat4> OpenGLPipeline::RenderShadowMaps() {
+		void OpenGLPipeline::RenderShadowMaps() {
 			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
 			auto f_flushobosoletes = [this, &obsoletes]() {
@@ -244,57 +244,17 @@ namespace Core {
 					if (!it.size()) mGroupedRenderables.erase(x.first);
 					});
 				};
+			
 
-			auto f_grouprender = [&obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram* shader) {
-				//For each renderable in shader program
-				for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
-					//If it isn't expired
-					if (auto renderable = it2->lock()) {
-						const std::shared_ptr<Object> parent = renderable->GetParent().lock();
-						glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
-							glm::scale(glm::mat4(1.0f), parent->GetScale());
-						shader->SetShaderUniform("uModel", &matrix);
-						reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
-					}
-					else {
-						obsoletes.insert(std::make_pair(it.first, it2));
-					}
-				}
-				};
+			mLightPass->RenderShadowMaps([&obsoletes, &f_flushobosoletes, this](ShaderProgram* shader) {
+				//Render all objects
+				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
+				[this, &obsoletes, &shader](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+						GroupRender(obsoletes, it, shader);
+					});
 
-			std::vector<glm::mat4> shadow_matrices;
-
-			glViewport(0, 0, mDimensions.x * 4, mDimensions.y * 4);
-			for (int i = 0; i < ::Graphics::Primitives::Light::sLightReg; i++) {
-				if(!::Graphics::Primitives::Light::sLightData[i].mShadowCaster) continue;
-				::Graphics::Primitives::Light::sLightData[i].mShadowMap.Bind();
-				::Graphics::Primitives::Light::sLightData[i].mShadowMap.Clear(true);
-
-				auto up = glm::normalize(glm::cross(glm::cross(-::Graphics::Primitives::Light::sLightData[i].mPosition, glm::vec3(0, 1, 0)), -::Graphics::Primitives::Light::sLightData[i].mPosition));
-				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 2.f, 2000.f);
-				glm::mat4 lightView = glm::lookAt(::Graphics::Primitives::Light::sLightData[i].mPosition, ::Graphics::Primitives::Light::sLightData[i].mDirection, glm::vec3(0, 1, 0));
-				glm::mat4 shadow_matrix = lightProjection * lightView;
-				shadow_matrices.push_back(shadow_matrix);
-
-				{
-					const auto shadow = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Shadow.shader")->Get();
-					shadow->Bind();
-					shadow->SetShaderUniform("uProjection", &lightProjection);
-					shadow->SetShaderUniform("uView", &lightView);
-					glCullFace(GL_NONE);
-					std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), [this, &shadow, &obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
-						GroupRender(obsoletes,it, shadow);
-						});
-				}
-
-				::Graphics::Primitives::Light::sLightData[i].mShadowMap.Unbind();
-
-			}
-
-			return shadow_matrices;
+				f_flushobosoletes();
+			});
 		}
 
 		// ------------------------------------------------------------------------

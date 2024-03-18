@@ -69,7 +69,7 @@
     <ClCompile Include="Core\Pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Primitives\Light.cpp">
+    <ClCompile Include="Graphics\Primitives\Lights\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Primitives\Renderables.cpp">
@@ -148,6 +148,18 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Architecture\LightPass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Primitives\Lights\DirectionalLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Primitives\Lights\PointLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Primitives\Lights\SpotLight.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Primitives\Lights\Shadows\CascadedShadowMap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1364,9 +1376,6 @@
     <ClInclude Include="Core\ResourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Allocator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CommonDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1517,7 +1526,7 @@
     <ClInclude Include="Core\ECSystem\Component.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Primitives\Light.h">
+    <ClInclude Include="Graphics\Primitives\Lights\Light.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Singleton.h">
@@ -1599,6 +1608,21 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Architecture\LightPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Memory\Allocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Primitives\Lights\DirectionalLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Primitives\Lights\PointLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Primitives\Lights\SpotLight.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Primitives\Lights\Shadows\CascadedShadowMap.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2028,11 +2052,9 @@
     <None Include="Content\Meshes\backpack.mtl" />
     <None Include="Content\Shaders\DeferredGeometry.frag" />
     <None Include="Content\Shaders\DeferredGeometry.shader" />
-    <None Include="Content\Shaders\DeferredLighting.frag" />
-    <None Include="Content\Shaders\DeferredLighting.shader" />
+    <None Include="Content\Shaders\DeferredSpotLighting.frag" />
     <None Include="Content\Shaders\DeferredLighting.vert" />
-    <None Include="Content\Shaders\DirectionalLightShader.frag" />
-    <None Include="Content\Shaders\DirectionalLight.shader" />
+    <None Include="Content\Shaders\DeferredSpotLighting.shader" />
     <None Include="Content\Scenes\README.md" />
     <None Include="Content\Scenes\Sponza.bin">
       <Filter>Resource Files</Filter>
@@ -2055,6 +2077,10 @@
     <None Include="Content\Shaders\Red.shader" />
     <None Include="Content\Shaders\Upsampling.frag" />
     <None Include="Content\Shaders\Upsampling.shader" />
+    <None Include="Content\Shaders\DeferredDirectionalLighting.frag" />
+    <None Include="Content\Shaders\DeferredDirectionalLighting.shader" />
+    <None Include="Content\Shaders\DeferredPointLighting.shader" />
+    <None Include="Content\Shaders\DeferredPointLighting.frag" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />

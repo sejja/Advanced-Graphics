@@ -32,10 +32,9 @@ namespace Core {
 			inline void AddRenderable(const std::weak_ptr<Renderable>& renderer);
 
 		private:
-			void UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader);
 			void GeometryPass();
 
-			std::vector<glm::mat4> RenderShadowMaps();
+			void RenderShadowMaps();
 			void UpdateUniformBuffers();
 
 			void RenderGUI();

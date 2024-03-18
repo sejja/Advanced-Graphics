@@ -27,7 +27,6 @@ struct Light {
     float mInnerAngle;
     float mOutterAngle;
     float mFallOff;
-    int mType;
     bool mCastShadows;
 };
 
@@ -89,33 +88,16 @@ void main() {
     // retrieve data from G-buffer
     const vec3 fragPos = texture(gPosition, oUVs).rgb;
     const vec3 normal = texture(gNormal, oUVs).rgb;
- 
-    vec3 totalLightShine = vec3(0, 0, 0);
 
     float shadow = 1;
-
-    if(uLight.mCastShadows)
-        shadow = 1 - ShadowCalculation(uShadowMatrix * vec4(fragPos, 1), normal);
     
-    vec3 lightDir;
-        float att = pow(smoothstep(uLight.mRadius, 0, length(uLight.mPosition - fragPos)), uLight.mFallOff);
-        float dist;
-        float spotlight =1;
+    const vec3 lightDir = normalize(uLight.mPosition - fragPos);
+    const float att = pow(smoothstep(uLight.mRadius, 0, length(uLight.mPosition - fragPos)), uLight.mFallOff);
+    float spotlight =1;
+    const float aplha = dot(-lightDir, normalize(uLight.mDirection));
 
-        //If this is a directional light type, we know the variance is nill (infinite)
-        switch(uLight.mType) {
-            case 2:
-                lightDir = -uLight.mDirection;
-                dist = length(lightDir);
-                break;
-            case 0:
-                lightDir = normalize(uLight.mPosition - fragPos); 
-                dist = length(lightDir);
-                break;
-            default:
-                lightDir = normalize(uLight.mPosition - fragPos); 
-                dist = length(lightDir);
-                const float aplha = dot(-lightDir, normalize(uLight.mDirection));
+                 if(uLight.mCastShadows)
+                     shadow = 1 - ShadowCalculation(uShadowMatrix * vec4(fragPos, 1), normal);
 
                 //If the outer anngle is larger than the perpendicularity between the incident lightray and the viewers vector
 			    if(aplha < cos(uLight.mOutterAngle))
@@ -127,12 +109,8 @@ void main() {
 				    spotlight = pow((aplha-cos(uLight.mOutterAngle))/(cos(uLight.mInnerAngle)-cos(uLight.mOutterAngle)), uLight.mFallOff);
 
 			    spotlight = clamp(spotlight,0,1);
-           }
 
-
-        totalLightShine +=
-            //atenuation
-            att 
+    FragColor = bloom(texture(gAlbedoSpec, oUVs) * vec4( att 
             //ambient
             * ((spotlight * 
             //shadowmapping
@@ -141,7 +119,5 @@ void main() {
             * (max(dot(normal, lightDir), 0.0) * uLight.mColor 
             //specular
             + uLight.mColor * pow(max(dot(normalize(ubCameraPosition - fragPos), 
-                reflect(-lightDir, normal)), 0.0), 32))));
-
-    FragColor = bloom(texture(gAlbedoSpec, oUVs) * vec4(totalLightShine, 1.0));
+                reflect(-lightDir, normal)), 0.0), 32)))), 1.0));
 } 
