@@ -2,14 +2,13 @@
 //	Object.h
 //	OpenGL Graphics
 //
-//	Created by Diego Revilla on 01/03/23
-//	Copyright © 2023. All Rights reserved
+//	Created by Diego Revilla on 01/03/24
+//	Copyright © 2024. All Rights reserved
 //
 
 #ifndef _OBJECT__H_
 #define _OBJECT__H_
 
-#include <memory>
 #include <vector>
 #include <algorithm>
 #include <execution>

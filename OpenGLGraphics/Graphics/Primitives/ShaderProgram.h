@@ -43,6 +43,7 @@ namespace Core {
 			void inline SetShaderUniform(const std::string_view& name, glm::vec3* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, glm::vec4* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, Color* value, const int count = 1);
+			GLuint GetHandle();
 		private:
 			GLuint getUniformLocation(const std::string_view& id);
 		#pragma endregion
@@ -141,6 +142,15 @@ namespace Core {
 		*/ // --------------------------------------------------------------------
 		void ShaderProgram::SetShaderUniform(const std::string_view& name, Color* value, const int count) {
 			glUniform4fv(getUniformLocation(name), count, reinterpret_cast<float*>(value));
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Get Handle
+		*
+		*   Returns the OpenGL handle
+		*/ // --------------------------------------------------------------------
+		inline GLuint ShaderProgram::GetHandle() {
+			return mHandle;
 		}
 
 		// ------------------------------------------------------------------------

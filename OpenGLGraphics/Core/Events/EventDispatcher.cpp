@@ -2,11 +2,13 @@
 //	EventDispatcher.cpp
 //	OpenGL Graphics
 //
-//	Created by Diego Revilla on 23/03/23
-//	Copyright © 2023. All Rights reserved
+//	Created by Diego Revilla on 05/03/24
+//	Copyright © 2024. All Rights reserved
 //
 
 #include "EventDispatcher.h"
+#include <algorithm>
+#include <execution>
 
 namespace Core {
     namespace Events {
@@ -22,8 +24,8 @@ namespace Core {
         *
         *  Subscribe a Listener to an specific Event
         */ // ---------------------------------------------------------------------
-        void EventDispatcher::Subscribe(Listener& who, const TypeInfo& what) {
-            mEventCollection[what].insert(&who);
+        void EventDispatcher::Subscribe(Listener& who, const TypeInfo& what, const function_t& fun) {
+            mEventCollection[what].insert(std::make_pair(&who, fun));
         }
 
         // ------------------------------------------------------------------------
@@ -32,15 +34,17 @@ namespace Core {
         *  Unsubscribes a Listener from a specific Event
         */ // --------------------------------------------------------------------
         void EventDispatcher::Unsubscribe(Listener& who, const TypeInfo& what) {
-            auto it = mEventCollection.find(what);
+            const container_t::iterator it = mEventCollection.find(what);
 
             //If we found the Event
             if (it != mEventCollection.end())
-                //For each Listener subscribed to the Event
-                for (auto x : it->second)
-                    //If the Listener is the one we want to unsubscribe
-                    if (typeid(*x).name() == typeid(who).name())
-                        (*it).second.erase(x);
+                //Erase the Listener from the Event
+                for(auto& x : it->second)
+                    //If we found the Listener
+                    if (typeid(*x.first).name() == typeid(who).name()) {
+                        it->second.erase(x.first);
+						break;
+                    }
         }
 
         // ------------------------------------------------------------------------
@@ -49,14 +53,15 @@ namespace Core {
         *  Once an event is called, it will call every single subscribed Listener
         */ // --------------------------------------------------------------------
         void EventDispatcher::TriggerEvent(const Event& event) const {
-            auto it = mEventCollection.find(event);
+            const container_t::const_iterator it = mEventCollection.find(event);
 
             //If we found the Event
             if (it != mEventCollection.end())
-                //Call every subscribed object to the event
-                for (auto x : it->second) x->HandleEvent(event);
+                std::for_each(std::execution::par_unseq, it->second.begin(), it->second.end(), [&event](const std::pair<Listener*, function_t>& x) {
+                    x.second(event);
+                });
         }
 
-        std::map<TypeInfo, std::unordered_set<Listener*>> EventDispatcher::mEventCollection;
+        EventDispatcher::container_t EventDispatcher::mEventCollection;
     }
 }

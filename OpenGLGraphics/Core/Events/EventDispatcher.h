@@ -2,8 +2,8 @@
 //	EventDispatcher.h
 //	OpenGL Graphics
 //
-//	Created by Diego Revilla on 23/03/23
-//	Copyright © 2023. All Rights reserved
+//	Created by Diego Revilla on 05/03/24
+//	Copyright © 2024. All Rights reserved
 //
 
 #ifndef _EVENT_DISPATCHER__H_
@@ -11,14 +11,14 @@
 
 #include "Event.h"
 #include "TypeInfo.h"
-#include <unordered_map>
+#include <map>
 #include <unordered_set>
 
 namespace Core {
     namespace Events {
         class Listener {
-#pragma region //Functions
         public:
+#pragma region //Functions
             virtual void HandleEvent(const Event&);
 #pragma endregion
         };
@@ -26,14 +26,18 @@ namespace Core {
         class EventDispatcher {
         public:
 #pragma region //Functions
-            void Subscribe(Listener& who, const TypeInfo& what);
+			using function_t = std::function<void(const Event&)>;
+            using container_t = std::map<const TypeInfo, std::unordered_map<Listener*, function_t>>;
+#pragma endregion
+#pragma region //Functions
+            void Subscribe(Listener& who, const TypeInfo& what, const function_t& fun);
             void Unsubscribe(Listener& who, const TypeInfo& what);
             void TriggerEvent(const Event& event) const;
 #pragma endregion
 
         private:
 #pragma region //Variables
-            static std::map<TypeInfo, std::unordered_set<Listener*>> mEventCollection;
+            static container_t mEventCollection;
 #pragma endregion
         };
     }

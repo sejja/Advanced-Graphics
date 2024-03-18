@@ -2,13 +2,12 @@
 //	Object.cpp
 //	OpenGL Graphics
 //
-//	Created by Diego Revilla on 01/03/23
-//	Copyright © 2023. All Rights reserved
+//	Created by Diego Revilla on 01/03/24
+//	Copyright © 2024. All Rights reserved
 //
 
 #include "Object.h"
 #include "Component.h"
-#include "Core/PageAllocator.h"
 
 namespace Core {
 	// ------------------------------------------------------------------------

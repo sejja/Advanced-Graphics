@@ -1,34 +1,18 @@
 //
-//	Importers.h
+//	ShaderImporter.h
 //	OpenGL Graphics
 //
-//	Created by Diego Revilla on 01/03/23
-//	Copyright © 2023. All Rights reserved
+//	Created by Diego Revilla on 22/02/24
+//	Copyright © 2024. All Rights reserved
 //
 
-#ifndef _IMPORTERS__H_
-#define _IMPORTERS__H_
+#ifndef _SHADER_IMPORTER__H_
+#define _SHADER_IMPORTER__H_
 
-#include "../ResourceManager.h"
-#include "Core/PageAllocator.h"
+#include "Core/ResourceManager.h"
 
 namespace Core {
 	namespace Assets {
-		class ModelImporter : public IResourceImporter {
-		public:
-			DONTDISCARD std::shared_ptr<IResource> ImportFromFile(const std::string_view& filename) const override;
-		};
-
-		class GLBImporter : public IResourceImporter {
-		public:
-			DONTDISCARD std::shared_ptr<IResource> ImportFromFile(const std::string_view& filename) const override;
-		};
-
-		class TextureImporter : public IResourceImporter {
-		public:
-			DONTDISCARD std::shared_ptr<IResource> ImportFromFile(const std::string_view& filename) const override;
-		};
-
 		class ShaderProgramImporter : public IResourceImporter {
 		public:
 			DONTDISCARD std::shared_ptr<IResource> ImportFromFile(const std::string_view& filename) const override;

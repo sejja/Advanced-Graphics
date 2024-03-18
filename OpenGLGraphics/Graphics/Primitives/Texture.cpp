@@ -88,23 +88,17 @@ namespace Core {
 		*   Binds the Texture to the OpenGL render pipeline
 		*/ // --------------------------------------------------------------------
 		void Texture::Bind() const noexcept {
-			GLuint& binded = Singleton<OpenGLInfo>::Instance().mBindedTextures[static_cast<int>(mType)];
+			switch (mType) {
+			default:
+				glActiveTexture(GL_TEXTURE0);
+				break;
 
-			//If the texture was already binded, don't repeat
-			if (binded != mHandle) {
-				switch (mType) {
-				default:
-					glActiveTexture(GL_TEXTURE0);
-					break;
-
-				case TextureType::eNormal:
-					glActiveTexture(GL_TEXTURE1);
-					break;
-				}
-
-				glBindTexture(GL_TEXTURE_2D, mHandle);
-				binded = mHandle;
+			case TextureType::eNormal:
+				glActiveTexture(GL_TEXTURE1);
+				break;
 			}
+
+			glBindTexture(GL_TEXTURE_2D, mHandle);
 		}
 	}
 }

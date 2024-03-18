@@ -25,7 +25,7 @@ namespace Core {
 
 		#pragma region //Functions
 			DONTDISCARD inline glm::mat4 GetViewMatrix() const;
-			void HandleEvent(const Events::Event& event) override;
+			DONTDISCARD inline glm::mat4 GetProjectionMatrix() const;
 			DONTDISCARD glm::vec3 inline GetPosition() const;
 			DONTDISCARD inline glm::vec3& GetPositionRef();
 			
@@ -50,6 +50,15 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		glm::mat4 Camera::GetViewMatrix() const {
 			return std::move(glm::lookAt(mPosition, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0)));
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Get Projection Matrix
+		*
+		*   Returns the Camera's Projection Matrix
+		*/ //----------------------------------------------------------------------
+		glm::mat4 Camera::GetProjectionMatrix() const {
+			return glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
 		}
 
 		// ------------------------------------------------------------------------

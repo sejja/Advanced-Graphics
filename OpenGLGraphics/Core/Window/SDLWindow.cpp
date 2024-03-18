@@ -2,13 +2,12 @@
 //  SDL_Window.cpp
 //  OpenGL Graphics
 //
-//  Created by Diego Revilla on 11/03/23
-//  Copyright � 2023. All rights reserved.
+//  Created by Diego Revilla on 13/03/24
+//  Copyright � 2024. All rights reserved.
 //
 
 #include <glew.h>
 #include "Core/Window/SDLWindow.h"
-#include "Dependencies/ImGui/imgui.h"
 #include "Dependencies/ImGui/imgui_impl_opengl3.h"
 #include "Dependencies/ImGui/imgui_impl_sdl2.h"
 
@@ -18,7 +17,7 @@
 *   Initializes the Destructor (What a thing)
 */ //----------------------------------------------------------------------
 SDLWindow::SDLWindow() noexcept :
-    mWindow(nullptr, SDL_DestroyWindow), mDimensions({0, 0}) {
+    mWindow(nullptr, SDL_DestroyWindow), mDimensions({0, 0}), mContext(NULL) {
 }
 
 // ------------------------------------------------------------------------
@@ -27,9 +26,6 @@ SDLWindow::SDLWindow() noexcept :
 *   Destroys the Window, and the context too
 */ //----------------------------------------------------------------------
 SDLWindow::~SDLWindow() {
-    ImGui_ImplOpenGL3_Shutdown();
-    ImGui_ImplSDL2_Shutdown();
-    ImGui::DestroyContext();
     SDL_GL_DeleteContext(mContext);
     SDL_Quit();
 }
@@ -47,10 +43,8 @@ void SDLWindow::Create() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 5);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
-    SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
     mWindow.reset(SDL_CreateWindow("OpenGL Graphics",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
@@ -75,12 +69,11 @@ void SDLWindow::Create() {
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
 
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForOpenGL(mWindow.get(), mContext);
-    ImGui_ImplOpenGL3_Init("#version 450");
+    ImGui_ImplOpenGL3_Init("#version 460");
 }
 
 // ------------------------------------------------------------------------
@@ -92,6 +85,8 @@ bool SDLWindow::Present() {
     SDL_Event event;
 
     SDL_GL_SwapWindow(mWindow.get());
+
+    // Poll and handle events (inputs, window resize, etc.)
     while (SDL_PollEvent(&event))
         ImGui_ImplSDL2_ProcessEvent(&event);
 

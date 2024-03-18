@@ -11,6 +11,7 @@
 layout (location = 0) out vec3 gPosition;
 layout (location = 1) out vec3 gNormal;
 layout (location = 2) out vec4 gAlbedoSpec;
+layout (location = 3) out vec4 gBrightness;
 
 in vec2 oUVs;
 in vec3 oNormal;
@@ -22,6 +23,7 @@ uniform vec3 uCameraPos;
 uniform mat4 uTransform;
 uniform mat4 uView;
 uniform mat4 uModel;
+uniform vec4 uColor;
 
 layout(binding = 0) uniform sampler2D uDiffuseTex;
 layout(binding = 1) uniform sampler2D uNormalTex;
@@ -33,4 +35,5 @@ void main() {
     gNormal = oNormal;
     // and the diffuse per-fragment color
     gAlbedoSpec.rgba = vec4(1, 1, 1, 1);
+    gBrightness.rgba = vec4(1, 1, 1, 1);
 }

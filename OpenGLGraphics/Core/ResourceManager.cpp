@@ -9,7 +9,9 @@
 #include <stack>
 #include <algorithm>
 #include "ResourceManager.h"
-#include "Assets/Importers.h"
+#include "Assets/ModelImporter.h"
+#include "Assets/ShaderImporter.h"
+#include "Assets/TextureImporter.h"
 #include "../Graphics/Primitives/Model.h"
 
 // ------------------------------------------------------------------------
@@ -18,9 +20,8 @@
 *  Initializes the Resource Manager
 */ // --------------------------------------------------------------------
 void ResourceManager::Initialize() {
-	importers.insert({ "obj", new Core::Assets::GLBImporter });
-	importers.insert({ "gltf", new Core::Assets::GLBImporter });
-	importers.insert({ "fbx", new Core::Assets::ModelImporter });
+	importers.insert({ "obj", new Core::Assets::ModelImporter });
+	importers.insert({ "gltf", new Core::Assets::ModelImporter });
 	importers.insert({ "png", new Core::Assets::TextureImporter });
 	importers.insert({ "jpg", new Core::Assets::TextureImporter });
 	importers.insert({ "tga", new Core::Assets::TextureImporter });
@@ -101,7 +102,7 @@ void ResourceManager::RemoveResource(raw_text name) noexcept {
 void ResourceManager::ShutDown() {
 	std::for_each(importers.begin(), importers.end(), [](const std::pair<std::string, IResourceImporter*>& x)
 		{
-			Allocator<IResourceImporter>::deallocate(x.second);
+			Core::Allocator<IResourceImporter>::deallocate(x.second);
 		});
 
 	resources.clear();

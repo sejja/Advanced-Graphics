@@ -2,8 +2,8 @@
 //	Scene.cpp
 //	OpenGL Graphics
 //
-//	Created by Diego Revilla on 20/03/23
-//	Copyright © 2023. All Rights reserved
+//	Created by Diego Revilla on 03/03/24
+//	Copyright © 2024. All Rights reserved
 //
 
 #include "Scene.h"
@@ -15,18 +15,16 @@
 #include "Graphics/Primitives/GLBModel.h"
 
 namespace Core {
-	SceneParser Scene::sParser;
-
 	// ------------------------------------------------------------------------
 	/*! Create Scene
 	*
 	*   Creates a scene from a level file
 	*/ // ---------------------------------------------------------------------
-	void Scene::CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
-		sParser.LoadDataFromFile(file.data());
+	void Scene::CreateScene(const std::string_view& file, const std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
+		mParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<ResourceManager>::Instance();
 
-		std::for_each(std::execution::unseq, sParser.objects.begin(), sParser.objects.end(), [this, &upload, &resmg](const SceneParser::Transform& x) {
+		std::for_each(std::execution::unseq, mParser.objects.begin(), mParser.objects.end(), [this, &upload, &resmg](const SceneParser::Transform& x) {
 			std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
 			obj->SetPosition(x.pos);
 			obj->SetRotation(glm::radians(x.rot));
@@ -46,24 +44,49 @@ namespace Core {
 
 		int i = 0;
 
-		std::for_each(std::execution::seq, sParser.lights.begin(), sParser.lights.end(), [this, &i, &upload](const SceneParser::Light& x) {
+		std::for_each(std::execution::seq, mParser.lights.begin(), mParser.lights.end(), [this, &i, &upload](const SceneParser::Light& x) {
 			std::shared_ptr<Core::Object> obj = std::move(std::make_shared<Core::Object>());
 			obj->SetPosition(x.pos);
 			obj->SetRotation(glm::vec3(0.f, 0.f, 0.f));
 			obj->SetScale({ 1.f, 1.f, 1.f });
-			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj));
+			//std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj));
 			std::shared_ptr<::Graphics::Primitives::Light> light = std::move(std::make_shared<::Graphics::Primitives::Light>(obj));
-			renderer->SetMesh(Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
-			renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
+			//renderer->SetMesh(Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
+
+			//Switch by the light index (to switch behaviors)
+			/*switch (i % 4) {
+			case 0:
+				renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Blue.shader"));
+				break;
+
+			case 1:
+				renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
+				break;
+
+			case 2:
+				renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
+				break;
+
+			default:
+				renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
+				break;
+			}*/
+
 			light->SetPosition(x.pos);
 			light->mData.mDirection = x.dir;
-			light->mData.mAmbient = glm::vec3(x.amb, x.amb, x.amb);
-			light->mData.mDiffuse = x.col;
-			light->SetSpecular(x.col);
-			light->SetAttenuation(x.att);
+			if(i < 4)
+			light->mData.mColor = x.col;
+			else
+			light->mData.mColor = glm::vec3(((double)rand() / (RAND_MAX)) + 1, ((double)rand() / (RAND_MAX)) + 1, ((double)rand() / (RAND_MAX)) + 1);
+			light->mData.mRadius = x.att.x;
 			light->mData.mInner = x.inner;
 			light->mData.mOutter = x.outer;
 			light->mData.mFallOff = x.falloff;
+
+			if(i < 4)
+				light->mData.mShadowCaster = 1;
+			else
+				light->mData.mShadowCaster = 0;
 
 			//If the light is a point light
 			if (x.type == "POINT") light->mData.mType = ::Graphics::Primitives::Light::LightType::Point;
@@ -75,30 +98,11 @@ namespace Core {
 			//else, it's a spot light
 			else light->mData.mType = ::Graphics::Primitives::Light::LightType::Spot;
 
-			std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> weakrend = renderer;
+			//std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> weakrend = renderer;
 			std::weak_ptr< ::Graphics::Primitives::Light> lightrend = light;
 
-			obj->AddComponent(std::move(weakrend));
+			//obj->AddComponent(std::move(weakrend));
 			obj->AddComponent(std::move(lightrend));
-
-			//Switch by the light index (to switch behaviors)
-			switch (i % 4) {
-			case 0:
-				obj->AddComponent(std::move((std::make_shared<Behaviors::AnimationComponent>(obj))));
-				break;
-
-			case 1:
-				obj->AddComponent(std::move((std::make_shared<Behaviors::AnimationComponent2>(obj))));
-				break;
-
-			case 2:
-				obj->AddComponent(std::move((std::make_shared<Behaviors::AnimationComponent3>(obj))));
-				break;
-
-			default:
-				obj->AddComponent(std::move((std::make_shared<Behaviors::AnimationComponent4>(obj))));
-				break;
-			}
 
 			i++;
 			upload(obj);

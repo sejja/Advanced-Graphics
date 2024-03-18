@@ -14,11 +14,15 @@
 #include "Graphics/Primitives/Renderables.h"
 #include "Tools/FrameBuffer.h"
 #include "Graphics/Architecture/GBuffer.h"
+#include "Debug/DebugShapes.h"
+#include "Graphics/Architecture/Bloom/BloomRenderer.h"
+#include "Graphics/Architecture/LightPass.h"
 
 namespace Core {
 	namespace Graphics {
 		class OpenGLPipeline : public Pipeline {
 		public:
+			~OpenGLPipeline();
 			void Init() override;
 			void PreRender() override;
 			void Render() override;
@@ -31,25 +35,24 @@ namespace Core {
 			void UploadLightDataToGPU(const AssetReference<Core::Graphics::ShaderProgram>& shader);
 			void GeometryPass();
 
-			void LightingPass();
-			void RenderShadowMaps();
-			void RenderScreenQuad();
+			std::vector<glm::mat4> RenderShadowMaps();
 			void UpdateUniformBuffers();
-			void DirectionalLightPass();
 
 			void RenderGUI();
 			void FlushObsoletes(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes);
 			void GroupRender(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
 				const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, 
 				ShaderProgram* shader);
+			void BloomPass();
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
-			glm::lowp_u16vec2 mDimensions;
-			std::vector<FrameBuffer> mShadowBuffers;
+			glm::vec2 mDimensions;
 			std::unique_ptr<GBuffer> mGBuffer;
+			std::unique_ptr<::Graphics::Architecture::LightPass> mLightPass;
 			Asset<ShaderProgram> mDirectionalLightShader;
-			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			GLuint mUniformBuffer;
+			std::unique_ptr<debug_system> mDebug;
+			std::unique_ptr<::Graphics::Architecture::Bloom::BloomRenderer> mBloomRenderer;
 		};
 
 		// ------------------------------------------------------------------------

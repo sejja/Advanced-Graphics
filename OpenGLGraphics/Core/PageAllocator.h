@@ -40,7 +40,8 @@ public:
 	void inline deallocate(TYPE* data) const noexcept;
 	template<typename ...Args>
 	void inline construct(TYPE* data, Args... ag) const noexcept;
-	void inline destroy(TYPE* data) noexcept;
+	void inline destroy(TYPE* data) const noexcept;
+	void inline terminate(TYPE* data) const noexcept;
 private:
 	Memory::object_allocator* mOA;
 };
@@ -103,8 +104,19 @@ inline void PageAllocator<TYPE>::construct(TYPE* data, Args ...ag) const noexcep
 *   Calls the TYPE destructor
 */ //-------------------------------------------------------------------
 template<typename TYPE>
-void inline PageAllocator<TYPE>::destroy(TYPE* data) noexcept {
+void inline PageAllocator<TYPE>::destroy(TYPE* data) const noexcept {
 	data->~TYPE();
+}
+
+// ------------------------------------------------------------------------
+/*! Destroy
+*
+*   Calls the TYPE destructor
+*/ //-------------------------------------------------------------------
+template<typename TYPE>
+void inline PageAllocator<TYPE>::terminate(TYPE* data) const noexcept {
+	destroy(data);
+	deallocate(data);
 }
 
 #endif

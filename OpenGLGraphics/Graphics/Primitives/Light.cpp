@@ -1,4 +1,5 @@
 #include "Light.h"
+#include <algorithm>
 
 namespace Graphics {
 	namespace Primitives {
@@ -8,6 +9,7 @@ namespace Graphics {
 		Light::Light(std::weak_ptr<Core::Object> parent) : 
 			Component(parent), mIndex(sLightReg++) {
 			sLightData.insert({ mIndex, mData });
+			GenerateShadowMap();
 		}
 
 		Light::~Light() {
@@ -20,15 +22,19 @@ namespace Graphics {
 				auto parent = GetParent().lock();
 				sLightData[mIndex].mPosition = parent->GetPosition();
 				sLightData[mIndex].mDirection = mData.mDirection;
-				sLightData[mIndex].mAmbient = mData.mAmbient;
-				sLightData[mIndex].mDiffuse = mData.mDiffuse;
-				sLightData[mIndex].mSpecular = mData.mSpecular;
-				sLightData[mIndex].mAttenuation = mData.mAttenuation;
+				sLightData[mIndex].mColor = mData.mColor;
+				sLightData[mIndex].mRadius = mData.mRadius;
 				sLightData[mIndex].mInner = mData.mInner;
 				sLightData[mIndex].mOutter = mData.mOutter;
 				sLightData[mIndex].mFallOff = mData.mFallOff;
 				sLightData[mIndex].mType = mData.mType;
+				sLightData[mIndex].mShadowCaster = mData.mShadowCaster;
 			}
+		}
+
+		void Light::GenerateShadowMap() {
+			sLightData[mIndex].mShadowMap.Create();
+			sLightData[mIndex].mShadowMap.CreateRenderTexture({ 1078 * 4, 780 * 4 }, false);
 		}
 
 		// ------------------------------------------------------------------------
@@ -37,14 +43,8 @@ namespace Graphics {
 		*   Gets the radious in which the light will affect the scene (with some bias)
 		*   Formula might be found at: https://ogldev.org/www/tutorial36/threshold.jpg
 		*/ //----------------------------------------------------------------------
-		float Light::CalculateSphereOfInfluence() const {
-			float MaxChannel = fmax(fmax(mData.mAmbient.x, mData.mAmbient.y), mData.mAmbient.z);
-			float diffusechannel = fmax(fmax(mData.mDiffuse.x, mData.mDiffuse.y), mData.mDiffuse.z);
-
-			float ret = (-mData.mAttenuation.y + sqrtf(mData.mAttenuation.y * mData.mAttenuation.y -
-				4 * mData.mAttenuation.z * (mData.mAttenuation.z - 256 * MaxChannel * diffusechannel)))
-				/ (2 * mData.mAttenuation.z);
-			return ret;
+		float Light::BackedLightData::CalculateSphereOfInfluence() const {
+			return mRadius * 2;
 		}
 	}
 }
