@@ -86,6 +86,13 @@ void MainMenu::RenderRemoteControlMenu(){
                 server.CreateServer();
             }
 
+            if (ImGui::Button("TEST SERVIDORES ABIERTOS")) {
+                
+                Client& client = Singleton<Client>::Instance();
+                client.findServers(5555);
+
+            }
+
             if (ImGui::Button("ENVIAR")) {
             	//connect to server
                 
@@ -107,19 +114,29 @@ void MainMenu::RenderRemoteControlMenu(){
 
             if (ImGui::BeginMenu("Connect to server")) {
 
+                Client& client = Singleton<Client>::Instance();
+
+                if (!client.getIsBroadcastBinded()){
+                    std::thread thread(&Client::findServers, &client, 5555);
+                    thread.join();
+                }
+
+
+
+                std::vector<std::string> servers = client.getServers();
 
                 //Lista de IPs disponibles en red
                 ImGui::BeginChild("child", ImVec2(0, 100), ImGuiChildFlags_Border);
-                for (int i = 0; i < 4; i++) {
-                    ImGui::Text("127.0.0.%d", i);
+                
+                for (const std::string server : servers) {
+                    ImGui::Text(server.c_str());
                     ImGui::SameLine();
-                    if( ImGui::SmallButton("Connect") ){
-                        printf("Connecting to 127.0.0.%d\n", i);
-                        Client& client = Singleton<Client>::Instance();
-                        
-                        client.connectToServer("127.0.0.1", 5555);
+                    if (ImGui::SmallButton("Connect")) {
+                        printf("Conectando a %s\n", server.c_str());
+
+                        client.connectToServer(server.c_str(), 5555);
                     }
-                }
+				}   
                 ImGui::EndChild();
 
 

@@ -20,6 +20,8 @@ public:
 	int StartServer();
 	void KillServer();
 
+	void BroadcastServerPresence();
+
 
 	bool isRunning() {
 		return serverSocket != NULL;

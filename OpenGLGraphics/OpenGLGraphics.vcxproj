@@ -259,6 +259,7 @@
     <ClInclude Include="Core\ObjectAllocator.h" />
     <ClInclude Include="Core\PageAllocator.h" />
     <ClInclude Include="Core\ResourceManager.h" />
+    <ClInclude Include="D:\Asier\Descargas\dns_sd.h" />
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
     <ClInclude Include="Dependencies\ImGui\imgui.h" />
     <ClInclude Include="Dependencies\ImGui\imgui_impl_opengl3.h" />
@@ -974,6 +975,7 @@
     <Image Include="Content\Textures\left.jpg" />
     <Image Include="Content\Textures\right.jpg" />
     <Image Include="Content\Textures\top.jpg" />
+    <Image Include="D:\Asier\Descargas\realEngineLogo.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

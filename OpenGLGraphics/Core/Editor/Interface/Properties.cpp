@@ -27,6 +27,32 @@
 SelectedObj& selectedObjIns = Singleton<Editor>::Instance().GetSelectedObj();
 
 
+//SACAR LOS SENDTOPEER DE AQUI 
+void sendToPeer(std::shared_ptr<Core::Object> obj) {
+    Server& server = Singleton<Server>::Instance();
+    Client& client = Singleton<Client>::Instance();
+
+    if (server.isRunning()) {
+        server.sendObjectIfChanged(obj);
+    }
+    else if (client.isConnected()) {
+        client.sendObjectIfChanged(obj);
+    }
+
+}
+
+void sendToPeer(std::shared_ptr<Core::Particles::FireSystem> particleSys) {
+    Server& server = Singleton<Server>::Instance();
+    Client& client = Singleton<Client>::Instance();
+
+
+    if (server.isRunning()) {
+        server.sendParticleIfChanged(particleSys);
+    }
+    else if (client.isConnected()) {
+        client.sendParticleIfChanged(particleSys);
+    }
+}
 
 
 void Properties::Render() {
@@ -35,6 +61,7 @@ void Properties::Render() {
     std::shared_ptr<Core::Particles::ParticleSystem> particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(selectedObjIns.GetSelectedComponent());
     std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
+    std::shared_ptr<Core::Particles::FireSystem> fireSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(selectedObjIns.GetSelectedComponent());
 
 	// Property tool search input
 	static char search_input_field[128] = "";
@@ -66,11 +93,12 @@ void Properties::Render() {
         }
     }
 
-    else if (particleSystem) {
+    else if (fireSystem) {
 
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Particle Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
             ParticleTransform();
             FireSize();
+            sendToPeer(fireSystem);
         }
 
 	}
@@ -100,7 +128,6 @@ void TextPaddingWBg(const char* text, ImVec4 bgColor) {
 
 
 void TransformRow(const char* title,float& x_val, float& y_val, float& z_val) {
-    //TODO: CONVERTIRLO EN UNA GRID
     static char defaultValue[16] = "0";
     const float f32_zero = -1000.f;
     const float f32_one = 1000.f;
@@ -108,49 +135,50 @@ void TransformRow(const char* title,float& x_val, float& y_val, float& z_val) {
     const float inputSize = 0.12f;
     float remainingWidth = ImGui::GetContentRegionAvail().x;
 
-    ImGui::SetNextItemWidth(remainingWidth * inputSize);
 
-    ImGui::PushItemWidth(100);//No funciona
-    ImGui::Text(title); 
-    ImGui::PopItemWidth();
-    ImGui::SameLine();
-
-    ImGui::Button(ICON_FA_LOCK);
-
-    std::string XLabel = "X";
-    char XID[32];
-    sprintf(XID, "##%d%d", XLabel, title);
-    ImGui::SameLine();
-    TextPaddingWBg(XLabel.c_str(), ImVec4(1.0f, 0.5f, 0.5f, 0.7f));
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(remainingWidth * inputSize);
-    ImGui::DragScalar(XID, ImGuiDataType_Float, &x_val, dragJump, &f32_zero, &f32_one, "%.2f");
+   
+    if (ImGui::BeginTable(title, 2)) {
+        ImGui::TableSetupColumn("Columna 1", ImGuiTableColumnFlags_WidthFixed, 100.0f);
+        ImGui::TableSetupColumn("Columna 2");
 
 
-    std::string YLabel = "Y";
-    std::string YID = "##Y" + std::string(title);
-    ImGui::SameLine();
-    TextPaddingWBg(YLabel.c_str(), ImVec4(0.5f, 1.0f, 0.5f, 0.7f));
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(remainingWidth * inputSize);
-    ImGui::DragScalar(YID.c_str(), ImGuiDataType_Float, &y_val, dragJump, &f32_zero, &f32_one, "%.2f");
+        ImGui::TableNextRow();
 
-    std::string ZLabel = "Z";
-    std::string ZID = "##Z" + std::string(title);
-    ImGui::SameLine();
-    TextPaddingWBg(ZLabel.c_str(), ImVec4(0.5f, 0.5f, 1.0f, 0.7f));
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(remainingWidth * inputSize);
-    ImGui::DragScalar(ZID.c_str(), ImGuiDataType_Float, &z_val, dragJump, &f32_zero, &f32_one, "%.2f");
+		ImGui::TableSetColumnIndex(0);
+        
+		ImGui::Text(title);
+		ImGui::TableSetColumnIndex(1);
 
-    auto IconTex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("../Assets/Icons/reload.png")->Get();
-    ImGui::SameLine();
+		ImGui::Button(ICON_FA_LOCK);
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(remainingWidth * inputSize);
+		ImGui::DragScalar("##X", ImGuiDataType_Float, &x_val, dragJump, &f32_zero, &f32_one, "%.2f");
+		ImGui::SameLine();
+		TextPaddingWBg("X", ImVec4(1.0f, 0.5f, 0.5f, 0.7f));
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(remainingWidth * inputSize);
+		ImGui::DragScalar("##Y", ImGuiDataType_Float, &y_val, dragJump, &f32_zero, &f32_one, "%.2f");
+		ImGui::SameLine();
+		TextPaddingWBg("Y", ImVec4(0.5f, 1.0f, 0.5f, 0.7f));
+		ImGui::SameLine();
+		ImGui::SetNextItemWidth(remainingWidth * inputSize);
+		ImGui::DragScalar("##Z", ImGuiDataType_Float, &z_val, dragJump, &f32_zero, &f32_one, "%.2f");
+		ImGui::SameLine();
+		TextPaddingWBg("Z", ImVec4(0.5f, 0.5f, 1.0f, 0.7f));
 
-    if (ImGui::Button(ICON_FA_ARROW_ROTATE_LEFT)) {
-        x_val = 0.0f;
-        y_val = 0.0f;
-        z_val = 0.0f;
-    };
+        ImGui::SameLine();
+
+        if (ImGui::Button(ICON_FA_ARROW_ROTATE_LEFT)) {
+            x_val = 0.0f;
+            y_val = 0.0f;
+            z_val = 0.0f;
+        };
+
+
+		ImGui::EndTable();
+    
+    }
+
 }
 
 
@@ -235,31 +263,7 @@ void Properties::selectedObjectTree() {
 }
 
 
-void sendToPeer(std::shared_ptr<Core::Object> obj) {
-    Server& server = Singleton<Server>::Instance();
-    Client& client = Singleton<Client>::Instance();
 
-    if (server.isRunning()) {
-        server.sendObjectIfChanged(obj);
-    }
-    else if (client.isConnected()) {
-		client.sendObjectIfChanged(obj);
-	}
-    
-}
-
-void sendToPeer(std::shared_ptr<Core::Particles::ParticleSystem> particleSys) {
-	Server& server = Singleton<Server>::Instance();
-	Client& client = Singleton<Client>::Instance();
-
-
-    if (server.isRunning()) {
-		server.sendParticleIfChanged(particleSys);
-	}
-    else if (client.isConnected()) {
-		client.sendParticleIfChanged(particleSys);
-	}
-}
 
 void Properties::ParticleTransform() {
 
@@ -274,7 +278,7 @@ void Properties::ParticleTransform() {
 
     
 
-    sendToPeer(particleSystem);
+
 
 
 }
@@ -289,9 +293,9 @@ void Properties::TransformOptions() {
     glm::vec3 curRot = obj->GetRotation();
     glm::vec3 curScale = obj->GetScale();
     
-    TransformRow("Location", curPos[0], curPos[1], curPos[2]);
-    TransformRow("Rotation", curRot[0], curRot[1], curRot[2]);
-    TransformRow("  Scale    ", curScale[0], curScale[1], curScale[2]);
+    TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
+    TransformRow("  Rotation", curRot[0], curRot[1], curRot[2]);
+    TransformRow("  Scale", curScale[0], curScale[1], curScale[2]);
 
     obj->SetPosition(curPos);
     obj->SetRotation(curRot);
@@ -537,6 +541,10 @@ void Properties::FireSize(){
     glm::vec3 curRadius = fireSystem->GetRadiusVector();
     float curGap = fireSystem->GetFireGap();
     float curHeight = fireSystem->getHeigth();
+    float curParticleSize = fireSystem->GetParticleSize();
+    glm::vec4 color = fireSystem->GetBaseColor();
+    ImVec4 baseColor = ImVec4(color.x, color.y, color.z, color.w);
+
 
 
     TransformRow("  Radius    ", curRadius[0], curRadius[1], curRadius[2]);
@@ -555,14 +563,30 @@ void Properties::FireSize(){
         ImGui::Text("Gap");
         ImGui::TableSetColumnIndex(1);
         ImGui::SliderFloat("##Gap", &curGap, 0.0f, 1.0f, "%.3f");
-        
+
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Particle Size");
+        ImGui::TableSetColumnIndex(1);
+        ImGui::SliderFloat("##ParticleSize", &curParticleSize, 1.0f, 15.0f, "%.3f");
+
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Light Color");
+        ImGui::TableSetColumnIndex(1);
+        colorPickerBtn(baseColor);
+
+
         ImGui::EndTable();
     }
 
     ImGui::PopStyleVar();
 
     fireSystem->ChangeFireSize(curRadius[0], curRadius[1], curRadius[2], curGap, curHeight);
+    fireSystem->SetParticleSize(curParticleSize);
 
+    glm::vec4 newColor = glm::vec4(baseColor.x, baseColor.y, baseColor.z, baseColor.w);
+    fireSystem->SetBaseColor(newColor);
 
 
 }

@@ -25,7 +25,57 @@ DWORD WINAPI StartServerThread(LPVOID lpParam) {
     return 1; //ERROR
 }
 
+void Server::BroadcastServerPresence() {
+    WSADATA wsaData;
+    int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (result != 0) {
+        std::cerr << "WSAStartup failed with error: " << result << std::endl;
+        return;
+    }
+    // Crear un socket de broadcast UDP
+    SOCKET broadcastSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    if (broadcastSocket == INVALID_SOCKET) {
+        std::cerr << "Broadcast socket creation failed." << WSAGetLastError() << std::endl;
+        return;
+    }
+
+    // Habilitar el broadcast en el socket
+    BOOL broadcastEnabled = TRUE;
+    if (setsockopt(broadcastSocket, SOL_SOCKET, SO_BROADCAST, (char*)&broadcastEnabled, sizeof(broadcastEnabled)) == SOCKET_ERROR) {
+        std::cerr << "Broadcast socket option set failed." << std::endl;
+        closesocket(broadcastSocket);
+        return;
+    }
+
+    // Configurar la dirección de broadcast
+    sockaddr_in broadcastAddr;
+    memset(&broadcastAddr, 0, sizeof(broadcastAddr));
+    broadcastAddr.sin_family = AF_INET;
+    broadcastAddr.sin_port = htons(50000); // Puerto de broadcast UDP
+    broadcastAddr.sin_addr.s_addr = INADDR_BROADCAST;
+
+    // Mensaje de broadcast
+    const char* broadcastMessage = "Server available";
+
+    // Enviar periódicamente el mensaje de broadcast
+    while (true) {
+        if (sendto(broadcastSocket, broadcastMessage, strlen(broadcastMessage), 0, (sockaddr*)&broadcastAddr, sizeof(broadcastAddr)) == SOCKET_ERROR) {
+            std::cerr << "Broadcast message send failed." << std::endl;
+        }
+        std::this_thread::sleep_for(std::chrono::seconds(5)); // Enviar el mensaje cada 5 segundos
+    }
+
+    // Cerrar el socket de broadcast
+    closesocket(broadcastSocket);
+}
+
 int Server::CreateServer() {
+
+    // Crear un hilo para enviar mensajes de broadcast
+    std::thread broadcastThread(&Server::BroadcastServerPresence, this);
+    broadcastThread.detach(); // Desconectar el hilo principal del hilo de broadcast
+
+
     HANDLE serverThread = CreateThread(NULL, 0, StartServerThread, this, 0, NULL);
     if (serverThread == NULL) {
         std::cerr << "Failed to create server thread." << std::endl;

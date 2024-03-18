@@ -8,6 +8,7 @@
 #include "Common.h"
 
 
+
 using json = nlohmann::json;
 
 class Client : public Common {
@@ -19,14 +20,23 @@ public:
 	
 	bool isConnected() const { return clientSocket != NULL; }
 
+	void findServers(int port);
 
+	void ListenForServers();
 
+	std::vector<std::string> getServers() const { return availableServers; }
+
+	bool getIsBroadcastBinded() const { return isBroadcastBinded; }
 
 private:
 	char* serverIP;
 	int serverPort;
+	std::vector<std::string> availableServers;
 
-	//DWORD WINAPI receiveFromServer(LPVOID lpParam);
+	bool isBroadcastBinded = false;
+
+
+
 
 
 

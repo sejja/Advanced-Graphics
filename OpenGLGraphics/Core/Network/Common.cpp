@@ -103,28 +103,46 @@ void Common::sendToPeer(const json& message){
 }
 
 
-void Common::sendParticleIfChanged(const std::shared_ptr<Core::Particles::ParticleSystem>& particleSys) {
-    glm::vec3 curCenter = particleSys->GetSystemCenter();
-    //mas cosas de las particulas... color , tamaño, etc
+void Common::sendParticleIfChanged(const std::shared_ptr<Core::Particles::FireSystem>& fireSystem) {
+    glm::vec3 curCenter = fireSystem->GetSystemCenter();
+    glm::vec4 curColor = fireSystem->GetBaseColor();
+    glm::vec3 curRadius = fireSystem->GetRadiusVector();
+    float curGap = fireSystem->GetFireGap();
+    float curHeight = fireSystem->getHeigth();
+    float curParticleSize = fireSystem->GetParticleSize();
 
-    bool centerChanged = true;
 
-    if (lastSentParticleSys != NULL) {
-		centerChanged = curCenter != lastSentParticleSys->GetSystemCenter();
+    bool centerChanged = true , colorChanged = true, radiusChanged = true, gapChanged = true, heightChanged = true, particleSizeChanged = true;
+
+    std::shared_ptr<Core::Particles::FireSystem> lastSentFireSys = std::dynamic_pointer_cast<Core::Particles::FireSystem>(lastSentParticleSys);
+
+    if (lastSentFireSys) {
+
+		centerChanged = curCenter != lastSentFireSys->GetSystemCenter();
+        colorChanged = curColor != lastSentFireSys->GetBaseColor();
+        radiusChanged = curRadius != lastSentFireSys->GetRadiusVector();
+        gapChanged = curGap != lastSentFireSys->GetFireGap();
+        heightChanged = curHeight != lastSentFireSys->getHeigth();
+
 	}
 
-    if (centerChanged) {
+    if (centerChanged | colorChanged | radiusChanged | gapChanged | heightChanged) {
 		printf("Sending particle system properties to client\n");
         json data = {
 			{"type", "particle_transform"},
-			{"id", particleSys->GetID()},
-			{"center", {curCenter.x, curCenter.y, curCenter.z}}
+			{"id", fireSystem->GetID()},
+			{"center", {curCenter.x, curCenter.y, curCenter.z}},
+            {"color", {curColor.r, curColor.g, curColor.b, curColor.a}},
+			{"radius", {curRadius.x, curRadius.y, curRadius.z}},
+			{"gap", curGap},
+			{"height", curHeight},
+			{"particleSize", curParticleSize}
 
 		};
 
 		sendToPeer(data);
-
-		lastSentParticleSys = std::make_shared<Core::Particles::ParticleSystem>(*particleSys);
+        
+        lastSentParticleSys = std::make_shared<Core::Particles::ParticleSystem>(*fireSystem);
 	}
 }
 
@@ -214,10 +232,25 @@ void Common::transformObject(const json& data) {
 
 void Common::transformParticle(const json& data) {
 	std::shared_ptr<Core::Particles::ParticleSystem> particleSys = getParticleSysByID(data["id"]);
+    //particlesys a firesys
+    std::shared_ptr<Core::Particles::FireSystem> fireSys = std::dynamic_pointer_cast<Core::Particles::FireSystem>(particleSys);
 
-    if (particleSys != NULL) {
-		glm::vec3 newCenter = { data["center"][0], data["center"][1], data["center"][2] };
-		particleSys->SetSystemCenter(newCenter);
+
+    if (fireSys) {
+        glm::vec3 newCenter = { data["center"][0], data["center"][1], data["center"][2] };
+        glm::vec4 newColor = { data["color"][0], data["color"][1], data["color"][2], data["color"][3] };
+        glm::vec3 newRadius = { data["radius"][0], data["radius"][1], data["radius"][2] };
+        float newGap = data["gap"];
+        float newHeight = data["height"];
+        float newParticleSize = data["particleSize"];
+
+        fireSys->SetSystemCenter(newCenter);
+        fireSys->SetBaseColor(newColor);
+        fireSys->ChangeFireSize(newRadius[0], newRadius[1], newRadius[2], newGap, newHeight);
+        fireSys->SetParticleSize(newParticleSize);
+
+
+
 	}
     else {
 		std::cerr << "Particle system not found" << std::endl;
