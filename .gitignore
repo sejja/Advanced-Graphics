@@ -404,3 +404,4 @@ FodyWeavers.xsd
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio
 /OpenGLGraphics/Content/Scenes/Minecraft/vokselia.bin
+/OpenGLGraphics/Content/Scenes/Minecraft/vokselia.gltf
