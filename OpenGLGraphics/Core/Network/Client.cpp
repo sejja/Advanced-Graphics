@@ -60,18 +60,27 @@ void Client::disconnectFromServer(){
 
 
 void Client::ListenForServers() {
+    WSADATA wsaData;
+    int result = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if (result != 0) {
+        std::cerr << "WSAStartup failed with error: " << result << std::endl;
+        return;
+    }
+
     // Crear un socket de broadcast UDP
-    SOCKET broadcastSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    broadcastSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (broadcastSocket == INVALID_SOCKET) {
-        std::cerr << "Broadcast socket creation failed." << std::endl;
+        std::cerr << "Broadcast socket creation failed." << WSAGetLastError() << std::endl;
         return;
     }
 
     // Configurar la dirección de escucha
     sockaddr_in listenAddr;
+    const char* requestMsg = "GET_AWAKE_SERVERS";
+    sockaddr_in broadcastAddr;
     memset(&listenAddr, 0, sizeof(listenAddr));
     listenAddr.sin_family = AF_INET;
-    listenAddr.sin_port = htons(50000); // Puerto de broadcast UDP
+    listenAddr.sin_port = htons(50001); // Puerto de broadcast UDP
     listenAddr.sin_addr.s_addr = INADDR_ANY;
 
     // Enlazar el socket al puerto de escucha
@@ -81,6 +90,30 @@ void Client::ListenForServers() {
         return;
     }
     isBroadcastBinded = true;
+
+
+    // Establecer la opción SO_BROADCAST
+    int broadcastOption = 1;
+    if (setsockopt(broadcastSocket, SOL_SOCKET, SO_BROADCAST, (const char*)&broadcastOption, sizeof(broadcastOption)) == SOCKET_ERROR) {
+        std::cerr << "Failed to set broadcast socket option with error: " << WSAGetLastError() << std::endl;
+        closesocket(broadcastSocket);
+        return;
+    }
+
+    // Configurar la dirección de broadcast
+
+    memset(&broadcastAddr, 0, sizeof(broadcastAddr));
+    broadcastAddr.sin_family = AF_INET;
+    broadcastAddr.sin_port = htons(50000); // Puerto de broadcast UDP
+    broadcastAddr.sin_addr.s_addr = INADDR_BROADCAST;
+
+    int bytesSent = sendto(broadcastSocket, requestMsg, strlen(requestMsg), 0, (sockaddr*)&broadcastAddr, sizeof(broadcastAddr));
+    if (bytesSent == SOCKET_ERROR) {
+        std::cerr << "Failed to send broadcast message." << WSAGetLastError() << std::endl;
+        closesocket(broadcastSocket);
+        return;
+    }
+    printf("Broadcast message sent.\n");
     
 
     // Escuchar mensajes de broadcast
@@ -97,6 +130,8 @@ void Client::ListenForServers() {
             std::cout << "Server IP: " << ipBuffer << ", Port: " << ntohs(serverAddr.sin_port) << std::endl;
             //insertar la ip en availableServers
             std::string serverIp = ipBuffer;
+            //relodeamos el vector de servidores disponibles
+            availableServers.clear();
             availableServers.push_back(serverIp);
 
         }
@@ -104,6 +139,13 @@ void Client::ListenForServers() {
 
     // Cerrar el socket de broadcast
     closesocket(broadcastSocket);
+}
+
+void Client::closeBroadcastSocket() {
+	closesocket(broadcastSocket);
+	isBroadcastBinded = false;
+	std::cout << "Broadcast socket closed." << std::endl;
+    //WSACleanup();
 }
 
 

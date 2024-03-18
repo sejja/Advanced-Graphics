@@ -32,6 +32,8 @@ void Server::BroadcastServerPresence() {
         std::cerr << "WSAStartup failed with error: " << result << std::endl;
         return;
     }
+    printf("WSA iniciado\n");
+
     // Crear un socket de broadcast UDP
     SOCKET broadcastSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (broadcastSocket == INVALID_SOCKET) {
@@ -39,30 +41,35 @@ void Server::BroadcastServerPresence() {
         return;
     }
 
-    // Habilitar el broadcast en el socket
-    BOOL broadcastEnabled = TRUE;
-    if (setsockopt(broadcastSocket, SOL_SOCKET, SO_BROADCAST, (char*)&broadcastEnabled, sizeof(broadcastEnabled)) == SOCKET_ERROR) {
-        std::cerr << "Broadcast socket option set failed." << std::endl;
+    // Configurar la dirección de escucha
+    sockaddr_in listenAddr;
+    memset(&listenAddr, 0, sizeof(listenAddr));
+    listenAddr.sin_family = AF_INET;
+    listenAddr.sin_port = htons(50000); // Puerto de broadcast UDP
+    listenAddr.sin_addr.s_addr = INADDR_ANY;
+
+    // Enlazar el socket al puerto de escucha
+    if (bind(broadcastSocket, (sockaddr*)&listenAddr, sizeof(listenAddr)) == SOCKET_ERROR) {
+        std::cerr << "Broadcast socket bind failed with error: " << WSAGetLastError() << std::endl;
         closesocket(broadcastSocket);
         return;
     }
 
-    // Configurar la dirección de broadcast
-    sockaddr_in broadcastAddr;
-    memset(&broadcastAddr, 0, sizeof(broadcastAddr));
-    broadcastAddr.sin_family = AF_INET;
-    broadcastAddr.sin_port = htons(50000); // Puerto de broadcast UDP
-    broadcastAddr.sin_addr.s_addr = INADDR_BROADCAST;
-
-    // Mensaje de broadcast
-    const char* broadcastMessage = "Server available";
-
-    // Enviar periódicamente el mensaje de broadcast
+    // Escuchar mensajes de broadcast
+    sockaddr_in clientAddr;
+    char recvBuffer[1024];
+    int clientAddrLen = sizeof(clientAddr);
     while (true) {
-        if (sendto(broadcastSocket, broadcastMessage, strlen(broadcastMessage), 0, (sockaddr*)&broadcastAddr, sizeof(broadcastAddr)) == SOCKET_ERROR) {
-            std::cerr << "Broadcast message send failed." << std::endl;
+        int bytesReceived = recvfrom(broadcastSocket, recvBuffer, sizeof(recvBuffer), 0, (sockaddr*)&clientAddr, &clientAddrLen);
+        if (bytesReceived > 0) {
+            recvBuffer[bytesReceived] = '\0';
+            std::cout << "Received broadcast message from client: " << recvBuffer << std::endl;
+            // Responder al cliente que está disponible
+            const char* responseMessage = "Server available";
+            if (sendto(broadcastSocket, responseMessage, strlen(responseMessage), 0, (sockaddr*)&clientAddr, sizeof(clientAddr)) == SOCKET_ERROR) {
+                std::cerr << "Broadcast response send failed." << std::endl;
+            }
         }
-        std::this_thread::sleep_for(std::chrono::seconds(5)); // Enviar el mensaje cada 5 segundos
     }
 
     // Cerrar el socket de broadcast

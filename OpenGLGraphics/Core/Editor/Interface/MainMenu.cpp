@@ -112,16 +112,14 @@ void MainMenu::RenderRemoteControlMenu(){
             
             }
 
-            if (ImGui::BeginMenu("Connect to server")) {
+            Client& client = Singleton<Client>::Instance();
 
-                Client& client = Singleton<Client>::Instance();
+            if (ImGui::BeginMenu("Connect to server")) {
 
                 if (!client.getIsBroadcastBinded()){
                     std::thread thread(&Client::findServers, &client, 5555);
                     thread.join();
                 }
-
-
 
                 std::vector<std::string> servers = client.getServers();
 
@@ -149,6 +147,13 @@ void MainMenu::RenderRemoteControlMenu(){
                 }
 
                 ImGui::EndMenu();
+            }
+            else {
+                if (client.getIsBroadcastBinded()) {
+                    printf("Cerrando escucha de servers...\n");
+                    client.closeBroadcastSocket();
+				}
+                
             }
 
         }

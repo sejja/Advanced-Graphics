@@ -28,6 +28,8 @@ public:
 
 	bool getIsBroadcastBinded() const { return isBroadcastBinded; }
 
+	void closeBroadcastSocket();
+
 private:
 	char* serverIP;
 	int serverPort;
@@ -35,6 +37,7 @@ private:
 
 	bool isBroadcastBinded = false;
 
+	SOCKET broadcastSocket;
 
 
 
