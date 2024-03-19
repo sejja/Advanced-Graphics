@@ -10,7 +10,7 @@
 #define _PAGE_ALLOCATOR__H_
 
 #include "../CommonDefines.h"
-#include "ObjectAllocator.h"
+#include "Memory/ObjectAllocator.h"
 
 template<typename TYPE>
 class PageAllocator {
@@ -28,9 +28,8 @@ public:
 	typedef const TYPE& const_reference;
 	template <class U1> struct rebind { typedef PageAllocator<U1> other; };
 	PageAllocator(void) {
-		static Memory::object_allocator
-			galloc(sizeof(TYPE), Memory::object_allocator::oa_config());
-		mOA = &galloc;
+		static Core::Memory::ObjectAllocator<TYPE, 64, 8> tfne;
+		mOA = &tfne;
 	};
 	PageAllocator(const PageAllocator& other) : mOA(other.mOA) {};
 	template <class U1> PageAllocator(const PageAllocator<U1>& other) : mOA(sizeof(TYPE), other.mOA.config()) {};
@@ -43,7 +42,7 @@ public:
 	void inline destroy(TYPE* data) const noexcept;
 	void inline terminate(TYPE* data) const noexcept;
 private:
-	Memory::object_allocator* mOA;
+	Core::Memory::ObjectAllocator<TYPE, 64, 8>* mOA;
 };
 
 // ------------------------------------------------------------------------
@@ -53,7 +52,7 @@ private:
 */ //--------------------------------------------------------------------
 template<typename TYPE>
 constexpr TYPE inline* PageAllocator<TYPE>::allocate(size_t) const noexcept {
-	return reinterpret_cast<TYPE*>(mOA->allocate());
+	return reinterpret_cast<TYPE*>(mOA->Allocate());
 }
 
 // ------------------------------------------------------------------------
@@ -78,11 +77,11 @@ template<typename TYPE>
 void PageAllocator<TYPE>::deallocate(TYPE* data) const noexcept {
 	static size_t dealloccount = 0;
 
-	if (data) mOA->deallocate(data);
+	if (data) mOA->Deallocate(data);
 	dealloccount++;
 
 	if (dealloccount >= 64) {
-		mOA->free_empty_pages();
+		mOA->FreeEmptyPages();
 		dealloccount = 0;
 	}
 }
