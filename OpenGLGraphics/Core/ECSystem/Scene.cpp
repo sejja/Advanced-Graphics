@@ -50,28 +50,10 @@ namespace Core {
 			obj->SetPosition(x.pos);
 			obj->SetRotation(glm::vec3(0.f, 0.f, 0.f));
 			obj->SetScale({ 1.f, 1.f, 1.f });
-			//std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj));
+			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj));
 			std::shared_ptr<::Graphics::Primitives::Light> light;
-			//renderer->SetMesh(Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
-
-			//Switch by the light index (to switch behaviors)
-			/*switch (i % 4) {
-			case 0:
-				renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Blue.shader"));
-				break;
-
-			case 1:
-				renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
-				break;
-
-			case 2:
-				renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
-				break;
-
-			default:
-				renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
-				break;
-			}*/
+			renderer->SetMesh(Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
+			renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
 
 			//If the light is a point light
 			if (x.type == "POINT") {
@@ -102,10 +84,10 @@ namespace Core {
 			light->SetPosition(x.pos);
 			light->mData->mColor = x.col;
 
-			//std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> weakrend = renderer;
+			std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> weakrend = renderer;
 			std::weak_ptr< ::Graphics::Primitives::Light> lightrend = light;
 
-			//obj->AddComponent(std::move(weakrend));
+			obj->AddComponent(std::move(weakrend));
 			obj->AddComponent(std::move(lightrend));
 
 			i++;

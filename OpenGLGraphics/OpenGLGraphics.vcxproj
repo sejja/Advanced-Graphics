@@ -176,7 +176,6 @@
     <ClCompile Include="Core\Events\EventDispatcher.cpp" />
     <ClCompile Include="Core\Events\TypeInfo.cpp" />
     <ClCompile Include="Core\Input\InputManager.cpp" />
-    <ClCompile Include="Core\ObjectAllocator.cpp" />
     <ClCompile Include="Core\Pipeline.cpp" />
     <ClCompile Include="Core\ResourceManager.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
