@@ -54,7 +54,7 @@
     <ClCompile Include="Graphics\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\InputManager.cpp">
+    <ClCompile Include="Core\Input\InputManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\ObjectAllocator.cpp">
@@ -1388,7 +1388,7 @@
     <ClInclude Include="Graphics\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\InputManager.h">
+    <ClInclude Include="Core\Input\InputManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\ObjectAllocator.h">

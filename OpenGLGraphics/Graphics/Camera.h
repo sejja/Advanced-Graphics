@@ -58,7 +58,7 @@ namespace Core {
 		*   Returns the Camera's Projection Matrix
 		*/ //----------------------------------------------------------------------
 		glm::mat4 Camera::GetProjectionMatrix() const {
-			return glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
+			return glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100000.0f);
 		}
 
 		// ------------------------------------------------------------------------

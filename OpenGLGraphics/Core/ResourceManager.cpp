@@ -24,6 +24,7 @@ void ResourceManager::Initialize() {
 	importers.insert({ "gltf", new Core::Assets::ModelImporter });
 	importers.insert({ "png", new Core::Assets::TextureImporter });
 	importers.insert({ "jpg", new Core::Assets::TextureImporter });
+	importers.insert({ "jpeg", new Core::Assets::TextureImporter });
 	importers.insert({ "tga", new Core::Assets::TextureImporter });
 	importers.insert({ "shader", new Core::Assets::ShaderProgramImporter });
 	importers.insert({ "vert", new Core::Assets::ShaderImporter<Core::Graphics::Shader::EType::Vertex> });

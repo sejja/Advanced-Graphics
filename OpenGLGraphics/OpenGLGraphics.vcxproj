@@ -175,7 +175,7 @@
     <ClCompile Include="Core\Events\Event.cpp" />
     <ClCompile Include="Core\Events\EventDispatcher.cpp" />
     <ClCompile Include="Core\Events\TypeInfo.cpp" />
-    <ClCompile Include="Core\InputManager.cpp" />
+    <ClCompile Include="Core\Input\InputManager.cpp" />
     <ClCompile Include="Core\ObjectAllocator.cpp" />
     <ClCompile Include="Core\Pipeline.cpp" />
     <ClCompile Include="Core\ResourceManager.cpp" />
@@ -230,7 +230,7 @@
     <ClInclude Include="Core\Events\EventDispatcher.h" />
     <ClInclude Include="Core\RTTI.h" />
     <ClInclude Include="Core\Events\TypeInfo.h" />
-    <ClInclude Include="Core\InputManager.h" />
+    <ClInclude Include="Core\Input\InputManager.h" />
     <ClInclude Include="Core\ObjectAllocator.h" />
     <ClInclude Include="Core\PageAllocator.h" />
     <ClInclude Include="Core\ResourceManager.h" />

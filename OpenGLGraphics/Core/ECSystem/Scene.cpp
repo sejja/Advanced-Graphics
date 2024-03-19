@@ -7,7 +7,6 @@
 //
 
 #include "Scene.h"
-#include "Behaviors/AnimationComponent.h"
 #include "Core/Pipeline.h"
 #include "Graphics/Primitives/Lights/DirectionalLight.h"
 #include "Graphics/Primitives/Lights/PointLight.h"

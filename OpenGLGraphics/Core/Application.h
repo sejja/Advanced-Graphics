@@ -13,7 +13,7 @@
 #include "Core/Window.h"
 #include "Core/Pipeline.h"
 #include "Core/ECSystem/Scene.h"
-#include "Core/InputManager.h"
+#include "Core/Input/InputManager.h"
 #include "Core/Singleton.h"
 
 namespace Core {
@@ -66,7 +66,7 @@ namespace Core {
 	*/ //----------------------------------------------------------------------
 	template<class WINDOW, class PIPELINE>
 	void GraphicApplication<WINDOW, PIPELINE>::Run() {
-		Core::InputManager& inptmgr = Singleton<Core::InputManager>::Instance();	
+		Core::Input::InputManager& inptmgr = Singleton<Core::Input::InputManager>::Instance();
 
 		//Main Loop
 		while (mWindow.Present()) {

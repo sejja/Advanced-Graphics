@@ -8,7 +8,7 @@
 
 #include "Camera.h"
 #include "SDL.h"
-#include "../Core/InputManager.h"
+#include "Core/Input/InputManager.h"
 #include "Core/Singleton.h"
 #include "Core/RTTI.h"
 
@@ -22,12 +22,12 @@ namespace Core {
 		Camera::Camera() :
 			mPosition(0, 0, 100), mTargetPosition(0, 0, 0) {
 			auto& ed = Singleton<Events::EventDispatcher>::Instance();
-			ed.Subscribe(*this, Core::InputManager::A_Down(), [this](const Events::Event& event) {mPosition.x -= 1; });
-			ed.Subscribe(*this, Core::InputManager::W_Down(), [this](const Events::Event& event) {mPosition.z -= 1; });
-			ed.Subscribe(*this, Core::InputManager::D_Down(), [this](const Events::Event& event) {mPosition.x += 1; });
-			ed.Subscribe(*this, Core::InputManager::S_Down(), [this](const Events::Event& event) {mPosition.z += 1; });
-			ed.Subscribe(*this, Core::InputManager::Shift_Down(), [this](const Events::Event& event) {mPosition.y -= 1; });
-			ed.Subscribe(*this, Core::InputManager::Space_Down(), [this](const Events::Event& event) {mPosition.y += 1; });
+			ed.Subscribe(*this, Core::Input::InputManager::A_Down(), [this](const Events::Event& event) {mPosition.x -= 1; });
+			ed.Subscribe(*this, Core::Input::InputManager::W_Down(), [this](const Events::Event& event) {mPosition.z -= 1; });
+			ed.Subscribe(*this, Core::Input::InputManager::D_Down(), [this](const Events::Event& event) {mPosition.x += 1; });
+			ed.Subscribe(*this, Core::Input::InputManager::S_Down(), [this](const Events::Event& event) {mPosition.z += 1; });
+			ed.Subscribe(*this, Core::Input::InputManager::Shift_Down(), [this](const Events::Event& event) {mPosition.y -= 1; });
+			ed.Subscribe(*this, Core::Input::InputManager::Space_Down(), [this](const Events::Event& event) {mPosition.y += 1; });
 		}
 
 		// ------------------------------------------------------------------------
@@ -37,12 +37,12 @@ namespace Core {
 		*/ // ---------------------------------------------------------------------
 		Camera::~Camera() {
 			auto& ed = Singleton<Events::EventDispatcher>::Instance();
-			ed.Unsubscribe(*this, Core::InputManager::A_Down());
-			ed.Unsubscribe(*this, Core::InputManager::W_Down());
-			ed.Unsubscribe(*this, Core::InputManager::D_Down());
-			ed.Unsubscribe(*this, Core::InputManager::S_Down());
-			ed.Unsubscribe(*this, Core::InputManager::Shift_Down());
-			ed.Unsubscribe(*this, Core::InputManager::Space_Down());
+			ed.Unsubscribe(*this, Core::Input::InputManager::A_Down());
+			ed.Unsubscribe(*this, Core::Input::InputManager::W_Down());
+			ed.Unsubscribe(*this, Core::Input::InputManager::D_Down());
+			ed.Unsubscribe(*this, Core::Input::InputManager::S_Down());
+			ed.Unsubscribe(*this, Core::Input::InputManager::Shift_Down());
+			ed.Unsubscribe(*this, Core::Input::InputManager::Space_Down());
 		}
 	}
 }

@@ -11,7 +11,7 @@
 #include "gtc/matrix_transform.hpp"
 #include "Graphics/Camera.h"
 #include "Graphics/Primitives/Texture.h"
-#include "Core/InputManager.h"
+#include "Core/Input/InputManager.h"
 #include "Graphics/Primitives/Lights/Light.h"
 #include "Core/Singleton.h"
 #include "Graphics/Primitives/Texture.h"
