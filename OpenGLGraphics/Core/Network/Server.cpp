@@ -148,6 +148,7 @@ void Server::KillServer() {
     closesocket(clientSocket);
     closesocket(serverSocket);
     WSACleanup();
+    serverSocket = NULL;
 }
 
 
