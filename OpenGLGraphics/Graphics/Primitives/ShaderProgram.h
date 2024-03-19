@@ -33,6 +33,7 @@ namespace Core {
 
 		#pragma region //Methods
 			void inline Bind() const noexcept;
+			void inline reloadShader(const AssetReference<Shader>& vertexShader, const AssetReference<Shader>& fragmentShader);
 			void inline SetShaderUniform(const std::string_view& name, const int value);
 			void inline SetShaderUniform(const std::string_view& name, const bool value);
 			void inline SetShaderUniform(const std::string_view& name, int* value, const int count = 1);
@@ -45,6 +46,7 @@ namespace Core {
 			void inline SetShaderUniform(const std::string_view& name, glm::vec4* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, Color* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, float value);
+			void ReloadShader(Asset<Shader>& vertexShader, Asset<Shader>& fragmentShader);
 		private:
 			GLuint getUniformLocation(const std::string_view& id);
 		#pragma endregion

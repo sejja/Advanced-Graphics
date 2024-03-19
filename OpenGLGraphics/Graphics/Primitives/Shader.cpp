@@ -11,6 +11,7 @@
 #include <sstream>
 #include <glew.h>
 #include "Shader.h"
+#include <iostream>
 
 namespace Core {
 	namespace Graphics {
@@ -80,6 +81,39 @@ namespace Core {
 			else
 				return nullptr;
 			return source;
+		}
+
+		void Shader::ReloadShaderSPIRV(const std::string_view& filename, EType type)
+		{
+			//Detach existing shader
+			glDeleteShader(mHandle);
+
+			//Load filename in binary
+			std::ifstream file(filename.data(), std::ios::binary);
+			std::vector<char> vs_buf((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+			GLuint sid;
+			if(type == EType::Fragment)
+			//Load Spir-V shader passed through the filename
+				sid = glCreateShader(GL_FRAGMENT_SHADER);
+			else
+				sid = glCreateShader(GL_VERTEX_SHADER);
+			glShaderBinary(1, &sid, GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, vs_buf.data(), vs_buf.size());
+			glSpecializeShaderARB(sid, "main", 0, 0, 0);
+			// Check compilation status
+			GLint compileStatus;
+			glGetShaderiv(sid, GL_COMPILE_STATUS, &compileStatus);
+			if (compileStatus == GL_FALSE) {
+				// Handle compilation error
+				GLint logLength;
+				glGetShaderiv(sid, GL_INFO_LOG_LENGTH, &logLength);
+				std::vector<char> errorLog(logLength);
+				glGetShaderInfoLog(sid, logLength, NULL, errorLog.data());
+				// Output error log or handle error appropriately
+				std::cout << "Error compiling shader: " << errorLog.data() << std::endl;
+			}
+
+			mHandle = sid;
 		}
 
 		// ------------------------------------------------------------------------
