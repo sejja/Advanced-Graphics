@@ -1,0 +1,1 @@
+uniform sampler2DArray shadowMap;
