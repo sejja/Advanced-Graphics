@@ -1,9 +1,9 @@
-//
+﻿//
 //  DebugDepth.frag
 //  OpenGL Graphics
 //
 //  Created by Diego Revilla on 13/02/24
-//  Copyright  2024. All rights reserved.
+//  Copyright � 2024. All rights reserved.
 //
 
 #version 460 core
@@ -30,7 +30,7 @@ struct Light {
     int mType;
 };
 
-uniform Light uLight[8]; 
+uniform Light uLight[8];
 uniform int uLightCount;
 uniform vec3 uCameraPos;
 uniform mat4 uShadowMatrix[8];
@@ -121,5 +121,5 @@ void main() {
             reflect(-lightDir, normal)), 0.0), 32)));
    }
 
-   FragColor =  texture(gAlbedoSpec, oUVs).rgba * vec4(totalLightShine, 1.0);
+    FragColor = texture(gAlbedoSpec, oUVs) * vec4(totalLightShine, 1.0);
 } 

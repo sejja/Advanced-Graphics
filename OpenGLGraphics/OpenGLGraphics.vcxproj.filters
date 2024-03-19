@@ -144,6 +144,30 @@
     <ClCompile Include="Core\Editor\Interface\SceneView.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Editor\Interface\AssetIcon.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\Interface\AssetManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\Interface\Outliner.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\Interface\Properties.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\Interface\TextEditor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\Interface\DebugTools.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\Interface\MainMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ShaderCompiler\clientWindows.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Editor\database.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1631,6 +1655,21 @@
     <ClInclude Include="Core\Editor\Editor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Editor\Interface\AssetIcon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\Interface\AssetManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\Interface\Outliner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\Interface\Properties.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\Interface\TextEditor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="Core\AppWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1683,6 +1722,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Network\Common.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\Interface\DebugTools.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\Interface\MainMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ShaderCompiler\clientWindows.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="D:\Asier\Descargas\dns_sd.h">
@@ -2103,12 +2151,13 @@
     </None>
     <None Include="Content\Shaders\Transform.vert" />
     <None Include="Content\Maps\Scene.level" />
+    <None Include="Content\Shaders\White.frag" />
+    <None Include="Content\Shaders\White.shader" />
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\Shadow.frag" />
     <None Include="Content\Shaders\Shadow.shader" />
     <None Include="Content\Shaders\Shadow.vert" />
     <None Include="Content\Shaders\SkyBox.vert" />
-    <None Include="Content\Shaders\SkyBox.frag" />
     <None Include="Content\Shaders\SkyBox.shader" />
     <None Include="Content\Shaders\Refractive.frag" />
     <None Include="Content\Shaders\Refractive.shader" />
@@ -2118,6 +2167,9 @@
     <None Include="Content\Shaders\DeferredLighting.frag" />
     <None Include="Content\Shaders\DeferredLighting.shader" />
     <None Include="Content\Shaders\DeferredLighting.vert" />
+    <None Include="Content\Shaders\SkyBox.frag" />
+    <None Include="Content\Shaders\White.spv" />
+    <None Include="Content\Shaders\Skybox.spv" />
     <None Include="Content\Scenes\README.md" />
     <None Include="Content\Scenes\Sponza.bin">
       <Filter>Resource Files</Filter>
@@ -2134,6 +2186,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
+    <Text Include="Core\Editor\patata.txt" />
+    <Text Include="Core\Editor\ShaderCompiler\patata.txt" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Content\Textures\BrickNormal.png">

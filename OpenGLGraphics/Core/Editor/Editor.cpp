@@ -1,11 +1,16 @@
 #include "Editor.h"
 #include <iostream>
+#include <fstream>
+#include <iterator>
+#include <string>
+#include "Interface/Properties.h"
 #include "Interface/AssetManager.h"
 #include "Core/Window/SDLWindow.h"
 #include "Core/Editor/SelectedObj.h"
 #include "Core/Singleton.h"
 #include "database.h"
 
+#include "Interface/TextEditor.h"
 
 Editor::Editor() : editorLocked(false) {
 	this->database = new Core::Editor::Database("../AssetLoader/database.db");
@@ -13,16 +18,16 @@ Editor::Editor() : editorLocked(false) {
 }
 
 bool Editor::IsEditorLocked() {
-	return editorLocked;
+    return editorLocked;
 }
 
-void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
+void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline) {
 
-	//If any input is being used, camera controls are locked
-	editorLocked = ImGui::IsAnyItemActive();
+    //If any input is being used, camera controls are locked
+    editorLocked = ImGui::IsAnyItemActive();
 
-	//Abre una demo de opciones de imgui
-	ImGui::ShowDemoWindow();
+    //Abre una demo de opciones de imgui
+    ImGui::ShowDemoWindow();
 
 	//Singleton para gestionar objeto seleccionado
 	Singleton<SelectedObj>::Instance();
@@ -32,6 +37,9 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	properties.Render();
 	outliner.Render();
 
+	//auto lang = TextEditor::LanguageDefinition::Lua();
+	//textEditor.SetLanguageDefinition(lang);
+	textEditor.Render("Patata", false);
 
 	//SceneView
 	sceneView.Render(pipeline);
