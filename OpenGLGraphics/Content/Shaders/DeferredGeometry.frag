@@ -39,26 +39,3 @@ void main() {
     // and the diffuse per-fragment color
     gAlbedoSpec.rgba = texture(uDiffuseTex, oUVs).rgba * vec4(0, 1, 0, 1);
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
