@@ -41,7 +41,7 @@ void Server::BroadcastServerPresence() {
         return;
     }
 
-    // Configurar la dirección de escucha
+    // Configurar la direcci?n de escucha
     sockaddr_in listenAddr;
     memset(&listenAddr, 0, sizeof(listenAddr));
     listenAddr.sin_family = AF_INET;
@@ -64,7 +64,7 @@ void Server::BroadcastServerPresence() {
         if (bytesReceived > 0) {
             recvBuffer[bytesReceived] = '\0';
             std::cout << "Received broadcast message from client: " << recvBuffer << std::endl;
-            // Responder al cliente que está disponible
+            // Responder al cliente que est? disponible
             const char* responseMessage = "Server available";
             if (sendto(broadcastSocket, responseMessage, strlen(responseMessage), 0, (sockaddr*)&clientAddr, sizeof(clientAddr)) == SOCKET_ERROR) {
                 std::cerr << "Broadcast response send failed." << std::endl;
@@ -99,7 +99,7 @@ int Server::StartServer() {
 
     int clientAddrSize = sizeof(clientAddr);
 
-    // Inicializar conexión
+    // Inicializar conexi?n
     if (WSAStartup(MAKEWORD(2, 2), &WSAData) != 0) {
         std::cerr << "WSAStartup failed." << std::endl;
         return 1;
@@ -111,7 +111,7 @@ int Server::StartServer() {
         return 1;
     }
 
-    // Configurar estructura de dirección
+    // Configurar estructura de direcci?n
     serverAddr.sin_family = AF_INET;
     serverAddr.sin_addr.s_addr = INADDR_ANY;
     serverAddr.sin_port = htons(serverPort);
@@ -130,7 +130,7 @@ int Server::StartServer() {
 
     std::cout << "Server is listening..." << std::endl;
 
-    // Aceptar una conexión de un cliente
+    // Aceptar una conexi?n de un cliente
     if ((clientSocket = accept(serverSocket, (SOCKADDR*)&clientAddr, &clientAddrSize)) == INVALID_SOCKET) {
         std::cerr << "Accept failed." << std::endl;
         return 1;
@@ -148,6 +148,6 @@ void Server::KillServer() {
     closesocket(clientSocket);
     closesocket(serverSocket);
     WSACleanup();
+    serverSocket = NULL;
 }
-
 

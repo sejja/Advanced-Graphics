@@ -12,8 +12,8 @@
 using json = nlohmann::json;
 
 
-class Server: public Common {
-	
+class Server : public Common {
+
 public:
 
 	int CreateServer();
@@ -32,7 +32,7 @@ private:
 	WSADATA WSAData;
 	SOCKADDR_IN serverAddr, clientAddr;
 	int serverPort = 5555;
-	
+
 
 };
 

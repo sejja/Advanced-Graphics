@@ -19,11 +19,11 @@ DWORD WINAPI ReceiverThread(LPVOID lpParam) {
 }
 
 
-void Client::connectToServer(const char* ip, int port){
+void Client::connectToServer(const char* ip, int port) {
     WSADATA WSAData;
     struct sockaddr_in serverAddr;
 
-    // Inicializar conexión
+    // Inicializar conexi?n
     if (WSAStartup(MAKEWORD(2, 2), &WSAData) != 0) {
         std::cerr << "WSAStartup failed." << std::endl;
         return;
@@ -51,10 +51,10 @@ void Client::connectToServer(const char* ip, int port){
 
 }
 
-void Client::disconnectFromServer(){
-	closesocket(clientSocket);
-	WSACleanup();
-	std::cout << "Disconnected from server." << std::endl;
+void Client::disconnectFromServer() {
+    closesocket(clientSocket);
+    WSACleanup();
+    std::cout << "Disconnected from server." << std::endl;
 }
 
 
@@ -74,7 +74,7 @@ void Client::ListenForServers() {
         return;
     }
 
-    // Configurar la dirección de escucha
+    // Configurar la direcci?n de escucha
     sockaddr_in listenAddr;
     const char* requestMsg = "GET_AWAKE_SERVERS";
     sockaddr_in broadcastAddr;
@@ -92,7 +92,7 @@ void Client::ListenForServers() {
     isBroadcastBinded = true;
 
 
-    // Establecer la opción SO_BROADCAST
+    // Establecer la opci?n SO_BROADCAST
     int broadcastOption = 1;
     if (setsockopt(broadcastSocket, SOL_SOCKET, SO_BROADCAST, (const char*)&broadcastOption, sizeof(broadcastOption)) == SOCKET_ERROR) {
         std::cerr << "Failed to set broadcast socket option with error: " << WSAGetLastError() << std::endl;
@@ -100,7 +100,7 @@ void Client::ListenForServers() {
         return;
     }
 
-    // Configurar la dirección de broadcast
+    // Configurar la direcci?n de broadcast
 
     memset(&broadcastAddr, 0, sizeof(broadcastAddr));
     broadcastAddr.sin_family = AF_INET;
@@ -114,7 +114,7 @@ void Client::ListenForServers() {
         return;
     }
     printf("Broadcast message sent.\n");
-    
+
 
     // Escuchar mensajes de broadcast
     sockaddr_in serverAddr;
@@ -142,9 +142,9 @@ void Client::ListenForServers() {
 }
 
 void Client::closeBroadcastSocket() {
-	closesocket(broadcastSocket);
-	isBroadcastBinded = false;
-	std::cout << "Broadcast socket closed." << std::endl;
+    closesocket(broadcastSocket);
+    isBroadcastBinded = false;
+    std::cout << "Broadcast socket closed." << std::endl;
     //WSACleanup();
 }
 
@@ -153,7 +153,6 @@ void Client::findServers(int port) {
     std::thread listenThread(&Client::ListenForServers, this);
     listenThread.detach();
 }
-
 
 
 

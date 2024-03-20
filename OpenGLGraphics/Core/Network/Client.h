@@ -17,7 +17,7 @@ public:
 
 	void connectToServer(const char* ip, int port);
 	void disconnectFromServer();
-	
+
 	bool isConnected() const { return clientSocket != NULL; }
 
 	void findServers(int port);

@@ -28,8 +28,8 @@ MessageType getMessageType(const std::string& typeStr) {
         return MessageType::ObjectProperty;
     }
     else if (typeStr == "particle_transform") {
-		return MessageType::ParticleTransform;
-	}
+        return MessageType::ParticleTransform;
+    }
     else {
         return MessageType::Unknown;
     }
@@ -37,7 +37,7 @@ MessageType getMessageType(const std::string& typeStr) {
 
 
 
-DWORD WINAPI Common::ReceiveThread(LPVOID lpParam){
+DWORD WINAPI Common::ReceiveThread(LPVOID lpParam) {
     SOCKET clientSocket = *((SOCKET*)lpParam);
     char buffer[1024];
     int bytesReceived;
@@ -64,7 +64,7 @@ DWORD WINAPI Common::ReceiveThread(LPVOID lpParam){
 
                 switch (messageType) {
                 case MessageType::ObjectTransform:
-                    // Actualizar la posición del objeto
+                    // Actualizar la posici?n del objeto
                     transformObject(receivedJson);
                     break;
                 case MessageType::ObjectCreation:
@@ -80,9 +80,9 @@ DWORD WINAPI Common::ReceiveThread(LPVOID lpParam){
                     //changeObjectProperty(receivedJson);
                     break;
                 case MessageType::ParticleTransform:
-                    // Actualizar la posición de una particula
-					transformParticle(receivedJson);
-					break;
+                    // Actualizar la posici?n de una particula
+                    transformParticle(receivedJson);
+                    break;
                 case MessageType::Unknown:
                     std::cerr << "Tipo de mensaje rarete: :???? -> " << receivedJson["type"] << std::endl;
                     break;
@@ -97,7 +97,7 @@ DWORD WINAPI Common::ReceiveThread(LPVOID lpParam){
 
 
 
-void Common::sendToPeer(const json& message){
+void Common::sendToPeer(const json& message) {
     std::string serialized_message = message.dump();
     send(clientSocket, serialized_message.c_str(), serialized_message.length(), 0);
 }
@@ -112,43 +112,43 @@ void Common::sendParticleIfChanged(const std::shared_ptr<Core::Particles::FireSy
     float curParticleSize = fireSystem->GetParticleSize();
 
 
-    bool centerChanged = true , colorChanged = true, radiusChanged = true, gapChanged = true, heightChanged = true, particleSizeChanged = true;
+    bool centerChanged = true, colorChanged = true, radiusChanged = true, gapChanged = true, heightChanged = true, particleSizeChanged = true;
 
     std::shared_ptr<Core::Particles::FireSystem> lastSentFireSys = std::dynamic_pointer_cast<Core::Particles::FireSystem>(lastSentParticleSys);
 
     if (lastSentFireSys) {
 
-		centerChanged = curCenter != lastSentFireSys->GetSystemCenter();
+        centerChanged = curCenter != lastSentFireSys->GetSystemCenter();
         colorChanged = curColor != lastSentFireSys->GetBaseColor();
         radiusChanged = curRadius != lastSentFireSys->GetRadiusVector();
         gapChanged = curGap != lastSentFireSys->GetFireGap();
         heightChanged = curHeight != lastSentFireSys->getHeigth();
 
-	}
+    }
 
     if (centerChanged | colorChanged | radiusChanged | gapChanged | heightChanged) {
-		printf("Sending particle system properties to client\n");
+        printf("Sending particle system properties to client\n");
         json data = {
-			{"type", "particle_transform"},
-			{"id", fireSystem->GetID()},
-			{"center", {curCenter.x, curCenter.y, curCenter.z}},
+            {"type", "particle_transform"},
+            {"id", fireSystem->GetID()},
+            {"center", {curCenter.x, curCenter.y, curCenter.z}},
             {"color", {curColor.r, curColor.g, curColor.b, curColor.a}},
-			{"radius", {curRadius.x, curRadius.y, curRadius.z}},
-			{"gap", curGap},
-			{"height", curHeight},
-			{"particleSize", curParticleSize}
+            {"radius", {curRadius.x, curRadius.y, curRadius.z}},
+            {"gap", curGap},
+            {"height", curHeight},
+            {"particleSize", curParticleSize}
 
-		};
+        };
 
-		sendToPeer(data);
-        
+        sendToPeer(data);
+
         lastSentParticleSys = std::make_shared<Core::Particles::ParticleSystem>(*fireSystem);
-	}
+    }
 }
 
 
 
-void Common::sendObjectIfChanged(const std::shared_ptr<Core::Object>& obj){
+void Common::sendObjectIfChanged(const std::shared_ptr<Core::Object>& obj) {
 
     glm::vec3 curPos = obj->GetPosition();
     glm::vec3 curRot = obj->GetRotation();
@@ -189,10 +189,10 @@ std::shared_ptr<Core::Object> getObjectByID(const std::string& objectID) {
     Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
     for (const auto& obj : scene.GetObjects()) {
         if (obj->GetID() == objectID) {
-			return obj;
-		}
-	}
-	return NULL;
+            return obj;
+        }
+    }
+    return NULL;
 
 }
 
@@ -202,10 +202,10 @@ std::shared_ptr<Core::Particles::ParticleSystem> getParticleSysByID(const std::s
         if (obj->GetID() == "PARTICLE_MANAGER") {
             for (const auto& comp : obj->GetAllComponents()) {
                 std::shared_ptr<Core::Particles::ParticleSystem> particleSys = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(comp);
-                if ( particleSys->GetID() == objectID) {
-					return particleSys;
-				}
-			}
+                if (particleSys->GetID() == objectID) {
+                    return particleSys;
+                }
+            }
 
         }
     }
@@ -216,22 +216,22 @@ std::shared_ptr<Core::Particles::ParticleSystem> getParticleSysByID(const std::s
 void Common::transformObject(const json& data) {
     std::shared_ptr<Core::Object> obj = getObjectByID(data["id"]);
     if (obj != NULL) {
-		glm::vec3 newPos = { data["position"][0], data["position"][1], data["position"][2] };
-		glm::vec3 newRot = { data["rotation"][0], data["rotation"][1], data["rotation"][2] };
-		glm::vec3 newScale = { data["scale"][0], data["scale"][1], data["scale"][2] };
+        glm::vec3 newPos = { data["position"][0], data["position"][1], data["position"][2] };
+        glm::vec3 newRot = { data["rotation"][0], data["rotation"][1], data["rotation"][2] };
+        glm::vec3 newScale = { data["scale"][0], data["scale"][1], data["scale"][2] };
 
-		obj->SetPosition(newPos);
-		obj->SetRotation(newRot);
-		obj->SetScale(newScale);
-	}
+        obj->SetPosition(newPos);
+        obj->SetRotation(newRot);
+        obj->SetScale(newScale);
+    }
     else {
-		std::cerr << "Object not found" << std::endl;
-	}
+        std::cerr << "Object not found" << std::endl;
+    }
 }
 
 
 void Common::transformParticle(const json& data) {
-	std::shared_ptr<Core::Particles::ParticleSystem> particleSys = getParticleSysByID(data["id"]);
+    std::shared_ptr<Core::Particles::ParticleSystem> particleSys = getParticleSysByID(data["id"]);
     //particlesys a firesys
     std::shared_ptr<Core::Particles::FireSystem> fireSys = std::dynamic_pointer_cast<Core::Particles::FireSystem>(particleSys);
 
@@ -251,8 +251,8 @@ void Common::transformParticle(const json& data) {
 
 
 
-	}
+    }
     else {
-		std::cerr << "Particle system not found" << std::endl;
-	}
-}   
+        std::cerr << "Particle system not found" << std::endl;
+    }
+}
