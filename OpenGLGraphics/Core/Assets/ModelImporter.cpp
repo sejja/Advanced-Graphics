@@ -8,7 +8,7 @@
 
 #include "ModelImporter.h"
 #include "Graphics/Primitives/GLBModel.h"
-#include "Core/PageAllocator.h"
+#include "Core/Memory/PageAllocator.h"
 #include "Core/ResourceManager.h"
 
 namespace Core {
@@ -20,6 +20,7 @@ namespace Core {
 		*/ // ---------------------------------------------------------------------
 		std::shared_ptr<IResource> ModelImporter::ImportFromFile(const std::string_view& filename) const {
 			using ::Graphics::Primitives::GLBModel;
+			using ::Core::Memory::PageAllocator;
 
 			const PageAllocator<TResource<GLBModel>> resalloc;
 			const PageAllocator<GLBModel> modealloc;

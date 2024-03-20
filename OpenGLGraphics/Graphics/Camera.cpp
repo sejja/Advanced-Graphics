@@ -26,8 +26,8 @@ namespace Core {
 			ed.Subscribe(*this, Core::Input::InputManager::W_Down(), [this](const Events::Event& event) {mPosition.z -= 1; });
 			ed.Subscribe(*this, Core::Input::InputManager::D_Down(), [this](const Events::Event& event) {mPosition.x += 1; });
 			ed.Subscribe(*this, Core::Input::InputManager::S_Down(), [this](const Events::Event& event) {mPosition.z += 1; });
-			ed.Subscribe(*this, Core::Input::InputManager::Shift_Down(), [this](const Events::Event& event) {mPosition.y -= 1; });
-			ed.Subscribe(*this, Core::Input::InputManager::Space_Down(), [this](const Events::Event& event) {mPosition.y += 1; });
+			ed.Subscribe(*this, Core::Input::InputManager::Q_Down(), [this](const Events::Event& event) {mPosition.y -= 1; });
+			ed.Subscribe(*this, Core::Input::InputManager::E_Down(), [this](const Events::Event& event) {mPosition.y += 1; });
 		}
 
 		// ------------------------------------------------------------------------
@@ -41,8 +41,8 @@ namespace Core {
 			ed.Unsubscribe(*this, Core::Input::InputManager::W_Down());
 			ed.Unsubscribe(*this, Core::Input::InputManager::D_Down());
 			ed.Unsubscribe(*this, Core::Input::InputManager::S_Down());
-			ed.Unsubscribe(*this, Core::Input::InputManager::Shift_Down());
-			ed.Unsubscribe(*this, Core::Input::InputManager::Space_Down());
+			ed.Unsubscribe(*this, Core::Input::InputManager::E_Down());
+			ed.Unsubscribe(*this, Core::Input::InputManager::Q_Down());
 		}
 	}
 }

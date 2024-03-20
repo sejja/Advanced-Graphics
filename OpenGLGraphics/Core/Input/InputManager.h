@@ -22,14 +22,32 @@ namespace Core {
         public:
             using KeyCode = decltype(VK_ACCEPT);
 
-            EVENT_DECL(V_Down);
-            EVENT_DECL(Z_Down);
-            EVENT_DECL(W_Down);
             EVENT_DECL(A_Down);
-            EVENT_DECL(S_Down);
+            EVENT_DECL(B_Down);
+            EVENT_DECL(C_Down);
             EVENT_DECL(D_Down);
-            EVENT_DECL(Space_Down);
-            EVENT_DECL(Shift_Down);
+            EVENT_DECL(E_Down);
+            EVENT_DECL(F_Down);
+            EVENT_DECL(G_Down);
+            EVENT_DECL(H_Down);
+            EVENT_DECL(I_Down);
+            EVENT_DECL(J_Down);
+            EVENT_DECL(K_Down);
+            EVENT_DECL(L_Down);
+            EVENT_DECL(M_Down);
+            EVENT_DECL(N_Down);
+            EVENT_DECL(O_Down);
+            EVENT_DECL(P_Down);
+            EVENT_DECL(Q_Down);
+            EVENT_DECL(R_Down);
+            EVENT_DECL(S_Down);
+            EVENT_DECL(T_Down);
+            EVENT_DECL(U_Down);
+            EVENT_DECL(V_Down);
+            EVENT_DECL(W_Down);
+            EVENT_DECL(X_Down);
+            EVENT_DECL(Y_Down);
+            EVENT_DECL(Z_Down);
 #pragma endregion
 
 #pragma region //Functions

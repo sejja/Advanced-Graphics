@@ -17,17 +17,17 @@ mesh Content/Scenes/Sponza/Sponza.gltf
 
 #scene data
 object floor
-translate 0 -10 0
-rotation 0 0 0
-scale 0.75 0.75 0.75
-mesh Content/Meshes/Dragon/scene.gltf 
-
-#scene data
-object floor
 translate 0 -800 0
 rotation 0 0 0
 scale 2000 2000 2000
 mesh Content/Scenes/Minecraft/vokselia.gltf 
+
+#scene data
+object floor
+translate 0 -10 0
+rotation 0 0 0
+scale 0.8 0.8 0.8
+mesh Content/Meshes/Dragon/scene.gltf
 
 object backpack_mesh
 translate -25 -0 50

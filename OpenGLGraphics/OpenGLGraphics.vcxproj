@@ -231,7 +231,7 @@
     <ClInclude Include="Core\Events\TypeInfo.h" />
     <ClInclude Include="Core\Input\InputManager.h" />
     <ClInclude Include="Core\Memory\ObjectAllocator.h" />
-    <ClInclude Include="Core\PageAllocator.h" />
+    <ClInclude Include="Core\Memory\PageAllocator.h" />
     <ClInclude Include="Core\ResourceManager.h" />
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
     <ClInclude Include="Dependencies\ImGui\imgui.h" />

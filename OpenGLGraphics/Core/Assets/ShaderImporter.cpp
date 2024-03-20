@@ -10,7 +10,7 @@
 #include "ShaderImporter.h"
 #include "Graphics/Primitives/ShaderProgram.h"
 #include "Dependencies/Json/single_include/json.hpp"
-#include "Core/PageAllocator.h"
+#include "Core/Memory/PageAllocator.h"
 
 namespace Core {
 	namespace Assets {
@@ -23,6 +23,7 @@ namespace Core {
 			using Graphics::ShaderProgram;
 			using Graphics::Shader;
 			using nlohmann::json;
+			using Core::Memory::PageAllocator;
 
 			const PageAllocator<TResource<ShaderProgram>> resalloc;
 			const PageAllocator<ShaderProgram> shadalloc;
@@ -53,6 +54,7 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		DONTDISCARD std::shared_ptr<IResource> ProcessShader(const std::string_view& filename, const Graphics::Shader::EType type) {
 			using Graphics::Shader;
+			using Core::Memory::PageAllocator;
 
 			const PageAllocator<TResource<Shader>> resalloc;
 			const PageAllocator<Shader> shadalloc;

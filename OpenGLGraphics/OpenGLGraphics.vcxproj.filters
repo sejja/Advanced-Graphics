@@ -1391,7 +1391,7 @@
     <ClInclude Include="Core\Memory\ObjectAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\PageAllocator.h">
+    <ClInclude Include="Core\Memory\PageAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Primitives\Texture.h">

@@ -8,7 +8,7 @@
 
 #include "TextureImporter.h"
 #include "Graphics/Primitives/Texture.h"
-#include "Core/PageAllocator.h"
+#include "Core/Memory/PageAllocator.h"
 
 namespace Core {
 	namespace Assets {
@@ -19,6 +19,7 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		std::shared_ptr<IResource> Assets::TextureImporter::ImportFromFile(const std::string_view& filename) const {
 			using Core::Graphics::Texture;
+			using Core::Memory::PageAllocator;
 			const PageAllocator<TResource<Texture>> resalloc;
 			const PageAllocator<Texture> texalloc;
 
