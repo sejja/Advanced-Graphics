@@ -1,9 +1,5 @@
 #include "Editor.h"
 #include <iostream>
-#include <fstream>
-#include <iterator>
-#include <string>
-#include "Interface/Properties.h"
 #include "Interface/AssetManager.h"
 #include "Core/Window/SDLWindow.h"
 #include "Core/Editor/SelectedObj.h"

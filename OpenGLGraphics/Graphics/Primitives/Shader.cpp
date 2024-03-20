@@ -82,7 +82,6 @@ namespace Core {
 				return nullptr;
 			return source;
 		}
-
 		void Shader::ReloadShaderSPIRV(const std::string_view& filename, EType type)
 		{
 			//Detach existing shader
