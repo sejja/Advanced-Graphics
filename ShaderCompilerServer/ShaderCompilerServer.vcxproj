@@ -18,6 +18,16 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="received_file.frag" />
+    <None Include="received_file.spv" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="serverWindows.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="serverWindows.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
@@ -128,12 +138,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\None3075\TCPClient\pruebaTCP\serverWindows.c" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\None3075\TCPClient\pruebaTCP\serverWindows.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

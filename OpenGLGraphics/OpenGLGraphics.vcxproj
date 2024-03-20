@@ -758,6 +758,7 @@
     <None Include="Content\Shaders\Skybox.spv" />
     <None Include="Content\Shaders\SkyBox.vert" />
     <None Include="Content\Shaders\Textured.shader" />
+    <None Include="Content\Shaders\Transform.spv" />
     <None Include="Content\Shaders\Transform.vert" />
     <None Include="Dependencies\GLM\detail\func_common.inl" />
     <None Include="Dependencies\GLM\detail\func_common_simd.inl" />
