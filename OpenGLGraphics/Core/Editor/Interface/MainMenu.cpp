@@ -9,12 +9,14 @@ static bool show_tool_metrics = false;
 static bool show_shadow_mapping = false;
 static bool show_deferred_rendering = false;
 
+static bool server_running = false;
 
 
 
 
 void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline){
     if (ImGui::BeginMainMenuBar()){
+
 
         if (ImGui::BeginMenu("Edit")){
 
@@ -25,26 +27,24 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline){
         }
 
         if (ImGui::BeginMenu("Debug Tools")){
+
             ImGui::MenuItem("Deferred Rendering", NULL, &show_deferred_rendering);
+
             ImGui::MenuItem("Shadow Mapping", NULL, &show_shadow_mapping);
+
+            //ImGui::MenuItem("Metrics/Debugger", NULL, &show_tool_metrics);
+
             ImGui::EndMenu();
         }
 
 
 
-        if (ImGui::BeginMenu("Options")) {
-            bool antiAlias = pipeline.getAntiAliasing();
-
-            ImGui::SliderFloat("Exposure", &pipeline.getExposure(), 0, 5);
-            if (ImGui::Checkbox("Anti-Aliasing", &antiAlias)) {
-				pipeline.setAntiAliasing(antiAlias);
-			}
-			ImGui::EndMenu();
-		}
-
-
         RenderRemoteControlMenu();
         ServerStateInfo();
+
+
+
+
 
         ImGui::EndMainMenuBar();
 
@@ -73,6 +73,18 @@ void MainMenu::RenderRemoteControlMenu(){
             if (ImGui::MenuItem("Host Server", NULL)) {
                 server.CreateServer();
             }
+
+            if (ImGui::Button("Desconectar")) {
+                if (client.isConnected()) {
+                    client.disconnectFromServer();
+                }
+            }
+
+
+            if (ImGui::Button("TEST SERVIDORES ABIERTOS")) {
+                client.findServers(5555);
+            }
+
 
             if (ImGui::BeginMenu("Connect to server")) {
 
@@ -103,7 +115,7 @@ void MainMenu::RenderRemoteControlMenu(){
                 ImGui::InputTextWithHint("##IPINPUT", "127.0.0.1", str1, IM_ARRAYSIZE(str1));
                 ImGui::SameLine();
                 if (ImGui::Button("Connect")) {
-                    client.connectToServer("127.0.0.1", 5555);
+                    //connect to server
                 }
 
                 ImGui::EndMenu();
