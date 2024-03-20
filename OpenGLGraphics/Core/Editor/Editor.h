@@ -13,7 +13,7 @@
 #include "Interface/MainMenu.h"
 #include "Core/Editor/SelectedObj.h"
 #include "database.h"
-#include "Interface/TextEditor.h"
+#include "Core/Editor/Interface/TextEditor.h"
 
 
 
@@ -42,9 +42,7 @@ private:
     Outliner outliner;
     SceneView sceneView;
 
-    TextEditor textEditor;
-
-
+    TextEditor texteditor;
 };
 
 

@@ -142,7 +142,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;glew32.lib;opengl32.lib;assimp.lib;Ws2_32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;glew32.lib;opengl32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLEW\Lib;$(ProjectDir)Dependencies\SDL\Lib;$(ProjectDir)Dependencies\Assimp\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -169,6 +169,8 @@
   <ItemGroup>
     <ClCompile Include="Behaviors\AnimationComponent.cpp" />
     <ClCompile Include="Core\Assets\Importers.cpp" />
+    <ClCompile Include="Core\Editor\Interface\TextEditor.cpp" />
+    <ClCompile Include="Core\Editor\ShaderCompiler\clientWindows.c" />
     <ClCompile Include="Core\Network\Client.cpp" />
     <ClCompile Include="Core\Network\Common.cpp" />
     <ClCompile Include="Core\Network\Server.cpp" />
@@ -183,8 +185,6 @@
     <ClCompile Include="Core\Editor\Interface\Outliner.cpp" />
     <ClCompile Include="Core\Editor\Interface\Properties.cpp" />
     <ClCompile Include="Core\Editor\Interface\SceneView.cpp" />
-    <ClCompile Include="Core\Editor\Interface\TextEditor.cpp" />
-    <ClCompile Include="Core\Editor\ShaderCompiler\clientWindows.c" />
     <ClCompile Include="Core\Events\Event.cpp" />
     <ClCompile Include="Core\Events\EventDispatcher.cpp" />
     <ClCompile Include="Core\Events\TypeInfo.cpp" />
@@ -234,6 +234,8 @@
     <ClInclude Include="CommonDefines.h" />
     <ClInclude Include="Core\AppWrapper.h" />
     <ClInclude Include="Core\Assets\Importers.h" />
+    <ClInclude Include="Core\Editor\Interface\TextEditor.h" />
+    <ClInclude Include="Core\Editor\ShaderCompiler\clientWindows.h" />
     <ClInclude Include="Core\Network\Client.h" />
     <ClInclude Include="Core\Network\Common.h" />
     <ClInclude Include="Core\Network\Server.h" />
@@ -250,8 +252,6 @@
     <ClInclude Include="Core\Editor\Interface\Properties.h" />
     <ClInclude Include="Core\Editor\Interface\SceneView.h" />
     <ClInclude Include="Core\Editor\SelectedObj.h" />
-    <ClInclude Include="Core\Editor\Interface\TextEditor.h" />
-    <ClInclude Include="Core\Editor\ShaderCompiler\clientWindows.h" />
     <ClInclude Include="Core\Events\Event.h" />
     <ClInclude Include="Core\Events\EventDispatcher.h" />
     <ClInclude Include="Core\ParticleSystem\FireSystem.h" />
@@ -275,6 +275,8 @@
     <ClInclude Include="Dependencies\ImGui\imstb_truetype.h" />
     <ClInclude Include="Dependencies\SQLite3\sqlite3.h" />
     <ClInclude Include="Graphics\Architecture\GBuffer.h" />
+    <ClInclude Include="Graphics\Primitives\GLBMesh.h" />
+    <ClInclude Include="Graphics\Primitives\GLBModel.h" />
     <ClInclude Include="Parser.h" />
     <ClInclude Include="Dependencies\Json\include\adl_serializer.hpp" />
     <ClInclude Include="Dependencies\Json\include\byte_container_with_subtype.hpp" />
@@ -734,6 +736,7 @@
     <None Include="Content\Scenes\Sponza.gltf" />
     <None Include="Content\Shaders\DeferredGeometry.frag" />
     <None Include="Content\Shaders\DeferredGeometry.shader" />
+    <None Include="Content\Shaders\DeferredGeometry.spv" />
     <None Include="Content\Shaders\DeferredLighting.frag" />
     <None Include="Content\Shaders\DeferredLighting.shader" />
     <None Include="Content\Shaders\DeferredLighting.vert" />
@@ -760,6 +763,9 @@
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\Transform.spv" />
     <None Include="Content\Shaders\Transform.vert" />
+    <None Include="Content\Shaders\White.frag" />
+    <None Include="Content\Shaders\White.shader" />
+    <None Include="Content\Shaders\White.spv" />
     <None Include="Dependencies\GLM\detail\func_common.inl" />
     <None Include="Dependencies\GLM\detail\func_common_simd.inl" />
     <None Include="Dependencies\GLM\detail\func_exponential.inl" />
@@ -901,8 +907,6 @@
     <None Include="Dependencies\SDL\Include\SDL_config_macosx.h.orig" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Core\Editor\patata.txt" />
-    <Text Include="Core\Editor\ShaderCompiler\patata.txt" />
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
   </ItemGroup>
   <ItemGroup>

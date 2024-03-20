@@ -8,11 +8,11 @@
 
 #version 460 core
 
-layout (location = 0) out vec4 FragColor;
+out vec4 FragColor;
 
-layout (location = 0) in vec3 oUVs;
+in vec3 oUVs;
 
-layout(binding = 0) uniform samplerCube uSkyBox;
+uniform samplerCube uSkyBox;
 
 // ------------------------------------------------------------------------
 /*! Shader Entrypoint
@@ -22,4 +22,3 @@ layout(binding = 0) uniform samplerCube uSkyBox;
 void main() {    
     FragColor = texture(uSkyBox, oUVs);
 }
-

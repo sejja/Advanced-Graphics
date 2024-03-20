@@ -25,4 +25,4 @@ class AssetIcon {
 		void dibujar(bool dibujarToolTip);
 };
 
-#endif
+#endif;

@@ -265,7 +265,17 @@ namespace Core {
 			//Render editor
 			Singleton<::Editor>::Instance().Render(*this);
 
-			
+			ImGui::Begin("Exposure Window");
+			ImGui::SliderFloat("Exposure", &exposure, 0, 5);
+			ImGui::End();
+
+			ImGui::Begin("Anti-Aliasing");
+
+			if (ImGui::Button("Anti-Aliashing")) {
+				AntiAliasing = !AntiAliasing;
+				std::cout << (int)AntiAliasing << std::endl;
+			}
+			ImGui::End();
 		}
 
 

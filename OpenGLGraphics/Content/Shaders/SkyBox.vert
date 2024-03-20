@@ -10,11 +10,11 @@
 
 layout (location = 0) in vec3 aPos;
 
-layout (location = 0) out vec3 oUVs;
+out vec3 oUVs;
 
-layout (location = 0) uniform mat4 uTransform;
-layout (location = 1) uniform mat4 uView;
-layout (location = 2) uniform mat4 uModel;
+uniform mat4 uTransform;
+uniform mat4 uView;
+uniform mat4 uModel;
 
 // ------------------------------------------------------------------------
 /*! Shader Entrypoint

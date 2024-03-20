@@ -40,9 +40,9 @@ namespace Core {
 
 			void setSceneFrameDimensions(const glm::lowp_u16vec2& dim) { sceneFrameDimensions = dim; }
 			float GetAspectRatio() { return static_cast<float>(sceneFrameDimensions.x) / static_cast<float>(sceneFrameDimensions.y); }
-			float& getExposure() { return exposure; }
-			GLboolean& getAntiAliasing() { return AntiAliasing; }
-			void setAntiAliasing(GLboolean aa) { AntiAliasing = aa; }
+
+		
+
 			
 
 		private:
@@ -59,7 +59,6 @@ namespace Core {
 			void UpdateUniformBuffers();
 			void RenderParticlesSystems();
 			void DirectionalLightPass();
-			
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 

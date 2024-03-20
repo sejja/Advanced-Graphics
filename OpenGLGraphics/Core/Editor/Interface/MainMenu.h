@@ -15,7 +15,6 @@ private:
 
 	void RenderFileMenu();
 	void RenderRemoteControlMenu();
-	void ServerStateInfo();
 
 
 };
