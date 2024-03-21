@@ -23,6 +23,14 @@ namespace Core
 			float GetFireGap();
 			float GetFireHeight();
 
+			void saveState() {
+				prevFireState = std::make_shared<FireSystem>(*this);
+			}
+
+			std::shared_ptr<Core::Particles::FireSystem> getPrevState() {
+				return prevFireState;
+			};
+
 
 		protected:
 
@@ -41,6 +49,8 @@ namespace Core
 
 			bool IsElipsoid(float x, float y, float z);
 			void AddNewParticle(float x, float y, float z);
+
+			std::shared_ptr<FireSystem> prevFireState = nullptr;
 		};
 	}
 }

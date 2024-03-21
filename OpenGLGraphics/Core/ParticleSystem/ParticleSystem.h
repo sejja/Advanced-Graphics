@@ -50,8 +50,7 @@ namespace Core
 				float GetParticleSize() { return particleSize; }
 
 
-
-
+				
 
 				//---------------------------------------------------------------------
 				//Render the particle system
@@ -131,6 +130,8 @@ namespace Core
 				virtual void Init();
 				virtual void InitParticles();
 				glm::vec4 NormalizeRGBA(int R, int G, int B, int A);
+
+
 		};
 	}
 }

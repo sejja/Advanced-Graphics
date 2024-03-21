@@ -116,18 +116,20 @@ void Common::sendParticleIfChanged(const std::shared_ptr<Core::Particles::FireSy
 
     std::shared_ptr<Core::Particles::FireSystem> lastSentFireSys = std::dynamic_pointer_cast<Core::Particles::FireSystem>(lastSentParticleSys);
 
-    if (lastSentFireSys) {
 
+    if (lastSentFireSys != NULL) {
+        printf("checking change");
         centerChanged = curCenter != lastSentFireSys->GetSystemCenter();
         colorChanged = curColor != lastSentFireSys->GetBaseColor();
         radiusChanged = curRadius != lastSentFireSys->GetRadiusVector();
         gapChanged = curGap != lastSentFireSys->GetFireGap();
         heightChanged = curHeight != lastSentFireSys->getHeigth();
-
     }
 
-    if (centerChanged | colorChanged | radiusChanged | gapChanged | heightChanged) {
-        printf("Sending particle system properties to client\n");
+    if (centerChanged || colorChanged || radiusChanged || gapChanged || heightChanged) {
+        //printf("Sending particle system properties to client\n");
+
+        printf("centerChanged | colorChanged | radiusChanged | gapChanged | heightChanged\n %d %d %d %d %d\n", centerChanged, colorChanged, radiusChanged, gapChanged, heightChanged);
         json data = {
             {"type", "particle_transform"},
             {"id", fireSystem->GetID()},

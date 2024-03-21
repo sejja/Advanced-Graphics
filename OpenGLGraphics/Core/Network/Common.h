@@ -27,6 +27,7 @@ protected:
     SOCKET serverSocket, clientSocket;
     std::shared_ptr<Core::Object> lastSentObject;
     std::shared_ptr<Core::Particles::ParticleSystem> lastSentParticleSys;
+    
 
     static DWORD WINAPI ReceiveThread(LPVOID lpParam);
 

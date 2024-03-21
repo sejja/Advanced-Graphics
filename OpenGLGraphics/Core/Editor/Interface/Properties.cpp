@@ -98,7 +98,7 @@ void Properties::Render() {
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Particle Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
             ParticleTransform();
             FireSize();
-            sendToPeer(fireSystem);
+            //sendToPeer(fireSystem);
         }
 
     }
@@ -530,25 +530,29 @@ void Properties::MaterialsOptions() {
 
 void Properties::MeshOptions() {}
 
+
+
+
+
+
 void Properties::FireSize() {
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
     static ImVec2 cell_padding(4.0f, 8.0f);
-    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
-
 
     std::shared_ptr<Core::Particles::FireSystem> fireSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(selectedObjIns.GetSelectedComponent());
 
     glm::vec3 curRadius = fireSystem->GetRadiusVector();
-    float curGap = fireSystem->GetFireGap();
-    float curHeight = fireSystem->getHeigth();
-    float curParticleSize = fireSystem->GetParticleSize();
     glm::vec4 color = fireSystem->GetBaseColor();
     ImVec4 baseColor = ImVec4(color.x, color.y, color.z, color.w);
 
+    float curGap = fireSystem->GetFireGap();
+    float curHeight = fireSystem->getHeigth();
+    float curParticleSize = fireSystem->GetParticleSize();
 
+
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
 
     TransformRow("  Radius    ", curRadius[0], curRadius[1], curRadius[2]);
-
 
     if (ImGui::BeginTable("fire_size_table", 2, flags1)) {
 
@@ -582,11 +586,36 @@ void Properties::FireSize() {
 
     ImGui::PopStyleVar();
 
-    fireSystem->ChangeFireSize(curRadius[0], curRadius[1], curRadius[2], curGap, curHeight);
-    fireSystem->SetParticleSize(curParticleSize);
+   
+    std::shared_ptr<Core::Particles::FireSystem> prevState = fireSystem->getPrevState();
 
-    glm::vec4 newColor = glm::vec4(baseColor.x, baseColor.y, baseColor.z, baseColor.w);
-    fireSystem->SetBaseColor(newColor);
+    if (prevState != nullptr) {
+        //TODO: SACAR A UNA FUNCION
+        bool gapChanged = curGap != prevState->GetFireGap();
+        bool heightChanged = curHeight != prevState->getHeigth();
+        bool radiusChanged = curRadius != prevState->GetRadiusVector();
+        bool particleSizeChanged = curParticleSize != prevState->GetParticleSize();
+        bool colorChanged = color != prevState->GetBaseColor();
+
+        if (gapChanged || heightChanged || radiusChanged || particleSizeChanged || colorChanged) {
+
+            fireSystem->ChangeFireSize(curRadius[0], curRadius[1], curRadius[2], curGap, curHeight);
+            fireSystem->SetParticleSize(curParticleSize);
+
+            glm::vec4 newColor = glm::vec4(baseColor.x, baseColor.y, baseColor.z, baseColor.w);
+            fireSystem->SetBaseColor(newColor);
+
+
+			fireSystem->saveState();
+			sendToPeer(fireSystem);
+
+		}
+        
+    }
+    else {
+        fireSystem->saveState();
+    }
+
 
 
 }
