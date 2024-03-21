@@ -116,7 +116,7 @@ namespace Core {
 				std::vector<char> errorLog(logLength);
 				glGetShaderInfoLog(sid, logLength, NULL, errorLog.data());
 				// Output error log or handle error appropriately
-				std::cerr << "Error compiling shader: " << errorLog.data() << std::endl;
+				std::cerr << "Error compiling shader: " << "it did not compile madafacka" << std::endl;
 				// Clean up shader object
 				glDeleteShader(sid);
 				return;

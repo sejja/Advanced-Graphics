@@ -15,13 +15,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\None3075\TCPClient\pruebaTCP\serverWindows.c">
+    <ClCompile Include="serverWindows.c">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\None3075\TCPClient\pruebaTCP\serverWindows.h">
-      <Filter>Archivos de origen</Filter>
+    <ClInclude Include="serverWindows.h">
+      <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
