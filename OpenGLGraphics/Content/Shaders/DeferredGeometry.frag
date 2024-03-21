@@ -37,7 +37,7 @@ void main() {
         mat3(oTangent, oBitangent, oNormal) * 
         (texture(uNormalTex, oUVs).rgb * 1.0f - 1.0f));
     // and the diffuse per-fragment color
-    gAlbedoSpec.rgba = texture(uDiffuseTex, oUVs).rgba * vec4(0, 1, 1, 1);
+    gAlbedoSpec.rgba = texture(uDiffuseTex, oUVs).rgba * vec4(0, 1, 0, 1);
 }
 
 
