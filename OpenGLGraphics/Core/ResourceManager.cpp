@@ -29,6 +29,7 @@ void ResourceManager::Initialize() {
 	importers.insert({ "shader", new Core::Assets::ShaderProgramImporter });
 	importers.insert({ "vert", new Core::Assets::ShaderImporter<Core::Graphics::Shader::EType::Vertex> });
 	importers.insert({ "frag", new Core::Assets::ShaderImporter<Core::Graphics::Shader::EType::Fragment> });
+	importers.insert({ "geom", new Core::Assets::ShaderImporter<Core::Graphics::Shader::EType::Geometry> });
 }
 
 // ------------------------------------------------------------------------

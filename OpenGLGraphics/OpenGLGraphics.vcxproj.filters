@@ -2079,6 +2079,9 @@
     <None Include="Content\Shaders\DeferredPointLighting.shader" />
     <None Include="Content\Shaders\DeferredPointLighting.frag" />
     <None Include="Content\Shaders\CascadedShadowMap.frag" />
+    <None Include="Content\Shaders\CascadedShadowMap.geom" />
+    <None Include="Content\Shaders\CascadedShadowMap.shader" />
+    <None Include="Content\Shaders\CascadedShadowMap.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />

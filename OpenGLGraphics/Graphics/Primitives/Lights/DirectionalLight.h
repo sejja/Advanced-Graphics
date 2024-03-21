@@ -10,6 +10,8 @@
 #define _DIRECTIONAL_LIGHT_H_
 
 #include "Light.h"
+#include "Shadows/CascadedShadowMap.h"
+#include "Graphics/Primitives/ShaderProgram.h"
 
 namespace Graphics {
 	namespace Primitives {
@@ -18,11 +20,14 @@ namespace Graphics {
 			struct DirectionalLightData : public Light::BackedLightData {
 				glm::vec3 mDirection;
 				glm::mat4 mShadowMatrix;
-				Core::Graphics::FrameBuffer mShadowMap;
+				Lights::Shadows::CascadedShadowMap mShadowMap;
 				float CalculateSphereOfInfluence() const override;
-				void GenerateShadowMap() override;
+				void GenerateShadowMap();
+				void RenderShadowsMap(const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
+
 			};
 			DirectionalLight(const std::weak_ptr<Core::Object>& parent);
+		private:
 		};
 	}
 }

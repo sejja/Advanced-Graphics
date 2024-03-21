@@ -50,6 +50,27 @@ namespace Core {
 		}
 
 		// ------------------------------------------------------------------------
+		/*! Custom Constructor
+		*
+		*   Constructs a Shader Program class given a Vertex, Geometry & Fragment Shader
+		*/ // ---------------------------------------------------------------------
+		ShaderProgram::ShaderProgram(const AssetReference<Shader>& vertexShader, const AssetReference<Shader>& fragmentShader, const AssetReference<Shader>& geometryShader)
+			: ShaderProgram() {
+			//If both of the assets contain valid data
+			if (!vertexShader.expired() && !fragmentShader.expired()) {
+				glAttachShader(mHandle, vertexShader.lock()->Get()->GetGLHandle());
+				glAttachShader(mHandle, fragmentShader.lock()->Get()->GetGLHandle());
+				glAttachShader(mHandle, geometryShader.lock()->Get()->GetGLHandle());
+				glLinkProgram(mHandle);
+
+				GLint status;
+				glGetProgramiv(mHandle, GL_LINK_STATUS, &status);
+
+				if (status == GL_FALSE) throw ShaderProgramException("Shader Program Failed to Link");
+			}
+		}
+
+		// ------------------------------------------------------------------------
 		/*! Get Uniform Location
 		*
 		*  Get the location of an Uniform within a shader

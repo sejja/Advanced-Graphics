@@ -34,6 +34,18 @@ namespace Core {
 
 			ShaderProgram* const _shad = shadalloc.allocate();
 
+			if (j.contains("Geometry")) {
+				shadalloc.construct(_shad,
+					std::move(resmg.GetResource<Shader>(j["Vertex"].get<std::string>().c_str())),
+					std::move(resmg.GetResource<Shader>(j["Fragment"].get<std::string>().c_str())),
+					std::move(resmg.GetResource<Shader>(j["Geometry"].get<std::string>().c_str())));
+			}
+			else {
+				shadalloc.construct(_shad,
+					std::move(resmg.GetResource<Shader>(j["Vertex"].get<std::string>().c_str())),
+					std::move(resmg.GetResource<Shader>(j["Fragment"].get<std::string>().c_str())));
+			}
+
 			shadalloc.construct(_shad, 
 				std::move(resmg.GetResource<Shader>(j["Vertex"].get<std::string>().c_str())), 
 				std::move(resmg.GetResource<Shader>(j["Fragment"].get<std::string>().c_str())));
@@ -88,6 +100,15 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		std::shared_ptr<IResource> ShaderImporter<Graphics::Shader::EType::Fragment>::ImportFromFile(const std::string_view& filename) const {
 			return std::move(ProcessShader(filename, Graphics::Shader::EType::Fragment));
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Import From File
+		*
+		*   Imports a Vertex Shader from File
+		*/ //----------------------------------------------------------------------
+		std::shared_ptr<IResource> ShaderImporter<Graphics::Shader::EType::Geometry>::ImportFromFile(const std::string_view& filename) const {
+			return std::move(ProcessShader(filename, Graphics::Shader::EType::Geometry));
 		}
 	}
 }

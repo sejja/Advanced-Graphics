@@ -18,9 +18,10 @@ namespace Core {
 		public:
 		#pragma region //Declarations
 			CLASS_EXCEPTION(Shader)
-			enum class EType : unsigned char {
-				Vertex,
-				Fragment
+			enum class EType {
+				Vertex = GL_VERTEX_SHADER,
+				Fragment = GL_FRAGMENT_SHADER,
+				Geometry = GL_GEOMETRY_SHADER
 			};
 		#pragma endregion
 
@@ -61,7 +62,8 @@ namespace Core {
 		*   Creates a Device for the Shader
 		*/ // --------------------------------------------------------------------
 		void Shader::CreateDeviceShader() noexcept {
-			mHandle = glCreateShader(ShaderType == EType::Vertex ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER);
+			if (!mHandle)
+				mHandle = glCreateShader(static_cast<GLenum>(ShaderType));
 		}
 	}
 }

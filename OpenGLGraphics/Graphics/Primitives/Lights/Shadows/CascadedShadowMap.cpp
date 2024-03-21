@@ -7,14 +7,19 @@
 //
 
 #include "CascadedShadowMap.h"
+#include "Graphics/Primitives/Lights/DirectionalLight.h"
 #include <iostream>
 
 namespace Graphics {
 	namespace Primitives {
 		namespace Lights {
 			namespace Shadows {
-
+                CascadedShadowMap::CascadedShadowMap() {
+                    CreateShadowMapGPUData();
+                    shadowMapShader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/CascadedShadowMap.shader");
+                }
                 void CascadedShadowMap::CreateShadowMapGPUData() {
+                    shadowCascadeLevels = { 10000.f / 50.0f, 10000.f / 25.0f, 10000.f / 10.0f, 10000.f / 2.0f};
                     glGenFramebuffers(1, &lightFBO);
 
                     glGenTextures(1, &lightDepthMaps);
@@ -44,6 +49,7 @@ namespace Graphics {
                     glDrawBuffer(GL_NONE);
                     glReadBuffer(GL_NONE);
 
+
                     int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
                     if (status != GL_FRAMEBUFFER_COMPLETE)
                     {
@@ -57,6 +63,21 @@ namespace Graphics {
                 void CascadedShadowMap::Bind() {
                     glActiveTexture(GL_TEXTURE1);
                     glBindTexture(GL_TEXTURE_2D_ARRAY, lightDepthMaps);
+                }
+
+                void CascadedShadowMap::Render(glm::vec3 pos, glm::vec3 dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
+                    shadowMapShader->Get()->Bind();
+                    glBindFramebuffer(GL_FRAMEBUFFER, lightFBO);
+                    glViewport(0, 0, depthMapResolution, depthMapResolution);
+                    glClear(GL_DEPTH_BUFFER_BIT);
+                    glEnable(GL_DEPTH_TEST);
+                    glCullFace(GL_NONE);
+                    glm::mat4 projection = GetLightProjection(1, { 1600, 900 }, 0.1f, 10000.f);
+                    glm::mat4 view = GetLightView(pos, dir);
+                    shadowMapShader->Get()->SetShaderUniform("uProjection", &projection);
+                    shadowMapShader->Get()->SetShaderUniform("uView", &view);
+                    rend_func(shadowMapShader->Get());
+                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
                 }
 
                 // ------------------------------------------------------------------------
@@ -107,10 +128,10 @@ namespace Graphics {
                 *
                 *   Calculate the view matrix of a directional light
                 */ // ---------------------------------------------------------------------
-                glm::mat4 CascadedShadowMap::GetLightView(DirectionalLight& light) const noexcept {
+                glm::mat4 CascadedShadowMap::GetLightView(glm::vec3 pos, glm::vec3 dir) const noexcept {
                     return glm::lookAt(
-                        light.mData->mPosition + reinterpret_cast<DirectionalLight::DirectionalLightData*>(light.mData)->mDirection,
-                        light.mData->mPosition,
+                        pos + dir,
+                        pos,
                         glm::vec3(0.0f, 1.0f, 0.0f)
                     );
                 }
@@ -120,11 +141,11 @@ namespace Graphics {
                 *
                 *   Returns the Center of the Frustrum
                 */ // ---------------------------------------------------------------------
-                glm::vec3 CascadedShadowMap::GetFrustrumCenter(DirectionalLight& light) const {
+                glm::vec3 CascadedShadowMap::GetFrustrumCenter(glm::vec3 pos, glm::vec3 dir) const {
                     glm::vec3 center = glm::vec3(0, 0, 0);
                     auto corners = GetFrustumCornersWorldSpace(
                         GetLightProjection(1, { 1600, 900 }, 0.1f, 10000.f),
-                        GetLightView(light));
+                        GetLightView(pos, dir));
 
                     //Weight every vertex
                     for (const auto& v : corners) {
@@ -135,7 +156,7 @@ namespace Graphics {
                     return center;
                 }
 
-                glm::mat4 CascadedShadowMap::OrthographicCoordinates(DirectionalLight& light) const {
+                glm::mat4 CascadedShadowMap::OrthographicCoordinates(glm::vec3 pos, glm::vec3 dir) const {
                     float minX = std::numeric_limits<float>::max();
                     float maxX = std::numeric_limits<float>::lowest();
                     float minY = std::numeric_limits<float>::max();
@@ -144,8 +165,8 @@ namespace Graphics {
                     float maxZ = std::numeric_limits<float>::lowest();
                     auto corners = GetFrustumCornersWorldSpace(
                         GetLightProjection(1, { 1600, 900 }, 0.1f, 10000.f),
-                        GetLightView(light));
-                    auto lightView = GetLightView(light);
+                        GetLightView(pos, dir));
+                    auto lightView = GetLightView(pos, dir);
 
                     for (const auto& v : corners) {
                         const auto trf = lightView * v;

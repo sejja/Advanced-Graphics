@@ -51,6 +51,10 @@ namespace Graphics {
 			std::vector<glm::mat4> shadow_matrices;
 
 			glViewport(0, 0, 1600, 900);
+			for (auto& x : sDirectionalLightData) {
+				x.second->RenderShadowsMap(rend_func);
+			}
+
 			for ( auto& x : sSpotLightData) {
 				if (!x.second->mShadowCaster) continue;
 				x.second->mShadowMap.Bind();

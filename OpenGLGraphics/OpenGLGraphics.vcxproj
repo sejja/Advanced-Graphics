@@ -715,6 +715,9 @@
     <None Include="Content\Shaders\Blue.frag" />
     <None Include="Content\Shaders\Blue.shader" />
     <None Include="Content\Shaders\CascadedShadowMap.frag" />
+    <None Include="Content\Shaders\CascadedShadowMap.geom" />
+    <None Include="Content\Shaders\CascadedShadowMap.shader" />
+    <None Include="Content\Shaders\CascadedShadowMap.vert" />
     <None Include="Content\Shaders\DebugLines.frag" />
     <None Include="Content\Shaders\DebugLines.shader" />
     <None Include="Content\Shaders\DebugLines.vert" />

@@ -32,6 +32,12 @@ namespace Core {
 		public:
 			DONTDISCARD std::shared_ptr<IResource> ImportFromFile(const std::string_view& filename) const override;
 		};
+
+		template<>
+		class ShaderImporter<Core::Graphics::Shader::EType::Geometry> : public IResourceImporter {
+		public:
+			DONTDISCARD std::shared_ptr<IResource> ImportFromFile(const std::string_view& filename) const override;
+		};
 	}
 }
 
