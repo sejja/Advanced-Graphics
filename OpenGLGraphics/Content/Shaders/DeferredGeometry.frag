@@ -28,6 +28,7 @@ layout (std140, binding = 0) uniform UniformBuffer {
 
 layout(binding = 0) uniform sampler2D uDiffuseTex;
 layout(binding = 1) uniform sampler2D uNormalTex;
+layout(binding = 9) uniform samplerCube uSkyBox;
 
 void main() {
     // store the fragment position vector in the first gbuffer texture
@@ -37,8 +38,9 @@ void main() {
         mat3(oTangent, oBitangent, oNormal) * 
         (texture(uNormalTex, oUVs).rgb * 2.0f - 1.0f));
     // and the diffuse per-fragment color
-    gAlbedoSpec.rgba = texture(uDiffuseTex, oUVs).rgba * vec4(0, 1, 0, 1);
+    gAlbedoSpec.rgba = texture(uDiffuseTex, oUVs).rgba;
 }
+
 
 
 
