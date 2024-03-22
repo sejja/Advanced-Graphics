@@ -19,7 +19,7 @@ namespace Graphics {
                     shadowMapShader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/CascadedShadowMap.shader");
                 }
                 void CascadedShadowMap::CreateShadowMapGPUData() {
-                    shadowCascadeLevels = { 10000.f / 50.0f, 10000.f / 25.0f, 10000.f / 10.0f, 10000.f / 2.0f};
+                    shadowCascadeLevels = { 10000.f / 50.0f, 10000.f / 25.0f, 10000.f / 10.0f, 10000.f / 2.0f };
                     glGenFramebuffers(1, &lightFBO);
 
                     glGenTextures(1, &lightDepthMaps);
@@ -58,117 +58,37 @@ namespace Graphics {
                     }
 
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                    glGenBuffers(1, &matricesUBO);
+                    glBindBuffer(GL_UNIFORM_BUFFER, matricesUBO);
+                    glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4x4) * 16, nullptr, GL_STATIC_DRAW);
+                    glBindBufferBase(GL_UNIFORM_BUFFER, 1, matricesUBO);
+                    glBindBuffer(GL_UNIFORM_BUFFER, 0);
                 }
 
-                void CascadedShadowMap::Bind() {
-                    glActiveTexture(GL_TEXTURE1);
-                    glBindTexture(GL_TEXTURE_2D_ARRAY, lightDepthMaps);
-                }
+                glm::mat4 CascadedShadowMap::GetLightSpaceMatrix(glm::mat4 camview, glm::vec3 lightdir, const float nearPlane, const float farPlane)
+                {
+                    const auto proj = glm::perspective(
+                        glm::radians(45.f), (float)1600 / (float)900, nearPlane,
+                        farPlane);
+                    const auto corners = GetFrustrumCornersWorldSpace(proj  * camview);
 
-                void CascadedShadowMap::Render(glm::vec3 pos, glm::vec3 dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
-                    shadowMapShader->Get()->Bind();
-                    glBindFramebuffer(GL_FRAMEBUFFER, lightFBO);
-                    glViewport(0, 0, depthMapResolution, depthMapResolution);
-                    glClear(GL_DEPTH_BUFFER_BIT);
-                    glEnable(GL_DEPTH_TEST);
-                    glCullFace(GL_NONE);
-                    glm::mat4 projection = GetLightProjection(1, { 1600, 900 }, 0.1f, 10000.f);
-                    glm::mat4 view = GetLightView(pos, dir);
-                    shadowMapShader->Get()->SetShaderUniform("uProjection", &projection);
-                    shadowMapShader->Get()->SetShaderUniform("uView", &view);
-                    rend_func(shadowMapShader->Get());
-                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                }
-
-                // ------------------------------------------------------------------------
-                /*! Get Frustum Corners World Space
-                *
-                *   Calculate the Corners of the frustrum in world space
-                */ // ---------------------------------------------------------------------
-                std::vector<glm::vec4> CascadedShadowMap::GetFrustumCornersWorldSpace(const glm::mat4& proj, const glm::mat4& view) const {
-                    const auto inv = glm::inverse(proj * view);
-
-                    std::vector<glm::vec4> frustumCorners;
-
-                    //Left-Right
-                    for (unsigned int x = 0; x < 2; ++x) {
-                        //Up-Down
-                        for (unsigned int y = 0; y < 2; ++y) {
-                            //Botom-Front
-                            for (unsigned int z = 0; z < 2; ++z) {
-                                const glm::vec4 pt =
-                                    inv * glm::vec4(
-                                        2.0f * x - 1.0f,
-                                        2.0f * y - 1.0f,
-                                        2.0f * z - 1.0f,
-                                        1.0f);
-                                frustumCorners.push_back(pt / pt.w);
-                            }
-                        }
-                    }
-
-                    return frustumCorners;
-                }
-
-                // ------------------------------------------------------------------------
-                /*! Get Light Projection
-                *
-                *   Calculate the projection matrix of a directional light
-                */ // ---------------------------------------------------------------------
-                glm::mat4 CascadedShadowMap::GetLightProjection(float zoom, const glm::u16vec2& dim, float nearplane, float farplane) const noexcept {
-                    return  glm::perspective(glm::radians(zoom),
-                        static_cast<float>(dim.x) / static_cast<float>(dim.y),
-                        nearplane,
-                        farplane
-                    );
-                }
-
-                // ------------------------------------------------------------------------
-                /*! Get Light View
-                *
-                *   Calculate the view matrix of a directional light
-                */ // ---------------------------------------------------------------------
-                glm::mat4 CascadedShadowMap::GetLightView(glm::vec3 pos, glm::vec3 dir) const noexcept {
-                    return glm::lookAt(
-                        pos + dir,
-                        pos,
-                        glm::vec3(0.0f, 1.0f, 0.0f)
-                    );
-                }
-                
-                // ------------------------------------------------------------------------
-                /*! Get Frustrum Center
-                *
-                *   Returns the Center of the Frustrum
-                */ // ---------------------------------------------------------------------
-                glm::vec3 CascadedShadowMap::GetFrustrumCenter(glm::vec3 pos, glm::vec3 dir) const {
                     glm::vec3 center = glm::vec3(0, 0, 0);
-                    auto corners = GetFrustumCornersWorldSpace(
-                        GetLightProjection(1, { 1600, 900 }, 0.1f, 10000.f),
-                        GetLightView(pos, dir));
-
-                    //Weight every vertex
-                    for (const auto& v : corners) {
+                    for (const auto& v : corners)
+                    {
                         center += glm::vec3(v);
                     }
                     center /= corners.size();
 
-                    return center;
-                }
+                    const auto lightView = glm::lookAt(center + lightdir, center, glm::vec3(0.0f, 1.0f, 0.0f));
 
-                glm::mat4 CascadedShadowMap::OrthographicCoordinates(glm::vec3 pos, glm::vec3 dir) const {
                     float minX = std::numeric_limits<float>::max();
                     float maxX = std::numeric_limits<float>::lowest();
                     float minY = std::numeric_limits<float>::max();
                     float maxY = std::numeric_limits<float>::lowest();
                     float minZ = std::numeric_limits<float>::max();
                     float maxZ = std::numeric_limits<float>::lowest();
-                    auto corners = GetFrustumCornersWorldSpace(
-                        GetLightProjection(1, { 1600, 900 }, 0.1f, 10000.f),
-                        GetLightView(pos, dir));
-                    auto lightView = GetLightView(pos, dir);
-
-                    for (const auto& v : corners) {
+                    for (const auto& v : corners)
+                    {
                         const auto trf = lightView * v;
                         minX = std::min(minX, trf.x);
                         maxX = std::max(maxX, trf.x);
@@ -178,21 +98,95 @@ namespace Graphics {
                         maxZ = std::max(maxZ, trf.z);
                     }
 
-                    //We need to tweak this MAGIC value
-                    constexpr float zMult = 1000.f;
+                    // Tune this parameter according to the scene
+                    constexpr float zMult = 10.0f;
                     if (minZ < 0)
+                    {
                         minZ *= zMult;
+                    }
                     else
+                    {
                         minZ /= zMult;
-
+                    }
                     if (maxZ < 0)
+                    {
                         maxZ /= zMult;
+                    }
                     else
+                    {
                         maxZ *= zMult;
+                    }
 
                     const glm::mat4 lightProjection = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
-
                     return lightProjection * lightView;
+                }
+
+                std::vector<glm::mat4> CascadedShadowMap::GetLightSpaceMatrices(glm::mat4 camview, glm::vec3 lightdir)
+                {
+                    std::vector<glm::mat4> ret;
+                    for (size_t i = 0; i < shadowCascadeLevels.size() + 1; ++i)
+                    {
+                        if (i == 0)
+                        {
+                            ret.push_back(GetLightSpaceMatrix(camview, lightdir, 0.1f, shadowCascadeLevels[i]));
+                        }
+                        else if (i < shadowCascadeLevels.size())
+                        {
+                            ret.push_back(GetLightSpaceMatrix(camview, lightdir, shadowCascadeLevels[i - 1], shadowCascadeLevels[i]));
+                        }
+                        else
+                        {
+                            ret.push_back(GetLightSpaceMatrix(camview, lightdir, shadowCascadeLevels[i - 1], 10000.f));
+                        }
+                    }
+                    return ret;
+                }
+
+                void CascadedShadowMap::Bind() {
+                    glActiveTexture(GL_TEXTURE1);
+                    glBindTexture(GL_TEXTURE_2D_ARRAY, lightDepthMaps);
+                }
+
+                void CascadedShadowMap::Render(glm::mat4 camview, glm::vec3 pos, glm::vec3 dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
+                    std::vector<glm::mat4> lightMatrices = GetLightSpaceMatrices(camview, dir);
+                    /*glBindBuffer(GL_UNIFORM_BUFFER, matricesUBO);
+                    for (size_t i = 0; i < lightMatrices.size(); ++i)
+                    {
+                        glBufferSubData(GL_UNIFORM_BUFFER, i * sizeof(glm::mat4x4), sizeof(glm::mat4x4), &lightMatrices[i]);
+                    }
+                    glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
+                    
+                    shadowMapShader->Get()->Bind();
+                    for (size_t i = 0; i < lightMatrices.size(); ++i)
+                        shadowMapShader->Get()->SetShaderUniform("lightSpaceMatrices[" + std::to_string(i) + "]", &lightMatrices[i]);
+
+                    glBindFramebuffer(GL_FRAMEBUFFER, lightFBO);
+                    glViewport(0, 0, depthMapResolution, depthMapResolution);
+                    glClear(GL_DEPTH_BUFFER_BIT);
+                    glCullFace(GL_FRONT);  // peter panning
+                    rend_func(shadowMapShader->Get());
+                    glCullFace(GL_BACK);
+                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                }
+
+                std::vector<glm::vec4> CascadedShadowMap::GetFrustrumCornersWorldSpace(glm::mat4 mtx)
+                {
+                    const auto inv = glm::inverse(mtx);
+
+                    std::vector<glm::vec4> frustumCorners;
+                    for (unsigned int x = 0; x < 2; ++x)
+                    {
+                        for (unsigned int y = 0; y < 2; ++y)
+                        {
+                            for (unsigned int z = 0; z < 2; ++z)
+                            {
+                                const glm::vec4 pt = inv * glm::vec4(2.0f * x - 1.0f, 2.0f * y - 1.0f, 2.0f * z - 1.0f, 1.0f);
+                                frustumCorners.push_back(pt / pt.w);
+                            }
+                        }
+                    }
+
+                    return frustumCorners;
                 }
 			}
 		}

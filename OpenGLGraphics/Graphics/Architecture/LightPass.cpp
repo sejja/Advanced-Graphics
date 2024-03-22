@@ -47,14 +47,15 @@ namespace Graphics {
 			glDeleteBuffers(1, &mScreenQuadVBO);
 		}
 
-		void LightPass::RenderShadowMaps(const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
+		void LightPass::RenderShadowMaps(glm::mat4 camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
 			std::vector<glm::mat4> shadow_matrices;
 
-			glViewport(0, 0, 1600, 900);
 			for (auto& x : sDirectionalLightData) {
-				x.second->RenderShadowsMap(rend_func);
+				glCullFace(GL_NONE);
+				x.second->RenderShadowsMap(camview, rend_func);
 			}
 
+			glViewport(0, 0, 1600, 900);
 			for ( auto& x : sSpotLightData) {
 				if (!x.second->mShadowCaster) continue;
 				x.second->mShadowMap.Bind();

@@ -5,9 +5,12 @@ layout(triangle_strip, max_vertices = 3) out;
     
 uniform mat4 uModel;
 
-layout (std140, binding = 0) uniform LightSpaceMatrices {
-    mat4 lightSpaceMatrices[16];
-};
+//layout (std140, binding = 1) uniform LightSpaceMatrices
+//{
+//    mat4 lightSpaceMatrices[16];
+//};
+
+uniform mat4 lightSpaceMatrices[16];
     
 void main() {          
     for (int i = 0; i < 3; ++i) {

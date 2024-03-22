@@ -21,6 +21,8 @@ namespace Core {
 		*/ // ---------------------------------------------------------------------
 		Camera::Camera() :
 			mPosition(0, 0, 100), mTargetPosition(0, 0, 0) {
+			mPosition = glm::vec3(0, 0, 3);
+			mTargetPosition = glm::vec3(0, 0, -1);
 			auto& ed = Singleton<Events::EventDispatcher>::Instance();
 			ed.Subscribe(*this, Core::Input::InputManager::A_Down(), [this](const Events::Event& event) {mPosition.x -= 1; });
 			ed.Subscribe(*this, Core::Input::InputManager::W_Down(), [this](const Events::Event& event) {mPosition.z -= 1; });

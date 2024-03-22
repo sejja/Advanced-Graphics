@@ -246,7 +246,7 @@ namespace Core {
 				};
 			
 
-			mLightPass->RenderShadowMaps([&obsoletes, &f_flushobosoletes, this](ShaderProgram* shader) {
+			mLightPass->RenderShadowMaps(cam.GetViewMatrix(), [&obsoletes, &f_flushobosoletes, this](ShaderProgram* shader) {
 				//Render all objects
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
 				[this, &obsoletes, &shader](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {

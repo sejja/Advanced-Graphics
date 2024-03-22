@@ -25,8 +25,8 @@ namespace Graphics {
 		float DirectionalLight::DirectionalLightData::CalculateSphereOfInfluence() const {
 			return -1.0f;
 		}
-		void DirectionalLight::DirectionalLightData::RenderShadowsMap(const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
-			mShadowMap.Render(mPosition, mDirection, rend_func);
+		void DirectionalLight::DirectionalLightData::RenderShadowsMap(glm::mat4 camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
+			mShadowMap.Render(camview, mPosition, mDirection, rend_func);
 		}
 		void DirectionalLight::DirectionalLightData::GenerateShadowMap() {
 		}

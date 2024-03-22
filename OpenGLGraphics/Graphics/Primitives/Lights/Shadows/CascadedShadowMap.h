@@ -29,15 +29,14 @@ namespace Graphics {
 					CascadedShadowMap();
 					void CreateShadowMapGPUData();
 					void Bind();
-					void Render(glm::vec3 pos, glm::vec3 dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
-					DONTDISCARD std::vector<glm::vec4> GetFrustumCornersWorldSpace(const glm::mat4& proj, const glm::mat4& view) const;
-					DONTDISCARD glm::mat4 GetLightProjection(float zoom, const glm::u16vec2& dim, float nearplane, float farplane) const noexcept;
-					DONTDISCARD glm::mat4 GetLightView(glm::vec3 pos, glm::vec3 dir) const noexcept;
-					DONTDISCARD glm::vec3 GetFrustrumCenter(glm::vec3 pos, glm::vec3 dir) const;
-					DONTDISCARD glm::mat4 OrthographicCoordinates(glm::vec3 pos, glm::vec3 dir) const;
+					void Render(glm::mat4 camview, glm::vec3 pos, glm::vec3 dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
+					std::vector<glm::mat4> GetLightSpaceMatrices(glm::mat4 camview, glm::vec3 lightdir);
+					glm::mat4 GetLightSpaceMatrix(glm::mat4 camview, glm::vec3 lightdir, const float nearPlane, const float farPlane);
+					std::vector<glm::vec4> GetFrustrumCornersWorldSpace(glm::mat4 mtx);
 				private:
 					GLuint lightFBO, lightDepthMaps;
-					float depthMapResolution = 2048;
+					GLuint matricesUBO;
+					float depthMapResolution = 4096;
 					std::vector<float> shadowCascadeLevels;
 					Asset<Core::Graphics::ShaderProgram> shadowMapShader;
 				};

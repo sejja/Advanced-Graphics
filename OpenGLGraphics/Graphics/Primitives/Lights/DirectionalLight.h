@@ -23,7 +23,7 @@ namespace Graphics {
 				Lights::Shadows::CascadedShadowMap mShadowMap;
 				float CalculateSphereOfInfluence() const override;
 				void GenerateShadowMap();
-				void RenderShadowsMap(const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
+				void RenderShadowsMap(glm::mat4 camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
 
 			};
 			DirectionalLight(const std::weak_ptr<Core::Object>& parent);
