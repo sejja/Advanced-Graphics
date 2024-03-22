@@ -11,7 +11,7 @@
 
 #include "glm.hpp"
 #include "Core/ECSystem/Component.h"
-#include "Core/Pipeline.h"
+#include "Core/Graphics/Pipeline.h"
 #include "Graphics/Primitives/Model.h"
 #include "Core/ResourceManager.h"
 #include "Graphics/Primitives/ShaderProgram.h"
@@ -37,11 +37,11 @@ namespace Core {
 #pragma endregion
 		};
 
-		template<GraphicsAPIS E>
+		template<Pipeline::GraphicsAPIS E>
 		class GLBModelRenderer : public Renderable {};
 
 		template<>
-		class GLBModelRenderer<GraphicsAPIS::OpenGL> : public Renderable {
+		class GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL> : public Renderable {
 #pragma region //Constructor
 		public:
 			GLBModelRenderer(const std::weak_ptr<Object>& parent) : Renderable(parent) {}
@@ -68,7 +68,7 @@ namespace Core {
 		*
 		*   Sets the Mesh associated with this renderer
 		*/ // ---------------------------------------------------------------------
-		void GLBModelRenderer<GraphicsAPIS::OpenGL>::SetMesh(const AssetReference<::Graphics::Primitives::GLBModel>& model) {
+		void GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::SetMesh(const AssetReference<::Graphics::Primitives::GLBModel>& model) {
 			mModel = model.lock();
 		}
 
@@ -77,7 +77,7 @@ namespace Core {
 		*
 		*   Sets the Shader Program associated with this renderer
 		*/ // ---------------------------------------------------------------------
-		void GLBModelRenderer<GraphicsAPIS::OpenGL>::SetShaderProgram(const AssetReference<Graphics::ShaderProgram>& s) {
+		void GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::SetShaderProgram(const AssetReference<Graphics::ShaderProgram>& s) {
 			mShaderProgram = s.lock();
 		}
 
@@ -86,7 +86,7 @@ namespace Core {
 		*
 		*   Gets the Shader Program associated with this renderer
 		*/ // ---------------------------------------------------------------------
-		AssetReference<Graphics::ShaderProgram> GLBModelRenderer<GraphicsAPIS::OpenGL>::GetShaderProgram() {
+		AssetReference<Graphics::ShaderProgram> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetShaderProgram() {
 			return mShaderProgram;
 		}
 	}

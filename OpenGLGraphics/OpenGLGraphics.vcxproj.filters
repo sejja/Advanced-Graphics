@@ -63,7 +63,7 @@
     <ClCompile Include="Graphics\Primitives\Material.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Pipeline.cpp">
+    <ClCompile Include="Core\Graphics\Pipeline.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Primitives\Lights\Light.cpp">
@@ -1334,7 +1334,7 @@
     <ClInclude Include="Dependencies\GLEW\Include\wglew.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Pipeline.h">
+    <ClInclude Include="Core\Graphics\Pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Window.h">

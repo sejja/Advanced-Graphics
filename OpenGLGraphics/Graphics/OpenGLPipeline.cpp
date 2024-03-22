@@ -131,7 +131,7 @@ namespace Core {
 						glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
 						glm::scale(glm::mat4(1.0f), parent->GetScale());
 					shader->SetShaderUniform("uModel", &matrix);
-					reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
+					reinterpret_cast<GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
 				}
 				else {
 					obsoletes.insert(std::make_pair(it.first, it2));
@@ -195,7 +195,7 @@ namespace Core {
 							glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
 							glm::scale(glm::mat4(1.0f), parent->GetScale());
 						shader->SetShaderUniform("uModel", &matrix);
-						reinterpret_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
+						reinterpret_cast<GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
 					}
 					else {
 						obsoletes.insert(std::make_pair(it.first, it2));

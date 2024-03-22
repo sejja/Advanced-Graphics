@@ -176,7 +176,7 @@
     <ClCompile Include="Core\Events\EventDispatcher.cpp" />
     <ClCompile Include="Core\Events\TypeInfo.cpp" />
     <ClCompile Include="Core\Input\InputManager.cpp" />
-    <ClCompile Include="Core\Pipeline.cpp" />
+    <ClCompile Include="Core\Graphics\Pipeline.cpp" />
     <ClCompile Include="Core\ResourceManager.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp" />
@@ -697,7 +697,7 @@
     <ClInclude Include="Dependencies\STB\stb_truetype.h" />
     <ClInclude Include="Dependencies\STB\stb_voxel_render.h" />
     <ClInclude Include="Dependencies\STB\stretchy_buffer.h" />
-    <ClInclude Include="Core\Pipeline.h" />
+    <ClInclude Include="Core\Graphics\Pipeline.h" />
     <ClInclude Include="Core\Window.h" />
     <ClInclude Include="Graphics\OpenGLPipeline.h" />
     <ClInclude Include="Core\Math\Transform.h" />

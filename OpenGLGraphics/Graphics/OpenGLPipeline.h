@@ -9,7 +9,7 @@
 #ifndef _OPEN_GL_PIPELINE__H_
 #define _OPEN_GL_PIPELINE__H_
 
-#include "Core/Pipeline.h"
+#include "Core/Graphics/Pipeline.h"
 #include "Graphics/Primitives/ShaderProgram.h"
 #include "Graphics/Primitives/Renderables.h"
 #include "Tools/FrameBuffer.h"
@@ -74,7 +74,7 @@ namespace Core {
 		*   Adds a Renderable into the pipeline
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::AddRenderable(const std::weak_ptr<Renderable>& renderer) {
-			mGroupedRenderables[(std::dynamic_pointer_cast<GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(renderer.lock()))->GetShaderProgram().lock()].push_back(renderer);
+			mGroupedRenderables[(std::dynamic_pointer_cast<GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(renderer.lock()))->GetShaderProgram().lock()].push_back(renderer);
 		}
 	}
 }

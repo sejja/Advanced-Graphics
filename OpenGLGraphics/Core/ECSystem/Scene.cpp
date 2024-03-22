@@ -7,7 +7,7 @@
 //
 
 #include "Scene.h"
-#include "Core/Pipeline.h"
+#include "Core/Graphics/Pipeline.h"
 #include "Graphics/Primitives/Lights/DirectionalLight.h"
 #include "Graphics/Primitives/Lights/PointLight.h"
 #include "Graphics/Primitives/Lights/SpotLight.h"
@@ -30,7 +30,7 @@ namespace Core {
 			obj->SetPosition(x.pos);
 			obj->SetRotation(glm::radians(x.rot));
 			obj->SetScale(x.sca);
-			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj);
+			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
 			renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(x.mesh.c_str()));
 
 			if (x.name == "suzanne_mesh")
@@ -50,7 +50,7 @@ namespace Core {
 			obj->SetPosition(x.pos);
 			obj->SetRotation(glm::vec3(0.f, 0.f, 0.f));
 			obj->SetScale({ 1.f, 1.f, 1.f });
-			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj));
+			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj));
 			std::shared_ptr<::Graphics::Primitives::Light> light;
 			renderer->SetMesh(Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
 			renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
@@ -84,7 +84,7 @@ namespace Core {
 			light->SetPosition(x.pos);
 			light->mData->mColor = x.col;
 
-			std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> weakrend = renderer;
+			std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> weakrend = renderer;
 			std::weak_ptr< ::Graphics::Primitives::Light> lightrend = light;
 
 			obj->AddComponent(std::move(weakrend));

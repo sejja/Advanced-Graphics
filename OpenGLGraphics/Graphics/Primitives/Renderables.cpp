@@ -19,7 +19,7 @@ namespace Core {
 		*
 		*   Renders this  Model
 		*/ //----------------------------------------------------------------------
-		void GLBModelRenderer<GraphicsAPIS::OpenGL>::Render() const noexcept {
+		void GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::Render() const noexcept {
 			mModel->Get()->Draw(*mShaderProgram->Get());
 		}
 
