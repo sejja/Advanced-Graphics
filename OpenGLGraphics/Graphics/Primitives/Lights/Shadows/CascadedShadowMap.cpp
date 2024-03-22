@@ -143,8 +143,21 @@ namespace Graphics {
                 }
 
                 void CascadedShadowMap::Bind() {
-                    glActiveTexture(GL_TEXTURE1);
+                    glActiveTexture(GL_TEXTURE4);
                     glBindTexture(GL_TEXTURE_2D_ARRAY, lightDepthMaps);
+                }
+
+                void CascadedShadowMap::SetUniforms(const Asset<Core::Graphics::ShaderProgram>& shader) {
+                    Bind();
+                    float cascadeLevels = shadowCascadeLevels.size();
+
+                    shader->Get()->SetShaderUniform("cascadeCount", &cascadeLevels);
+                    for (size_t i = 0; i < mLightMatrices.size(); ++i)
+                        shader->Get()->SetShaderUniform("lightSpaceMatrices[" + std::to_string(i) + "]", &mLightMatrices[i]);
+                    for (size_t i = 0; i < shadowCascadeLevels.size(); ++i)
+                    {
+                        shader->Get()->SetShaderUniform("cascadePlaneDistances[" + std::to_string(i) + "]", &shadowCascadeLevels[i]);
+                    }
                 }
 
                 void CascadedShadowMap::Render(glm::mat4 camview, glm::vec3 pos, glm::vec3 dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
@@ -155,7 +168,7 @@ namespace Graphics {
                         glBufferSubData(GL_UNIFORM_BUFFER, i * sizeof(glm::mat4x4), sizeof(glm::mat4x4), &lightMatrices[i]);
                     }
                     glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
-                    
+                    mLightMatrices = lightMatrices;
                     shadowMapShader->Get()->Bind();
                     for (size_t i = 0; i < lightMatrices.size(); ++i)
                         shadowMapShader->Get()->SetShaderUniform("lightSpaceMatrices[" + std::to_string(i) + "]", &lightMatrices[i]);

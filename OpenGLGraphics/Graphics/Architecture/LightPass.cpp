@@ -111,6 +111,7 @@ namespace Graphics {
 			for (auto& x : sDirectionalLightData) {
 				shadptr->SetShaderUniform((id + ".mDirection").c_str(), &x.second->mDirection);
 				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x.second->mColor);
+				dynamic_cast<::Graphics::Primitives::DirectionalLight::DirectionalLightData*>(x.second)->SetUniforms(mDirectionalShader);
 				//shadptr->SetShaderUniform((id + ".mCastShadows").c_str(), static_cast<int>(x.second->mShadowCaster));
 				glEnable(GL_CULL_FACE);
 				RenderScreenQuad();

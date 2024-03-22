@@ -29,6 +29,7 @@ namespace Graphics {
 					CascadedShadowMap();
 					void CreateShadowMapGPUData();
 					void Bind();
+					void SetUniforms(const Asset<Core::Graphics::ShaderProgram>& shader);
 					void Render(glm::mat4 camview, glm::vec3 pos, glm::vec3 dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
 					std::vector<glm::mat4> GetLightSpaceMatrices(glm::mat4 camview, glm::vec3 lightdir);
 					glm::mat4 GetLightSpaceMatrix(glm::mat4 camview, glm::vec3 lightdir, const float nearPlane, const float farPlane);
@@ -38,6 +39,7 @@ namespace Graphics {
 					GLuint matricesUBO;
 					float depthMapResolution = 4096;
 					std::vector<float> shadowCascadeLevels;
+					std::vector<glm::mat4> mLightMatrices;
 					Asset<Core::Graphics::ShaderProgram> shadowMapShader;
 				};
 			}

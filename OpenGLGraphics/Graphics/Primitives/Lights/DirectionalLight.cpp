@@ -28,6 +28,9 @@ namespace Graphics {
 		void DirectionalLight::DirectionalLightData::RenderShadowsMap(glm::mat4 camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
 			mShadowMap.Render(camview, mPosition, mDirection, rend_func);
 		}
+		void DirectionalLight::DirectionalLightData::SetUniforms(const Asset<Core::Graphics::ShaderProgram>& shader) {
+			mShadowMap.SetUniforms(shader);
+		}
 		void DirectionalLight::DirectionalLightData::GenerateShadowMap() {
 		}
 	}

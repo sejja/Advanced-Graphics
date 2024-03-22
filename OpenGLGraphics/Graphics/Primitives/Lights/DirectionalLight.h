@@ -19,11 +19,11 @@ namespace Graphics {
 		public:
 			struct DirectionalLightData : public Light::BackedLightData {
 				glm::vec3 mDirection;
-				glm::mat4 mShadowMatrix;
 				Lights::Shadows::CascadedShadowMap mShadowMap;
 				float CalculateSphereOfInfluence() const override;
 				void GenerateShadowMap();
 				void RenderShadowsMap(glm::mat4 camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
+				void SetUniforms(const Asset<Core::Graphics::ShaderProgram>& shader);
 
 			};
 			DirectionalLight(const std::weak_ptr<Core::Object>& parent);
