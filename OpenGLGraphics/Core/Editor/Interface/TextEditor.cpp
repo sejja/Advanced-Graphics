@@ -16,6 +16,7 @@ extern "C" {
 
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "Dependencies/ImGui/imgui.h"
+#include <Core/Editor/Editor.h>
 
 #undef max
 #undef min
@@ -62,6 +63,7 @@ TextEditor::TextEditor()
 	, mStartTime(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count())
 	, fileToEdit("Content/Shaders/DeferredGeometry.frag")
 	, firstTime(true)
+	, focused(false)
 {
 	SetPalette(GetDarkPalette());
 	SetLanguageDefinition(LanguageDefinition::HLSL());
@@ -1153,6 +1155,11 @@ void TextEditor::ChangeFile(const char* aFile)
 	SetText("");
 }
 
+bool TextEditor::isFocused()
+{
+	return focused;
+}
+
 void TextEditor::Render(const char* aTitle, bool aBorder)
 {
 	ImGui::Begin("Text Editor");
@@ -1209,6 +1216,13 @@ void TextEditor::Render(const char* aTitle, bool aBorder)
 
 	if (mHandleMouseInputs)
 		HandleMouseInputs();
+
+	if (ImGui::IsWindowFocused()) {
+		focused = true;
+	}
+	else {
+		focused = false;
+	}
 
 	ColorizeInternal();
 	Render();

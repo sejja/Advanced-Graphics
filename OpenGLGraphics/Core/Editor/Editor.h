@@ -26,6 +26,7 @@ public:
     void Render(Core::Graphics::OpenGLPipeline& pipeline);
 
     bool IsEditorLocked();
+    void SetEditorLocked(bool locked);
     Core::Editor::Database* database;
     AssetManager assetManager;
     TextEditor texteditor;

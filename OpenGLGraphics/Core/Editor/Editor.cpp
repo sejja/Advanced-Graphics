@@ -16,10 +16,14 @@ bool Editor::IsEditorLocked() {
 	return editorLocked;
 }
 
+void Editor::SetEditorLocked(bool locked) {
+	editorLocked = locked;
+}
+
 void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 	//If any input is being used, camera controls are locked
-	editorLocked = ImGui::IsAnyItemActive();
+	editorLocked = ImGui::IsAnyItemActive() || texteditor.isFocused();
 
 	//Abre una demo de opciones de imgui
 	ImGui::ShowDemoWindow();

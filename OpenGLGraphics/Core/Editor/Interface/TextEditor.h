@@ -19,6 +19,7 @@ class TextEditor
 public:
 	const char* fileToEdit;
 	bool firstTime;
+	bool focused;
 	enum class PaletteIndex
 	{
 		Default,
@@ -207,6 +208,7 @@ public:
 	void SetTextLines(const std::vector<std::string>& aLines);
 	std::vector<std::string> GetTextLines() const;
 	void ChangeFile(const char* file);
+	bool isFocused();
 
 	std::string GetSelectedText() const;
 	std::string GetCurrentLineText()const;
