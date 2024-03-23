@@ -5,6 +5,7 @@
 #include <vector>
 #include "../Editor.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
+#include "Core/Editor/Interface/TextEditor.h"
 
 
 void drawDropWindow();
@@ -57,6 +58,10 @@ void AssetManager::Render() {
 			{
 			case AssetType::FOLDER:
 				changeDirectory(i);
+				break;
+			case AssetType::SHADER:
+				Singleton<Editor>::Instance().texteditor.ChangeFile(assets[i].ruta);
+				//printf(assets[i].ruta);
 				break;
 			default:
 				printf("Click\n");

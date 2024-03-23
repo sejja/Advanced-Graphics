@@ -28,6 +28,7 @@ public:
     bool IsEditorLocked();
     Core::Editor::Database* database;
     AssetManager assetManager;
+    TextEditor texteditor;
 
     SelectedObj& GetSelectedObj() { return selectedObj; }
     
@@ -42,7 +43,7 @@ private:
     Outliner outliner;
     SceneView sceneView;
 
-    TextEditor texteditor;
+    
 };
 
 
