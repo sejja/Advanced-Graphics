@@ -1,4 +1,4 @@
 {
 	"Vertex" : "Content/Shaders/Transform.vert",
-		"Fragment" : "Content/Shaders/White.frag"
+		"Fragment" : "Content/Shaders/DeferredGeometry.frag"
 }
