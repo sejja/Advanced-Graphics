@@ -67,7 +67,7 @@ namespace Core {
 			//If the light is a directional light
 			else if (x.type == "DIR") {
 				light = std::move(std::make_shared<::Graphics::Primitives::DirectionalLight>(obj));
-				((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)light->mData)->mDirection = x.dir;
+				((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)light->mData)->mDirection = glm::normalize(x.dir);
 			}
 
 			//else, it's a spot light

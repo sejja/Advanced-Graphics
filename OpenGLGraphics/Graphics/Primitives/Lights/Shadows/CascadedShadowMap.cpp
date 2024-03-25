@@ -149,7 +149,7 @@ namespace Graphics {
 
                 void CascadedShadowMap::SetUniforms(const Asset<Core::Graphics::ShaderProgram>& shader) {
                     Bind();
-                    float cascadeLevels = shadowCascadeLevels.size();
+                    int cascadeLevels = shadowCascadeLevels.size();
 
                     shader->Get()->SetShaderUniform("cascadeCount", &cascadeLevels);
                     for (size_t i = 0; i < mLightMatrices.size(); ++i)
@@ -161,7 +161,7 @@ namespace Graphics {
                 }
 
                 void CascadedShadowMap::Render(glm::mat4 camview, glm::vec3 pos, glm::vec3 dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
-                    std::vector<glm::mat4> lightMatrices = GetLightSpaceMatrices(camview, dir);
+                  std::vector<glm::mat4> lightMatrices = GetLightSpaceMatrices(camview, dir);
                     /*glBindBuffer(GL_UNIFORM_BUFFER, matricesUBO);
                     for (size_t i = 0; i < lightMatrices.size(); ++i)
                     {

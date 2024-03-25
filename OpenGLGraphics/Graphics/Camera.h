@@ -38,7 +38,7 @@ namespace Core {
 		private:
 			glm::vec3 mPosition, mTargetPosition;
 			const float zNear = 0.f;
-			const float zfar = 10000.0f;
+			const float zfar = 10000.f;
 			const float fov = 45.f;
 		#pragma endregion
 		};
@@ -58,7 +58,7 @@ namespace Core {
 		*   Returns the Camera's Projection Matrix
 		*/ //----------------------------------------------------------------------
 		glm::mat4 Camera::GetProjectionMatrix() const {
-			return glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 100000.0f);
+			return glm::perspective(glm::radians(45.0f), 500.f / 600.0f, 0.1f, zfar);
 		}
 
 		// ------------------------------------------------------------------------

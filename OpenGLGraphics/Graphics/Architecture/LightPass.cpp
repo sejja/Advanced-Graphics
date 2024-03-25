@@ -109,7 +109,8 @@ namespace Graphics {
 			shadptr->Bind();
 
 			for (auto& x : sDirectionalLightData) {
-				shadptr->SetShaderUniform((id + ".mDirection").c_str(), &x.second->mDirection);
+				glm::vec3 dir = glm::normalize(glm::vec3(20.0f, 50, 20.0f));
+				shadptr->SetShaderUniform((id + ".mDirection").c_str(), &dir);
 				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x.second->mColor);
 				dynamic_cast<::Graphics::Primitives::DirectionalLight::DirectionalLightData*>(x.second)->SetUniforms(mDirectionalShader);
 				//shadptr->SetShaderUniform((id + ".mCastShadows").c_str(), static_cast<int>(x.second->mShadowCaster));

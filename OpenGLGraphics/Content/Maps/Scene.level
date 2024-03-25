@@ -15,6 +15,20 @@ rotation 0 0 0
 scale 0.2 0.2 0.2
 mesh Content/Scenes/Sponza/Sponza.gltf 
 
+#scene data
+object floor
+translate 0 -800 0
+rotation 0 0 0
+scale 2000 2000 2000
+mesh Content/Scenes/Minecraft/vokselia.gltf 
+
+#scene data
+object floor
+translate 0 -10 0
+rotation 0 0 0
+scale 0.8 0.8 0.8
+mesh Content/Meshes/Dragon/scene.gltf
+
 object backpack_mesh
 translate -25 -0 50
 rotation 0 0 0
@@ -39,4 +53,347 @@ lightType DIR
 attenuation 1 0.0 0.01
 #sinusoidal 0 1 20
 ambient 0
-direction 0.3 -0.6 -0.7
+direction 0.34 0.87 0.34
+
+light
+translate -50 0 55
+color 1 0 0
+lightType SPOT	
+attenuation 500 0.1 0.00
+#sinusoidal 0 1 20
+ambient 0
+direction 1 0 0
+
+light
+translate 10 30 50
+color 0 0 1
+lightType SPOT	
+attenuation 500 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -10 30 50
+color 0 1 0
+lightType SPOT	
+attenuation 30 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -10 0 10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -20 0 10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -30 0 10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -40 0 10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -50 0 10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -10 0 0
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -20 0 0
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -30 0 0
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -40 0 0
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -50 0 0
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -10 0 -10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -20 0 -10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -30 0 -10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -40 0 -10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -50 0 -10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -10 0 10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -20 0 10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -30 0 10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -40 0 10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate -50 0 10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate 10 0 0
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate 20 0 0
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate 30 0 0
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate 40 0 0
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate 50 0 0
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate 10 0 -10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate 20 0 -10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate 30 0 -10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate 40 0 -10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate 50 0 -10
+color 0 1 0
+lightType POINT	
+attenuation 15 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+
+light
+translate 100 100 -100
+color 0 1 0
+lightType POINT	
+attenuation 60 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate 80 100 -80
+color 0 1 0
+lightType POINT	
+attenuation 60 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate 60 100 -60
+color 0 1 0
+lightType POINT	
+attenuation 60 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate 40 100 -40
+color 0 1 0
+lightType POINT	
+attenuation 60 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0
+
+light
+translate 20 100 -20
+color 0 1 0
+lightType POINT	
+attenuation 60 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0 -1 0

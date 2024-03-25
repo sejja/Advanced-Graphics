@@ -35,7 +35,8 @@ layout (std140) uniform UniformBuffer {
     vec3 ubCameraPosition;
 };
 
-float ShadowCalculation(vec3 fragPosWorldSpace) {
+float ShadowCalculation(vec3 fragPosWorldSpace)
+{
     // select cascade layer
     vec4 fragPosViewSpace = ubView * vec4(fragPosWorldSpace, 1.0);
     float depthValue = abs(fragPosViewSpace.z);
@@ -70,7 +71,7 @@ float ShadowCalculation(vec3 fragPosWorldSpace) {
     }
     // calculate bias (based on depth map resolution and slope)
     vec3 normal = normalize(texture(gNormal, oUVs).rgb);
-    float bias = max(0.05 * (1.0 - dot(normal, uLight.mDirection)), 0.005);
+    float bias = max(0.001 * (1.0 - dot(normal, uLight.mDirection)), 0.001);
     const float biasModifier = 0.5f;
     if (layer == cascadeCount)
     {
@@ -84,15 +85,15 @@ float ShadowCalculation(vec3 fragPosWorldSpace) {
     // PCF
     float shadow = 0.0;
     vec2 texelSize = 1.0 / vec2(textureSize(uShadowMap, 0));
-    for(int x = -1; x <= 1; ++x)
+    for(int x = -9; x <= 9; ++x)
     {
-        for(int y = -1; y <= 1; ++y)
+        for(int y = -9; y <= 9; ++y)
         {
             float pcfDepth = texture(uShadowMap, vec3(projCoords.xy + vec2(x, y) * texelSize, layer)).r;
             shadow += (currentDepth - bias) > pcfDepth ? 1.0 : 0.0;        
         }    
     }
-    shadow /= 9.0;
+     shadow /= pow(4, 4);
         
     return shadow;
 }
@@ -116,10 +117,10 @@ vec4 bloom(vec4 finalcolor) {
 void main() {     
     // retrieve data from G-buffer
     const vec3 normal = texture(gNormal, oUVs).rgb;
-    float shadow = 1 - ShadowCalculation(texture(gPosition, oUVs).rgb);
+    float shadow = 1 - ShadowCalculation(texture(gPosition, oUVs).rgb) * 0.75;
 
-    FragColor = bloom(texture(gAlbedoSpec, oUVs) * vec4(((shadow * (max(dot(normal, -uLight.mDirection), 0.0) * uLight.mColor 
+    FragColor = bloom(texture(gAlbedoSpec, oUVs) * vec4(((shadow * (max(dot(normal, uLight.mDirection), 0.0) * uLight.mColor 
             //specular
             + uLight.mColor * pow(max(dot(normalize(ubCameraPosition - texture(gPosition, oUVs).rgb), 
-                reflect(uLight.mDirection, normal)), 0.0), 32)))), 1.0));
+                reflect(-uLight.mDirection, normal)), 0.0), 32)))), 1.0));
 } 
