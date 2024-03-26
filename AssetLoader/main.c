@@ -73,8 +73,10 @@ char* toCharString(wchar_t* wString) {
     return charString;
 }
 
-void cargarDirectorio(char incomePath[], sqlite3* database, int folderCode) {
-    printf("Folder code: %d\n", folderCode);
+int folderCode;
+
+void cargarDirectorio(char incomePath[], sqlite3* database, int parentFolderCode) {
+    printf("Folder code: %d\n", parentFolderCode);
     //printf("Database pointer: %p\n", database);
     const char* path[100];
     WIN32_FIND_DATAW data;
@@ -114,21 +116,21 @@ void cargarDirectorio(char incomePath[], sqlite3* database, int folderCode) {
             wprintf(L"Es un directorio: {\n");
             printf("Path: %s\n", newPath);
 
-            Folder* folder = createFolder(newPath, folderCode + 1);
-            saveFolder(folder, database, folderCode);
+            Folder* folder = createFolder(newPath, ++folderCode);
+            saveFolder(folder, database, parentFolderCode);
             destroyFolder(folder);
 
-            cargarDirectorio(newPath, database, folderCode + 1);
+            cargarDirectorio(newPath, database, folderCode);
 
             printf("}\n");
         } else {
 
             //printf("Folder code %d", folderCode);
             Asset* asset = createAsset(newPath);
-            if (asset->type == OTHER) {
+            /*if (asset->type == OTHER) {
                 printf("El tipo es el correcto\n");
-            }
-            saveAsset(asset, database, folderCode);
+            }*/
+            saveAsset(asset, database, parentFolderCode);
             destroyAsset(asset);
             free(asset);
             asset = NULL;

@@ -45,7 +45,7 @@ Asset* createAsset(char* path) {
 
     //printf("%s\n", extension);
 
-    if (strcmp(extension, "obj") == 0 || strcmp(extension, "fbx") == 0) { //Faltan otros tipos
+    if (strcmp(extension, "obj") == 0 || strcmp(extension, "fbx") == 0 || strcmp(extension, "gltf") == 0) { //Faltan otros tipos
         
         asset->type = MODEL;
     }
@@ -55,7 +55,7 @@ Asset* createAsset(char* path) {
     else if (strcmp(extension, "mtl" ) == 0) {
         asset->type = MATERIAL;
     }
-    else if (strcmp(extension, "shader") == 0 || strcmp(extension, "frag") == 0) {
+    else if (strcmp(extension, "frag") == 0) {
         asset->type = SHADER;
     }
     else {

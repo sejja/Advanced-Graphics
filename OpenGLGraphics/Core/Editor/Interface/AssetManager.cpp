@@ -54,9 +54,11 @@ void AssetManager::Render() {
 		//ImGui::Button("Boton", btSize);
 		assets[i].dibujar(false);
 		if (assets[i].clicked) {
+			printf("Click\n");
 			switch (assets[i].tipo)
 			{
 			case AssetType::FOLDER:
+				//printf("Capreatae");
 				changeDirectory(i);
 				break;
 			case AssetType::SHADER:
@@ -64,7 +66,7 @@ void AssetManager::Render() {
 				//printf(assets[i].ruta);
 				break;
 			default:
-				printf("Click\n");
+				
 				break;
 			}
 			//printf("Click\n");
@@ -93,10 +95,10 @@ void AssetManager::Render() {
 
 void AssetManager::changeDirectory(int i)
 {
-	printf("Carpeta\n");
+	//printf("Carpeta\n");
 	previousFolders.push(folder);
 	folder = assets[i];
-	printf("%s\n", assets[i].ruta);
+	//printf("%s\n", assets[i].ruta);
 	//assets = editor->database->getFilesOfFolder(assets[i].ruta);
 	// Aquí queda memoria sin liberar??
 	assets = Singleton<Editor>::Instance().database->getFilesOfFolder(assets[i].ruta);
