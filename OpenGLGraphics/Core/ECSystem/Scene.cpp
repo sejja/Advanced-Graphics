@@ -13,7 +13,14 @@
 #include "Graphics/Primitives/Lights/SpotLight.h"
 #include "Core/Singleton.h"
 #include "Graphics/Primitives/Skybox.h"
+#include "Core/ParticleSystem/ParticleManager.h"
+#include "Core/ParticleSystem/ParticleSystem.h"
+#include "Core/ParticleSystem/FireSystem.h"
+#include "Graphics/OpenGLPipeline.h"
 #include "Graphics/Primitives/GLBModel.h"
+#include <Dependencies/Json/include/detail/input/parser.hpp>
+#include "Core/AppWrapper.h"
+#include "Core/Graphics/Pipeline.h"
 
 namespace Core {
 	// ------------------------------------------------------------------------
@@ -21,7 +28,7 @@ namespace Core {
 	*
 	*   Creates a scene from a level file
 	*/ // ---------------------------------------------------------------------
-	void Scene::CreateScene(const std::string_view& file, const std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
+	void Scene::CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
 		mParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<ResourceManager>::Instance();
 
@@ -30,6 +37,10 @@ namespace Core {
 			obj->SetPosition(x.pos);
 			obj->SetRotation(glm::radians(x.rot));
 			obj->SetScale(x.sca);
+			obj->SetName(x.name);
+			obj->SetID(x.name);//temp , tiene que ser unico
+			//obj->SetType() tiene que ser un enum
+
 			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
 			renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(x.mesh.c_str()));
 
@@ -55,6 +66,9 @@ namespace Core {
 			renderer->SetMesh(Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
 			renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
 
+			//TEMPORAL PARA SABER SI ES LUZ HASTA NUEVO LEVEL 
+			obj->SetName(x.type + " Light_light");
+			
 			//If the light is a point light
 			if (x.type == "POINT") {
 				light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
@@ -93,14 +107,23 @@ namespace Core {
 			i++;
 			upload(obj);
 			mObjects.emplace_back(std::move(obj));
+			
+
 			});
 
 		std::shared_ptr<Core::Object> sky = std::move(std::make_shared<Core::Object>());
 		std::shared_ptr<Core::Graphics::Skybox> skycomp = std::make_shared<Core::Graphics::Skybox>(sky);
 		skycomp->CreateCubeMap();
 		sky->AddComponent(std::move(skycomp));
+		sky->SetName("Sky_bg");
 		mObjects.emplace_back(sky);
 
+		/*Test data*/
+		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
+		std::shared_ptr<Core::Particles::FireSystem> testParticleSystem = std::make_shared<Core::Particles::FireSystem>(particleManager);
+		particleManager->AddComponent(std::move(testParticleSystem));
+		mObjects.emplace_back(particleManager);
+		Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);
 	}
 
 	// ------------------------------------------------------------------------
@@ -113,4 +136,5 @@ namespace Core {
 			x->Update();
 			});
 	}
+
 }

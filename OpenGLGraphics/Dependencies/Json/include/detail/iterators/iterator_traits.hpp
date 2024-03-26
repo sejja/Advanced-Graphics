@@ -2,8 +2,8 @@
 
 #include <iterator> // random_access_iterator_tag
 
-#include <Json/include/detail/meta/void_t.hpp>
-#include <Json/include/detail/meta/cpp_future.hpp>
+#include <Dependencies/Json/include/detail/meta/void_t.hpp>
+#include <Dependencies/Json/include/detail/meta/cpp_future.hpp>
 
 namespace nlohmann
 {

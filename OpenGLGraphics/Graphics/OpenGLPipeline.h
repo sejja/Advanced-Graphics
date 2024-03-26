@@ -14,9 +14,15 @@
 #include "Graphics/Primitives/Renderables.h"
 #include "Tools/FrameBuffer.h"
 #include "Graphics/Architecture/GBuffer.h"
+#include "Graphics/Architecture/HDRBuffer.h"
+#include "Graphics/Architecture/SamplingBuffer.h"
+#include "Core/ParticleSystem/ParticleManager.h"
 #include "Debug/DebugShapes.h"
 #include "Graphics/Architecture/Bloom/BloomRenderer.h"
 #include "Graphics/Architecture/LightPass.h"
+
+using namespace Core::Graphics;
+
 
 namespace Core {
 	namespace Graphics {
@@ -30,26 +36,58 @@ namespace Core {
 			inline void Shutdown() override;
 			virtual void SetDimensions(const glm::lowp_u16vec2& dim) override;
 			inline void AddRenderable(const std::weak_ptr<Renderable>& renderer);
+			void SetParticleManager(std::shared_ptr<Core::Particles::ParticleMangager> particleManager);
+			GBuffer* GetGBuffer();
+			FrameBuffer* GetRenderFrameBuffer();
+			GLuint GetRenderTexture();
+			std::vector<FrameBuffer> GetShadowMappingBuffer() { return mShadowBuffers; };
+
+			void setSceneFrameDimensions(const glm::lowp_u16vec2& dim) { sceneFrameDimensions = dim; }
+			float GetAspectRatio() { return static_cast<float>(sceneFrameDimensions.x) / static_cast<float>(sceneFrameDimensions.y); }
+			float& getExposure() { return exposure; }
+			GLboolean& getAntiAliasing() { return AntiAliasing; }
+			void setAntiAliasing(GLboolean aa) { AntiAliasing = aa; }
+
+		
+
+			
 
 		private:
 			void GeometryPass();
-
-			void RenderShadowMaps();
-			void UpdateUniformBuffers();
-
 			void RenderGUI();
 			void FlushObsoletes(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes);
 			void GroupRender(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
-				const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, 
+				const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it,
 				ShaderProgram* shader);
+			void LightingPass();
+			void RenderShadowMaps();
+			void UpdateUniformBuffers();
+			void RenderParticlesSystems();
+			void DirectionalLightPass();
+
 			void BloomPass();
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
-			glm::vec2 mDimensions;
+
+			std::weak_ptr<Core::Particles::ParticleMangager> particleManager;
+
+			glm::lowp_u16vec2 mDimensions;
+			glm::lowp_u16vec2 sceneFrameDimensions;
+			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<GBuffer> mGBuffer;
 			std::unique_ptr<::Graphics::Architecture::LightPass> mLightPass;
 			Asset<ShaderProgram> mDirectionalLightShader;
+			std::unique_ptr<FrameBuffer> mFrameBuffer;
+			std::unique_ptr<HDRBuffer> mHDRBuffer;
+			std::unique_ptr<SamplingBuffer> mSamplingBuffer;
 			GLuint mUniformBuffer;
+
+			GLuint mScreenQuadVAO, mScreenQuadVBO;
+
+
+			GLboolean AntiAliasing = false;
+			Asset<ShaderProgram> RendererShader;
+			float exposure = 1;
 			std::unique_ptr<debug_system> mDebug;
 			std::unique_ptr<::Graphics::Architecture::Bloom::BloomRenderer> mBloomRenderer;
 		};

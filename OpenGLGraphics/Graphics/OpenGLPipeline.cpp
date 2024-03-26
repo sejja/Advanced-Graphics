@@ -19,8 +19,12 @@
 #include "Dependencies/ImGui/imgui.h"
 #include "Dependencies/ImGui/imgui_impl_opengl3.h"
 #include "Dependencies/ImGui/imgui_impl_sdl2.h"
+#include "Core/Editor/Editor.h"
+#include "Graphics/Tools/OpenGLInfo.h"
+
 
 using namespace Core::Graphics;
+using namespace std;
 
 namespace Core {
 	namespace Graphics {
@@ -41,14 +45,49 @@ namespace Core {
 			glEnable(GL_DEPTH_TEST);
 			glDepthFunc(GL_LESS);
 			glEnable(GL_CULL_FACE);
-			glEnable(GL_FRAMEBUFFER_SRGB);
+			//glEnable(GL_FRAMEBUFFER_SRGB);
 			glFrontFace(GL_CCW);
 			glDisable(GL_BLEND);
 			glDisable(GL_STENCIL_TEST);
 			glClearColor(0.f, 0.f, 0.f, 0.f);
 			mGBuffer = std::make_unique<GBuffer>();
 			mDirectionalLightShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DirectionalLight.shader");
-			mDebug = std::make_unique<debug_system>(&cam);
+
+
+			mFrameBuffer = std::make_unique<FrameBuffer>();
+			mFrameBuffer->Create();
+			mFrameBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
+
+			mHDRBuffer = std::make_unique<HDRBuffer>();
+			mHDRBuffer->Create();
+			mHDRBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
+			RendererShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Renderer.shader");
+
+			//-------------------------
+			glEnable(GL_MULTISAMPLE);
+			mSamplingBuffer = std::make_unique<SamplingBuffer>();
+			mSamplingBuffer->Create();
+			mSamplingBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
+			//-------------------------
+
+			float quadVertices[] = {
+				// positions        // texture Coords
+				-1.0f,  1.0f, 0.0f, 0.0f, 1.0f,
+				-1.0f, -1.0f, 0.0f, 0.0f, 0.0f,
+				 1.0f,  1.0f, 0.0f, 1.0f, 1.0f,
+				 1.0f, -1.0f, 0.0f, 1.0f, 0.0f,
+			};
+			// setup plane VAO
+			glEnable(GL_PROGRAM_POINT_SIZE);
+			glGenVertexArrays(1, &mScreenQuadVAO);
+			glGenBuffers(1, &mScreenQuadVAO);
+			glBindVertexArray(mScreenQuadVBO);
+			glBindBuffer(GL_ARRAY_BUFFER, mScreenQuadVBO);
+			glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+			glEnableVertexAttribArray(0);
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+			glEnableVertexAttribArray(1);
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
 
 			glGenBuffers(1, &mUniformBuffer);
 
@@ -60,6 +99,15 @@ namespace Core {
 			mBloomRenderer = std::make_unique<::Graphics::Architecture::Bloom::BloomRenderer>();
 			mBloomRenderer->Init(mDimensions.x, mDimensions.y);
 			mLightPass = std::make_unique<::Graphics::Architecture::LightPass>();
+			Singleton<::Editor>::Instance().assetManager.init();
+		}
+
+		GBuffer* OpenGLPipeline::GetGBuffer() {
+			return mGBuffer.get();
+		}
+
+		GLuint  OpenGLPipeline::GetRenderTexture() {
+			return mFrameBuffer->GetTextureHandle();
 		}
 
 		// ------------------------------------------------------------------------
@@ -74,37 +122,13 @@ namespace Core {
 		// ------------------------------------------------------------------------
 		/*! RenderGUI
 		*
-		*   Prepare and render the GUI
-		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::RenderGUI() {
-			ImGui_ImplSDL2_NewFrame();
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui::NewFrame();
-
-			if (ImGui::Begin("Deferred Rendering")) {
-				ImGui::Image((ImTextureID)mGBuffer->GetPositionTextureHandle(),
-					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-				ImGui::SameLine();
-				ImGui::Image((ImTextureID)mGBuffer->GetAlbedoTextureHandle(),
-					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-				ImGui::Image((ImTextureID)mGBuffer->GetNormalTextureHandle(),
-					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-				ImGui::SameLine();
-				ImGui::Image((ImTextureID)mBloomRenderer->BloomTexture(),
-					ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
-			}
-			ImGui::End();
-		}
-
-		// ------------------------------------------------------------------------
-		/*! RenderGUI
-		*
-		*   Prepare and render the GUI
-		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::FlushObsoletes(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes) 
+		*   
+		*/ 
+		void OpenGLPipeline::FlushObsoletes(unordered_multimap<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes)
 		{
-			std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
-				std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
+			for_each(execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](pair<const Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> x) {
+
+				vector<weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
 				it.erase(x.second);
 
 				//If we don't have any other renderables, erase it
@@ -112,19 +136,18 @@ namespace Core {
 				});
 		}
 
-		// ------------------------------------------------------------------------
-		/*! GroupRender
+		/* GroupRender
 		*
 		*   Prepare and render the GUI
-		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::GroupRender(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
-			const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it,
-			ShaderProgram* shader) 
+		*/ 
+		void OpenGLPipeline::GroupRender(unordered_multimap<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes,
+			const pair<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>>& it,
+			ShaderProgram* shader)
 		{
-			for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
+			for (vector<weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
 				//If it isn't expired
 				if (auto renderable = it2->lock()) {
-					const std::shared_ptr<Object> parent = renderable->GetParent().lock();
+					const shared_ptr<Object> parent = renderable->GetParent().lock();
 					glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
 						glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
 						glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
@@ -134,15 +157,128 @@ namespace Core {
 					reinterpret_cast<GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
 				}
 				else {
-					obsoletes.insert(std::make_pair(it.first, it2));
+					obsoletes.insert(make_pair(it.first, it2));
 				}
 			}
 			FlushObsoletes(obsoletes);
 		}
 
-		void OpenGLPipeline::BloomPass() {
-			mBloomRenderer->RenderBloomTexture(mGBuffer->GetBrightnessTextureHandle(), 0.005f);
+
+		/* RenderGUI
+		*
+		*   Prepare and render the GUI
+		*/
+		void OpenGLPipeline::RenderGUI() {
+			
+			ImGui_ImplSDL2_NewFrame();
+			ImGui_ImplOpenGL3_NewFrame();
+			ImGui::NewFrame();
+
+
+			// Create the docking environment
+			ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar |
+				ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
+				ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus | ImGuiWindowFlags_NoBackground |
+				ImGuiWindowFlags_MenuBar;
+
+			ImGuiViewport* viewport = ImGui::GetMainViewport();
+			ImGui::SetNextWindowPos(viewport->Pos);
+			ImGui::SetNextWindowSize(viewport->Size);
+			ImGui::SetNextWindowViewport(viewport->ID);
+
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowRounding, 0.0f);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.0f);
+			ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0.0f, 0.0f));
+			ImGui::Begin("InvisibleWindow", nullptr, windowFlags);
+			ImGui::PopStyleVar(3);
+
+			ImGuiID dockSpaceId = ImGui::GetID("InvisibleWindowDockSpace");
+
+			ImGui::DockSpace(dockSpaceId, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
+			ImGui::End();
+
+			ImGui::GetStyle().FrameRounding = 4.0f;
+			ImGui::GetStyle().GrabRounding = 4.0f;
+			ImGui::GetStyle().WindowBorderSize = 0.0f;
+			ImGui::GetStyle().WindowRounding = 7.0f;
+			//ImGui::GetStyle().AntiAliasedLines = true;
+			//ImGui::GetStyle().AntiAliasedFill = true;
+			
+
+			ImVec4* colors = ImGui::GetStyle().Colors;
+			colors[ImGuiCol_::ImGuiCol_Text] = { 0.95f, 0.96f, 0.98f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_TextDisabled] = { 0.36f, 0.42f, 0.47f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_WindowBg] = { 0.02f, 0.045f, 0.055f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_ChildBg] = { 0.15f, 0.18f, 0.22f, 0.20f };
+			colors[ImGuiCol_::ImGuiCol_PopupBg] = { 0.08f, 0.08f, 0.08f, 0.94f };
+			colors[ImGuiCol_::ImGuiCol_Border] = { 0.08f, 0.10f, 0.12f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_BorderShadow] = { 0.00f, 0.00f, 0.00f, 0.00f };
+			colors[ImGuiCol_::ImGuiCol_FrameBg] = { 0.20f, 0.25f, 0.29f, 0.50f };
+			colors[ImGuiCol_::ImGuiCol_FrameBgHovered] = { 0.12f, 0.20f, 0.28f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_FrameBgActive] = { 0.09f, 0.12f, 0.14f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_TitleBg] = { 0.09f, 0.12f, 0.14f, 0.65f };
+			colors[ImGuiCol_::ImGuiCol_TitleBgActive] = { 0.08f, 0.10f, 0.12f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_TitleBgCollapsed] = { 0.00f, 0.00f, 0.00f, 0.51f };
+			colors[ImGuiCol_::ImGuiCol_MenuBarBg] = { 0.15f, 0.18f, 0.22f, 0.00f };
+			colors[ImGuiCol_::ImGuiCol_ScrollbarBg] = { 0.02f, 0.02f, 0.02f, 0.39f };
+			colors[ImGuiCol_::ImGuiCol_ScrollbarGrab] = { 0.20f, 0.25f, 0.29f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_ScrollbarGrabHovered] = { 0.18f, 0.22f, 0.25f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_ScrollbarGrabActive] = { 0.09f, 0.21f, 0.31f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_CheckMark] = { 0.28f, 0.56f, 1.00f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_SliderGrab] = { 0.28f, 0.56f, 1.00f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_SliderGrabActive] = { 0.37f, 0.61f, 1.00f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_Button] = { 0.20f, 0.25f, 0.29f, 0.70f };
+			colors[ImGuiCol_::ImGuiCol_ButtonHovered] = { 0.28f, 0.56f, 1.00f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_ButtonActive] = { 0.06f, 0.53f, 0.98f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_Header] = { 0.20f, 0.25f, 0.29f, 0.35f };
+			colors[ImGuiCol_::ImGuiCol_HeaderHovered] = { 0.12f, 0.43f, 0.78f, 0.80f };
+			colors[ImGuiCol_::ImGuiCol_HeaderActive] = { 0.26f, 0.59f, 0.98f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_Separator] = { 0.20f, 0.25f, 0.29f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_SeparatorHovered] = { 0.10f, 0.40f, 0.75f, 0.78f };
+			colors[ImGuiCol_::ImGuiCol_SeparatorActive] = { 0.10f, 0.40f, 0.75f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_ResizeGrip] = { 0.26f, 0.59f, 0.98f, 0.25f };
+			colors[ImGuiCol_::ImGuiCol_ResizeGripHovered] = { 0.26f, 0.59f, 0.98f, 0.67f };
+			colors[ImGuiCol_::ImGuiCol_ResizeGripActive] = { 0.26f, 0.59f, 0.98f, 0.95f };
+			colors[ImGuiCol_::ImGuiCol_Tab] = { 0.11f, 0.15f, 0.17f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_TabHovered] = { 0.26f, 0.59f, 0.98f, 0.80f };
+			colors[ImGuiCol_::ImGuiCol_TabActive] = { 0.20f, 0.25f, 0.29f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_TabUnfocused] = { 0.11f, 0.15f, 0.17f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_TabUnfocusedActive] = { 0.11f, 0.15f, 0.17f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_PlotLines] = { 0.61f, 0.61f, 0.61f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_PlotLinesHovered] = { 1.00f, 0.43f, 0.35f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_PlotHistogram] = { 0.90f, 0.70f, 0.00f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_PlotHistogramHovered] = { 1.00f, 0.60f, 0.00f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_TextSelectedBg] = { 0.26f, 0.59f, 0.98f, 0.35f };
+			colors[ImGuiCol_::ImGuiCol_DragDropTarget] = { 1.00f, 1.00f, 0.00f, 0.90f };
+			colors[ImGuiCol_::ImGuiCol_NavHighlight] = { 0.26f, 0.59f, 0.98f, 1.00f };
+			colors[ImGuiCol_::ImGuiCol_NavWindowingHighlight] = { 1.00f, 1.00f, 1.00f, 0.70f };
+			colors[ImGuiCol_::ImGuiCol_NavWindowingDimBg] = { 0.80f, 0.80f, 0.80f, 0.20f };
+			colors[ImGuiCol_::ImGuiCol_ModalWindowDimBg] = { 0.80f, 0.80f, 0.80f, 0.35f };
+
+
+
+
+
+			//Render editor
+			Singleton<::Editor>::Instance().Render(*this);
+
 		}
+
+
+		void OpenGLPipeline::RenderShadowMaps() {
+			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
+
+			mLightPass->RenderShadowMaps(cam.GetViewMatrix(), [&obsoletes, this](ShaderProgram* shader) {
+				//Render all objects
+				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
+				[this, &obsoletes, &shader](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+						GroupRender(obsoletes, it, shader);
+					});
+
+			FlushObsoletes(obsoletes);
+				});
+		}
+
 
 		// ------------------------------------------------------------------------
 		/*! Render
@@ -156,14 +292,47 @@ namespace Core {
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
-			BloomPass();
-			mLightPass->RenderLights(*mGBuffer, *mBloomRenderer);
+
+			//RenderParticlesSystems();
+
+			//Bind and Clean
+			if (AntiAliasing) {mSamplingBuffer->Bind();mSamplingBuffer->Clear();}
+			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
 			glEnable(GL_DEPTH_TEST);
-			mGBuffer->BlitDepthBuffer();
-			Skybox::sCurrentSky->Render(cam);
+
+			//BloomPass();
+			mLightPass->RenderLights(*mGBuffer, *mBloomRenderer);
+			
+			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
+			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
+			//mGBuffer->BlitDepthBuffer(mFrameBuffer->GetHandle());
+
+			Skybox::sCurrentSky->Render(cam,*this);
+
+			RenderParticlesSystems();
+
+			if (AntiAliasing) 
+			{
+				glBindFramebuffer(GL_READ_FRAMEBUFFER, mSamplingBuffer->GetHandle());
+				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mHDRBuffer->GetHandle());
+				glBlitFramebuffer(0, 0, mDimensions.x, mDimensions.y, 0, 0, mDimensions.x, mDimensions.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+			}
+
+			mFrameBuffer->Bind();
+			mFrameBuffer->Clear();
+
+			mHDRBuffer->BindTexture();
+			RendererShader->Get()->Bind();
+			RendererShader->Get()->SetShaderUniform("exposure", exposure);
+			mLightPass.get()->RenderScreenQuad();
+
+			mFrameBuffer->Unbind();
+
 			ImGui::Render();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			
 		}
+
 
 		// ------------------------------------------------------------------------
 		/*! Geometry Pass
@@ -171,38 +340,6 @@ namespace Core {
 		*   Draws the geometry on the G-Buffer
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::GeometryPass() {
-			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
-
-			auto f_flushobosoletes = [this, &obsoletes]() {
-				std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
-					std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
-					it.erase(x.second);
-
-					//If we don't have any other renderables, erase it
-					if (!it.size()) mGroupedRenderables.erase(x.first);
-					});
-				};
-
-			auto f_grouprender = [&obsoletes](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it, ShaderProgram* shader) {
-				//For each renderable in shader program
-				for (std::vector<std::weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
-					//If it isn't expired
-					if (auto renderable = it2->lock()) {
-						const std::shared_ptr<Object> parent = renderable->GetParent().lock();
-						glm::mat4 matrix = glm::translate(glm::mat4(1.0f), parent->GetPosition()) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f)) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
-							glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
-							glm::scale(glm::mat4(1.0f), parent->GetScale());
-						shader->SetShaderUniform("uModel", &matrix);
-						reinterpret_cast<GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>*>(renderable.get())->Render();
-					}
-					else {
-						obsoletes.insert(std::make_pair(it.first, it2));
-					}
-				}
-				};
-
 			glDepthMask(GL_TRUE);
 			glDisable(GL_BLEND);
 			glEnable(GL_DEPTH_TEST);
@@ -212,6 +349,8 @@ namespace Core {
 			glEnable(GL_ALPHA_TEST);
 			glAlphaFunc(GL_GREATER, 0.1f);
 
+			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
+
 			{
 				glm::mat4 view = cam.GetViewMatrix();
 				glm::mat4 projection = cam.GetProjectionMatrix();
@@ -219,43 +358,26 @@ namespace Core {
 				mGBuffer->Bind();
 				mGBuffer->ClearBuffer();
 
-				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(), 
+				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
 					[this, &obsoletes, &projection, &view](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 
 						it, it.first->Get()->Bind();
 
-						GroupRender(obsoletes,it, it.first->Get());
+						GroupRender(obsoletes, it, it.first->Get());
 					});
 			}
 
 			glDepthMask(GL_FALSE);
 			glDisable(GL_DEPTH_TEST);
 		}
+		
 
-		void OpenGLPipeline::RenderShadowMaps() {
-			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
-
-			auto f_flushobosoletes = [this, &obsoletes]() {
-				std::for_each(std::execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](std::pair<const Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> x) {
-					std::vector<std::weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
-					it.erase(x.second);
-
-					//If we don't have any other renderables, erase it
-					if (!it.size()) mGroupedRenderables.erase(x.first);
-					});
-				};
-			
-
-			mLightPass->RenderShadowMaps(cam.GetViewMatrix(), [&obsoletes, &f_flushobosoletes, this](ShaderProgram* shader) {
-				//Render all objects
-				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
-				[this, &obsoletes, &shader](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
-						GroupRender(obsoletes, it, shader);
-					});
-
-				f_flushobosoletes();
-			});
-		}
+		// ------------------------------------------------------------------------
+		/*! Lighting Pass
+		*
+		*   Using the buffers created on the geometry pass, we can 
+		*		compute the lighting for each pixel
+		*/ //----------------------------------------------------------------------
 
 		// ------------------------------------------------------------------------
 		/*! Set Dimension
@@ -273,6 +395,7 @@ namespace Core {
 		*   Updates the Uniform Buffers on the GPU across Shaders
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::UpdateUniformBuffers() {
+
 			glm::mat4 view = cam.GetViewMatrix();
 			glm::mat4 projection = cam.GetProjectionMatrix();
 		
@@ -281,7 +404,43 @@ namespace Core {
 			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &projection);
 			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), &cam.GetPositionRef());
 			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + sizeof(glm::vec3), sizeof(glm::vec2), &mDimensions);
+			//glBindBuffer(GL_UNIFORM_BUFFER, mFrameBuffer->GetHandle());
 			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 		}
+
+		// ------------------------------------------------------------------------
+		/*! Directional Light Pass
+		*
+		*   Updates the Uniform Buffers on the GPU across Shaders
+		*/ //----------------------------------------------------------------------
+		void OpenGLPipeline::DirectionalLightPass() {	
+			mDirectionalLightShader->Get()->Bind();
+			mLightPass.get()->RenderScreenQuad();
+		}
+
+		void OpenGLPipeline::BloomPass()
+		{
+			mBloomRenderer->RenderBloomTexture(mGBuffer->GetBrightnessTextureHandle(), 0.005f);
+		}
+
+		void OpenGLPipeline::RenderParticlesSystems()
+		{
+			if (auto currentParticleManager = particleManager.lock()) 
+			{
+				currentParticleManager->Render(&cam);
+			}
+			else 
+			{
+				std::cout << "ERROR -> PARTICLEMANAGER WAS DESTROYED \n";
+			}
+
+		}
+
+		void OpenGLPipeline::SetParticleManager(std::shared_ptr<Core::Particles::ParticleMangager> particleManager) {
+			this->particleManager = particleManager;
+		}
+		unsigned int quadVAO = 0;
+		unsigned int quadVBO;
 	}
+
 }

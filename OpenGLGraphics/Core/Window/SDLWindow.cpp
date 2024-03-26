@@ -10,6 +10,7 @@
 #include "Core/Window/SDLWindow.h"
 #include "Dependencies/ImGui/imgui_impl_opengl3.h"
 #include "Dependencies/ImGui/imgui_impl_sdl2.h"
+#include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 
 // ------------------------------------------------------------------------
 /*! Constructor
@@ -46,10 +47,15 @@ void SDLWindow::Create() {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 6);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
+    SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+    //SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+    //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
+
     mWindow.reset(SDL_CreateWindow("OpenGL Graphics",
         SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
         mDimensions.x, mDimensions.y,
-        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI));
+        SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI ));
 
 	//If we got no pointer to the window, throw an exception
     if(!mWindow)
@@ -71,9 +77,30 @@ void SDLWindow::Create() {
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
     io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;         // IF using Docking Branch
 
+    //Load font
+    
+    io.Fonts->AddFontDefault();
+    ImFont* mainFont = io.Fonts->AddFontFromFileTTF("Content/Fonts/DroidSans.ttf", 16.5f , NULL , io.Fonts->GetGlyphRangesDefault());
+    IM_ASSERT(mainFont != NULL);
+
+
+    io.FontGlobalScale = 1.0f;
+    io.FontDefault = mainFont;
+
+    ImFontConfig config;
+    config.MergeMode = true;
+    config.GlyphMinAdvanceX = 13.0f; // Makes icons monospaced
+    static const ImWchar icon_ranges[] = { ICON_MIN_FA, ICON_MAX_FA, 0 };
+    io.Fonts->AddFontFromFileTTF("Content/Fonts/fa-regular-400.ttf", 16.5f, &config, icon_ranges);
+    io.Fonts->AddFontFromFileTTF("Content/Fonts/fa-brands-400.ttf", 16.5f, &config, icon_ranges);
+    io.Fonts->AddFontFromFileTTF("Content/Fonts/fa-solid-900.ttf", 16.5f, &config, icon_ranges);
+
+
+
     // Setup Platform/Renderer backends
     ImGui_ImplSDL2_InitForOpenGL(mWindow.get(), mContext);
-    ImGui_ImplOpenGL3_Init("#version 460");
+    ImGui_ImplOpenGL3_Init("#version 450");
+
 }
 
 // ------------------------------------------------------------------------

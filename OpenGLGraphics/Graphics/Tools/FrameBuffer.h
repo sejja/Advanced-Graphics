@@ -29,18 +29,20 @@ namespace Core {
 
 		#pragma region //Functions
 			void Create();
-			void CreateRenderTexture(glm::lowp_u16vec2 dimensions, bool readable = true) ;
+			void CreateRenderTexture(glm::lowp_u16vec2 dimensions, bool depthonly = false, bool readable = true) ;
 			void Bind();
 			void inline Unbind() noexcept;
 			void BindTexture(unsigned i = 0);
 			void Clear(bool depthOnly = false);
 			GLuint GetTextureHandle();
+			GLuint GetHandle();
 		#pragma endregion
 
 		#pragma region //Members
-		private:
+		protected:
 			GLuint mHandle;
 			GLuint mTexture;
+			GLuint mDepth;
 			glm::lowp_u16vec2 mDimensions;
 		#pragma endregion
 		};

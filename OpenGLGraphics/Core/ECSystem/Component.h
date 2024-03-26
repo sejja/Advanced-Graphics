@@ -33,7 +33,7 @@ namespace Core {
 	#pragma endregion
 
 	#pragma region //Members
-	private:
+	protected:
 		std::weak_ptr<Object> mParent;
 	#pragma endregion
 	};

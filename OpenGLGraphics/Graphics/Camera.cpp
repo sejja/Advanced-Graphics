@@ -11,6 +11,7 @@
 #include "Core/Input/InputManager.h"
 #include "Core/Singleton.h"
 #include "Core/RTTI.h"
+#include "Core/Editor/Editor.h"
 
 namespace Core {
 	namespace Primitives {

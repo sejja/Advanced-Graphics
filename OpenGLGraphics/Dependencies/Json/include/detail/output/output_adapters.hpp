@@ -8,7 +8,7 @@
 #include <ostream> // basic_ostream
 #include <string> // basic_string
 #include <vector> // vector
-#include <Json/include/detail/macro_scope.hpp>
+#include <Dependencies/Json/include/detail/macro_scope.hpp>
 
 namespace nlohmann
 {

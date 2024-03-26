@@ -14,19 +14,19 @@ layout(location = 2) in vec2 aUVs;
 layout(location = 3) in vec3 aTangent;
 layout(location = 4) in vec3 aBitangent;
 
-layout (std140) uniform UniformBuffer {
+layout (std140, binding = 0) uniform UniformBuffer {
 	mat4 ubView;
 	mat4 ubProjection;
     vec3 ubCameraPosition;
 };
 
-uniform mat4 uModel;
+layout(location = 0) uniform mat4 uModel;
 
-out vec2 oUVs;
-out vec3 oNormal;
-out vec3 oPosition;
-out vec3 oTangent;
-out vec3 oBitangent;
+layout(location = 5) out vec2 oUVs;
+layout(location = 6) out vec3 oNormal;
+layout(location = 7) out vec3 oPosition;
+layout(location = 8) out vec3 oTangent;
+layout(location = 9) out vec3 oBitangent;
 
 // ------------------------------------------------------------------------
 /*! Shader Entrypoint

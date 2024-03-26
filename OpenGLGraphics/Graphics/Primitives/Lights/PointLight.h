@@ -20,8 +20,8 @@ namespace Graphics {
 				float mInner;
 				float mOutter;
 				float mFallOff;
-				float CalculateSphereOfInfluence() const override;
-				void GenerateShadowMap() override;
+				float CalculateSphereOfInfluence() const;
+				void GenerateShadowMap();
 			};
 			PointLight(const std::weak_ptr<Core::Object>& parent);
 		};

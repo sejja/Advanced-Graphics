@@ -12,8 +12,8 @@
 #include <type_traits> // enable_if, is_base_of, is_pointer, is_integral, remove_pointer
 #include <utility> // pair, declval
 
-#include <Json/include/detail/iterators/iterator_traits.hpp>
-#include <Json/include/detail/macro_scope.hpp>
+#include <Dependencies/Json/include/detail/iterators/iterator_traits.hpp>
+#include <Dependencies/Json/include/detail/macro_scope.hpp>
 
 namespace nlohmann
 {

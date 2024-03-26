@@ -3,13 +3,13 @@
 #include <iterator> // iterator, random_access_iterator_tag, bidirectional_iterator_tag, advance, next
 #include <type_traits> // conditional, is_const, remove_const
 
-#include <Json/include/detail/exceptions.hpp>
-#include <Json/include/detail/iterators/internal_iterator.hpp>
-#include <Json/include/detail/iterators/primitive_iterator.hpp>
-#include <Json/include/detail/macro_scope.hpp>
-#include <Json/include/detail/meta/cpp_future.hpp>
-#include <Json/include/detail/meta/type_traits.hpp>
-#include <Json/include/detail/value_t.hpp>
+#include <Dependencies/Json/include/detail/exceptions.hpp>
+#include <Dependencies/Json/include/detail/iterators/internal_iterator.hpp>
+#include <Dependencies/Json/include/detail/iterators/primitive_iterator.hpp>
+#include <Dependencies/Json/include/detail/macro_scope.hpp>
+#include <Dependencies/Json/include/detail/meta/cpp_future.hpp>
+#include <Dependencies/Json/include/detail/meta/type_traits.hpp>
+#include <Dependencies/Json/include/detail/value_t.hpp>
 
 namespace nlohmann
 {

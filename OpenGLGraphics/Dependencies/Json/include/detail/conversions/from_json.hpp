@@ -12,11 +12,11 @@
 #include <utility> // pair, declval
 #include <valarray> // valarray
 
-#include <Json/include/detail/exceptions.hpp>
-#include <Json/include/detail/macro_scope.hpp>
-#include <Json/include/detail/meta/cpp_future.hpp>
-#include <Json/include/detail/meta/type_traits.hpp>
-#include <Json/include/detail/value_t.hpp>
+#include <Dependencies/Json/include/detail/exceptions.hpp>
+#include <Dependencies/Json/include/detail/macro_scope.hpp>
+#include <Dependencies/Json/include/detail/meta/cpp_future.hpp>
+#include <Dependencies/Json/include/detail/meta/type_traits.hpp>
+#include <Dependencies/Json/include/detail/value_t.hpp>
 
 namespace nlohmann
 {

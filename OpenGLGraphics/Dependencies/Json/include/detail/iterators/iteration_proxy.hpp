@@ -5,8 +5,8 @@
 #include <string> // string, to_string
 #include <tuple> // tuple_size, get, tuple_element
 
-#include <Json/include/detail/meta/type_traits.hpp>
-#include <Json/include/detail/value_t.hpp>
+#include <Dependencies/Json/include/detail/meta/type_traits.hpp>
+#include <Dependencies/Json/include/detail/value_t.hpp>
 
 namespace nlohmann
 {

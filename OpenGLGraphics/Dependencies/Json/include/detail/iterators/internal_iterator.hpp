@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Json/include/detail/iterators/primitive_iterator.hpp>
+#include <Dependencies/Json/include/detail/iterators/primitive_iterator.hpp>
 
 namespace nlohmann
 {

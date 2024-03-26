@@ -8,9 +8,9 @@
 #include <string> // string
 #include <cmath> // isnan, isinf
 
-#include <Json/include/detail/input/binary_reader.hpp>
-#include <Json/include/detail/macro_scope.hpp>
-#include <Json/include/detail/output/output_adapters.hpp>
+#include <Dependencies/Json/include/detail/input/binary_reader.hpp>
+#include <Dependencies/Json/include/detail/macro_scope.hpp>
+#include <Dependencies/Json/include/detail/output/output_adapters.hpp>
 
 namespace nlohmann
 {

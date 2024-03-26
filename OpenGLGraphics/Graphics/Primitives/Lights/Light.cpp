@@ -1,5 +1,6 @@
 #include "Light.h"
 #include <algorithm>
+#include <iostream>
 
 namespace Graphics {
 	namespace Primitives {
@@ -22,6 +23,10 @@ namespace Graphics {
 
 		glm::vec3 Light::GetPosition() const {
 			return mData->mPosition;
+		}
+		void Light::BackedLightData::GenerateShadowMap()
+		{
+			std::cout << "UNDEFINED VIRTUAL FUNCTION GenerateShadowMap \n";
 		}
 	}
 }

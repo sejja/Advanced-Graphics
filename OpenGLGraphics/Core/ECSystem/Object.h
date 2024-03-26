@@ -25,13 +25,22 @@ namespace Core {
 		CLASS_EXCEPTION(Object)
 	#pragma endregion
 
-	#pragma region //Functions
+	#pragma region 
+		//Functions
+		inline void SetID(const std::string& id);
 		inline void SetPosition(const glm::vec3& pos);
 		inline void SetRotation(const glm::vec3& rot);
 		inline void SetScale(const glm::vec3& scale);
+		inline void SetName(const std::string name);
 		DONTDISCARD inline glm::vec3 GetPosition() const;
 		DONTDISCARD inline glm::vec3 GetRotation() const;
 		DONTDISCARD inline glm::vec3 GetScale() const;
+		DONTDISCARD inline std::string GetName() const;
+		DONTDISCARD inline std::string GetID() const;
+
+
+
+
 		inline void ForEachComponent(std::function<void(const std::shared_ptr<Core::Component>& comp)> func);
 		void Update();
 
@@ -43,14 +52,28 @@ namespace Core {
 
 		template<typename T>
 		DONTDISCARD inline std::shared_ptr<T> GetComponent() const;
+
+		DONTDISCARD inline std::vector<std::shared_ptr<Core::Component>> GetAllComponents() const;
 	#pragma endregion
 
 	#pragma region //Members
-	private:
+	protected:
 		Mathematics::Transformation mTransform;
 		std::vector<std::shared_ptr<Component>> mComponents;
+		std::string name;
+		std::string id;
 	#pragma endregion
 	};
+
+	// ------------------------------------------------------------------------
+	/*! Set ID
+	*
+	*  Sets the ID of a given object
+	*/ // ---------------------------------------------------------------------
+
+	void Object::SetID(const std::string& _id) {
+		id = _id;
+	}
 
 	// ------------------------------------------------------------------------
 	/*! Set Position
@@ -78,6 +101,24 @@ namespace Core {
 	void Object::SetScale(const glm::vec3& sca) {
 		mTransform.mScale = sca;
 	}
+	// ------------------------------------------------------------------------
+	/*! Set Name
+	*
+	*  Sets the name of an object
+	*/ // ---------------------------------------------------------------------
+	void Object::SetName(const std::string meshName) {
+		name = meshName;
+	}
+
+	// ------------------------------------------------------------------------
+	/*! Get ID
+	*
+	*  Gets the id of an object
+	*/ // ---------------------------------------------------------------------
+	std::string Object::GetID() const {
+		return id;
+	}
+
 
 	// ------------------------------------------------------------------------
 	/*! Get Position
@@ -87,6 +128,8 @@ namespace Core {
 	glm::vec3 Object::GetPosition() const {
 		return mTransform.mPostion;
 	}
+
+
 
 	// ------------------------------------------------------------------------
 	/*! Get Rotation
@@ -104,6 +147,15 @@ namespace Core {
 	*/ // ---------------------------------------------------------------------
 	glm::vec3 Object::GetScale() const {
 		return mTransform.mScale;
+	}
+
+	// ------------------------------------------------------------------------
+	/*! Get Name
+	*
+	*  Get the name of an object
+	*/ // ---------------------------------------------------------------------
+	std::string Object::GetName() const {
+		return name;
 	}
 
 	// ------------------------------------------------------------------------
@@ -152,10 +204,21 @@ namespace Core {
 		//Look for all components
 		for(auto& x : mComponents)
 			if(RTTI::IsA<T>(x.get()))
-				return x;
+				return std::reinterpret_pointer_cast<T>(x);
 
 		throw ObjectException("No such component");
 	}
+
+	// ------------------------------------------------------------------------
+	/*! Get All Components
+	*
+	*  Returns the vector of all components
+	*/ // ---------------------------------------------------------------------
+
+	inline std::vector<std::shared_ptr<Core::Component>> Object::GetAllComponents() const {
+		return mComponents;
+	}
+
 
 	// ------------------------------------------------------------------------
 	/*! For Each Component

@@ -16,7 +16,7 @@ namespace Graphics {
 				glm::vec3 mColor;
 				int mShadowCaster;
 				virtual float CalculateSphereOfInfluence() const = 0;
-				virtual void GenerateShadowMap() = 0;
+				virtual void GenerateShadowMap();
 			};
 
 			Light(std::weak_ptr<Core::Object> parent);

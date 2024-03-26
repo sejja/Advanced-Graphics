@@ -12,13 +12,13 @@
 #include <type_traits> // is_same
 #include <utility> // move
 
-#include <Json/include/detail/conversions/to_chars.hpp>
-#include <Json/include/detail/exceptions.hpp>
-#include <Json/include/detail/macro_scope.hpp>
-#include <Json/include/detail/meta/cpp_future.hpp>
-#include <Json/include/detail/output/binary_writer.hpp>
-#include <Json/include/detail/output/output_adapters.hpp>
-#include <Json/include/detail/value_t.hpp>
+#include <Dependencies/Json/include/detail/conversions/to_chars.hpp>
+#include <Dependencies/Json/include/detail/exceptions.hpp>
+#include <Dependencies/Json/include/detail/macro_scope.hpp>
+#include <Dependencies/Json/include/detail/meta/cpp_future.hpp>
+#include <Dependencies/Json/include/detail/output/binary_writer.hpp>
+#include <Dependencies/Json/include/detail/output/output_adapters.hpp>
+#include <Dependencies/Json/include/detail/value_t.hpp>
 
 namespace nlohmann
 {

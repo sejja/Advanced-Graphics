@@ -7,7 +7,7 @@
 #include <limits> // numeric_limits
 #include <type_traits> // conditional
 
-#include <Json/include/detail/macro_scope.hpp>
+#include <Dependencies/Json/include/detail/macro_scope.hpp>
 
 namespace nlohmann
 {

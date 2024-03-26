@@ -46,32 +46,32 @@ SOFTWARE.
 #include <utility> // declval, forward, move, pair, swap
 #include <vector> // vector
 
-#include <Json/include/adl_serializer.hpp>
-#include <Json/include/byte_container_with_subtype.hpp>
-#include <Json/include/detail/conversions/from_json.hpp>
-#include <Json/include/detail/conversions/to_json.hpp>
-#include <Json/include/detail/exceptions.hpp>
-#include <Json/include/detail/hash.hpp>
-#include <Json/include/detail/input/binary_reader.hpp>
-#include <Json/include/detail/input/input_adapters.hpp>
-#include <Json/include/detail/input/lexer.hpp>
-#include <Json/include/detail/input/parser.hpp>
-#include <Json/include/detail/iterators/internal_iterator.hpp>
-#include <Json/include/detail/iterators/iter_impl.hpp>
-#include <Json/include/detail/iterators/iteration_proxy.hpp>
-#include <Json/include/detail/iterators/json_reverse_iterator.hpp>
-#include <Json/include/detail/iterators/primitive_iterator.hpp>
-#include <Json/include/detail/json_pointer.hpp>
-#include <Json/include/detail/json_ref.hpp>
-#include <Json/include/detail/macro_scope.hpp>
-#include <Json/include/detail/meta/cpp_future.hpp>
-#include <Json/include/detail/meta/type_traits.hpp>
-#include <Json/include/detail/output/binary_writer.hpp>
-#include <Json/include/detail/output/output_adapters.hpp>
-#include <Json/include/detail/output/serializer.hpp>
-#include <Json/include/detail/value_t.hpp>
-#include <Json/include/json_fwd.hpp>
-#include <Json/include/ordered_map.hpp>
+#include <Dependencies/Json/include/adl_serializer.hpp>
+#include <Dependencies/Json/include/byte_container_with_subtype.hpp>
+#include <Dependencies/Json/include/detail/conversions/from_json.hpp>
+#include <Dependencies/Json/include/detail/conversions/to_json.hpp>
+#include <Dependencies/Json/include/detail/exceptions.hpp>
+#include <Dependencies/Json/include/detail/hash.hpp>
+#include <Dependencies/Json/include/detail/input/binary_reader.hpp>
+#include <Dependencies/Json/include/detail/input/input_adapters.hpp>
+#include <Dependencies/Json/include/detail/input/lexer.hpp>
+#include <Dependencies/Json/include/detail/input/parser.hpp>
+#include <Dependencies/Json/include/detail/iterators/internal_iterator.hpp>
+#include <Dependencies/Json/include/detail/iterators/iter_impl.hpp>
+#include <Dependencies/Json/include/detail/iterators/iteration_proxy.hpp>
+#include <Dependencies/Json/include/detail/iterators/json_reverse_iterator.hpp>
+#include <Dependencies/Json/include/detail/iterators/primitive_iterator.hpp>
+#include <Dependencies/Json/include/detail/json_pointer.hpp>
+#include <Dependencies/Json/include/detail/json_ref.hpp>
+#include <Dependencies/Json/include/detail/macro_scope.hpp>
+#include <Dependencies/Json/include/detail/meta/cpp_future.hpp>
+#include <Dependencies/Json/include/detail/meta/type_traits.hpp>
+#include <Dependencies/Json/include/detail/output/binary_writer.hpp>
+#include <Dependencies/Json/include/detail/output/output_adapters.hpp>
+#include <Dependencies/Json/include/detail/output/serializer.hpp>
+#include <Dependencies/Json/include/detail/value_t.hpp>
+#include <Dependencies/Json/include/json_fwd.hpp>
+#include <Dependencies/Json/include/ordered_map.hpp>
 
 /*!
 @brief namespace for Niels Lohmann
@@ -8747,6 +8747,6 @@ inline nlohmann::json::json_pointer operator "" _json_pointer(const char* s, std
 	return nlohmann::json::json_pointer(std::string(s, n));
 }
 
-#include <Json/include/detail/macro_unscope.hpp>
+#include <Dependencies/Json/include/detail/macro_unscope.hpp>
 
 #endif  // INCLUDE_NLOHMANN_JSON_HPP_

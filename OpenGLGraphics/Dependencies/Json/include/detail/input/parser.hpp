@@ -7,13 +7,13 @@
 #include <utility> // move
 #include <vector> // vector
 
-#include <Json/include/detail/exceptions.hpp>
-#include <Json/include/detail/input/input_adapters.hpp>
-#include <Json/include/detail/input/json_sax.hpp>
-#include <Json/include/detail/input/lexer.hpp>
-#include <Json/include/detail/macro_scope.hpp>
-#include <Json/include/detail/meta/is_sax.hpp>
-#include <Json/include/detail/value_t.hpp>
+#include <Dependencies/Json/include/detail/exceptions.hpp>
+#include <Dependencies/Json/include/detail/input/input_adapters.hpp>
+#include <Dependencies/Json/include/detail/input/json_sax.hpp>
+#include <Dependencies/Json/include/detail/input/lexer.hpp>
+#include <Dependencies/Json/include/detail/macro_scope.hpp>
+#include <Dependencies/Json/include/detail/meta/is_sax.hpp>
+#include <Dependencies/Json/include/detail/value_t.hpp>
 
 namespace nlohmann
 {

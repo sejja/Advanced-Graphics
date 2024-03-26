@@ -11,6 +11,7 @@
 #include <sstream>
 #include <glew.h>
 #include "Shader.h"
+#include <iostream>
 
 namespace Core {
 	namespace Graphics {
@@ -81,6 +82,49 @@ namespace Core {
 				return nullptr;
 			return source;
 		}
+
+		void Shader::ReloadShaderSPIRV(const std::string_view& filename, EType type)
+		{
+			// Delete existing shader
+			glDeleteShader(mHandle);
+
+			// Load filename in binary
+			std::ifstream file(filename.data(), std::ios::binary);
+			if (!file.is_open()) {
+				std::cerr << "Failed to open shader file: " << filename << std::endl;
+				return;
+			}
+
+			std::vector<char> vs_buf((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+
+			GLuint sid;
+			if (type == EType::Fragment)
+				sid = glCreateShader(GL_FRAGMENT_SHADER);
+			else
+				sid = glCreateShader(GL_VERTEX_SHADER);
+
+			glShaderBinary(1, &sid, GL_SHADER_BINARY_FORMAT_SPIR_V_ARB, vs_buf.data(), vs_buf.size());
+			glSpecializeShaderARB(sid, "main", 0, 0, 0);
+
+			// Check compilation status
+			GLint compileStatus;
+			glGetShaderiv(sid, GL_COMPILE_STATUS, &compileStatus);
+			if (compileStatus == GL_FALSE) {
+				// Handle compilation error
+				GLint logLength;
+				glGetShaderiv(sid, GL_INFO_LOG_LENGTH, &logLength);
+				std::vector<char> errorLog(logLength);
+				glGetShaderInfoLog(sid, logLength, NULL, errorLog.data());
+				// Output error log or handle error appropriately
+				std::cerr << "Error compiling shader: " << "it did not compile madafacka" << std::endl;
+				// Clean up shader object
+				glDeleteShader(sid);
+				return;
+			}
+
+			mHandle = sid;
+		}
+
 
 		// ------------------------------------------------------------------------
 		/*! Compile

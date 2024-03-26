@@ -4,11 +4,11 @@
 #include <type_traits> // false_type, is_constructible, is_integral, is_same, true_type
 #include <utility> // declval
 
-#include <Json/include/detail/iterators/iterator_traits.hpp>
-#include <Json/include/detail/macro_scope.hpp>
-#include <Json/include/detail/meta/cpp_future.hpp>
-#include <Json/include/detail/meta/detected.hpp>
-#include <Json/include/json_fwd.hpp>
+#include <Dependencies/Json/include/detail/iterators/iterator_traits.hpp>
+#include <Dependencies/Json/include/detail/macro_scope.hpp>
+#include <Dependencies/Json/include/detail/meta/cpp_future.hpp>
+#include <Dependencies/Json/include/detail/meta/detected.hpp>
+#include <Dependencies/Json/include/json_fwd.hpp>
 
 namespace nlohmann
 {

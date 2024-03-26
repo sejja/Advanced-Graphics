@@ -9,6 +9,7 @@
 #ifndef _OPENGL_INFO__H_
 #define _OPENGL_INFO__H_
 
+#include <glm.hpp>
 #include <glew.h>
 #include <unordered_map>
 
@@ -21,6 +22,7 @@ namespace Core {
 
 		#pragma region //Data
 			GLuint mBindedBuffer;
+			glm::vec2 mDimensions;
 			std::unordered_map<unsigned, GLuint> mBindedTextures;
 		#pragma endregion
 		};

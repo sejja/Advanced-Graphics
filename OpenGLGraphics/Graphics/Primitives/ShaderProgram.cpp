@@ -9,6 +9,7 @@
 #include <glew.h>
 #include "Core/ResourceManager.h"
 #include "ShaderProgram.h"
+#include <iostream>
 
 namespace Core {
 	namespace Graphics {
@@ -48,7 +49,23 @@ namespace Core {
 				if (status == GL_FALSE) throw ShaderProgramException("Shader Program Failed to Link");
 			}
 		}
+		void ShaderProgram::ReloadShader(Asset<Shader>& vertexShader, Asset<Shader>& fragmentShader) {
+			if (mHandle) {
+				glDeleteProgram(mHandle);
+			}
 
+			mHandle = glCreateProgram();
+			glAttachShader(mHandle, vertexShader->Get()->GetGLHandle());
+			glAttachShader(mHandle, fragmentShader->Get()->GetGLHandle());
+			glLinkProgram(mHandle);
+
+			GLint status;
+			glGetProgramiv(mHandle, GL_LINK_STATUS, &status);
+
+			if (status == GL_FALSE)
+				throw ShaderProgramException("Shader Program Failed to Link");
+
+		}
 		// ------------------------------------------------------------------------
 		/*! Custom Constructor
 		*
@@ -81,7 +98,10 @@ namespace Core {
 		#if _DEBUG
 			int i = idx == mUniformLocations.end() ? (mUniformLocations[id] = glGetUniformLocation(mHandle, id.data())) : idx->second;
 
-			if(i == -1) throw ShaderProgramException("There is no such uniform in the shader");
+			if (i == -1) {
+				//std::cout << "There is no such uniform in the shader" << std::endl;
+				throw ShaderProgramException("There is no such uniform in the shader");
+			}
 
 			return i;
 		#else

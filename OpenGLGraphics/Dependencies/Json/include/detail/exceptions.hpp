@@ -4,8 +4,9 @@
 #include <stdexcept> // runtime_error
 #include <string> // to_string
 
-#include <Json/include/detail/input/position_t.hpp>
-#include <Json/include/detail/macro_scope.hpp>
+#include <Dependencies/Json/include/detail/input/position_t.hpp>
+#include <Dependencies/Json/include/detail/input/position_t.hpp>
+#include <Dependencies/Json/include/detail/macro_scope.hpp>
 
 namespace nlohmann
 {

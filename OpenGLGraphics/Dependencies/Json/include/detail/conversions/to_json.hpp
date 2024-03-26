@@ -9,10 +9,10 @@
 #include <valarray> // valarray
 #include <vector> // vector
 
-#include <Json/include/detail/iterators/iteration_proxy.hpp>
-#include <Json/include/detail/meta/cpp_future.hpp>
-#include <Json/include/detail/meta/type_traits.hpp>
-#include <Json/include/detail/value_t.hpp>
+#include <Dependencies/Json/include/detail/iterators/iteration_proxy.hpp>
+#include <Dependencies/Json/include/detail/meta/cpp_future.hpp>
+#include <Dependencies/Json/include/detail/meta/type_traits.hpp>
+#include <Dependencies/Json/include/detail/value_t.hpp>
 
 namespace nlohmann
 {

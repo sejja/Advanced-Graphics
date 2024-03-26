@@ -13,17 +13,23 @@
 #include <execution>
 #include "Parser.h"
 #include "Graphics/Primitives/Renderables.h"
+#include "Core/ParticleSystem/ParticleManager.h"
+#include <iostream>
+#include "Graphics/OpenGLPipeline.h"
 
 namespace Core {
 	class Renderable;
 	class Scene {
 #pragma region //Functions
 	public:
-		void CreateScene(const std::string_view& file, const std::function<void(const std::shared_ptr<Object>& obj)>);
+		void CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Object>& obj)>);
 		void Tick();
 
-		template<typename PIPE>
-		void UploadObjectsToPipeline(const PIPE& pipe);
+		const std::vector<std::shared_ptr<Core::Object>>& GetObjects() const {
+			return mObjects;
+		}
+
+
 #pragma endregion	
 
 #pragma region //Variables
@@ -32,25 +38,6 @@ namespace Core {
 		std::vector<std::shared_ptr<Object>> mObjects;
 #pragma endregion
 	};
-
-	// ------------------------------------------------------------------------
-	/*! Get Resource
-	*
-	*   Gets a resource given the name
-	*/ // ---------------------------------------------------------------------
-	template<typename PIPE>
-	void Scene::UploadObjectsToPipeline(const PIPE& pipe) {
-		using namespace Core;
-
-		std::for_each(std::execution::unseq, mObjects.begin(), mObjects.end(), [&pipe](const std::shared_ptr<Object>& obj) {
-			std::for_each(std::execution::unseq, obj->mComponents.begin(), obj->mComponents.end(), [&pipe](const std::shared_ptr<Component>& comp) {
-				const std::shared_ptr<Renderable> renderable = std::dynamic_pointer_cast<Renderable>(comp);
-
-				//If the object is a renderable
-				if (renderable) pipe.AddRenderable(renderable);
-				});
-			});
-	}
 }
 
 #endif

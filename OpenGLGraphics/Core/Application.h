@@ -31,6 +31,7 @@ namespace Core {
 		inline void SetTickFunction(const std::function<void()>& tick);
 		void SetDimensions(const glm::lowp_u16vec2& dim) noexcept;
 		DONTDISCARD constexpr inline PIPELINE& GetPipeline() noexcept;
+		//PIPELINE& GraphicApplication<WINDOW, PIPELINE>::GetPipeline();
 
 	private:
 		WINDOW mWindow;

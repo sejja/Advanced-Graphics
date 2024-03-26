@@ -2,8 +2,8 @@
 
 #include <utility>
 
-#include <Json/include/detail/conversions/from_json.hpp>
-#include <Json/include/detail/conversions/to_json.hpp>
+#include <Dependencies/Json/include/detail/conversions/from_json.hpp>
+#include <Dependencies/Json/include/detail/conversions/to_json.hpp>
 
 namespace nlohmann
 {

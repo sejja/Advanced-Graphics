@@ -1,6 +1,7 @@
 #include "Skybox.h"
 #include "Dependencies/STB/stb_image.h"
 
+
 namespace Core {
     namespace Graphics{
         Skybox* Skybox::sCurrentSky;
@@ -61,7 +62,7 @@ namespace Core {
             glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
         }
 
-        void Skybox::Render(Core::Primitives::Camera& cam) {
+        void Skybox::Render(Core::Primitives::Camera& cam, Core::Graphics::OpenGLPipeline& pipeline) {
             glDepthFunc(GL_LEQUAL);
             //Disable depth mask, enable it later
             glDepthMask(GL_FALSE);
@@ -73,8 +74,9 @@ namespace Core {
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_CUBE_MAP, mMapHandle);
 
+
             glm::mat4 view = glm::mat4(glm::mat3(cam.GetViewMatrix()));
-            glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
+            glm::mat4 projection = glm::perspective(glm::radians(45.0f), pipeline.GetAspectRatio(), 0.1f, 10000.0f);
             mShaderProgram->Get()->SetShaderUniform("uTransform", &projection);
             mShaderProgram->Get()->SetShaderUniform("uView", &view);
 

@@ -10,9 +10,9 @@
 #include <utility> // move
 #include <vector> // vector
 
-#include <Json/include/detail/input/input_adapters.hpp>
-#include <Json/include/detail/input/position_t.hpp>
-#include <Json/include/detail/macro_scope.hpp>
+#include <Dependencies/Json/include/detail/input/input_adapters.hpp>
+#include <Dependencies/Json/include/detail/input/position_t.hpp>
+#include <Dependencies/Json/include/detail/macro_scope.hpp>
 
 namespace nlohmann
 {

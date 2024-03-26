@@ -8,9 +8,9 @@
 #include <utility> // move
 #include <vector> // vector
 
-#include <Json/include/detail/exceptions.hpp>
-#include <Json/include/detail/macro_scope.hpp>
-#include <Json/include/detail/value_t.hpp>
+#include <Dependencies/Json/include/detail/exceptions.hpp>
+#include <Dependencies/Json/include/detail/macro_scope.hpp>
+#include <Dependencies/Json/include/detail/value_t.hpp>
 
 namespace nlohmann
 {

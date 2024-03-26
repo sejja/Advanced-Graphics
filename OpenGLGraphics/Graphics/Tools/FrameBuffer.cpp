@@ -48,14 +48,17 @@ namespace Core {
 		*
 		*   Allocates a new rendertarget associated with this render texture
 		*/ //----------------------------------------------------------------------
-		void FrameBuffer::CreateRenderTexture(glm::lowp_u16vec2 dimensions, bool readable) {
+		void FrameBuffer::CreateRenderTexture(glm::lowp_u16vec2 dimensions, bool depthonly, bool readable) {
 		#ifdef _DEBUG
 			if(!mHandle) throw FrameBufferException("We don't have a framebuffer created yet. Did you forget to call Create()?");
 		#endif
 
 			glGenTextures(1, &mTexture);
 			glBindTexture(GL_TEXTURE_2D, mTexture);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, dimensions.x, dimensions.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+			if(depthonly)
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, dimensions.x, dimensions.y, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+			else 
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dimensions.x, dimensions.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
@@ -63,12 +66,23 @@ namespace Core {
 			float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 			Bind();
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, mTexture, 0);
+
+			if(depthonly)
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, mTexture, 0);
+			else
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mTexture, 0);
 
 			//If it's not readable
 			if (!readable) {
 				glDrawBuffer(GL_NONE);
 				glReadBuffer(GL_NONE);
+			}
+
+			if(!depthonly) {
+				glGenRenderbuffers(1, &mDepth);
+				glBindRenderbuffer(GL_RENDERBUFFER, mDepth);
+				glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, dimensions.x, dimensions.y); // use a single renderbuffer object for both a depth AND stencil buffer.
+				glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, mDepth); // now actually attach it
 			}
 
 			mDimensions = dimensions;
@@ -141,6 +155,10 @@ namespace Core {
 
 		GLuint FrameBuffer::GetTextureHandle() {
 			return mTexture;
+		}
+		GLuint FrameBuffer::GetHandle()
+		{
+			return mHandle;
 		}
 	}
 }

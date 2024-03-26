@@ -2,7 +2,7 @@
 
 #include <type_traits>
 
-#include <Json/include/detail/meta/void_t.hpp>
+#include <Dependencies/Json/include/detail/meta/void_t.hpp>
 
 // https://en.cppreference.com/w/cpp/experimental/is_detected
 namespace nlohmann

@@ -6,7 +6,7 @@
 //	Copyright © 2024. All Rights reserved
 //
 
-#include "Pipeline.h"
+#include "Core/Graphics/Pipeline.h"
 
 namespace Core {
 	namespace Graphics {

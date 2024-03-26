@@ -23,8 +23,8 @@ namespace Graphics {
 				float mFallOff;
 				glm::mat4 mShadowMatrix;
 				Core::Graphics::FrameBuffer mShadowMap;
-				float CalculateSphereOfInfluence() const override;
-				void GenerateShadowMap() override;
+				float CalculateSphereOfInfluence() const;
+				void GenerateShadowMap();
 			};
 
 			

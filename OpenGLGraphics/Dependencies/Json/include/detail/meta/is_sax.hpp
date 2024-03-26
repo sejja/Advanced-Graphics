@@ -4,8 +4,8 @@
 #include <utility> // declval
 #include <string> // string
 
-#include <Json/include/detail/meta/detected.hpp>
-#include <Json/include/detail/meta/type_traits.hpp>
+#include <Dependencies/Json/include/detail/meta/detected.hpp>
+#include <Dependencies/Json/include/detail/meta/type_traits.hpp>
 
 namespace nlohmann
 {
