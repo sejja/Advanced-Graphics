@@ -11,15 +11,19 @@ void emptyDatabase(sqlite3* database);
 
 int main(int argc, char* argv[]) {
 
-    char* actualPath;
-
-    /*_getcwd(actualPath, sizeof(actualPath));
-
-    printf("El directorio actual es: %s\n", actualPath);
-
-    strcat(actualPath, "\\folderI");*/
-
-    actualPath = argv[1];
+    char* actualPath = (char*)malloc(sizeof(char)*100);
+    printf("%d\n", argc);
+    
+    if (argc == 2) {
+        actualPath = argv[1];
+    }
+    else {
+        //actualPath[100];
+        _getcwd(actualPath, 100);
+        printf("El directorio actual es: %s\n", actualPath);
+        strcat(actualPath, "\\..\\OpenGLGraphics\\Content");
+    }
+    
 
     printf("%s\n", actualPath);
 
@@ -61,6 +65,7 @@ int main(int argc, char* argv[]) {
     
 
     sqlite3_close(database);
+    free(actualPath);
     printf("Codigo cierre base de datos: %s\n", sqlite3_errstr(i));  
     printf("Se acabo");
     return 0;
