@@ -35,13 +35,13 @@ void Server::BroadcastServerPresence() {
     printf("WSA iniciado\n");
 
     // Crear un socket de broadcast UDP
-    SOCKET broadcastSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    broadcastSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (broadcastSocket == INVALID_SOCKET) {
         std::cerr << "Broadcast socket creation failed." << WSAGetLastError() << std::endl;
         return;
     }
 
-    // Configurar la direcci?n de escucha
+    // Configurar la dirección de escucha
     sockaddr_in listenAddr;
     memset(&listenAddr, 0, sizeof(listenAddr));
     listenAddr.sin_family = AF_INET;
@@ -64,7 +64,7 @@ void Server::BroadcastServerPresence() {
         if (bytesReceived > 0) {
             recvBuffer[bytesReceived] = '\0';
             std::cout << "Received broadcast message from client: " << recvBuffer << std::endl;
-            // Responder al cliente que est? disponible
+            // Responder al cliente que esta disponible
             const char* responseMessage = "Server available";
             if (sendto(broadcastSocket, responseMessage, strlen(responseMessage), 0, (sockaddr*)&clientAddr, sizeof(clientAddr)) == SOCKET_ERROR) {
                 std::cerr << "Broadcast response send failed." << std::endl;
@@ -72,7 +72,6 @@ void Server::BroadcastServerPresence() {
         }
     }
 
-    // Cerrar el socket de broadcast
     closesocket(broadcastSocket);
 }
 
@@ -147,6 +146,7 @@ int Server::StartServer() {
 void Server::KillServer() {
     closesocket(clientSocket);
     closesocket(serverSocket);
+    closesocket(broadcastSocket);
     WSACleanup();
     serverSocket = NULL;
 }

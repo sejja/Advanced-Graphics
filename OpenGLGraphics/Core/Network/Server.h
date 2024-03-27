@@ -31,6 +31,8 @@ public:
 private:
 	WSADATA WSAData;
 	SOCKADDR_IN serverAddr, clientAddr;
+	SOCKET broadcastSocket;
+
 	int serverPort = 5555;
 
 
