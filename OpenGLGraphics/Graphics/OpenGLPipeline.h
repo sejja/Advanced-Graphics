@@ -47,7 +47,7 @@ namespace Core {
 			float& getExposure() { return exposure; }
 			GLboolean& getAntiAliasing() { return AntiAliasing; }
 			void setAntiAliasing(GLboolean aa) { AntiAliasing = aa; }
-
+			GLuint GetBloomTexture() { return mBloomRenderer->BloomTexture(); }
 		
 
 			
@@ -64,8 +64,7 @@ namespace Core {
 			void UpdateUniformBuffers();
 			void RenderParticlesSystems();
 			void DirectionalLightPass();
-
-			void BloomPass();
+			void BloomPass(GLuint targetbuffer);
 
 			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 

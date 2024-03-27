@@ -331,7 +331,9 @@
     <ClInclude Include="Dependencies\Json\include\thirdparty\hedley\hedley_undef.hpp" />
     <ClInclude Include="Dependencies\Json\single_include\json.hpp" />
     <ClInclude Include="Graphics\Architecture\GBuffer.h" />
+    <ClInclude Include="Graphics\Architecture\HDRBuffer.h" />
     <ClInclude Include="Graphics\Architecture\LightPass.h" />
+    <ClInclude Include="Graphics\Architecture\SamplingBuffer.h" />
     <ClInclude Include="Graphics\Debug\DebugPrimitives.h" />
     <ClInclude Include="Graphics\Debug\DebugShapes.h" />
     <ClInclude Include="Graphics\Primitives\Lights\DirectionalLight.h" />

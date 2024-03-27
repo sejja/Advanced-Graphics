@@ -32,6 +32,8 @@ void DebugTools::RenderDeferredRendering(Core::Graphics::OpenGLPipeline& pipelin
 			ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::Image((ImTextureID)pipeline.GetGBuffer()->GetNormalTextureHandle(),
 			ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
+		ImGui::Image((ImTextureID)pipeline.GetBloomTexture(),
+			ImVec2(256, 256), ImVec2(0, 1), ImVec2(1, 0));
 	}
 	ImGui::End();
 }

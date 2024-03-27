@@ -298,7 +298,7 @@ namespace Core {
 			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
 			glEnable(GL_DEPTH_TEST);
 
-			//BloomPass(); <---------------------------------------------------- Si lo activas no se ve nada no se que onda
+			BloomPass(mHDRBuffer->GetHandle());
 			mLightPass->RenderLights(*mGBuffer, *mBloomRenderer);
 			
 			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
@@ -415,9 +415,9 @@ namespace Core {
 			mLightPass.get()->RenderScreenQuad();
 		}
 
-		void OpenGLPipeline::BloomPass()
+		void OpenGLPipeline::BloomPass(GLuint targetbuffer)
 		{
-			mBloomRenderer->RenderBloomTexture(mGBuffer->GetBrightnessTextureHandle(), 0.005f);
+			mBloomRenderer->RenderBloomTexture(mGBuffer->GetBrightnessTextureHandle(), 0.005f, targetbuffer);
 		}
 
 		void OpenGLPipeline::RenderParticlesSystems()

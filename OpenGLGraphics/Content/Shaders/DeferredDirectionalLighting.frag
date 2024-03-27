@@ -35,8 +35,7 @@ layout (std140) uniform UniformBuffer {
     vec3 ubCameraPosition;
 };
 
-float ShadowCalculation(vec3 fragPosWorldSpace)
-{
+float ShadowCalculation(vec3 fragPosWorldSpace) {
     // select cascade layer
     vec4 fragPosViewSpace = ubView * vec4(fragPosWorldSpace, 1.0);
     float depthValue = abs(fragPosViewSpace.z);
@@ -117,7 +116,7 @@ vec4 bloom(vec4 finalcolor) {
 void main() {     
     // retrieve data from G-buffer
     const vec3 normal = texture(gNormal, oUVs).rgb;
-    float shadow = 1 - ShadowCalculation(texture(gPosition, oUVs).rgb) * 0.75;
+    float shadow = 1.1 - ShadowCalculation(texture(gPosition, oUVs).rgb) * 0.75;
 
     FragColor = bloom(texture(gAlbedoSpec, oUVs) * vec4(((shadow * (max(dot(normal, uLight.mDirection), 0.0) * uLight.mColor 
             //specular

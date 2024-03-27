@@ -23,7 +23,7 @@ namespace Graphics{
                 ~BloomRenderer();
                 bool Init(unsigned int windowWidth, unsigned int windowHeight);
                 void Destroy();
-                void RenderBloomTexture(unsigned int srcTexture, float filterRadius);
+                void RenderBloomTexture(unsigned int srcTexture, float filterRadius, GLuint targetbuffer);
                 unsigned int BloomTexture();
 
             private:

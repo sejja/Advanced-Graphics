@@ -42,13 +42,13 @@ namespace Graphics {
             *
             *   Performs bloom onto the binded framebuffer
             */ // ---------------------------------------------------------------------
-            void BloomRenderer::RenderBloomTexture(unsigned int srcTexture, float filterRadius) {
+            void BloomRenderer::RenderBloomTexture(unsigned int srcTexture, float filterRadius, GLuint targetbuffer) {
                 mFBO.BindForWriting();
 
                 this->RenderDownsamples(srcTexture);
                 this->RenderUpsamples(filterRadius);
 
-                glBindFramebuffer(GL_FRAMEBUFFER, 0);
+                glBindFramebuffer(GL_FRAMEBUFFER, targetbuffer);
                 // Restore viewport
                 glViewport(0, 0, mSrcViewportSize.x, mSrcViewportSize.y);
             }
