@@ -88,7 +88,7 @@ namespace Graphics {
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
 		void LightPass::RenderLights(Core::Graphics::GBuffer& gBuffer, Bloom::BloomRenderer& bloomRend) {
-			glBindFramebuffer(GL_FRAMEBUFFER, NULL);
+			//glBindFramebuffer(GL_FRAMEBUFFER, NULL);
 			glEnable(GL_BLEND);
 			glBlendEquation(GL_FUNC_ADD);
 			glBlendFunc(GL_ONE, GL_ONE);

@@ -293,19 +293,16 @@ namespace Core {
 			UpdateUniformBuffers();
 			GeometryPass();
 
-			//RenderParticlesSystems();
-
 			//Bind and Clean
 			if (AntiAliasing) {mSamplingBuffer->Bind();mSamplingBuffer->Clear();}
 			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
 			glEnable(GL_DEPTH_TEST);
 
-			//BloomPass();
+			//BloomPass(); <---------------------------------------------------- Si lo activas no se ve nada no se que onda
 			mLightPass->RenderLights(*mGBuffer, *mBloomRenderer);
 			
 			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
 			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
-			//mGBuffer->BlitDepthBuffer(mFrameBuffer->GetHandle());
 
 			Skybox::sCurrentSky->Render(cam,*this);
 
