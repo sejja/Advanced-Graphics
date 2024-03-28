@@ -54,6 +54,8 @@ namespace Core {
 			mObjects.emplace_back(std::move(obj));
 			});
 
+
+
 		int i = 0;
 
 		std::for_each(std::execution::seq, mParser.lights.begin(), mParser.lights.end(), [this, &i, &upload](const SceneParser::Light& x) {
