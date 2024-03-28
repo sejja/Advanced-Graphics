@@ -21,6 +21,10 @@
 #include <Dependencies/Json/include/detail/input/parser.hpp>
 #include "Core/AppWrapper.h"
 #include "Core/Graphics/Pipeline.h"
+#include "Dependencies/Json/single_include/json.hpp"
+#include <>
+
+using json = nlohmann::json;
 
 namespace Core {
 	// ------------------------------------------------------------------------
@@ -54,6 +58,27 @@ namespace Core {
 			mObjects.emplace_back(std::move(obj));
 			});
 
+
+		std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
+
+		std::ifstream f("Content/Maps/Scene.json");
+		json data = json::parse(f);
+
+		obj->SetName(data["objects"][0]["name"]);
+		obj->SetID(data["objects"][0]["name"]);
+		obj->SetPosition(glm::vec3(data["objects"][0]["position"][0], data["objects"][0]["position"][1], data["objects"][0]["position"][2]));
+		obj->SetRotation(glm::vec3(data["objects"][0]["rotation"][0], data["objects"][0]["rotation"][1], data["objects"][0]["rotation"][2]));
+		obj->SetScale(glm::vec3(data["objects"][0]["scale"][0], data["objects"][0]["scale"][1], data["objects"][0]["scale"][2]));
+
+
+		std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared< Core::Graphics::GLBModelRenderer <Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
+
+		renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/cube_averaged.obj"));
+		renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/DeferredGeometry.shader"));
+
+		obj->AddComponent(std::move(renderer));
+		upload(obj);
+		mObjects.emplace_back(std::move(obj));
 
 
 		int i = 0;
