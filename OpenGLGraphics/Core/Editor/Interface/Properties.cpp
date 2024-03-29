@@ -88,6 +88,7 @@ void Properties::Render() {
         }
     }
     else if (lightComp) {
+        printf("ES LUZZZZZZ");
         if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "  Light", ImGuiTreeNodeFlags_DefaultOpen)) {
             LightingOptions();
         }
@@ -395,17 +396,19 @@ void CreateSliderRow(const char* rowName, float& sliderValue, float minValue, fl
 
 
 void Properties::LightingOptions() {
-    /*
+
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
     static ImVec2 cell_padding(4.0f, 8.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
 
     std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
 
-    glm::vec3 attenuation = lightComp->GetAttenuation(); // Constant , Linear , Quadratic
 
-    glm::vec3 specular = lightComp->GetSpecular();
-    ImVec4 color = ImVec4(specular.x, specular.y, specular.z, 1.0f);
+    //glm::vec3 attenuation = lightComp->GetAttenuation(); // Constant , Linear , Quadratic
+    //glm::vec3 specular = lightComp->GetSpecular();
+    
+    glm::vec3 color = lightComp->GetColor();
+    ImVec4 baseColor = ImVec4(color.x, color.y, color.z, 1.0f);
 
     if (ImGui::BeginTable("light_table", 2, flags1)) {
 
@@ -434,35 +437,37 @@ void Properties::LightingOptions() {
             ImGui::EndCombo();
         }
 
-        ImGui::TableNextRow();
-        CreateSliderRow("Intensity", attenuation[0], 0.0f, 1.0f);
+        //ImGui::TableNextRow();
+        //CreateSliderRow("Intensity", attenuation[0], 0.0f, 1.0f);
 
         //COLOR DE LA LUZ
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Light Color");
         ImGui::TableSetColumnIndex(1);
-        colorPickerBtn(color);
+        colorPickerBtn(baseColor);
 
+        /*
         ImGui::TableNextRow();
         CreateSliderRow("Source Range", attenuation[1], 0.0f, 1.0f);// Atennuation Quadratic
 
         ImGui::TableNextRow();
         CreateSliderRow("Source Length", attenuation[2], 0.0f, 1.0f);// Attenuation Linear 
+        */
 
         ImGui::EndTable();
     }
 
-    lightComp->SetAttenuation(attenuation);
+    //lightComp->SetAttenuation(attenuation);
 
-    const glm::vec3& colorVec3 = *reinterpret_cast<const glm::vec3*>(&color);
-    lightComp->SetSpecular(colorVec3);
+    const glm::vec3& colorVec3 = *reinterpret_cast<const glm::vec3*>(&baseColor);
+    lightComp->SetColor(colorVec3);
 
     ImGui::PopStyleVar();
 
 
 
-    */
+    
 
 }
 //TODO componetizar tabla y usar en todas los componentes

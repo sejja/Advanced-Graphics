@@ -28,8 +28,6 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	//Abre una demo de opciones de imgui
 	ImGui::ShowDemoWindow();
 
-	//Singleton para gestionar objeto seleccionado
-	Singleton<SelectedObj>::Instance();
 
 	mainMenu.Render(pipeline);
 	assetManager.Render();

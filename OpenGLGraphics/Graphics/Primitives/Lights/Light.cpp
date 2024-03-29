@@ -21,6 +21,16 @@ namespace Graphics {
 			mData->mPosition = position;
 		}
 
+		glm::vec3 Light::GetColor() const
+		{
+			return mData->mColor;
+		}
+
+		void Light::SetColor(const glm::vec3& color)
+		{
+			mData->mColor = color;
+		}
+
 		glm::vec3 Light::GetPosition() const {
 			return mData->mPosition;
 		}

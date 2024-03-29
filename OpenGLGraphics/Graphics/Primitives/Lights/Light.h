@@ -26,6 +26,9 @@ namespace Graphics {
 			glm::vec3 GetPosition() const;
 			void SetPosition(const glm::vec3& position);
 
+			glm::vec3 GetColor() const;
+			void SetColor(const glm::vec3& color);
+
 			static std::size_t sLightReg;
 			BackedLightData* mData;
 			std::size_t mIndex;
