@@ -1,34 +1,34 @@
 #include "Properties.h"
 #include <iostream>
 #include <format>
+
 #include "Dependencies/ImGui/imgui.h"
-#include "Core/ResourceManager.h"
-#include "Graphics/Primitives/Texture.h"
-#include "Core/Singleton.h"
 #include "Dependencies/ImGui/imgui_internal.h"
 #include "Dependencies/ImGui/imgui_impl_opengl3.h"
 #include <Dependencies/ImGui/imgui_impl_sdl2.h>
+
 #include "Core/Editor/SelectedObj.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 #include "Core/Editor/Interface/AssetIcon.h"
-#include <Graphics/Primitives/Model.h>
-#include <Graphics/Primitives/Lights/Light.h>
-#include <Core/ECSystem/Component.h>
-#include <Graphics/Primitives/Skybox.h>
+#include "Core/ResourceManager.h"
+#include "Core/Singleton.h"
 #include "Core/Editor/Editor.h"
 #include "Core/Network/Server.h"
 #include "Core/Network/Client.h"
 #include "Core/ParticleSystem/ParticleSystem.h"
 #include "Core/ParticleSystem/FireSystem.h"
+
 #include "Graphics/Primitives/GLBModel.h"
 #include "Graphics/Primitives/Renderables.h"
-
-
-
-
+#include "Graphics/Primitives/ShaderProgram.h"
+#include "Graphics/Primitives/Texture.h"
+#include "Graphics/Primitives/Lights/DirectionalLight.h"
+#include "Graphics/Primitives/Lights/PointLight.h"
+#include "Graphics/Primitives/Lights/SpotLight.h"
 
 
 SelectedObj& selectedObjIns = Singleton<Editor>::Instance().GetSelectedObj();
+auto& resmg = Singleton<ResourceManager>::Instance();
 
 
 //SACAR LOS SENDTOPEER DE AQUI 
@@ -101,6 +101,9 @@ void Properties::Render() {
         }
         if (ImGui::CollapsingHeader(ICON_FA_SHAPES "  Static Mesh", ImGuiTreeNodeFlags_DefaultOpen)) {
             MeshOptions();
+        }
+        if (ImGui::CollapsingHeader(ICON_FA_SUN "  Shader Program", ImGuiTreeNodeFlags_DefaultOpen)) {
+            ShaderOptions();
         }
     }
 
@@ -493,10 +496,11 @@ void Properties::MaterialsOptions() {
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
 
     auto glbModel = meshComp->GetMesh().lock();
+    
 
     if (glbModel) {
         std::string directory = glbModel->Get()->getPath();
-        printf("Directory: %s\n", directory.c_str());
+        //printf("Directory: %s\n", directory.c_str());
     }
     
 
@@ -547,7 +551,137 @@ void Properties::MaterialsOptions() {
 
 }
 
-void Properties::MeshOptions() {}
+void Properties::MeshOptions() {
+    static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
+    static ImVec2 cell_padding(4.0f, 8.0f);
+    ImGuiDragDropFlags flags = 0 | ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
+
+    std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
+    std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedObject());
+
+
+    auto glbModel = meshComp->GetMesh().lock();
+
+    if (glbModel) {
+        std::string directory = glbModel->Get()->getPath();
+        //printf("Directory: %s\n", directory.c_str());
+    }
+
+
+
+    if (ImGui::BeginTable("mesh_table", 2, flags1)) {
+
+        ImGui::TableNextRow();
+
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Element 0");
+        ImGui::TableSetColumnIndex(1);
+
+
+        auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/model.png")->Get();
+        ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+
+
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+
+
+        ImGui::Text(nombreTexturaTemporal.c_str());
+
+        ImGui::Button(ICON_FA_ARROW_TURN_UP);
+        ImGui::SameLine();
+        ImGui::Button(ICON_FA_FOLDER_OPEN);
+
+
+        ImGui::EndGroup();
+
+
+    }
+    ImGui::EndTable();
+
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
+            AssetIcon* asset = (AssetIcon*)payload->Data;
+            printf("RUTA: %s\n", asset->ruta);
+            renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(asset->ruta));
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+
+    ImGui::PopStyleVar();
+
+
+}
+
+void Properties::ShaderOptions()
+{
+    static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
+    static ImVec2 cell_padding(4.0f, 8.0f);
+    ImGuiDragDropFlags flags = 0 | ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
+
+    std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
+    std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedObject());
+
+    
+    auto glbModel = meshComp->GetMesh().lock();
+
+    if (glbModel) {
+        std::string directory = glbModel->Get()->getPath();
+        //printf("Directory: %s\n", directory.c_str());
+    }
+
+
+
+    if (ImGui::BeginTable("shader_table", 2, flags1)) {
+
+        ImGui::TableNextRow();
+
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Element 0");
+        ImGui::TableSetColumnIndex(1);
+
+
+        auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/shader.png")->Get();
+        ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+
+
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+
+
+        ImGui::Text(nombreTexturaTemporal.c_str());
+
+        ImGui::Button(ICON_FA_ARROW_TURN_UP);
+        ImGui::SameLine();
+        ImGui::Button(ICON_FA_FOLDER_OPEN);
+
+
+        ImGui::EndGroup();
+
+
+    }
+    ImGui::EndTable();
+
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
+            AssetIcon* asset = (AssetIcon*)payload->Data;
+            printf("RUTA: %s\n", asset->ruta);
+            //meshComp->SetShaderProgram(resmg.GetResource<Gra>("Content/Shaders/Refractive.shader"));
+            renderer->SetShaderProgram(resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Refractive.shader"));
+
+
+           
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+
+    ImGui::PopStyleVar();
+}
+
 
 
 

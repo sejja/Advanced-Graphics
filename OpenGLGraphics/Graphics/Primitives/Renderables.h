@@ -78,6 +78,7 @@ namespace Core {
 		}
 
 
+
 		// ------------------------------------------------------------------------
 		/*! Set Shader Program
 		*
@@ -98,7 +99,9 @@ namespace Core {
 
 		// ------------------------------------------------------------------------
 		/*! Get Mesh
-		*/	
+		* 
+		* Gets the Mesh associated with this renderer
+		*/ // ---------------------------------------------------------------------
 
 		AssetReference<::Graphics::Primitives::GLBModel> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetMesh() const {
 			return mModel;

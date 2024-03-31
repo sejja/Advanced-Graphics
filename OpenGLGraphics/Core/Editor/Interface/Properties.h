@@ -4,6 +4,9 @@
 #include <iostream>
 #include <glew.h>
 
+
+
+
 class Properties {
 public:
     void Render();
@@ -16,6 +19,7 @@ private:
     void LightingOptions();
     void MaterialsOptions();
     void MeshOptions();
+    void ShaderOptions();
     void FireSize();
 
 
