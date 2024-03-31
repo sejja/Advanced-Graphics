@@ -69,9 +69,7 @@ void Properties::Render() {
     std::shared_ptr<Core::Particles::FireSystem> fireSystem = NULL;
 
     particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(comp);
-    lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(comp);
-    meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp);
-    fireSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(comp);
+
 
     //bool isParticleManager = obj->GetID().c_str() == "PARTICLE_MANAGER";
     
@@ -82,8 +80,16 @@ void Properties::Render() {
         objectOutliner(); //La lista de componentes del objeto seleccionado
     }
 
+    //El comp puede haber cambiado en el objectOutliner
+    comp = selectedObjIns.GetSelectedComponent();
+    particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(comp);
+    lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(comp);
+    meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp);
+    fireSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(comp);
+
+
     
-    if (obj && !comp) {
+    if (obj && !comp ) { // && !isParticleManager
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
             TransformOptions();
         }
@@ -99,6 +105,7 @@ void Properties::Render() {
     }
 
     else if (lightComp) {
+
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Light Position", ImGuiTreeNodeFlags_DefaultOpen)) {
             LightTransform();
         }
