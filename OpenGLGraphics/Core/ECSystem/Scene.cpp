@@ -69,6 +69,7 @@ namespace Core {
 			//TEMPORAL PARA SABER SI ES LUZ HASTA NUEVO LEVEL 
 			obj->SetName(x.type + " Light_light");
 			
+
 			//If the light is a point light
 			if (x.type == "POINT") {
 				light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
@@ -96,7 +97,9 @@ namespace Core {
 			}
 
 			light->SetPosition(x.pos);
-			light->mData->mColor = x.col;
+			light->SetColor(x.col);
+			printf("COLOR: %f %f %f\n", x.col.x, x.col.y, x.col.z);
+
 
 			std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> weakrend = renderer;
 			std::weak_ptr< ::Graphics::Primitives::Light> lightrend = light;

@@ -30,8 +30,12 @@ namespace Graphics {
 			void SetColor(const glm::vec3& color);
 
 			static std::size_t sLightReg;
-			BackedLightData* mData;
+			
 			std::size_t mIndex;
+			BackedLightData* mData;
+	
+	private:
+		
 		};
 	}
 }

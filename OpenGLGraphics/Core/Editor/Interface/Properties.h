@@ -10,6 +10,7 @@ public:
 
 private:
     void TransformOptions();
+    void LightTransform();
     void ParticleTransform();
     void CameraOptions();
     void LightingOptions();

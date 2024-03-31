@@ -22,7 +22,7 @@
 #include "Core/ParticleSystem/FireSystem.h"
 
 
-//SelectedObj& selectedObjIns = Singleton<SelectedObj>::Instance();
+
 
 SelectedObj& selectedObjIns = Singleton<Editor>::Instance().GetSelectedObj();
 
@@ -56,59 +56,64 @@ void sendToPeer(std::shared_ptr<Core::Particles::FireSystem> particleSys) {
 
 
 void Properties::Render() {
+    std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
+    std::shared_ptr<Core::Component> comp = selectedObjIns.GetSelectedComponent();
+
+    std::shared_ptr<Core::Particles::ParticleSystem> particleSystem = NULL;
+    std::shared_ptr<::Graphics::Primitives::Light> lightComp = NULL;
+    std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = NULL;
+    std::shared_ptr<Core::Particles::FireSystem> fireSystem = NULL;
+
+    particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(comp);
+    lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(comp);
+    meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp);
+    fireSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(comp);
+
+    //bool isParticleManager = obj->GetID().c_str() == "PARTICLE_MANAGER";
+    
+
     ImGui::Begin(ICON_FA_SLIDERS " Properties");
 
-    std::shared_ptr<Core::Particles::ParticleSystem> particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(selectedObjIns.GetSelectedComponent());
-    std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
-    std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
-    std::shared_ptr<Core::Particles::FireSystem> fireSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(selectedObjIns.GetSelectedComponent());
-
-    // Property tool search input
-    static char search_input_field[128] = "";
-    ImGui::InputTextWithHint("##SearchProperty", ICON_FA_MAGNIFYING_GLASS " Search property", search_input_field, IM_ARRAYSIZE(search_input_field));
-    ImGui::Spacing();
-
-    if (selectedObjIns.GetSelectedObject() && !particleSystem) {
-        //La lista de componentes del objeto seleccionado
-        objectOutliner();
+    if (obj && !particleSystem) {
+        objectOutliner(); //La lista de componentes del objeto seleccionado
     }
 
-    if (meshComp) {
-
+    
+    if (obj && !comp) {
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
             TransformOptions();
         }
+	}
 
+    if (meshComp) {
         if (ImGui::CollapsingHeader(ICON_FA_BRUSH "  Material", ImGuiTreeNodeFlags_DefaultOpen)) {
             MaterialsOptions();
         }
-
         if (ImGui::CollapsingHeader(ICON_FA_SHAPES "  Static Mesh", ImGuiTreeNodeFlags_DefaultOpen)) {
             MeshOptions();
         }
     }
+
     else if (lightComp) {
-        printf("ES LUZZZZZZ");
-        if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "  Light", ImGuiTreeNodeFlags_DefaultOpen)) {
+        if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Light Position", ImGuiTreeNodeFlags_DefaultOpen)) {
+            LightTransform();
+        }
+        if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "  Light Options", ImGuiTreeNodeFlags_DefaultOpen)) {
             LightingOptions();
         }
     }
 
     else if (fireSystem) {
-
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Particle Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
             ParticleTransform();
             FireSize();
-            //sendToPeer(fireSystem);
         }
-
     }
 
     else {
+        ImGui::Spacing();
         ImGui::Text("No component selected");
     }
-
-
 
     ImGui::End();
 }
@@ -135,8 +140,6 @@ void TransformRow(const char* title, float& x_val, float& y_val, float& z_val) {
     const float dragJump = 0.5f;
     const float inputSize = 0.12f;
     float remainingWidth = ImGui::GetContentRegionAvail().x;
-
-
 
     if (ImGui::BeginTable(title, 2)) {
         ImGui::TableSetupColumn("Columna 1", ImGuiTableColumnFlags_WidthFixed, 100.0f);
@@ -175,18 +178,16 @@ void TransformRow(const char* title, float& x_val, float& y_val, float& z_val) {
             z_val = 0.0f;
         };
 
-
         ImGui::EndTable();
-
     }
 
 }
 
 
-
 void Properties::objectOutliner() {
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
 
+    //TODO : Object y no particle manager
     if (obj) {
         ImGui::Text("%s %s", ICON_FA_CUBES, obj->GetName().c_str()); ImGui::SameLine();
 
@@ -201,9 +202,20 @@ void Properties::objectOutliner() {
                 auto renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
                 obj->AddComponent(std::move(renderer));
             }
+
             if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light")) {
-                auto light = std::make_shared<Graphics::Primitives::Light>(obj);
+                std::shared_ptr<::Graphics::Primitives::Light> light;
+                light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
+                ((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mRadius = 1.0f;
+				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mInner = 0.5f;
+				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mOutter = 0.8f;
+				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mFallOff = 0.5f;
+
+                light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));   
+                light->SetPosition(obj->GetPosition());
+
                 obj->AddComponent(std::move(light));
+
             }
 
             ImGui::EndPopup();
@@ -216,28 +228,28 @@ void Properties::objectOutliner() {
 
 
 void Properties::selectedObjectTree() {
+
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
-
     std::vector<std::shared_ptr<Core::Component>> comps = obj->GetAllComponents();
-
-    //printf("Componentes: %d\n", comps.size());
 
     ImGui::BeginChild("ResizableChild", ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 2), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeY);
 
     std::string displayName = std::format("{} {} (Instance)", ICON_FA_CUBE, obj->GetName());
 
-
-    bool isRootSelectedObj = selectedObjIns.GetSelectedObject() == obj && (selectedObjIns.GetSelectedComponent() == NULL);
+    bool isRootSelectedObj = (selectedObjIns.GetSelectedComponent() == NULL);
 
     if (ImGui::Selectable(displayName.c_str(), isRootSelectedObj)) {
         selectedObjIns.SetSelectedObject(obj);
+        selectedObjIns.SetSelectedComponent(NULL);
     }
 
     ImGui::Indent();
 
+    int i = 0;
     for (auto& comp : comps) {
         bool isCompSelectedObj = selectedObjIns.GetSelectedComponent() == comp;
 
+        ImGui::PushID(i);
         // Check if the component is a mesh
         if (std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> modelComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp)) {
             if (ImGui::Selectable(ICON_FA_CUBE " Mesh", isCompSelectedObj)) {
@@ -250,60 +262,22 @@ void Properties::selectedObjectTree() {
                 selectedObjIns.SetSelectedComponent(comp);
             }
         }
+        else if (std::shared_ptr<Core::Particles::FireSystem> fireComp = std::dynamic_pointer_cast<Core::Particles::FireSystem>(comp)) {
+            if (ImGui::Selectable(ICON_FA_FIRE " Fire System", isCompSelectedObj)) {
+				selectedObjIns.SetSelectedComponent(comp);
+			}
+		}
         else {
-            if (ImGui::Selectable(ICON_FA_FIRE" Mubi", isCompSelectedObj)) {
+            if (ImGui::Selectable(ICON_FA_QUESTION" tipo de comp raro?", isCompSelectedObj)) {
                 selectedObjIns.SetSelectedComponent(comp);
             }
         }
+        ImGui::PopID();
+        i++;
 
     }
-
     ImGui::Unindent();
-
     ImGui::EndChildFrame();
-}
-
-
-
-
-void Properties::ParticleTransform() {
-
-    std::shared_ptr<Core::Component> particleComp = selectedObjIns.GetSelectedComponent();
-    std::shared_ptr<Core::Particles::FireSystem> particleSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(particleComp);
-
-    glm::vec3 curCenter = particleSystem->GetSystemCenter();
-
-    TransformRow("Center", curCenter[0], curCenter[1], curCenter[2]);
-
-    particleSystem->SetSystemCenter(curCenter);
-
-
-
-
-
-
-}
-
-
-
-
-void Properties::TransformOptions() {
-    std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
-
-    glm::vec3 curPos = obj->GetPosition();
-    glm::vec3 curRot = obj->GetRotation();
-    glm::vec3 curScale = obj->GetScale();
-
-    TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
-    TransformRow("  Rotation", curRot[0], curRot[1], curRot[2]);
-    TransformRow("  Scale", curScale[0], curScale[1], curScale[2]);
-
-    obj->SetPosition(curPos);
-    obj->SetRotation(curRot);
-    obj->SetScale(curScale);
-
-    sendToPeer(obj);
-
 }
 
 
@@ -378,6 +352,8 @@ void colorPickerBtn(static ImVec4& color) {
 
 }
 
+
+
 void CreateSliderRow(const char* rowName, float& sliderValue, float minValue, float maxValue) {
     ImGui::TableSetColumnIndex(0);
     ImGui::Text(rowName);
@@ -395,6 +371,49 @@ void CreateSliderRow(const char* rowName, float& sliderValue, float minValue, fl
 }
 
 
+void Properties::ParticleTransform() {
+
+    std::shared_ptr<Core::Component> particleComp = selectedObjIns.GetSelectedComponent();
+    std::shared_ptr<Core::Particles::FireSystem> particleSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(particleComp);
+
+    glm::vec3 curCenter = particleSystem->GetSystemCenter();
+
+    TransformRow("Center", curCenter[0], curCenter[1], curCenter[2]);
+
+    particleSystem->SetSystemCenter(curCenter);
+
+}
+
+void Properties::TransformOptions() {
+    std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
+
+    glm::vec3 curPos = obj->GetPosition();
+    glm::vec3 curRot = obj->GetRotation();
+    glm::vec3 curScale = obj->GetScale();
+
+    TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
+    TransformRow("  Rotation", curRot[0], curRot[1], curRot[2]);
+    TransformRow("  Scale", curScale[0], curScale[1], curScale[2]);
+
+    obj->SetPosition(curPos);
+    obj->SetRotation(curRot);
+    obj->SetScale(curScale);
+
+    sendToPeer(obj);
+
+}
+
+void Properties::LightTransform() {
+    std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
+	glm::vec3 curPos = lightComp->GetPosition();
+	TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
+	lightComp->SetPosition(curPos);
+}
+
+
+
+
+
 void Properties::LightingOptions() {
 
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
@@ -403,17 +422,14 @@ void Properties::LightingOptions() {
 
     std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
 
-
-    //glm::vec3 attenuation = lightComp->GetAttenuation(); // Constant , Linear , Quadratic
-    //glm::vec3 specular = lightComp->GetSpecular();
-    
+ 
     glm::vec3 color = lightComp->GetColor();
     ImVec4 baseColor = ImVec4(color.x, color.y, color.z, 1.0f);
 
     if (ImGui::BeginTable("light_table", 2, flags1)) {
 
         //Light TYPE
-        const char* lightTypes[] = { "SPOT", "BBBB", "CCCC" };
+        const char* lightTypes[] = { "SPOT", "POINT", "CCCC" };
         static int item_current_idx = 0;
         const char* initVal = lightTypes[item_current_idx];
 
@@ -437,8 +453,6 @@ void Properties::LightingOptions() {
             ImGui::EndCombo();
         }
 
-        //ImGui::TableNextRow();
-        //CreateSliderRow("Intensity", attenuation[0], 0.0f, 1.0f);
 
         //COLOR DE LA LUZ
         ImGui::TableNextRow();
@@ -447,18 +461,10 @@ void Properties::LightingOptions() {
         ImGui::TableSetColumnIndex(1);
         colorPickerBtn(baseColor);
 
-        /*
-        ImGui::TableNextRow();
-        CreateSliderRow("Source Range", attenuation[1], 0.0f, 1.0f);// Atennuation Quadratic
-
-        ImGui::TableNextRow();
-        CreateSliderRow("Source Length", attenuation[2], 0.0f, 1.0f);// Attenuation Linear 
-        */
 
         ImGui::EndTable();
     }
 
-    //lightComp->SetAttenuation(attenuation);
 
     const glm::vec3& colorVec3 = *reinterpret_cast<const glm::vec3*>(&baseColor);
     lightComp->SetColor(colorVec3);
