@@ -20,6 +20,10 @@
 #include "Core/Network/Client.h"
 #include "Core/ParticleSystem/ParticleSystem.h"
 #include "Core/ParticleSystem/FireSystem.h"
+#include "Graphics/Primitives/GLBModel.h"
+#include "Graphics/Primitives/Renderables.h"
+
+
 
 
 
@@ -352,8 +356,6 @@ void colorPickerBtn(static ImVec4& color) {
 
 }
 
-
-
 void CreateSliderRow(const char* rowName, float& sliderValue, float minValue, float maxValue) {
     ImGui::TableSetColumnIndex(0);
     ImGui::Text(rowName);
@@ -372,7 +374,6 @@ void CreateSliderRow(const char* rowName, float& sliderValue, float minValue, fl
 
 
 void Properties::ParticleTransform() {
-
     std::shared_ptr<Core::Component> particleComp = selectedObjIns.GetSelectedComponent();
     std::shared_ptr<Core::Particles::FireSystem> particleSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(particleComp);
 
@@ -381,7 +382,6 @@ void Properties::ParticleTransform() {
     TransformRow("Center", curCenter[0], curCenter[1], curCenter[2]);
 
     particleSystem->SetSystemCenter(curCenter);
-
 }
 
 void Properties::TransformOptions() {
@@ -400,7 +400,6 @@ void Properties::TransformOptions() {
     obj->SetScale(curScale);
 
     sendToPeer(obj);
-
 }
 
 void Properties::LightTransform() {
@@ -409,9 +408,6 @@ void Properties::LightTransform() {
 	TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
 	lightComp->SetPosition(curPos);
 }
-
-
-
 
 
 void Properties::LightingOptions() {
@@ -476,22 +472,26 @@ void Properties::LightingOptions() {
     
 
 }
-//TODO componetizar tabla y usar en todas los componentes
+
 
 static std::string nombreTexturaTemporal = "Textura def";
 
 void Properties::MaterialsOptions() {
 
-    std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
-
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
     static ImVec2 cell_padding(4.0f, 8.0f);
+    ImGuiDragDropFlags flags = 0 | ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
 
+    std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
 
-    ImGuiDragDropFlags flags = 0;
-    flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+    auto glbModel = meshComp->GetMesh().lock();
 
+    if (glbModel) {
+        std::string directory = glbModel->Get()->getPath();
+        printf("Directory: %s\n", directory.c_str());
+    }
+    
 
 
     if (ImGui::BeginTable("materials_table", 2, flags1)) {
