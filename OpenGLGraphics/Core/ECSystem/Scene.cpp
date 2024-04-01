@@ -18,11 +18,12 @@
 #include "Core/ParticleSystem/FireSystem.h"
 #include "Graphics/OpenGLPipeline.h"
 #include "Graphics/Primitives/GLBModel.h"
-#include <Dependencies/Json/include/detail/input/parser.hpp>
+
 #include "Core/AppWrapper.h"
 #include "Core/Graphics/Pipeline.h"
 #include "Dependencies/Json/single_include/json.hpp"
-#include <>
+#include <fstream>
+#include <string>
 
 using json = nlohmann::json;
 
@@ -36,49 +37,80 @@ namespace Core {
 		mParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<ResourceManager>::Instance();
 
-		std::for_each(std::execution::unseq, mParser.objects.begin(), mParser.objects.end(), [this, &upload, &resmg](const SceneParser::Transform& x) {
-			std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
-			obj->SetPosition(x.pos);
-			obj->SetRotation(glm::radians(x.rot));
-			obj->SetScale(x.sca);
-			obj->SetName(x.name);
-			obj->SetID(x.name);//temp , tiene que ser unico
-			//obj->SetType() tiene que ser un enum
+		//std::for_each(std::execution::unseq, mParser.objects.begin(), mParser.objects.end(), [this, &upload, &resmg](const SceneParser::Transform& x) {
+		//	std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
+		//	obj->SetPosition(x.pos);
+		//	obj->SetRotation(glm::radians(x.rot));
+		//	obj->SetScale(x.sca);
+		//	obj->SetName(x.name);
+		//	obj->SetID(x.name);//temp , tiene que ser unico
+		//	//obj->SetType() tiene que ser un enum
 
-			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
-			renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(x.mesh.c_str()));
+		//	std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
+		//	renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(x.mesh.c_str()));
 
-			if (x.name == "suzanne_mesh")
-				renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/Refractive.shader"));
-			else
-				renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/DeferredGeometry.shader"));
+		//	if (x.name == "suzanne_mesh")
+		//		renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/Refractive.shader"));
+		//	else
+		//		renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/DeferredGeometry.shader"));
 
-			obj->AddComponent(std::move(renderer));
-			upload(obj);
-			mObjects.emplace_back(std::move(obj));
-			});
+		//	obj->AddComponent(std::move(renderer));
+		//	upload(obj);
+		//	mObjects.emplace_back(std::move(obj));
+		//	});
 
 
-		std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
+		/*std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();*/
 
 		std::ifstream f("Content/Maps/Scene.json");
 		json data = json::parse(f);
 
-		obj->SetName(data["objects"][0]["name"]);
+		/*obj->SetName(data["objects"][0]["name"]);
 		obj->SetID(data["objects"][0]["name"]);
 		obj->SetPosition(glm::vec3(data["objects"][0]["position"][0], data["objects"][0]["position"][1], data["objects"][0]["position"][2]));
 		obj->SetRotation(glm::vec3(data["objects"][0]["rotation"][0], data["objects"][0]["rotation"][1], data["objects"][0]["rotation"][2]));
-		obj->SetScale(glm::vec3(data["objects"][0]["scale"][0], data["objects"][0]["scale"][1], data["objects"][0]["scale"][2]));
+		obj->SetScale(glm::vec3(data["objects"][0]["scale"][0], data["objects"][0]["scale"][1], data["objects"][0]["scale"][2]));*/
 
+		json objects = data["objects"];
+		for (int i = 0; i < objects.size(); i++) {
+			printf("Creating object\n");
+			std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
+			obj->SetName(objects[i]["name"]);
+			obj->SetID(objects[i]["_id"]);
+			obj->SetPosition(glm::vec3(objects[i]["position"][0], objects[i]["position"][1], objects[i]["position"][2]));
+			obj->SetRotation(glm::vec3(objects[i]["rotation"][0], objects[i]["rotation"][1], objects[i]["rotation"][1]));
+			obj->SetScale(glm::vec3(objects[i]["scale"][0], objects[i]["scale"][1], objects[i]["scale"][1]));
 
-		std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared< Core::Graphics::GLBModelRenderer <Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
+			json components = objects[i]["components"];
+			//printf("Number of components: %d", components.size());
+			for (int j = 0; j < components.size(); j++) { //Por algún motivo no se añade el segundo renderer
+				if (components[j]["type"] == "renderer") {
+					printf("\tCreating renderer\n");
+					std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer <Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
+
+					std::string mesh = components[j]["mesh"];
+					renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(mesh.c_str()));
+
+					std::string shader = components[j]["shader"];
+					renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>(shader.c_str()));
+					obj->AddComponent(std::move(renderer));
+					//printf("Num componentes anadidos: %d\n", obj->GetAllComponents().size());
+				}
+			}
+
+			upload(obj);
+			mObjects.emplace_back(std::move(obj));
+
+		}
+
+		/*std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared< Core::Graphics::GLBModelRenderer <Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
 
 		renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/cube_averaged.obj"));
 		renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/DeferredGeometry.shader"));
 
 		obj->AddComponent(std::move(renderer));
 		upload(obj);
-		mObjects.emplace_back(std::move(obj));
+		mObjects.emplace_back(std::move(obj));*/
 
 
 		int i = 0;
