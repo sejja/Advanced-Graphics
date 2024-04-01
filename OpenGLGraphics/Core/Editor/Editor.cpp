@@ -7,6 +7,7 @@
 #include "database.h"
 
 
+
 Editor::Editor() : editorLocked(false) {
 	this->database = new Core::Editor::Database("../AssetLoader/database.db");
 	//assetManager = std::make_unique < AssetManager >();

@@ -13,6 +13,11 @@
 #include "gtc/matrix_transform.hpp"
 #include "CommonDefines.h"
 #include "Core/Events/EventDispatcher.h"
+#include "Core/Singleton.h"
+
+
+
+
 
 namespace Core {
 	namespace Primitives {
@@ -25,7 +30,7 @@ namespace Core {
 
 		#pragma region //Functions
 			DONTDISCARD inline glm::mat4 GetViewMatrix() const;
-			DONTDISCARD inline glm::mat4 GetProjectionMatrix() const;
+			DONTDISCARD  glm::mat4 GetProjectionMatrix() const;
 			DONTDISCARD glm::vec3 inline GetPosition() const;
 			DONTDISCARD inline glm::vec3& GetPositionRef();
 			
@@ -40,6 +45,13 @@ namespace Core {
 			const float zNear = 0.f;
 			const float zfar = 10000.f;
 			const float fov = 45.f;
+
+			
+
+			
+			
+
+
 		#pragma endregion
 		};
 
@@ -50,15 +62,6 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		glm::mat4 Camera::GetViewMatrix() const {
 			return std::move(glm::lookAt(mPosition, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0)));
-		}
-
-		// ------------------------------------------------------------------------
-		/*! Get Projection Matrix
-		*
-		*   Returns the Camera's Projection Matrix
-		*/ //----------------------------------------------------------------------
-		glm::mat4 Camera::GetProjectionMatrix() const {
-			return glm::perspective(glm::radians(45.0f), 500.f / 600.0f, 0.1f, zfar);
 		}
 
 		// ------------------------------------------------------------------------

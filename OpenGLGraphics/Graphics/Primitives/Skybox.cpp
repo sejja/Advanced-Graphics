@@ -76,7 +76,7 @@ namespace Core {
 
 
             glm::mat4 view = glm::mat4(glm::mat3(cam.GetViewMatrix()));
-            glm::mat4 projection = glm::perspective(glm::radians(45.0f), pipeline.GetAspectRatio(), 0.1f, 10000.0f);
+            glm::mat4 projection = cam.GetProjectionMatrix();
             mShaderProgram->Get()->SetShaderUniform("uTransform", &projection);
             mShaderProgram->Get()->SetShaderUniform("uView", &view);
 
