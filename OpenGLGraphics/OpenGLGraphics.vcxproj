@@ -756,9 +756,11 @@
     <ClInclude Include="Core\Singleton.h" />
     <ClInclude Include="Graphics\Tools\FrameBuffer.h" />
     <ClInclude Include="Graphics\Tools\OpenGLInfo.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Content\Maps\Scene.level" />
+    <None Include="Content\Maps\Minecraft.level" />
+    <None Include="Content\Maps\Sponza.level" />
     <None Include="Content\Meshes\backpack.mtl" />
     <None Include="Content\Scenes\README.md" />
     <None Include="Content\Scenes\Sponza.bin" />
@@ -1035,6 +1037,9 @@
     <Image Include="Content\Textures\right.jpg" />
     <Image Include="Content\Textures\top.jpg" />
     <Image Include="D:\Asier\Descargas\realEngineLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="OpenGL Graphics.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

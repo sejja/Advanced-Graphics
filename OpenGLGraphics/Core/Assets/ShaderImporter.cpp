@@ -49,7 +49,7 @@ namespace Core {
 			Asset<ShaderProgram> rawResource(resalloc.New(1, _shad), [](TResource<ShaderProgram>* const p) {
 				const PageAllocator<TResource<ShaderProgram>> resalloc_;
 				const PageAllocator<ShaderProgram> shadalloc_;
-				shadalloc_.terminate(p->rawData.release());
+				shadalloc_.terminate(p->Get());
 				resalloc_.terminate(p);
 				});
 

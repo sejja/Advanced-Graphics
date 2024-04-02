@@ -41,7 +41,7 @@ namespace Graphics {
 			mPointShader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredPointLighting.shader");
 			mSpotShader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredSpotLighting.shader");
 		}
-		
+
 		LightPass::~LightPass() {
 			glDeleteVertexArrays(1, &mScreenQuadVAO);
 			glDeleteBuffers(1, &mScreenQuadVBO);
@@ -56,7 +56,7 @@ namespace Graphics {
 			}
 
 			glViewport(0, 0, 1600, 900);
-			for ( auto& x : sSpotLightData) {
+			for (auto& x : sSpotLightData) {
 				if (!x.second->mShadowCaster) continue;
 				x.second->mShadowMap.Bind();
 				x.second->mShadowMap.Clear(true);
@@ -106,21 +106,31 @@ namespace Graphics {
 
 			auto shadptr = mDirectionalShader->Get();
 			const std::string id = "uLight";
-			shadptr->Bind();
 
-			for (auto& x : sDirectionalLightData) {
-				glm::vec3 dir = glm::normalize(glm::vec3(20.0f, 50, 20.0f));
-				shadptr->SetShaderUniform((id + ".mDirection").c_str(), &dir);
+			for (auto& x : sPointLightData) {
+				StencilPass(x.second->mPosition, x.second->CalculateSphereOfInfluence());
+				glEnable(GL_BLEND);
+				glBlendEquation(GL_FUNC_ADD);
+				glBlendFunc(GL_ONE, GL_ONE);
+				shadptr = mPointShader->Get();
+				shadptr->Bind();
+				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &x.second->mPosition);
 				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x.second->mColor);
-				dynamic_cast<::Graphics::Primitives::DirectionalLight::DirectionalLightData*>(x.second)->SetUniforms(mDirectionalShader);
+				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x.second->mRadius);
+				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x.second->mFallOff);
 				//shadptr->SetShaderUniform((id + ".mCastShadows").c_str(), static_cast<int>(x.second->mShadowCaster));
+				glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 				glEnable(GL_CULL_FACE);
 				RenderScreenQuad();
 				glCullFace(GL_BACK);
+				glDisable(GL_BLEND);
 			}
 
 			for (auto& x : sSpotLightData) {
 				StencilPass(x.second->mPosition, x.second->CalculateSphereOfInfluence());
+				glEnable(GL_BLEND);
+				glBlendEquation(GL_FUNC_ADD);
+				glBlendFunc(GL_ONE, GL_ONE);
 				auto shadptr = mSpotShader->Get();
 				const std::string id = "uLight";
 				shadptr->Bind();
@@ -136,23 +146,29 @@ namespace Graphics {
 					shadptr->SetShaderUniform("uShadowMatrix", &x.second->mShadowMatrix);
 					x.second->mShadowMap.BindTexture(4);
 				}
+				glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 				glEnable(GL_CULL_FACE);
 				RenderScreenQuad();
 				glCullFace(GL_BACK);
+				glDisable(GL_BLEND);
 			}
 
-			for(auto& x : sPointLightData) {
-				StencilPass(x.second->mPosition, x.second->CalculateSphereOfInfluence());
-				shadptr = mPointShader->Get();
-				shadptr->Bind();
-				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &x.second->mPosition);
+			glDisable(GL_STENCIL_TEST);
+
+			shadptr = mDirectionalShader->Get();
+			shadptr->Bind();
+
+			for (auto& x : sDirectionalLightData) {
+				glEnable(GL_BLEND);
+				glm::vec3 dir = glm::normalize(glm::vec3(20.0f, 50, 20.0f));
+				shadptr->SetShaderUniform((id + ".mDirection").c_str(), &dir);
 				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x.second->mColor);
-				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x.second->mRadius);
-				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x.second->mFallOff);
+				dynamic_cast<::Graphics::Primitives::DirectionalLight::DirectionalLightData*>(x.second)->SetUniforms(mDirectionalShader);
 				//shadptr->SetShaderUniform((id + ".mCastShadows").c_str(), static_cast<int>(x.second->mShadowCaster));
 				glEnable(GL_CULL_FACE);
 				RenderScreenQuad();
 				glCullFace(GL_BACK);
+				glDisable(GL_BLEND);
 			}
 		}
 
@@ -172,7 +188,7 @@ namespace Graphics {
 			mLightSphereShader->Get()->Bind();
 			mLightSphereShader->Get()->SetShaderUniform("uModel", &matrix);
 			mLightSphere->Get()->Draw(*mLightSphereShader->Get());
-		}	
+		}
 
 		unsigned int quadVAO = 0;
 		unsigned int quadVBO;

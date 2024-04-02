@@ -1,0 +1,26 @@
+#camera data
+fovy 60.0
+width 1280.0
+height 720.0
+near 1
+far 500
+camPosition 0 0 110
+camTarget 0 0 50
+camUp 0 1 0
+    
+#scene data
+object floor
+translate 0 -10 0
+rotation 0 0 0
+scale 100 100 100
+mesh Content/Scenes/Minecraft/vokselia.gltf 
+
+#light data
+light
+translate 50 20 55
+color 0.8 0.8 0.8
+lightType DIR	
+attenuation 1 0.0 0.01
+#sinusoidal 0 1 20
+ambient 0
+direction 0.34 0.87 0.34
