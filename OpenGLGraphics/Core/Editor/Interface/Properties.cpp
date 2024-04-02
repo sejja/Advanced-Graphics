@@ -92,6 +92,7 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     if (obj && !comp ) { // && !isParticleManager
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
             TransformOptions();
+            UpdateLightCompsPos(obj);
         }
 	}
 
@@ -226,7 +227,8 @@ void Properties::objectOutliner() {
 				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mFallOff = 0.5f;
 
                 light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));   
-                light->SetPosition(obj->GetPosition());
+                glm::vec3 relativePos = glm::vec3(0.0f, 0.0f, 0.0f);
+                light->SetPosition(relativePos,obj->GetPosition());
 
                 obj->AddComponent(std::move(light));
 
@@ -413,10 +415,11 @@ void Properties::TransformOptions() {
 }
 
 void Properties::LightTransform() {
+    std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
     std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
 	glm::vec3 curPos = lightComp->GetPosition();
 	TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
-	lightComp->SetPosition(curPos);
+	lightComp->SetPosition(curPos, obj->GetPosition());
 }
 
 
@@ -792,6 +795,19 @@ void Properties::FireSize() {
 
 
 
+}
+
+
+void Properties::UpdateLightCompsPos(std::shared_ptr<Core::Object> obj)
+{
+    std::vector<std::shared_ptr<Core::Component>> comps = obj->GetAllComponents();
+
+    for (auto& comp : comps) {
+        if (std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(comp)) {
+			glm::vec3 relativePos = lightComp->GetPosition();
+			lightComp->SetPosition(relativePos, obj->GetPosition());
+		}
+	}
 }
 
 

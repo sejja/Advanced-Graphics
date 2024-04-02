@@ -22,6 +22,7 @@ private:
     void MeshOptions();
     void ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline);
     void FireSize();
+    void UpdateLightCompsPos(std::shared_ptr<Core::Object> obj);
 
 
     void selectedObjectTree();

@@ -17,8 +17,9 @@ namespace Graphics {
 			
 		}
 
-		void Light::SetPosition(const glm::vec3& position) {
-			mData->mPosition = position;
+		void Light::SetPosition(const glm::vec3& relativePos,const glm::vec3 objPos) {
+			mData->mRelativePosition = relativePos;
+			mData->mPosition = objPos + relativePos;
 		}
 
 		glm::vec3 Light::GetColor() const
@@ -32,7 +33,7 @@ namespace Graphics {
 		}
 
 		glm::vec3 Light::GetPosition() const {
-			return mData->mPosition;
+			return mData->mRelativePosition;
 		}
 
 		

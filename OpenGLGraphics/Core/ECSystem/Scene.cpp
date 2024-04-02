@@ -96,7 +96,7 @@ namespace Core {
 				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mDirection = x.dir;
 			}
 
-			light->SetPosition(x.pos);
+			light->SetPosition(glm::vec3(0.0f,0.0f,0.0f),x.pos);
 			light->SetColor(x.col);
 			printf("COLOR: %f %f %f\n", x.col.x, x.col.y, x.col.z);
 
