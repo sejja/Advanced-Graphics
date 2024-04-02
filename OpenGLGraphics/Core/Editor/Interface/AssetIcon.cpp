@@ -49,25 +49,38 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 				//printf("Dragging");
 				dibujar(true);
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
 	
 	}
 	else if (tipo == AssetType::TEXTURE) {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(ruta)->Get(); //Que cojones es la sintaxis de esta línea???
+		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/model.png")->Get(); //Que cojones es la sintaxis de esta línea???
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 		ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		clicked = ImGui::IsItemClicked();
 		ImGui::PopStyleColor(1);
 		if (dibujarToolTip == false) {
-			if (ImGui::BeginDragDropSource()) {
+			bool dragDrop = ImGui::BeginDragDropSource();
+			printf("Dragdrop: %d\n", dragDrop);
+			if (dragDrop) {
 				//printf("Dragging");
 				dibujar(true);
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
+		//if (dibujarToolTip == false) {
+		//	if (ImGui::BeginDragDropSource()) {
+		//		//printf("Dragging");
+		//		dibujar(true);
+		//		ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+		//		printf("nombre: %s\n", this->nombre);
+		//		ImGui::EndDragDropSource();
+		//	}
+		//}
 	 
 	}
 	else if (tipo == AssetType::MATERIAL) {
@@ -81,6 +94,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 				//printf("Dragging");
 				dibujar(true);
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
@@ -96,6 +110,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 				//printf("Dragging");
 				dibujar(true);
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
@@ -112,27 +127,33 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 			if (ImGui::BeginDragDropSource()) {
 				//printf("Dragging");
 				dibujar(true);
-				ImGui::SetDragDropPayload("folder", this, sizeof(AssetIcon));
+				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
 		
 	}
 	else {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/other.png")->Get(); //Que cojones es la sintaxis de esta línea???
+		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(ruta)->Get(); //Que cojones es la sintaxis de esta línea???
 		//ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		//ImGui::Button("Hola", ImVec2(100, 100));
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 		clicked = ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::PopStyleColor(1);
 		if (dibujarToolTip == false) {
-			if (ImGui::BeginDragDropSource()) {
+			bool dragDrop = ImGui::BeginDragDropSource();
+			printf("Dragdrop: %d\n", dragDrop);
+			if (dragDrop) {
 				//printf("Dragging");
 				dibujar(true);
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
+		//Vale, el error de drag and drop tiene algo que ver con las texturas, ya que cuando se hace drag imgui cree que se hace drag en todos
+		// los botones que tienen esa textura
 		
 		
 		

@@ -65,7 +65,9 @@ int main(int argc, char* argv[]) {
     
 
     sqlite3_close(database);
-    free(actualPath);
+    if (argc != 2) {
+        free(actualPath);
+    }
     printf("Codigo cierre base de datos: %s\n", sqlite3_errstr(i));  
     printf("Se acabo");
     return 0;
