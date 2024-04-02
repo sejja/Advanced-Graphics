@@ -3,13 +3,14 @@
 
 #include <iostream>
 #include <glew.h>
+#include "Graphics/OpenGLPipeline.h"
 
 
 
 
 class Properties {
 public:
-    void Render();
+    void Render(Core::Graphics::OpenGLPipeline& pipeline);
 
 private:
     void TransformOptions();
@@ -19,7 +20,7 @@ private:
     void LightingOptions();
     void MaterialsOptions();
     void MeshOptions();
-    void ShaderOptions();
+    void ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline);
     void FireSize();
 
 

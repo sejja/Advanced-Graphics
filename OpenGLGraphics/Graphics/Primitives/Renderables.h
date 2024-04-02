@@ -59,6 +59,7 @@ namespace Core {
 			void Render() const noexcept override;
 			inline void SetProcudesShadow(const bool shadow) noexcept;
 			inline bool GetProcudesShadow() const noexcept;
+
 #pragma endregion
 
 #pragma region //Variables
@@ -106,6 +107,8 @@ namespace Core {
 		AssetReference<::Graphics::Primitives::GLBModel> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetMesh() const {
 			return mModel;
 		}
+
+
 	}
 }
 

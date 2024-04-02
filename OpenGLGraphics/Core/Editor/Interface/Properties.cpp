@@ -59,7 +59,7 @@ void sendToPeer(std::shared_ptr<Core::Particles::FireSystem> particleSys) {
 }
 
 
-void Properties::Render() {
+void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
     std::shared_ptr<Core::Component> comp = selectedObjIns.GetSelectedComponent();
 
@@ -103,7 +103,7 @@ void Properties::Render() {
             MeshOptions();
         }
         if (ImGui::CollapsingHeader(ICON_FA_SUN "  Shader Program", ImGuiTreeNodeFlags_DefaultOpen)) {
-            ShaderOptions();
+            ShaderOptions(pipeline);
         }
     }
 
@@ -558,8 +558,6 @@ void Properties::MeshOptions() {
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
 
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
-    std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedObject());
-
 
     auto glbModel = meshComp->GetMesh().lock();
 
@@ -567,8 +565,6 @@ void Properties::MeshOptions() {
         std::string directory = glbModel->Get()->getPath();
         //printf("Directory: %s\n", directory.c_str());
     }
-
-
 
     if (ImGui::BeginTable("mesh_table", 2, flags1)) {
 
@@ -603,8 +599,8 @@ void Properties::MeshOptions() {
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* asset = (AssetIcon*)payload->Data;
-            printf("RUTA: %s\n", asset->ruta);
-            renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(asset->ruta));
+            printf("RUTA MESH: %s\n", asset->ruta);
+            meshComp->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(asset->ruta));
         }
         ImGui::EndDragDropTarget();
     }
@@ -615,7 +611,7 @@ void Properties::MeshOptions() {
 
 }
 
-void Properties::ShaderOptions()
+void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline)
 {
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
     static ImVec2 cell_padding(4.0f, 8.0f);
@@ -623,7 +619,6 @@ void Properties::ShaderOptions()
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
 
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
-    std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedObject());
 
     
     auto glbModel = meshComp->GetMesh().lock();
@@ -668,9 +663,35 @@ void Properties::ShaderOptions()
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* asset = (AssetIcon*)payload->Data;
-            printf("RUTA: %s\n", asset->ruta);
+            printf("RUTA SHADER PROG: %s\n", asset->ruta);
             //meshComp->SetShaderProgram(resmg.GetResource<Gra>("Content/Shaders/Refractive.shader"));
-            renderer->SetShaderProgram(resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Refractive.shader"));
+
+            Asset<ShaderProgram> newShader = resmg.GetResource<ShaderProgram>("Content/Shaders/White.shader");
+            AssetReference<ShaderProgram> curShaderRef = meshComp->GetShaderProgram();
+            Asset<ShaderProgram> curShader = curShaderRef.lock();;
+            
+            
+            /*
+            if (curShaderRef.lock()) 
+                curShader = curShaderRef.lock();
+            }
+            else {
+                printf("No hay shader actual\n");
+            }
+            */
+
+            pipeline.updateRenderablesGroups(curShader, newShader, meshComp);
+
+            
+            
+            
+
+            meshComp->SetShaderProgram(resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
+            
+
+           
+            //renderer->SetShaderProgram(resmg.GetResource<Core::Graphics::ShaderProgram>(asset->ruta));
+
 
 
            

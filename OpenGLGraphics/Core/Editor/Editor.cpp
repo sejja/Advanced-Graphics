@@ -32,7 +32,7 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 	mainMenu.Render(pipeline);
 	assetManager.Render();
-	properties.Render();
+	properties.Render(pipeline);
 	outliner.Render();
 
 
