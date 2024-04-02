@@ -801,7 +801,6 @@ void Properties::FireSize() {
 void Properties::UpdateLightCompsPos(std::shared_ptr<Core::Object> obj)
 {
     std::vector<std::shared_ptr<Core::Component>> comps = obj->GetAllComponents();
-
     for (auto& comp : comps) {
         if (std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(comp)) {
 			glm::vec3 relativePos = lightComp->GetPosition();

@@ -12,7 +12,6 @@ namespace Graphics {
 		class Light : public Core::Component {
 		public:
 			struct BackedLightData {
-				//glm::vec3* mObjPosition;
 				glm::vec3 mPosition;
 				glm::vec3 mRelativePosition;
 				glm::vec3 mColor;
