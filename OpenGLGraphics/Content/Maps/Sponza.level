@@ -15,12 +15,6 @@ rotation 0 0 0
 scale 0.2 0.2 0.2
 mesh Content/Scenes/Sponza/Sponza.gltf 
 
-#scene data
-object floor
-translate 0 -800 0
-rotation 0 0 0
-scale 2000 2000 2000
-mesh Content/Scenes/Minecraft/vokselia.gltf 
 
 #scene data
 object floor
@@ -59,16 +53,16 @@ light
 translate -50 0 55
 color 1 0 0
 lightType SPOT	
-attenuation 50 0.1 0.00
+attenuation 50 0.0 0.01
 #sinusoidal 0 1 20
 ambient 0
 direction 1 0 0
 
 light
-translate 10 30 50
-color 0 0 1
+translate 50 30 50
+color 0 1 0
 lightType SPOT	
-attenuation 50 0.0 0.01
+attenuation 15 0.0 0.01
 #sinusoidal 0 1 20
 ambient 0
 direction 0 -1 0
@@ -77,7 +71,7 @@ light
 translate -10 30 50
 color 0 1 0
 lightType SPOT	
-attenuation 30 0.0 0.01
+attenuation 15 0.0 0.01
 #sinusoidal 0 1 20
 ambient 0
 direction 0 -1 0
@@ -345,7 +339,7 @@ direction 0 -1 0
 
 light
 translate 50 0 -10
-color 0 1 0
+color 0 1 1
 lightType POINT	
 attenuation 15 0.0 0.01
 #sinusoidal 0 1 20
@@ -391,7 +385,7 @@ direction 0 -1 0
 
 light
 translate 20 100 -20
-color 0 1 0
+color 1 0 0
 lightType POINT	
 attenuation 60 0.0 0.01
 #sinusoidal 0 1 20

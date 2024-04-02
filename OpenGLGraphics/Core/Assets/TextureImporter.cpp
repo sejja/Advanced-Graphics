@@ -23,16 +23,16 @@ namespace Core {
 			const PageAllocator<TResource<Texture>> resalloc;
 			const PageAllocator<Texture> texalloc;
 
-			Asset<Texture> rawResource(resalloc.New(1, texalloc.New()), [](TResource<Texture>* const p) {
+			Asset<Texture> rawResource(resalloc.New(1, texalloc.New()), [resalloc, texalloc](TResource<Texture>* const p) {
 				const PageAllocator<TResource<Texture>> resalloc;
 				const PageAllocator<Texture> texalloc;
-				texalloc.terminate(p->rawData.release());
-				resalloc.deallocate(p);
+				texalloc.terminate(p->Get());
+				resalloc.terminate(p);
 				});
 
 			rawResource->rawData->LoadFromFile(filename.data());
 
-			return std::move(rawResource);
+			return rawResource;
 		}
 	}
 }

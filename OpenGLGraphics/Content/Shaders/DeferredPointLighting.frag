@@ -42,7 +42,7 @@ uniform Light uLight;
 */ //----------------------------------------------------------------------
 vec4 bloom(vec4 finalcolor) {
     vec4 bloomColor = texture(bBloomTexture, oUVs).rgba;
-    return mix(finalcolor, bloomColor, 0.05); // linear interpolation
+    return mix(finalcolor, bloomColor, 0.75); // linear interpolation
 }
 
 // ------------------------------------------------------------------------
