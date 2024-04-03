@@ -36,7 +36,7 @@ public:
     void setSceneFrameDimensions(const glm::lowp_u16vec2& dim) { sceneFrameDimensions = dim; }
     float GetAspectRatio() { return static_cast<float>(sceneFrameDimensions.x) / static_cast<float>(sceneFrameDimensions.y); }
 
-    
+    float *GetFOV() { return &fov; }
     
 
 private:
@@ -50,6 +50,8 @@ private:
     SceneView sceneView;
 
     glm::lowp_u16vec2 sceneFrameDimensions;
+
+    float fov = 45.0f;
 
     
 };

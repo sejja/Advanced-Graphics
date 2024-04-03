@@ -55,7 +55,9 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		glm::mat4 Camera::GetProjectionMatrix() const {
 			float aspectRatio = Singleton<::Editor>::Instance().GetAspectRatio();
-			return glm::perspective(glm::radians(45.0f), aspectRatio, 0.1f, zfar);
+			float fov = *Singleton<::Editor>::Instance().GetFOV();
+
+			return glm::perspective(glm::radians(fov), aspectRatio, 0.1f, zfar);
 		}
 	}
 }
