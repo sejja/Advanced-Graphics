@@ -13,12 +13,15 @@
 #include "Core/AppWrapper.h"
 #include "Core/Singleton.h"
 
+
 // ------------------------------------------------------------------------
 /*! Main
 *
 *   Program Entry point
 */ //----------------------------------------------------------------------
 int main() {
+
+
 
     AppWrapper& app = Singleton<AppWrapper>::Instance();
     

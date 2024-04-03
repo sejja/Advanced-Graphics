@@ -4,7 +4,7 @@
 #include <stdlib.h>
 
 Folder* createFolder(char* path, int code) {
-    char aTonkenizar[100];
+    char aTonkenizar[200];
     strcpy(aTonkenizar, path);
     //printf("A tokenizar: %s", aTonkenizar);
     char* token = strtok(aTonkenizar, "\\");

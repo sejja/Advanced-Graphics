@@ -35,6 +35,7 @@ AssetIcon::AssetIcon(AssetType p_tipo, const char* p_nombre, const char* p_ruta)
 void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente no llamar recursivamente a esta función
 	//ImGui::Image()
 	ImGui::BeginGroup();
+	ImGui::PushID(ruta);
 	//clicked = false;
 	//ImGui::Button("Hola", ImVec2(100, 100));
 
@@ -49,6 +50,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 				//printf("Dragging");
 				dibujar(true);
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
@@ -61,13 +63,25 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 		clicked = ImGui::IsItemClicked();
 		ImGui::PopStyleColor(1);
 		if (dibujarToolTip == false) {
-			if (ImGui::BeginDragDropSource()) {
+			bool dragDrop = ImGui::BeginDragDropSource();
+			printf("Dragdrop: %d\n", dragDrop);
+			if (dragDrop) {
 				//printf("Dragging");
 				dibujar(true);
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
+		//if (dibujarToolTip == false) {
+		//	if (ImGui::BeginDragDropSource()) {
+		//		//printf("Dragging");
+		//		dibujar(true);
+		//		ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+		//		printf("nombre: %s\n", this->nombre);
+		//		ImGui::EndDragDropSource();
+		//	}
+		//}
 	 
 	}
 	else if (tipo == AssetType::MATERIAL) {
@@ -81,6 +95,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 				//printf("Dragging");
 				dibujar(true);
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
@@ -96,6 +111,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 				//printf("Dragging");
 				dibujar(true);
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
@@ -112,7 +128,8 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 			if (ImGui::BeginDragDropSource()) {
 				//printf("Dragging");
 				dibujar(true);
-				ImGui::SetDragDropPayload("folder", this, sizeof(AssetIcon));
+				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
@@ -126,13 +143,18 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 		clicked = ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::PopStyleColor(1);
 		if (dibujarToolTip == false) {
-			if (ImGui::BeginDragDropSource()) {
+			bool dragDrop = ImGui::BeginDragDropSource();
+			printf("Dragdrop: %d\n", dragDrop);
+			if (dragDrop) {
 				//printf("Dragging");
 				dibujar(true);
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
+		//Vale, el error de drag and drop tiene algo que ver con las texturas, ya que cuando se hace drag imgui cree que se hace drag en todos
+		// los botones que tienen esa textura
 		
 		
 		
@@ -144,7 +166,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 	}
 
 	//printf("%d\n",clicked);
-
+	ImGui::PopID();
 	int centerOffset = 100 / 2 - ImGui::CalcTextSize(nombre).x / 2;
 	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + centerOffset);
 	//printf("%p\n", nombre);
