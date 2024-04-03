@@ -116,6 +116,11 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
         if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "  Light Options", ImGuiTreeNodeFlags_DefaultOpen)) {
             LightingOptions();
         }
+
+        if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "Light Type Options", ImGuiTreeNodeFlags_DefaultOpen)) {
+            LightTypeOptions();
+        }
+
     }
 
     else if (fireSystem) {
@@ -431,16 +436,17 @@ void Properties::LightingOptions() {
 
     std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
 
- 
     glm::vec3 color = lightComp->GetColor();
     ImVec4 baseColor = ImVec4(color.x, color.y, color.z, 1.0f);
 
     if (ImGui::BeginTable("light_table", 2, flags1)) {
 
         //Light TYPE
+        /*
         const char* lightTypes[] = { "SPOT", "POINT", "CCCC" };
         static int item_current_idx = 0;
         const char* initVal = lightTypes[item_current_idx];
+        
 
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
@@ -462,6 +468,7 @@ void Properties::LightingOptions() {
             ImGui::EndCombo();
         }
 
+        */
 
         //COLOR DE LA LUZ
         ImGui::TableNextRow();
@@ -484,6 +491,125 @@ void Properties::LightingOptions() {
 
     
 
+}
+
+void Properties::LightTypeOptions(){
+    static ImVec2 cell_padding(4.0f, 8.0f);
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
+
+    if (ImGui::BeginTable("light_type_table", 2, ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH)) {
+
+        // OPCIONES ESPECIFICAS DE CADA TIPO DE LUZ
+        std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
+
+        if (auto pointLight = std::dynamic_pointer_cast<::Graphics::Primitives::PointLight>(lightComp)) {
+
+            float lightRadius = ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mRadius;
+            float inner = ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mInner;
+            float outer = ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mOutter;
+            float fallOff = ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mFallOff;
+
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Radius");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::SliderFloat("##LightRadius", &lightRadius, 0.0f, 100.0f, "%.2f");
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Inner");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::SliderFloat("##Inner", &inner, 0.0f, 100.0f, "%.2f");
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Outter");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::SliderFloat("##Outter", &outer, 0.0f, 100.0f, "%.2f");
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("FallOff");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f");
+
+            ImGui::EndTable();
+
+            ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mRadius = lightRadius;
+            ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mInner = inner;
+            ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mOutter = outer;
+            ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mFallOff = fallOff;
+        }
+        else if (auto directionalLight = std::dynamic_pointer_cast<::Graphics::Primitives::DirectionalLight>(lightComp)) {
+
+            float dirX = ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)directionalLight->mData)->mDirection.x;
+            float dirY = ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)directionalLight->mData)->mDirection.y;
+            float dirZ = ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)directionalLight->mData)->mDirection.z;
+
+            ImGui::EndTable();
+
+            TransformRow("  Direction", dirX, dirY, dirZ);
+
+            glm::vec3 normalizedDirection = glm::normalize(glm::vec3(dirX, dirY, dirZ));
+            ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)directionalLight->mData)->mDirection = normalizedDirection;
+
+        }
+        else {
+            auto spotLight = std::dynamic_pointer_cast<::Graphics::Primitives::SpotLight>(lightComp);
+
+            bool shadowCaster = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mShadowCaster;
+            float lightRadius = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mRadius;
+            float inner = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mInner;
+            float outer = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mOutter;
+            float fallOff = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mFallOff;
+            float dirX = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mDirection.x;
+            float dirY = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mDirection.y;
+            float dirZ = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mDirection.z;
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Shadow Caster");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Checkbox("##ShadowCaster", &shadowCaster);
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Radius");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::SliderFloat("##LightRadius", &lightRadius, 0.0f, 100.0f, "%.2f");
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Inner");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::SliderFloat("##Inner", &inner, 0.0f, 100.0f, "%.2f");
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Outter");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::SliderFloat("##Outter", &outer, 0.0f, 100.0f, "%.2f");
+
+            ImGui::TableNextRow();
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("FallOff");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f");
+
+            ImGui::EndTable();
+
+            TransformRow("  Direction", dirX, dirY, dirZ);
+
+            ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mRadius = lightRadius;
+			((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mInner = inner;
+			((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mOutter = outer;
+			((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mFallOff = fallOff;
+			((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mDirection = glm::normalize(glm::vec3(dirX, dirY, dirZ));
+			((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mShadowCaster = shadowCaster;
+        }
+    }
+    ImGui::PopStyleVar();
 }
 
 
@@ -669,7 +795,7 @@ void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline)
             printf("RUTA SHADER PROG: %s\n", asset->ruta);
             //meshComp->SetShaderProgram(resmg.GetResource<Gra>("Content/Shaders/Refractive.shader"));
 
-            Asset<ShaderProgram> newShader = resmg.GetResource<ShaderProgram>("Content/Shaders/White.shader");
+            Asset<ShaderProgram> newShader = resmg.GetResource<ShaderProgram>(asset->ruta);
             AssetReference<ShaderProgram> curShaderRef = meshComp->GetShaderProgram();
             Asset<ShaderProgram> curShader = curShaderRef.lock();;
             
