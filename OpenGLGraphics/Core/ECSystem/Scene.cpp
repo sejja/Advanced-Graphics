@@ -17,6 +17,12 @@
 #include "Core/ParticleSystem/FireSystem.h"
 #include "Graphics/OpenGLPipeline.h"
 #include "Graphics/Primitives/GLBModel.h"
+#include <Dependencies/Json/single_include/json.hpp>
+#include <fstream>
+#include <typeinfo>
+#include <iostream>
+
+using json = nlohmann::json;
 
 namespace Core {
 	SceneParser Scene::sParser;
@@ -29,44 +35,27 @@ namespace Core {
 	void Scene::CreateScene(const std::string_view& file, Core::Graphics::OpenGLPipeline &pipe, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
 		sParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<ResourceManager>::Instance();
-		//std::for_each(std::execution::unseq, sParser.objects.begin(), sParser.objects.end(), [this, &upload, &resmg](const SceneParser::Transform& x) {
-		//	std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
-		//	obj->SetPosition(x.pos);
-		//	obj->SetRotation(glm::radians(x.rot));
-		//	obj->SetScale(x.sca);
-		//	obj->SetName(x.name);
-		//	obj->SetID(x.name);//temp , tiene que ser unico
-		//	//obj->SetType() tiene que ser un enum
+		std::for_each(std::execution::unseq, sParser.objects.begin(), sParser.objects.end(), [this, &upload, &resmg](const SceneParser::Transform& x) {
+			std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
+			obj->SetPosition(x.pos);
+			obj->SetRotation(glm::radians(x.rot));
+			obj->SetScale(x.sca);
+			obj->SetName(x.name);
+			obj->SetID(x.name);//temp , tiene que ser unico
+			//obj->SetType() tiene que ser un enum
 
-		//	std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj);
-		//	renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(x.mesh.c_str()));
+			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>>(obj);
+			renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(x.mesh.c_str()));
 
-		//	if (x.name == "suzanne_mesh")
-		//		renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/Refractive.shader"));
-		//	else
-		//		renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/DeferredGeometry.shader"));
+			if (x.name == "suzanne_mesh")
+				renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/Refractive.shader"));
+			else
+				renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/DeferredGeometry.shader"));
 
-		//	obj->AddComponent(std::move(renderer));
-		//	upload(obj);
-		//	mObjects.emplace_back(std::move(obj));
-		//	});
-
-		std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
-		obj->SetName("Cubo");
-		obj->SetID("Cubo");
-		obj->SetPosition(glm::vec3(0, 0, 0));
-		obj->SetRotation(glm::radians(glm::vec3(0,0,0)));
-		obj->SetScale(glm::vec3(0, 0, 0));
-
-		std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>> renderer = std::make_shared< Core::Graphics::GLBModelRenderer < Core::GraphicsAPIS::OpenGL>>(obj);
-
-		renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/cube_averaged.obj"));
-		renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/DeferredGeometry.shader"));
-
-		upload(obj);
-		mObjects.emplace_back(std::move(obj));
-
-		sParser.objects;
+			obj->AddComponent(std::move(renderer));
+			upload(obj);
+			mObjects.emplace_back(std::move(obj));
+			});
 
 		int i = 0;
 
@@ -158,6 +147,36 @@ namespace Core {
 		std::for_each(std::execution::par, mObjects.begin(), mObjects.end(), [](const std::shared_ptr<Core::Object>& x) {
 			x->Update();
 			});
+	}
+
+	void Scene::Save() {
+		printf("Listos para guardar\n");
+		json data;
+		for (int i = 0; i < mObjects.size(); i++) {
+			json object;
+			object["name"] = mObjects[i]->GetName();
+			object["_id"] = mObjects[i]->GetID();
+			object["position"] = { mObjects[i]->GetPosition().x, mObjects[i]->GetPosition().y, mObjects[i]->GetPosition().z };
+			object["rotation"] = { mObjects[i]->GetRotation().x, mObjects[i]->GetRotation().y, mObjects[i]->GetRotation().z };
+			object["scale"] = { mObjects[i]->GetScale().x, mObjects[i]->GetScale().y, mObjects[i]->GetScale().z };
+			data["objects"][i] = object;
+			
+			std::vector<std::shared_ptr<Core::Component>> components = mObjects[i]->GetAllComponents();
+			
+			for (int j = 0; j < components.size(); j++) {
+				//json component;
+				//data["objects"][i]["components"][j] = component;
+				std::shared_ptr<Core::Component> comp = components[j];
+				bool prueba = typeid(*comp) == typeid(Core::Graphics::GLBModelRenderer<Core::GraphicsAPIS::OpenGL>);
+				std::cout << prueba << std::endl;
+			}
+		}
+		std::ofstream file;
+		file.open("Content/Maps/Scene.json");
+
+		file << data;
+
+		file.close();
 	}
 
 }

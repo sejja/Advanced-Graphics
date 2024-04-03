@@ -25,6 +25,7 @@ namespace Core {
 	public:
 		void CreateScene(const std::string_view& file, Core::Graphics::OpenGLPipeline& pipe, std::function<void(const std::shared_ptr<Object>& obj)>);
 		void Tick();
+		void Save();
 
 		template<typename PIPE>
 		void UploadObjectsToPipeline(PIPE& pipe);

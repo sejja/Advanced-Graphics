@@ -729,6 +729,7 @@
     <ClInclude Include="Graphics\Tools\OpenGLInfo.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Content\Maps\Scene.json" />
     <None Include="Content\Maps\Scene.level" />
     <None Include="Content\Meshes\backpack.mtl" />
     <None Include="Content\Scenes\README.md" />
