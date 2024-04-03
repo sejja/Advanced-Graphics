@@ -35,6 +35,7 @@ AssetIcon::AssetIcon(AssetType p_tipo, const char* p_nombre, const char* p_ruta)
 void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente no llamar recursivamente a esta función
 	//ImGui::Image()
 	ImGui::BeginGroup();
+	ImGui::PushID(ruta);
 	//clicked = false;
 	//ImGui::Button("Hola", ImVec2(100, 100));
 
@@ -56,7 +57,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 	
 	}
 	else if (tipo == AssetType::TEXTURE) {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/model.png")->Get(); //Que cojones es la sintaxis de esta línea???
+		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(ruta)->Get(); //Que cojones es la sintaxis de esta línea???
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 		ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		clicked = ImGui::IsItemClicked();
@@ -135,7 +136,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 		
 	}
 	else {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(ruta)->Get(); //Que cojones es la sintaxis de esta línea???
+		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/other.png")->Get(); //Que cojones es la sintaxis de esta línea???
 		//ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		//ImGui::Button("Hola", ImVec2(100, 100));
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
@@ -165,7 +166,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 	}
 
 	//printf("%d\n",clicked);
-
+	ImGui::PopID();
 	int centerOffset = 100 / 2 - ImGui::CalcTextSize(nombre).x / 2;
 	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + centerOffset);
 	//printf("%p\n", nombre);
