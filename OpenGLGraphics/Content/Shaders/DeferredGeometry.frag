@@ -39,4 +39,9 @@ void main() {
         (texture(uNormalTex, oUVs).rgb * 2.0f - 1.0f));
     // and the diffuse per-fragment color
     gAlbedoSpec.rgba = texture(uDiffuseTex, oUVs).rgba;
+    
+    if(gAlbedoSpec.a < 0.1) discard;
 }
+
+
+

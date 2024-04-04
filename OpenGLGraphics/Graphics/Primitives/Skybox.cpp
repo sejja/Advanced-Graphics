@@ -63,10 +63,10 @@ namespace Core {
         }
 
         void Skybox::Render(Core::Primitives::Camera& cam, Core::Graphics::OpenGLPipeline& pipeline) {
-            glDepthFunc(GL_LEQUAL);
             //Disable depth mask, enable it later
             glDepthMask(GL_FALSE);
             glDisable(GL_CULL_FACE);
+            glDepthFunc(GL_LEQUAL);
 
             // Bind the program and this object's VAO
             mShaderProgram->Get()->Bind();
@@ -76,7 +76,7 @@ namespace Core {
 
 
             glm::mat4 view = glm::mat4(glm::mat3(cam.GetViewMatrix()));
-            glm::mat4 projection = glm::perspective(glm::radians(45.0f), pipeline.GetAspectRatio(), 0.1f, 10000.0f);
+            glm::mat4 projection = glm::perspective(glm::radians(45.0f), pipeline.GetAspectRatio(), 0.1f, 1000.f);
             mShaderProgram->Get()->SetShaderUniform("uTransform", &projection);
             mShaderProgram->Get()->SetShaderUniform("uView", &view);
 
