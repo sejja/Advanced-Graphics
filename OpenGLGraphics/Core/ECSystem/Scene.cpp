@@ -25,6 +25,8 @@
 #include <fstream>
 #include <string>
 
+#include "Core/ResourceManager.h"
+
 using json = nlohmann::json;
 
 namespace Core {
@@ -117,7 +119,7 @@ namespace Core {
 			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj));
 			std::shared_ptr<::Graphics::Primitives::Light> light;
 			renderer->SetMesh(Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
-			renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
+			renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/CascadedShadowMap.shader"));
 
 			//TEMPORAL PARA SABER SI ES LUZ HASTA NUEVO LEVEL 
 			obj->SetName(x.type + " Light_light");
@@ -191,6 +193,7 @@ namespace Core {
 	}
 
 	void Scene::Save() {
+		auto resmg = Singleton<ResourceManager>::Instance();
 		printf("Listos para guardar\n");
 		json data;
 		for (int i = 0; i < mObjects.size(); i++) {
@@ -200,7 +203,7 @@ namespace Core {
 			object["position"] = { mObjects[i]->GetPosition().x, mObjects[i]->GetPosition().y, mObjects[i]->GetPosition().z };
 			object["rotation"] = { mObjects[i]->GetRotation().x, mObjects[i]->GetRotation().y, mObjects[i]->GetRotation().z };
 			object["scale"] = { mObjects[i]->GetScale().x, mObjects[i]->GetScale().y, mObjects[i]->GetScale().z };
-			data["objects"][i] = object;
+			
 
 			std::vector<std::shared_ptr<Core::Component>> components = mObjects[i]->GetAllComponents();
 
@@ -209,13 +212,22 @@ namespace Core {
 				//data["objects"][i]["components"][j] = component;
 				std::shared_ptr<Core::Component> comp = components[j];
 				if (typeid(*comp) == typeid(Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>)) {
+					printf("Model\n");
 					std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::static_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp);
 					component["type"] = "Model Renderer";
-					/*component["shader"] = renderer->GetShaderProgram();
-					component["model"] = renderer->*/
+					std::shared_ptr<std::string> str = resmg.GetResourceName<Core::Graphics::ShaderProgram>(renderer->GetShaderProgram().lock());
+					std::cout << *str << std::endl;
+					component["shader"] = *str;
+					component["model"] = *resmg.GetResourceName<::Graphics::Primitives::GLBModel>(renderer->GetMesh().lock());
+
 					
 				}
+
+				if (typeid(*comp) == typeid(C))
+				
+				object["components"][j] = component;
 			}
+			data["objects"][i] = object;
 		}
 		std::ofstream file;
 		file.open("Content/Maps/Scene2.json");

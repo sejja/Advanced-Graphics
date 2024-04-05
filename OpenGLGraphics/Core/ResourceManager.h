@@ -16,6 +16,7 @@
 #include "Memory/Allocator.h"
 #include "Singleton.h"
 #include "Graphics/Primitives/Shader.h"
+#include <iostream>
 
 struct IResource {
 	virtual ~IResource();
@@ -47,6 +48,12 @@ public:
 	std::unique_ptr<Ty_> rawData;
 };
 
+template<typename T>
+using Asset = std::shared_ptr<TResource<T>>;
+
+template<typename T>
+using AssetReference = std::weak_ptr<TResource<T>>;
+
 class ResourceManager {
 public:
 	using raw_text = const char*;
@@ -67,6 +74,9 @@ public:
 	void AddImporter(IResourceImporter* res, raw_text ext) noexcept;
 	void ShutDown();
 
+	template<typename T>
+	std::shared_ptr<std::string> GetResourceName(const Asset<T>& asset);
+
 protected:
 	std::shared_ptr<IResource> AddResource(raw_text mPath);
 
@@ -74,10 +84,19 @@ protected:
 	std::unordered_map<std::string, IResourceImporter*> importers;
 };
 
-template<typename T>
-using Asset = std::shared_ptr<TResource<T>>;
+
 
 template<typename T>
-using AssetReference = std::weak_ptr<TResource<T>>;
+std::shared_ptr<std::string> ResourceManager::GetResourceName(const Asset<T>& asset) {
+	for (auto a : resources) {
+		std::cout << a.first << std::endl;
+		if (a.second == asset) {
+			std::cout << "Targed adquired" << std::endl;
+			std::shared_ptr<std::string> string = std::make_shared<std::string>(a.first);
+			return string;
+		}
+	}
+	return NULL;
+}
 
 #endif

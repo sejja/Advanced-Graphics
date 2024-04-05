@@ -13,6 +13,8 @@
 #include "Assets/ShaderImporter.h"
 #include "Assets/TextureImporter.h"
 #include "../Graphics/Primitives/Model.h"
+#include <string>
+#include <iostream>
 
 // ------------------------------------------------------------------------
 /*! Initialize
@@ -109,6 +111,9 @@ void ResourceManager::ShutDown() {
 
 	resources.clear();
 }
+
+
+
 
 // ------------------------------------------------------------------------
 /*! Destructor

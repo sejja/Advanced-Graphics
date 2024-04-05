@@ -1,1 +1,32 @@
-{"objects":[{"_id":"1","name":"Prueba","position":[0.0,0.0,0.0],"rotation":[0.0,0.0,0.0],"scale":[10.0,10.0,10.0]},{"_id":"2","name":"Prueba2","position":[1.0,1.0,1.0],"rotation":[0.0,0.0,0.0],"scale":[10.0,10.0,10.0]},{"_id":"","name":"DIR Light_light","position":[50.0,20.0,55.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"SPOT Light_light","position":[-50.0,0.0,55.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"SPOT Light_light","position":[10.0,30.0,50.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"SPOT Light_light","position":[-10.0,30.0,50.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-10.0,0.0,10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-20.0,0.0,10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-30.0,0.0,10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-40.0,0.0,10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-50.0,0.0,10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-10.0,0.0,0.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-20.0,0.0,0.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-30.0,0.0,0.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-40.0,0.0,0.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-50.0,0.0,0.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-10.0,0.0,-10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-20.0,0.0,-10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-30.0,0.0,-10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-40.0,0.0,-10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-50.0,0.0,-10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-10.0,0.0,10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-20.0,0.0,10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-30.0,0.0,10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-40.0,0.0,10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[-50.0,0.0,10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[10.0,0.0,0.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[20.0,0.0,0.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[30.0,0.0,0.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[40.0,0.0,0.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[50.0,0.0,0.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[10.0,0.0,-10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[20.0,0.0,-10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[30.0,0.0,-10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[40.0,0.0,-10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[50.0,0.0,-10.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[100.0,100.0,-100.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[80.0,100.0,-80.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[60.0,100.0,-60.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[40.0,100.0,-40.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"POINT Light_light","position":[20.0,100.0,-20.0],"rotation":[0.0,0.0,0.0],"scale":[1.0,1.0,1.0]},{"_id":"","name":"Sky_bg","position":[0.0,0.0,0.0],"rotation":[0.0,0.0,0.0],"scale":[0.0,0.0,0.0]},{"_id":"PARTICLE_MANAGER","name":"ParticleManager","position":[-431602080.0,-431602080.0,-431602080.0],"rotation":[-431602080.0,-431602080.0,-431602080.0],"scale":[-431602080.0,-431602080.0,-431602080.0]}]}
+{
+    "objects": [
+        {
+            "name": "Prueba",
+            "_id": "1",
+            "position": [ 0, 0, 0 ],
+            "rotation": [ 0, 0, 0 ],
+            "scale": [ 10, 10, 10 ],
+            "components": [
+                {
+                    "type": "renderer",
+                    "mesh": "Content/Meshes/cube_averaged.obj",
+                    "shader": "Content/Shaders/DeferredGeometry.shader"
+                }
+            ]
+        },
+        {
+            "name": "Prueba2",
+            "_id": "2",
+            "position": [ 1, 1, 1 ],
+            "rotation": [ 0, 0, 0 ],
+            "scale": [ 10, 10, 10 ],
+            "components": [
+                {
+                    "type": "renderer",
+                    "mesh": "Content/Meshes/cube_averaged.obj",
+                    "shader": "Content/Shaders/DeferredGeometry.shader"
+                }
+            ]
+        }
+    ]
+}
