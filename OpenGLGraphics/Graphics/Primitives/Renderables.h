@@ -16,6 +16,7 @@
 #include "Core/ResourceManager.h"
 #include "Graphics/Primitives/ShaderProgram.h"
 #include "Graphics/Primitives/GLBModel.h"
+#include <string>
 
 namespace Core {
 	namespace Graphics {
@@ -50,6 +51,10 @@ namespace Core {
 #pragma region //Functions
 			inline void SetMesh(const AssetReference<::Graphics::Primitives::GLBModel>& model);
 			inline void SetShaderProgram(const AssetReference<Graphics::ShaderProgram>& s);
+			void SetMesh(std::string);
+			void SetShaderProgram(std::string);
+			std::string GetShader();
+			std::string GetMesh();
 			DONTDISCARD inline AssetReference<Graphics::ShaderProgram> GetShaderProgram();
 			void Render() const noexcept override;
 			inline void SetProcudesShadow(const bool shadow) noexcept;

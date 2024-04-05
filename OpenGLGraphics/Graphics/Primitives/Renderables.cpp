@@ -30,5 +30,7 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		Renderable::Renderable(const std::weak_ptr<Object>& parent) :
 			Component(parent) {}
+
+
 	}
 }

@@ -65,12 +65,6 @@ namespace Core {
 		std::ifstream f("Content/Maps/Scene.json");
 		json data = json::parse(f);
 
-		/*obj->SetName(data["objects"][0]["name"]);
-		obj->SetID(data["objects"][0]["name"]);
-		obj->SetPosition(glm::vec3(data["objects"][0]["position"][0], data["objects"][0]["position"][1], data["objects"][0]["position"][2]));
-		obj->SetRotation(glm::vec3(data["objects"][0]["rotation"][0], data["objects"][0]["rotation"][1], data["objects"][0]["rotation"][2]));
-		obj->SetScale(glm::vec3(data["objects"][0]["scale"][0], data["objects"][0]["scale"][1], data["objects"][0]["scale"][2]));*/
-
 		json objects = data["objects"];
 		for (int i = 0; i < objects.size(); i++) {
 			printf("Creating object\n");
@@ -194,6 +188,41 @@ namespace Core {
 		std::for_each(std::execution::par, mObjects.begin(), mObjects.end(), [](const std::shared_ptr<Core::Object>& x) {
 			x->Update();
 			});
+	}
+
+	void Scene::Save() {
+		printf("Listos para guardar\n");
+		json data;
+		for (int i = 0; i < mObjects.size(); i++) {
+			json object;
+			object["name"] = mObjects[i]->GetName();
+			object["_id"] = mObjects[i]->GetID();
+			object["position"] = { mObjects[i]->GetPosition().x, mObjects[i]->GetPosition().y, mObjects[i]->GetPosition().z };
+			object["rotation"] = { mObjects[i]->GetRotation().x, mObjects[i]->GetRotation().y, mObjects[i]->GetRotation().z };
+			object["scale"] = { mObjects[i]->GetScale().x, mObjects[i]->GetScale().y, mObjects[i]->GetScale().z };
+			data["objects"][i] = object;
+
+			std::vector<std::shared_ptr<Core::Component>> components = mObjects[i]->GetAllComponents();
+
+			for (int j = 0; j < components.size(); j++) {
+				json component;
+				//data["objects"][i]["components"][j] = component;
+				std::shared_ptr<Core::Component> comp = components[j];
+				if (typeid(*comp) == typeid(Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>)) {
+					std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::static_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp);
+					component["type"] = "Model Renderer";
+					/*component["shader"] = renderer->GetShaderProgram();
+					component["model"] = renderer->*/
+					
+				}
+			}
+		}
+		std::ofstream file;
+		file.open("Content/Maps/Scene2.json");
+
+		file << data;
+
+		file.close();
 	}
 
 }

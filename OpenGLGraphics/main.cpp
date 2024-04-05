@@ -31,6 +31,8 @@ int main() {
         });
     //app.mScene.UploadObjectsToPipeline(app.GetPipelineRef());
 
+    app.getScene().Save();
+
     app.SetTickFunction([&app]() {
 		app.getScene().Tick();
     });
