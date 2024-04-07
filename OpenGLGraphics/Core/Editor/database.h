@@ -5,6 +5,7 @@
 #include "Interface/AssetIcon.h"
 #include <iostream>
 #include <vector>
+#include <unordered_map>
 #include "Interface/AssetIcon.h"
 
 namespace Core {
@@ -16,6 +17,7 @@ namespace Core {
 			void closeConnection();
 			std::vector<AssetIcon> getFilesOfFolder(std::string nombre);
 			std::vector<AssetIcon> getFilesOfRoot();
+			std::unordered_map<AssetType, std::string> getAssetTypeImages();
 
 		private:
 			sqlite3* connection;
