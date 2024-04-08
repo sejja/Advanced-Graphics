@@ -1,31 +1,196 @@
 {
     "objects": [
         {
-            "name": "Prueba",
             "_id": "1",
-            "position": [ 0, 0, 0 ],
-            "rotation": [ 0, 0, 0 ],
-            "scale": [ 10, 10, 10 ],
             "components": [
                 {
-                    "type": "renderer",
-                    "mesh": "Content/Meshes/cube_averaged.obj",
-                    "shader": "Content/Shaders/DeferredGeometry.shader"
+                    "model": "Content/Meshes/cube_averaged.obj",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
                 }
+            ],
+            "name": "Prueba",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                10.0,
+                10.0,
+                10.0
             ]
         },
         {
-            "name": "Prueba2",
             "_id": "2",
-            "position": [ 1, 1, 1 ],
-            "rotation": [ 0, 0, 0 ],
-            "scale": [ 10, 10, 10 ],
             "components": [
                 {
-                    "type": "renderer",
-                    "mesh": "Content/Meshes/cube_averaged.obj",
-                    "shader": "Content/Shaders/DeferredGeometry.shader"
+                    "model": "Content/Meshes/cube_averaged.obj",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
                 }
+            ],
+            "name": "Prueba2",
+            "position": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                10.0,
+                10.0,
+                10.0
+            ]
+        },
+        {
+            "_id": "3",
+            "components": [
+                {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "direction": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "type": "Directional Light"
+                },
+                {
+                    "model": "Content/Meshes/cube_averaged.obj",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                }
+            ],
+            "name": "Luz1",
+            "position": [
+                2.0,
+                2.0,
+                2.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                10.0,
+                10.0,
+                10.0
+            ]
+        },
+        {
+            "_id": "4",
+            "components": [
+                {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "direction": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "type": "Directional Light"
+                },
+                {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "radius": 10.0,
+                    "type": "Point Light"
+                },
+                {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "direction": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "innerAngle": 10.0,
+                    "outterAngle": 10.0,
+                    "type": "Spot Light"
+                }
+            ],
+            "name": "Luz2",
+            "position": [
+                2.0,
+                2.0,
+                2.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                10.0,
+                10.0,
+                10.0
+            ]
+        },
+        {
+            "_id": "",
+            "components": [
+                null
+            ],
+            "name": "Sky_bg",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "_id": "PARTICLE_MANAGER",
+            "components": [
+                null
+            ],
+            "name": "ParticleManager",
+            "position": [
+                -431602080.0,
+                -431602080.0,
+                -431602080.0
+            ],
+            "rotation": [
+                -431602080.0,
+                -431602080.0,
+                -431602080.0
+            ],
+            "scale": [
+                -431602080.0,
+                -431602080.0,
+                -431602080.0
             ]
         }
     ]

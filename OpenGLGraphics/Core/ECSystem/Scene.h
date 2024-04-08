@@ -24,7 +24,7 @@ namespace Core {
 	public:
 		void CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Object>& obj)>);
 		void Tick();
-		void Save();
+		void Save(const std::string_view& file);
 
 		const std::vector<std::shared_ptr<Core::Object>>& GetObjects() const {
 			return mObjects;

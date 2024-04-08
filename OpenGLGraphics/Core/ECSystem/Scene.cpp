@@ -64,7 +64,7 @@ namespace Core {
 
 		/*std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();*/
 
-		std::ifstream f("Content/Maps/Scene.json");
+		std::ifstream f(file.data());
 		json data = json::parse(f);
 
 		json objects = data["objects"];
@@ -91,6 +91,28 @@ namespace Core {
 					renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>(shader.c_str()));
 					obj->AddComponent(std::move(renderer));
 					//printf("Num componentes anadidos: %d\n", obj->GetAllComponents().size());
+				} 
+				else if (components[j]["type"] == "Directional Light") {
+					printf("\tCreating light\n");
+					std::shared_ptr<::Graphics::Primitives::DirectionalLight> light = std::make_shared<::Graphics::Primitives::DirectionalLight>(obj);
+					light->mData->mColor = glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]);
+					((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)light->mData)->mDirection = glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]);
+					obj->AddComponent(std::move(light));
+				} 
+				else if (components[j]["type"] == "Point Light") { //Qué hago con inner, outter y fallOff?
+					printf("\tCreating light\n");
+					std::shared_ptr<::Graphics::Primitives::PointLight> light = std::make_shared<::Graphics::Primitives::PointLight>(obj);
+					light->mData->mColor = glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]);
+					((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mRadius = components[j]["radius"];
+					obj->AddComponent(std::move(light));
+				}
+				else if (components[j]["type"] == "Spot Light") {
+					std::shared_ptr<::Graphics::Primitives::SpotLight> light = std::make_shared<::Graphics::Primitives::SpotLight>(obj);
+					light->mData->mColor = glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]);
+					((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mDirection = glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]);
+					((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mInner = components[j]["innerAngle"];
+					((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mOutter = components[j]["outterAngle"];
+					obj->AddComponent(std::move(light));
 				}
 			}
 
@@ -98,6 +120,8 @@ namespace Core {
 			mObjects.emplace_back(std::move(obj));
 
 		}
+
+		f.close();
 
 		/*std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared< Core::Graphics::GLBModelRenderer <Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
 
@@ -109,62 +133,62 @@ namespace Core {
 		mObjects.emplace_back(std::move(obj));*/
 
 
-		int i = 0;
+		//int i = 0;
 
-		std::for_each(std::execution::seq, mParser.lights.begin(), mParser.lights.end(), [this, &i, &upload](const SceneParser::Light& x) {
-			std::shared_ptr<Core::Object> obj = std::move(std::make_shared<Core::Object>());
-			obj->SetPosition(x.pos);
-			obj->SetRotation(glm::vec3(0.f, 0.f, 0.f));
-			obj->SetScale({ 1.f, 1.f, 1.f });
-			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj));
-			std::shared_ptr<::Graphics::Primitives::Light> light;
-			renderer->SetMesh(Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
-			renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/CascadedShadowMap.shader"));
+		//std::for_each(std::execution::seq, mParser.lights.begin(), mParser.lights.end(), [this, &i, &upload](const SceneParser::Light& x) {
+		//	std::shared_ptr<Core::Object> obj = std::move(std::make_shared<Core::Object>());
+		//	obj->SetPosition(x.pos);
+		//	obj->SetRotation(glm::vec3(0.f, 0.f, 0.f));
+		//	obj->SetScale({ 1.f, 1.f, 1.f });
+		//	std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj));
+		//	std::shared_ptr<::Graphics::Primitives::Light> light;
+		//	renderer->SetMesh(Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
+		//	renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/CascadedShadowMap.shader"));
 
-			//TEMPORAL PARA SABER SI ES LUZ HASTA NUEVO LEVEL 
-			obj->SetName(x.type + " Light_light");
-			
-			//If the light is a point light
-			if (x.type == "POINT") {
-				light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mRadius = x.att.x;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mInner = x.inner;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mOutter = x.outer;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mFallOff = x.falloff;
-			}
+		//	//TEMPORAL PARA SABER SI ES LUZ HASTA NUEVO LEVEL 
+		//	obj->SetName(x.type + " Light_light");
+		//	
+		//	//If the light is a point light
+		//	if (x.type == "POINT") {
+		//		light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
+		//		((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mRadius = x.att.x;
+		//		((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mInner = x.inner;
+		//		((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mOutter = x.outer;
+		//		((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mFallOff = x.falloff;
+		//	}
 
-			//If the light is a directional light
-			else if (x.type == "DIR") {
-				light = std::move(std::make_shared<::Graphics::Primitives::DirectionalLight>(obj));
-				((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)light->mData)->mDirection = glm::normalize(x.dir);
-			}
+		//	//If the light is a directional light
+		//	else if (x.type == "DIR") {
+		//		light = std::move(std::make_shared<::Graphics::Primitives::DirectionalLight>(obj));
+		//		((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)light->mData)->mDirection = glm::normalize(x.dir);
+		//	}
 
-			//else, it's a spot light
-			else {
-				light = std::move(std::make_shared<::Graphics::Primitives::SpotLight>(obj));
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mShadowCaster = 1;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mRadius = x.att.x;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mInner = x.inner;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mOutter = x.outer;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mFallOff = x.falloff;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mDirection = x.dir;
-			}
+		//	//else, it's a spot light
+		//	else {
+		//		light = std::move(std::make_shared<::Graphics::Primitives::SpotLight>(obj));
+		//		((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mShadowCaster = 1;
+		//		((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mRadius = x.att.x;
+		//		((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mInner = x.inner;
+		//		((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mOutter = x.outer;
+		//		((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mFallOff = x.falloff;
+		//		((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mDirection = x.dir;
+		//	}
 
-			light->SetPosition(x.pos);
-			light->mData->mColor = x.col;
+		//	light->SetPosition(x.pos);
+		//	light->mData->mColor = x.col;
 
-			std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> weakrend = renderer;
-			std::weak_ptr< ::Graphics::Primitives::Light> lightrend = light;
+		//	std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> weakrend = renderer;
+		//	std::weak_ptr< ::Graphics::Primitives::Light> lightrend = light;
 
-			obj->AddComponent(std::move(weakrend));
-			obj->AddComponent(std::move(lightrend));
+		//	obj->AddComponent(std::move(weakrend));
+		//	obj->AddComponent(std::move(lightrend));
 
-			i++;
-			upload(obj);
-			mObjects.emplace_back(std::move(obj));
-			
+		//	i++;
+		//	upload(obj);
+		//	mObjects.emplace_back(std::move(obj));
+		//	
 
-			});
+		//	});
 
 		std::shared_ptr<Core::Object> sky = std::move(std::make_shared<Core::Object>());
 		std::shared_ptr<Core::Graphics::Skybox> skycomp = std::make_shared<Core::Graphics::Skybox>(sky);
@@ -192,7 +216,7 @@ namespace Core {
 			});
 	}
 
-	void Scene::Save() {
+	void Scene::Save(const std::string_view& filename) {
 		auto resmg = Singleton<ResourceManager>::Instance();
 		printf("Listos para guardar\n");
 		json data;
@@ -211,28 +235,57 @@ namespace Core {
 				json component;
 				//data["objects"][i]["components"][j] = component;
 				std::shared_ptr<Core::Component> comp = components[j];
+				//printf("Component type: %s\n", typeid(*comp).name());
 				if (typeid(*comp) == typeid(Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>)) {
-					printf("Model\n");
+					//printf("Model\n");
 					std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::static_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp);
 					component["type"] = "Model Renderer";
 					std::shared_ptr<std::string> str = resmg.GetResourceName<Core::Graphics::ShaderProgram>(renderer->GetShaderProgram().lock());
-					std::cout << *str << std::endl;
+					//std::cout << *str << std::endl;
 					component["shader"] = *str;
 					component["model"] = *resmg.GetResourceName<::Graphics::Primitives::GLBModel>(renderer->GetMesh().lock());
-
-					
+				} else if (typeid(*comp) == typeid(::Graphics::Primitives::DirectionalLight)) {
+					printf("Se hizo la luz\n");
+					component["type"] = "Directional Light";
+					std::shared_ptr<::Graphics::Primitives::DirectionalLight> light = std::static_pointer_cast<::Graphics::Primitives::DirectionalLight>(comp);
+					component["color"][0] = light->mData->mColor.r;
+					component["color"][1] = light->mData->mColor.g;
+					component["color"][2] = light->mData->mColor.b;
+					component["direction"][0] = ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)(light->mData))->mDirection.x;
+					component["direction"][1] = ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)(light->mData))->mDirection.y;
+					component["direction"][2] = ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)(light->mData))->mDirection.z;
 				}
-
-				if (typeid(*comp) == typeid(C))
+				else if (typeid(*comp) == typeid(::Graphics::Primitives::PointLight)) {
+					printf("Se hizo la luz\n");
+					component["type"] = "Point Light";
+					std::shared_ptr<::Graphics::Primitives::PointLight> light = std::static_pointer_cast<::Graphics::Primitives::PointLight>(comp);
+					component["color"][0] = light->mData->mColor.r;
+					component["color"][1] = light->mData->mColor.g;
+					component["color"][2] = light->mData->mColor.b;
+					component["radius"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mRadius;
+				}
+				else if (typeid(*comp) == typeid(::Graphics::Primitives::SpotLight)) {
+					printf("Se hizo la luz\n");
+					component["type"] = "Spot Light";
+					std::shared_ptr<::Graphics::Primitives::PointLight> light = std::static_pointer_cast<::Graphics::Primitives::PointLight>(comp);
+					component["color"][0] = light->mData->mColor.r;
+					component["color"][1] = light->mData->mColor.g;
+					component["color"][2] = light->mData->mColor.b;
+					component["direction"][0] = ((::Graphics::Primitives::SpotLight::SpotLightData*)(light->mData))->mDirection.x;
+					component["direction"][1] = ((::Graphics::Primitives::SpotLight::SpotLightData*)(light->mData))->mDirection.y;
+					component["direction"][2] = ((::Graphics::Primitives::SpotLight::SpotLightData*)(light->mData))->mDirection.z;
+					component["innerAngle"] = ((::Graphics::Primitives::SpotLight::SpotLightData*)(light->mData))->mInner;
+					component["outterAngle"] = ((::Graphics::Primitives::SpotLight::SpotLightData*)(light->mData))->mOutter;
+				}
 				
 				object["components"][j] = component;
 			}
 			data["objects"][i] = object;
 		}
 		std::ofstream file;
-		file.open("Content/Maps/Scene2.json");
+		file.open(filename.data());
 
-		file << data;
+		file << data.dump(4);
 
 		file.close();
 	}

@@ -89,9 +89,9 @@ protected:
 template<typename T>
 std::shared_ptr<std::string> ResourceManager::GetResourceName(const Asset<T>& asset) {
 	for (auto a : resources) {
-		std::cout << a.first << std::endl;
+		//std::cout << a.first << std::endl;
 		if (a.second == asset) {
-			std::cout << "Targed adquired" << std::endl;
+			//std::cout << "Targed adquired" << std::endl;
 			std::shared_ptr<std::string> string = std::make_shared<std::string>(a.first);
 			return string;
 		}
