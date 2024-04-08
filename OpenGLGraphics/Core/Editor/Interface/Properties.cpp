@@ -25,6 +25,8 @@
 #include "Graphics/Primitives/Lights/DirectionalLight.h"
 #include "Graphics/Primitives/Lights/PointLight.h"
 #include "Graphics/Primitives/Lights/SpotLight.h"
+#include <Core/ECSystem/Scene.h>
+#include <Core/AppWrapper.h>
 
 
 SelectedObj& selectedObjIns = Singleton<Editor>::Instance().GetSelectedObj();
@@ -93,6 +95,7 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
             TransformOptions();
             UpdateLightCompsPos(obj);
+            sendToPeer(obj);
         }
 	}
 
@@ -213,7 +216,12 @@ void Properties::objectOutliner() {
 
         if (ImGui::Button(ICON_FA_PLUS " Add")) {
             ImGui::OpenPopup("new_component_modal");
+        }ImGui::SameLine();
+
+        if (ImGui::Button(ICON_FA_TRASH " Delete")) {
+            ImGui::OpenPopup("delete_object_modal");
         }
+
         if (ImGui::BeginPopup("new_component_modal")) {
 
             ImGui::SeparatorText("Components");
@@ -241,6 +249,21 @@ void Properties::objectOutliner() {
 
             ImGui::EndPopup();
         }
+
+        if (ImGui::BeginPopup("delete_object_modal")) {
+
+            ImGui::SeparatorText("Confirm Delete Object");
+
+            if (ImGui::Selectable(ICON_FA_TRASH_ARROW_UP " Delete")) {
+                Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
+                scene.removeObject(obj);
+            }
+
+
+
+            ImGui::EndPopup();
+        }
+
         selectedObjectTree(); ImGui::Spacing();
     }
 }
@@ -416,7 +439,6 @@ void Properties::TransformOptions() {
     obj->SetRotation(curRot);
     obj->SetScale(curScale);
 
-    sendToPeer(obj);
 }
 
 void Properties::LightTransform() {
@@ -795,6 +817,7 @@ void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline)
             printf("RUTA SHADER PROG: %s\n", asset->ruta);
             //meshComp->SetShaderProgram(resmg.GetResource<Gra>("Content/Shaders/Refractive.shader"));
 
+          
             Asset<ShaderProgram> newShader = resmg.GetResource<ShaderProgram>(asset->ruta);
             AssetReference<ShaderProgram> curShaderRef = meshComp->GetShaderProgram();
             Asset<ShaderProgram> curShader = curShaderRef.lock();;
