@@ -33,7 +33,7 @@ SelectedObj& selectedObjIns = Singleton<Editor>::Instance().GetSelectedObj();
 auto& resmg = Singleton<ResourceManager>::Instance();
 
 
-//SACAR LOS SENDTOPEER DE AQUI 
+//TODO: SACAR LOS SENDTOPEER DE AQUI 
 void sendToPeer(std::shared_ptr<Core::Object> obj) {
     Server& server = Singleton<Server>::Instance();
     Client& client = Singleton<Client>::Instance();
@@ -50,7 +50,6 @@ void sendToPeer(std::shared_ptr<Core::Object> obj) {
 void sendToPeer(std::shared_ptr<Core::Particles::FireSystem> particleSys) {
     Server& server = Singleton<Server>::Instance();
     Client& client = Singleton<Client>::Instance();
-
 
     if (server.isRunning()) {
         server.sendParticleIfChanged(particleSys);
@@ -130,6 +129,7 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Particle Transform", ImGuiTreeNodeFlags_DefaultOpen)) {
             ParticleTransform();
             FireSize();
+            sendToPeer(fireSystem);
         }
     }
 
@@ -931,9 +931,8 @@ void Properties::FireSize() {
             glm::vec4 newColor = glm::vec4(baseColor.x, baseColor.y, baseColor.z, baseColor.w);
             fireSystem->SetBaseColor(newColor);
 
-
 			fireSystem->saveState();
-			sendToPeer(fireSystem);
+
 
 		}
         
