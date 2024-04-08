@@ -1151,6 +1151,7 @@ void TextEditor::Render()
 void TextEditor::ChangeFile(const char* aFile)
 {
 	fileToEdit = aFile;
+	fileToEdit = changeExtension(fileToEdit, ".frag");
 	firstTime = true;
 	SetText("");
 }
