@@ -63,10 +63,10 @@ namespace Core {
         }
 
         void Skybox::Render(Core::Primitives::Camera& cam, Core::Graphics::OpenGLPipeline& pipeline) {
-            glDepthFunc(GL_LEQUAL);
             //Disable depth mask, enable it later
             glDepthMask(GL_FALSE);
             glDisable(GL_CULL_FACE);
+            glDepthFunc(GL_LEQUAL);
 
             // Bind the program and this object's VAO
             mShaderProgram->Get()->Bind();

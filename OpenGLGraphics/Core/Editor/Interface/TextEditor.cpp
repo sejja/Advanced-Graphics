@@ -1162,7 +1162,7 @@ bool TextEditor::isFocused()
 
 void TextEditor::Render(const char* aTitle, bool aBorder)
 {
-	ImGui::Begin("Text Editor");
+	ImGui::Begin("Shader Editor");
 	ImVec2 aSize = ImGui::GetContentRegionAvail();
 	 { // Save
 		if (ImGui::Button("Save")) {

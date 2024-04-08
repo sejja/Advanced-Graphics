@@ -5,11 +5,14 @@
 #include "Core/Editor/SelectedObj.h"
 #include "Core/Singleton.h"
 #include "database.h"
+#include "Core/Editor/Interface/AssetIcon.h"
 
 
 
 Editor::Editor() : editorLocked(false) {
 	this->database = new Core::Editor::Database("../AssetLoader/database.db");
+	database->getAssetTypeImages();
+	AssetIcon::assetTypeImages = database->getAssetTypeImages();
 	//assetManager = std::make_unique < AssetManager >();
 }
 
@@ -26,9 +29,8 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	//If any input is being used, camera controls are locked
 	editorLocked = ImGui::IsAnyItemActive() || texteditor.isFocused();
 
-	//Abre una demo de opciones de imgui
-	ImGui::ShowDemoWindow();
-
+	//Singleton para gestionar objeto seleccionado
+	Singleton<SelectedObj>::Instance();
 
 	mainMenu.Render(pipeline);
 	assetManager.Render();
@@ -39,7 +41,7 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	//SceneView
 	sceneView.Render(pipeline);
 	
-	texteditor.Render("TextEditor",1);
+	texteditor.Render("Shader Editor",1);
 
 	
 
