@@ -17,6 +17,8 @@ namespace Core {
             baseColor = NormalizeRGBA(252, 186, 3, 255);
             acceleration = glm::vec3(0.0f, 0.5f, 0.0f);
             SetSystemCenter(glm::vec3(0.0f, 0.0f, 75.0f)); 
+            this->name = "fuego";
+            this->id = "fuego";
 		}
 
         /*The center of the system is in 0,0,0 by default*/
