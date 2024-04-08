@@ -55,11 +55,3 @@ NOMBRE TEXT
 
 insert into asset (NOMBRE, RUTA, CARPETA) VALUES ("HOLA", "RUTA", 1);
 SELECT * FROM ASSET;
-
-
-
-
-
-
-
-
