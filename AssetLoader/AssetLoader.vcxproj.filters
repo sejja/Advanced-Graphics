@@ -18,9 +18,6 @@
     <ClCompile Include="main.c">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="prueba1.c">
-      <Filter>Archivos de origen</Filter>
-    </ClCompile>
     <ClCompile Include="sqlite3.c">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
