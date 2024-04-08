@@ -64,7 +64,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 		ImGui::PopStyleColor(1);
 		if (dibujarToolTip == false) {
 			bool dragDrop = ImGui::BeginDragDropSource();
-			printf("Dragdrop: %d\n", dragDrop);
+			//printf("Dragdrop: %d\n", dragDrop);
 			if (dragDrop) {
 				//printf("Dragging");
 				dibujar(true);
@@ -144,7 +144,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 		ImGui::PopStyleColor(1);
 		if (dibujarToolTip == false) {
 			bool dragDrop = ImGui::BeginDragDropSource();
-			printf("Dragdrop: %d\n", dragDrop);
+			//printf("Dragdrop: %d\n", dragDrop);
 			if (dragDrop) {
 				//printf("Dragging");
 				dibujar(true);
