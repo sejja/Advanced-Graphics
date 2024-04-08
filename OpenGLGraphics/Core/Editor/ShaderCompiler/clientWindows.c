@@ -9,12 +9,8 @@ char* changeExtension(char* myStr) {
     char* retStr;    // Pointer to the modified file path
     char* lastExt;   // Pointer to the last occurrence of '.'
 
-    // Check if input string is NULL
-    if (myStr == NULL)
-        return NULL;
-
-    // Allocate memory for the modified file path
-    if ((retStr = malloc(strlen(myStr) + 5)) == NULL)
+    // Check if input string is NULL or memory allocation fails
+    if (myStr == NULL || (retStr = malloc(strlen(myStr) + 5)) == NULL)
         return NULL;
 
     // Copy the input string to the modified string
