@@ -11,7 +11,9 @@
 #include "Core/Input/InputManager.h"
 #include "Core/Singleton.h"
 #include "Core/RTTI.h"
+
 #include "Core/Editor/Editor.h"
+
 
 namespace Core {
 	namespace Primitives {
@@ -44,6 +46,18 @@ namespace Core {
 			ed.Unsubscribe(*this, Core::Input::InputManager::S_Down());
 			ed.Unsubscribe(*this, Core::Input::InputManager::E_Down());
 			ed.Unsubscribe(*this, Core::Input::InputManager::Q_Down());
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Get Projection Matrix
+		*
+		*   Returns the Camera's Projection Matrix
+		*/ //----------------------------------------------------------------------
+		glm::mat4 Camera::GetProjectionMatrix() const {
+			float aspectRatio = Singleton<::Editor>::Instance().GetAspectRatio();
+			float fov = *Singleton<::Editor>::Instance().GetFOV();
+
+			return glm::perspective(glm::radians(fov), aspectRatio, 0.1f, zfar);
 		}
 	}
 }

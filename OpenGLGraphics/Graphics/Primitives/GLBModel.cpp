@@ -16,12 +16,23 @@ namespace Graphics {
 		}
 
 		void GLBModel::Draw(Core::Graphics::ShaderProgram& shader) {
-			for (unsigned int i = 0; i < meshes.size(); i++)
+            for (unsigned int i = 0; i < meshes.size(); i++)
 				meshes[i].Draw(shader);
 		}
 
+        std::string GLBModel::getDirectory()
+        {
+            return modelPath.substr(0, modelPath.find_last_of('/'));
+        }
+
+        std::string GLBModel::getPath() {
+            return modelPath;
+        }
+
         void GLBModel::loadModel(std::string const& path)
         {
+            modelPath = path;
+
             std::string directory;
             const size_t last_slash_idx = path.rfind('\\');
             if (std::string::npos != last_slash_idx)

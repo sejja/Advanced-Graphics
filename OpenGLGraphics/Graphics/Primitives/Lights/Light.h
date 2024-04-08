@@ -13,6 +13,7 @@ namespace Graphics {
 		public:
 			struct BackedLightData {
 				glm::vec3 mPosition;
+				glm::vec3 mRelativePosition;
 				glm::vec3 mColor;
 				int mShadowCaster;
 				virtual float CalculateSphereOfInfluence() const = 0;
@@ -24,11 +25,18 @@ namespace Graphics {
 
 			void Update() override;
 			glm::vec3 GetPosition() const;
-			void SetPosition(const glm::vec3& position);
+			void SetPosition(const glm::vec3& position, const glm::vec3 objPos);
+
+			glm::vec3 GetColor() const;
+			void SetColor(const glm::vec3& color);
 
 			static std::size_t sLightReg;
-			BackedLightData* mData;
+			
 			std::size_t mIndex;
+			BackedLightData* mData;
+	
+	private:
+		
 		};
 	}
 }

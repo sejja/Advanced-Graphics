@@ -50,7 +50,7 @@ namespace Core {
 			GLuint GetBloomTexture() { return mBloomRenderer->BloomTexture(); }
 		
 
-			
+			void updateRenderablesGroups(const Asset<ShaderProgram>& curShader, const Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable);
 
 		private:
 			void GeometryPass();

@@ -30,6 +30,13 @@ namespace Graphics {
             // draws the model, and thus all its meshes
             void Draw(Core::Graphics::ShaderProgram& shader);
 
+            //get the model's directory
+            std::string getDirectory();
+            std::string getPath();
+
+
+
+
         private:
             // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
             void loadModel(std::string const& path);
@@ -42,6 +49,8 @@ namespace Graphics {
             // checks all material textures of a given type and loads the textures if they're not loaded yet.
             // the required info is returned as a Texture struct.
             std::vector<Asset<Core::Graphics::Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& dir);
+
+            std::string modelPath;
         };
 	}
 }

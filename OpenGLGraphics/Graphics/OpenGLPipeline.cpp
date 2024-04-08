@@ -331,6 +331,34 @@ namespace Core {
 		}
 
 
+		void OpenGLPipeline::updateRenderablesGroups(const Asset<ShaderProgram>& curShader, const Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable)
+		{
+			auto curShaderIt = mGroupedRenderables.find(curShader);
+			auto newShaderIt = mGroupedRenderables.find(newShader);
+
+			// Si se encuentra el curShader en el mapa
+			if (curShaderIt != mGroupedRenderables.end()) {
+				// Busca el renderable que ya estaba en el cursher
+				auto& renderablesVector = curShaderIt->second;
+				auto renderableIt = std::find_if(renderablesVector.begin(), renderablesVector.end(), [&](const std::weak_ptr<Renderable>& weakRenderable) {
+					return !weakRenderable.expired() && weakRenderable.lock() == renderable;
+					});
+
+				// Si se encuentra el renderable, lo traslada al vector del nuevo shader
+				if (renderableIt != renderablesVector.end()) {
+					if (newShaderIt == mGroupedRenderables.end()) {
+						// Si newShader no existe lo mete
+						mGroupedRenderables[newShader] = std::vector<std::weak_ptr<Renderable>>();
+						newShaderIt = mGroupedRenderables.find(newShader);
+					}
+
+					// curShader a --> newShader
+					newShaderIt->second.push_back(*renderableIt);
+					renderablesVector.erase(renderableIt);
+				}
+			}
+		}
+
 		// ------------------------------------------------------------------------
 		/*! Geometry Pass
 		*

@@ -125,6 +125,7 @@ namespace Core
 				std::vector<Particle> particles;
 				Core::Primitives::Camera* camera;
 				glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
+				//glm::mat4 projection = camera->GetProjectionMatrix();
 
 				int ParticleFunction(Particle *p_particle);
 				virtual void Init();

@@ -49,11 +49,17 @@ namespace Core {
 
 #pragma region //Functions
 			inline void SetMesh(const AssetReference<::Graphics::Primitives::GLBModel>& model);
+			
+			
 			inline void SetShaderProgram(const AssetReference<Graphics::ShaderProgram>& s);
+
 			DONTDISCARD inline AssetReference<Graphics::ShaderProgram> GetShaderProgram();
+			DONTDISCARD inline AssetReference<::Graphics::Primitives::GLBModel> GetMesh() const;
+
 			void Render() const noexcept override;
 			inline void SetProcudesShadow(const bool shadow) noexcept;
 			inline bool GetProcudesShadow() const noexcept;
+
 #pragma endregion
 
 #pragma region //Variables
@@ -72,6 +78,8 @@ namespace Core {
 			mModel = model.lock();
 		}
 
+
+
 		// ------------------------------------------------------------------------
 		/*! Set Shader Program
 		*
@@ -89,6 +97,18 @@ namespace Core {
 		AssetReference<Graphics::ShaderProgram> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetShaderProgram() {
 			return mShaderProgram;
 		}
+
+		// ------------------------------------------------------------------------
+		/*! Get Mesh
+		* 
+		* Gets the Mesh associated with this renderer
+		*/ // ---------------------------------------------------------------------
+
+		AssetReference<::Graphics::Primitives::GLBModel> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetMesh() const {
+			return mModel;
+		}
+
+
 	}
 }
 
