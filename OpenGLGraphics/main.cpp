@@ -20,9 +20,6 @@
 *   Program Entry point
 */ //----------------------------------------------------------------------
 int main() {
-
-
-
     AppWrapper& app = Singleton<AppWrapper>::Instance();
     
 	app.getScene().CreateScene("Content/Maps/Sponza.level", [&app](const std::shared_ptr<Core::Object>& obj) {

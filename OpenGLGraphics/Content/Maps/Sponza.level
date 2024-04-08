@@ -9,7 +9,7 @@ camTarget 0 0 50
 camUp 0 1 0
     
 #scene data
-object floor
+object Palace
 translate 0 -10 0
 rotation 0 0 0
 scale 0.2 0.2 0.2
@@ -17,7 +17,7 @@ mesh Content/Scenes/Sponza/Sponza.gltf
 
 
 #scene data
-object floor
+object Dragon
 translate 0 -10 0
 rotation 0 0 0
 scale 0.8 0.8 0.8

@@ -9,7 +9,7 @@ camTarget 0 0 50
 camUp 0 1 0
     
 #scene data
-object floor
+object Terrain
 translate 0 -10 0
 rotation 0 0 0
 scale 100 100 100

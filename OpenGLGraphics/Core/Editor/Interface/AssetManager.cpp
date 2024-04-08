@@ -89,7 +89,7 @@ void AssetManager::Render() {
 	ImGui::EndGroup();
 	ImGui::End();
 
-	drawDropWindow();
+	//drawDropWindow();
 
 	
 }
