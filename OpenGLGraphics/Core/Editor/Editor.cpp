@@ -5,10 +5,13 @@
 #include "Core/Editor/SelectedObj.h"
 #include "Core/Singleton.h"
 #include "database.h"
+#include "Core/Editor/Interface/AssetIcon.h"
 
 
 Editor::Editor() : editorLocked(false) {
 	this->database = new Core::Editor::Database("../AssetLoader/database.db");
+	database->getAssetTypeImages();
+	AssetIcon::assetTypeImages = database->getAssetTypeImages();
 	//assetManager = std::make_unique < AssetManager >();
 }
 

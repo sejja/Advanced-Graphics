@@ -8,20 +8,21 @@
 
 void cargarDirectorio(char incomePath[], sqlite3* database, int folderCode);
 void emptyDatabase(sqlite3* database);
+void configuration(char* configPath, char* pathToLoad, char* databasePath);
 
 int main(int argc, char* argv[]) {
 
     char* actualPath = (char*)malloc(sizeof(char)*100);
+    char* databasePath = (char*)malloc(sizeof(char) * 100);
     printf("%d\n", argc);
     
     if (argc == 2) {
         actualPath = argv[1];
+        databasePath = "database.db";
     }
     else {
         //actualPath[100];
-        _getcwd(actualPath, 100);
-        printf("El directorio actual es: %s\n", actualPath);
-        strcat(actualPath, "\\..\\OpenGLGraphics\\Content");
+        configuration("load.config", actualPath, databasePath);
     }
     
 
@@ -32,7 +33,7 @@ int main(int argc, char* argv[]) {
     
     
 
-    int i = sqlite3_open("database.db", &database);
+    int i = sqlite3_open(databasePath, &database);
     printf("Database pointer: %p\n", database);
     printf("Codigo Apertura: %s\n", sqlite3_errstr(i)); 
 
@@ -67,6 +68,7 @@ int main(int argc, char* argv[]) {
     sqlite3_close(database);
     if (argc != 2) {
         free(actualPath);
+        free(databasePath);
     }
     printf("Codigo cierre base de datos: %s\n", sqlite3_errstr(i));  
     printf("Se acabo");
@@ -158,4 +160,28 @@ void emptyDatabase(sqlite3* database) {
     //sqlite3_stmt* stmt2;
     i = sqlite3_exec(database, sqlString2, NULL, NULL, NULL);
     printf("Error code %s", sqlite3_errstr(i));
+}
+
+void configuration(char* configPath, char* pathToLoad, char* databasePath) {
+    FILE* file = fopen(configPath, "r");
+    char c = fgetc(file);
+    //char fileContent[200];
+    int i = 0;
+    while (c != '\n' && c != EOF) {
+        pathToLoad[i] = c;
+        i++;
+        c = fgetc(file);
+    }
+    pathToLoad[i] = '\0';
+    printf("%s\n", pathToLoad);
+
+    c = fgetc(file);
+    i = 0;
+    while (c != '\n' && c != EOF) {
+        databasePath[i] = c;
+        i++;
+        c = fgetc(file);
+    }
+    databasePath[i] = '\0';
+    printf("%s\n", databasePath);
 }
