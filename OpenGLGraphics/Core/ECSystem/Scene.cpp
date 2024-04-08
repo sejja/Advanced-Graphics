@@ -79,12 +79,12 @@ namespace Core {
 
 			json components = objects[i]["components"];
 			//printf("Number of components: %d", components.size());
-			for (int j = 0; j < components.size(); j++) { //Por algún motivo no se añade el segundo renderer
-				if (components[j]["type"] == "renderer") {
+			for (int j = 0; j < components.size(); j++) {
+				if (components[j]["type"] == "Model Renderer") {
 					printf("\tCreating renderer\n");
 					std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer <Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
 
-					std::string mesh = components[j]["mesh"];
+					std::string mesh = components[j]["model"];
 					renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(mesh.c_str()));
 
 					std::string shader = components[j]["shader"];
@@ -96,6 +96,7 @@ namespace Core {
 					printf("\tCreating light\n");
 					std::shared_ptr<::Graphics::Primitives::DirectionalLight> light = std::make_shared<::Graphics::Primitives::DirectionalLight>(obj);
 					light->mData->mColor = glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]);
+					light->mData->mShadowCaster = components[j]["shadowCaster"];
 					((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)light->mData)->mDirection = glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]);
 					obj->AddComponent(std::move(light));
 				} 
@@ -103,12 +104,16 @@ namespace Core {
 					printf("\tCreating light\n");
 					std::shared_ptr<::Graphics::Primitives::PointLight> light = std::make_shared<::Graphics::Primitives::PointLight>(obj);
 					light->mData->mColor = glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]);
+					light->mData->mShadowCaster = components[j]["shadowCaster"];
 					((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mRadius = components[j]["radius"];
+					((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mInner = components[j]["innerAngle"];
+					((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mOutter = components[j]["outterAngle"];
 					obj->AddComponent(std::move(light));
 				}
 				else if (components[j]["type"] == "Spot Light") {
 					std::shared_ptr<::Graphics::Primitives::SpotLight> light = std::make_shared<::Graphics::Primitives::SpotLight>(obj);
 					light->mData->mColor = glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]);
+					light->mData->mShadowCaster = components[j]["shadowCaster"];
 					((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mDirection = glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]);
 					((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mInner = components[j]["innerAngle"];
 					((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mOutter = components[j]["outterAngle"];
@@ -251,6 +256,7 @@ namespace Core {
 					component["color"][0] = light->mData->mColor.r;
 					component["color"][1] = light->mData->mColor.g;
 					component["color"][2] = light->mData->mColor.b;
+					component["shadowCaster"] = light->mData->mShadowCaster;
 					component["direction"][0] = ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)(light->mData))->mDirection.x;
 					component["direction"][1] = ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)(light->mData))->mDirection.y;
 					component["direction"][2] = ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)(light->mData))->mDirection.z;
@@ -262,7 +268,10 @@ namespace Core {
 					component["color"][0] = light->mData->mColor.r;
 					component["color"][1] = light->mData->mColor.g;
 					component["color"][2] = light->mData->mColor.b;
+					component["shadowCaster"] = light->mData->mShadowCaster;
 					component["radius"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mRadius;
+					component["innerAngle"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mInner;
+					component["outterAngle"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mOutter;
 				}
 				else if (typeid(*comp) == typeid(::Graphics::Primitives::SpotLight)) {
 					printf("Se hizo la luz\n");
@@ -271,6 +280,7 @@ namespace Core {
 					component["color"][0] = light->mData->mColor.r;
 					component["color"][1] = light->mData->mColor.g;
 					component["color"][2] = light->mData->mColor.b;
+					component["shadowCaster"] = light->mData->mShadowCaster;
 					component["direction"][0] = ((::Graphics::Primitives::SpotLight::SpotLightData*)(light->mData))->mDirection.x;
 					component["direction"][1] = ((::Graphics::Primitives::SpotLight::SpotLightData*)(light->mData))->mDirection.y;
 					component["direction"][2] = ((::Graphics::Primitives::SpotLight::SpotLightData*)(light->mData))->mDirection.z;
