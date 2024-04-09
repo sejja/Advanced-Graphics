@@ -10,7 +10,7 @@
 #ifndef _G_BUFFER__H_
 #define _G_BUFFER__H_
 
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
 #include "Graphics/Primitives/ShaderProgram.h"
 #include "CommonDefines.h"
 #include <glew.h>
@@ -25,7 +25,7 @@ namespace Core {
 			void Bind();
 			void BindLightingShader();
 			void BlitDepthBuffer(GLuint buff = NULL);
-			Asset<ShaderProgram> GetLightingShader();
+			Core::Assets::Asset<ShaderProgram> GetLightingShader();
 			GLuint GetPositionTextureHandle();
 			GLuint GetNormalTextureHandle();
 			GLuint GetAlbedoTextureHandle();

@@ -9,7 +9,7 @@
 #include "ModelImporter.h"
 #include "Graphics/Primitives/GLBModel.h"
 #include "Core/Memory/PageAllocator.h"
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
 
 namespace Core {
 	namespace Assets {

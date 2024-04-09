@@ -5,7 +5,7 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
 #include "Graphics/Primitives/Shader.h"
 #include "Graphics/Primitives/ShaderProgram.h"
 #include "TextEditor.h"
@@ -1180,11 +1180,11 @@ void TextEditor::Render(const char* aTitle, bool aBorder)
 			// Use C File ClientWindows to connect to server and send the file
 			if (compile(fileToEdit)) {
 				// If compile succesful, load shader
-				auto vert = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Shader>("Content/Shaders/Transform.vert");
-				auto frag = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Shader>(fileToEdit);
+				auto vert = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Shader>("Content/Shaders/Transform.vert");
+				auto frag = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Shader>(fileToEdit);
 				frag->Get()->ReloadShaderSPIRV(changeExtension(fileToEdit,".spv"), Core::Graphics::Shader::EType::Fragment);
 				vert->Get()->ReloadShaderSPIRV("Content/Shaders/Transform.spv", Core::Graphics::Shader::EType::Vertex);
-				Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>(changeExtension(fileToEdit,".shader"))->Get()->ReloadShader(vert, frag);
+				Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>(changeExtension(fileToEdit,".shader"))->Get()->ReloadShader(vert, frag);
 			}
 			
 		}

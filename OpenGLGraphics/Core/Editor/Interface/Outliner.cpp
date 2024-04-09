@@ -1,6 +1,6 @@
 ﻿#include "Outliner.h"
 #include "Dependencies/ImGui/imgui.h"
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
 #include "Core/ECSystem/Scene.h"
 #include "Core/AppWrapper.h"
 #include "Core/ECSystem/Scene.h"
@@ -71,7 +71,7 @@ void Outliner::RenderOptions()
 	ImGui::SameLine();
 	if (ImGui::Button(ICON_FA_CIRCLE_PLUS" New Object")) {
 		Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
-		auto& resmg = Singleton<ResourceManager>::Instance();
+		auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
 
 		std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
 		obj->SetPosition(glm::vec3(0.0f,0.0f,0.0f));

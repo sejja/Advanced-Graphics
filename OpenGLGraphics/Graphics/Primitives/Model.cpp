@@ -14,8 +14,8 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		Model::Model() noexcept :
 			mVAO(NULL), mVBO(NULL), mIBO(NULL), mCount(0), mMaterial(),
-			mDiffuseTex(Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/Brick.png")),
-			mNormalTex(Singleton<ResourceManager>::Instance().GetResource<Texture>("Content/Textures/BrickNormal.png")){}
+			mDiffuseTex(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Texture>("Content/Textures/Brick.png")),
+			mNormalTex(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Texture>("Content/Textures/BrickNormal.png")){}
 		
 		// ------------------------------------------------------------------------
 		/*! Destructor
@@ -75,11 +75,11 @@ namespace Core {
 
 			if (materials.size()) {
 				if (!materials[0].diffuse_texname.empty()) {
-					mDiffuseTex = Singleton<ResourceManager>::Instance().GetResource<Texture>((directory + '/' + materials[0].diffuse_texname).c_str());
+					mDiffuseTex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Texture>((directory + '/' + materials[0].diffuse_texname).c_str());
 				}
 
 				if (!materials[0].bump_texname.empty()) {
-					mNormalTex = Singleton<ResourceManager>::Instance().GetResource<Texture>((directory + '/' + materials[0].bump_texname).c_str());
+					mNormalTex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Texture>((directory + '/' + materials[0].bump_texname).c_str());
 				}
 			}
 

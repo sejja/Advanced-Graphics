@@ -63,7 +63,7 @@ and fragment shader used by a shape when drawing
 void Primitive::LoadShader(const char* shaderpath)
 {
 
-    mShader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>(shaderpath);
+    mShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>(shaderpath);
 
 }
 

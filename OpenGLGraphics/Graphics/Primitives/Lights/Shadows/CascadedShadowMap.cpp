@@ -16,7 +16,7 @@ namespace Graphics {
 			namespace Shadows {
                 CascadedShadowMap::CascadedShadowMap() {
                     CreateShadowMapGPUData();
-                    shadowMapShader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/CascadedShadowMap.shader");
+                    shadowMapShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/CascadedShadowMap.shader");
                 }
                 void CascadedShadowMap::CreateShadowMapGPUData() {
                     shadowCascadeLevels = { 10000.f / 50.0f, 10000.f / 25.0f, 10000.f / 10.0f, 10000.f / 2.0f };
@@ -147,7 +147,7 @@ namespace Graphics {
                     glBindTexture(GL_TEXTURE_2D_ARRAY, lightDepthMaps);
                 }
 
-                void CascadedShadowMap::SetUniforms(const Asset<Core::Graphics::ShaderProgram>& shader) {
+                void CascadedShadowMap::SetUniforms(const Core::Assets::Asset<Core::Graphics::ShaderProgram>& shader) {
                     Bind();
                     int cascadeLevels = shadowCascadeLevels.size();
 

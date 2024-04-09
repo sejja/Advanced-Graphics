@@ -51,7 +51,7 @@ namespace Core {
 			glDisable(GL_STENCIL_TEST);
 			glClearColor(0.f, 0.f, 0.f, 0.f);
 			mGBuffer = std::make_unique<GBuffer>();
-			mDirectionalLightShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DirectionalLight.shader");
+			mDirectionalLightShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DirectionalLight.shader");
 
 
 			mFrameBuffer = std::make_unique<FrameBuffer>();
@@ -61,7 +61,7 @@ namespace Core {
 			mHDRBuffer = std::make_unique<HDRBuffer>();
 			mHDRBuffer->Create();
 			mHDRBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
-			RendererShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Renderer.shader");
+			RendererShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Renderer.shader");
 
 			//-------------------------
 			glEnable(GL_MULTISAMPLE);
@@ -124,9 +124,9 @@ namespace Core {
 		*
 		*   
 		*/ 
-		void OpenGLPipeline::FlushObsoletes(unordered_multimap<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes)
+		void OpenGLPipeline::FlushObsoletes(unordered_multimap<Core::Assets::Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes)
 		{
-			for_each(execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](pair<const Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> x) {
+			for_each(execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](pair<const Core::Assets::Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> x) {
 
 				vector<weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
 				it.erase(x.second);
@@ -140,8 +140,8 @@ namespace Core {
 		*
 		*   Prepare and render the GUI
 		*/ 
-		void OpenGLPipeline::GroupRender(unordered_multimap<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes,
-			const pair<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>>& it,
+		void OpenGLPipeline::GroupRender(unordered_multimap<Core::Assets::Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes,
+			const pair<Core::Assets::Asset<ShaderProgram>, vector<weak_ptr<Renderable>>>& it,
 			ShaderProgram* shader)
 		{
 			for (vector<weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
@@ -266,12 +266,12 @@ namespace Core {
 
 
 		void OpenGLPipeline::RenderShadowMaps() {
-			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
+			std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
 			mLightPass->RenderShadowMaps(cam.GetViewMatrix(), [&obsoletes, this](ShaderProgram* shader) {
 				//Render all objects
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
-				[this, &obsoletes, &shader](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+				[this, &obsoletes, &shader](const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 						GroupRender(obsoletes, it, shader);
 					});
 
@@ -331,7 +331,7 @@ namespace Core {
 		}
 
 
-		void OpenGLPipeline::updateRenderablesGroups(const Asset<ShaderProgram>& curShader, const Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable)
+		void OpenGLPipeline::updateRenderablesGroups(const Core::Assets::Asset<ShaderProgram>& curShader, const Core::Assets::Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable)
 		{
 			auto curShaderIt = mGroupedRenderables.find(curShader);
 			auto newShaderIt = mGroupedRenderables.find(newShader);
@@ -374,7 +374,7 @@ namespace Core {
 			glEnable(GL_ALPHA_TEST);
 			glAlphaFunc(GL_GREATER, 0.1f);
 
-			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
+			std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
 			{
 				glm::mat4 view = cam.GetViewMatrix();
@@ -384,7 +384,7 @@ namespace Core {
 				mGBuffer->ClearBuffer();
 
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
-					[this, &obsoletes, &projection, &view](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+					[this, &obsoletes, &projection, &view](const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 
 						it, it.first->Get()->Bind();
 

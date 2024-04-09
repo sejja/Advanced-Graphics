@@ -9,7 +9,7 @@
 #ifndef _MODEL_IMPORTER__H_
 #define _MODEL_IMPORTER__H_
 
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
 
 namespace Core {
 	namespace Assets {

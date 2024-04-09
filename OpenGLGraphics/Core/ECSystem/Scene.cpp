@@ -30,7 +30,7 @@ namespace Core {
 	*/ // ---------------------------------------------------------------------
 	void Scene::CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
 		mParser.LoadDataFromFile(file.data());
-		auto& resmg = Singleton<ResourceManager>::Instance();
+		auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
 
 		std::for_each(std::execution::unseq, mParser.objects.begin(), mParser.objects.end(), [this, &upload, &resmg](const SceneParser::Transform& x) {
 			std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
@@ -63,8 +63,8 @@ namespace Core {
 			obj->SetScale({ 1.f, 1.f, 1.f });
 			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj));
 			std::shared_ptr<::Graphics::Primitives::Light> light;
-			renderer->SetMesh(Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
-			renderer->SetShaderProgram(Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
+			renderer->SetMesh(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
+			renderer->SetShaderProgram(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
 
 			//TEMPORAL PARA SABER SI ES LUZ HASTA NUEVO LEVEL 
 			obj->SetName(x.type + " Light_light");

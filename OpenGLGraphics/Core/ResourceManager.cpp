@@ -14,105 +14,94 @@
 #include "Assets/TextureImporter.h"
 #include "../Graphics/Primitives/Model.h"
 
-// ------------------------------------------------------------------------
-/*! Initialize
-*
-*  Initializes the Resource Manager
-*/ // --------------------------------------------------------------------
-void ResourceManager::Initialize() {
-	importers.insert({ "obj", new Core::Assets::ModelImporter });
-	importers.insert({ "gltf", new Core::Assets::ModelImporter });
-	importers.insert({ "png", new Core::Assets::TextureImporter });
-	importers.insert({ "jpg", new Core::Assets::TextureImporter });
-	importers.insert({ "jpeg", new Core::Assets::TextureImporter });
-	importers.insert({ "tga", new Core::Assets::TextureImporter });
-	importers.insert({ "shader", new Core::Assets::ShaderProgramImporter });
-	importers.insert({ "vert", new Core::Assets::ShaderImporter<Core::Graphics::Shader::EType::Vertex> });
-	importers.insert({ "frag", new Core::Assets::ShaderImporter<Core::Graphics::Shader::EType::Fragment> });
-	importers.insert({ "geom", new Core::Assets::ShaderImporter<Core::Graphics::Shader::EType::Geometry> });
-}
+namespace Core {
+	namespace Assets {
+		// ------------------------------------------------------------------------
+		/*! Initialize
+		*
+		*  Initializes the Resource Manager
+		*/ // --------------------------------------------------------------------
+		void ResourceManager::Initialize() {
+			mImporters.insert({ "obj", std::make_unique<ModelImporter>() });
+			mImporters.insert({ "gltf", std::make_unique<ModelImporter>() });
+			mImporters.insert({ "png", std::make_unique<TextureImporter>() });
+			mImporters.insert({ "jpg",  std::make_unique<TextureImporter>() });
+			mImporters.insert({ "jpeg",  std::make_unique<TextureImporter>() });
+			mImporters.insert({ "tga",  std::make_unique<TextureImporter>() });
+			mImporters.insert({ "shader", std::make_unique<ShaderProgramImporter>() });
+			mImporters.insert({ "vert",  std::make_unique<Core::Assets::ShaderImporter<Core::Graphics::Shader::EType::Vertex>>() });
+			mImporters.insert({ "frag",  std::make_unique<Core::Assets::ShaderImporter<Core::Graphics::Shader::EType::Fragment>>() });
+			mImporters.insert({ "geom",  std::make_unique<Core::Assets::ShaderImporter<Core::Graphics::Shader::EType::Geometry>>() });
+		}
 
-// ------------------------------------------------------------------------
-/*! Get Resource
-*
-*   Gets a resource given the name
-*/ // --------------------------------------------------------------------
-std::shared_ptr<IResource> ResourceManager::GetResource(raw_text name) {
-	auto it = resources.find(name);
+		// ------------------------------------------------------------------------
+		/*! Get Resource
+		*
+		*   Gets a resource given the name
+		*/ // --------------------------------------------------------------------
+		std::shared_ptr<IResource> ResourceManager::GetResource(raw_text name) {
+			auto it = mResources.find(name);
 
-	//If we do indeed have the resource
-	if (it != resources.end()) {
-		return it->second;
+			//If we do indeed have the resource
+			if (it != mResources.end()) {
+				return it->second;
+			}
+
+			return AddResource(name);
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Add Resource
+		*
+		*   Adds a Resource given the resource, the path and the name
+		*/ // --------------------------------------------------------------------
+		std::shared_ptr<IResource> ResourceManager::AddResource(raw_text mPath) {
+			std::string_view temp_(mPath);
+
+			//assertThis(!temp_.empty(), "Maybe you should think about giving an actual asset path, you fucking clown");
+			if (temp_.empty()) return nullptr;
+
+			//Try importing from file
+			try {
+				IResourceImporter* ireimp_ =
+					GetImporterByExtension(temp_.substr(temp_.find_last_of(".") + 1).data());
+				mResources.insert(std::make_pair(mPath, std::move(std::shared_ptr<IResource>(ireimp_->ImportFromFile(mPath)))));
+
+				return mResources[mPath];
+
+				//If we could not find an importer
+			}
+			catch (...) {
+				return nullptr;
+			}
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Get Importer By Extension
+		*
+		*   Gets an importer by it's extension
+		*/ // --------------------------------------------------------------------
+		IResourceImporter* ResourceManager::GetImporterByExtension(raw_text ext) const {
+			return mImporters.at(ext).get();
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Remove Resource
+		*
+		*   Removes a resource
+		*/ // --------------------------------------------------------------------
+		void ResourceManager::RemoveResource(raw_text name) {
+			mResources.erase(name);
+		}
+
+		void ResourceManager::ShutDown() {
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Destructor
+		*
+		*   EMPTY FUNCTION
+		*/ // --------------------------------------------------------------------
+		IResource::~IResource() {}
 	}
-
-	return AddResource(name);
 }
-
-// ------------------------------------------------------------------------
-/*! Add Importer
-*
-*   Adds an Importer to the Resource Manager
-*/ // --------------------------------------------------------------------
-void ResourceManager::AddImporter(IResourceImporter* res, raw_text ext) noexcept {
-	importers.insert(std::make_pair(ext, res));
-}
-
-// ------------------------------------------------------------------------
-/*! Add Resource
-*
-*   Adds a Resource given the resource, the path and the name
-*/ // --------------------------------------------------------------------
-std::shared_ptr<IResource> ResourceManager::AddResource(raw_text mPath) {
-	std::string_view temp_(mPath);
-
-	//assertThis(!temp_.empty(), "Maybe you should think about giving an actual asset path, you fucking clown");
-	if (temp_.empty()) return nullptr;
-
-	//Try importing from file
-	try {
-		IResourceImporter* ireimp_ =
-			GetImporterByExtension(temp_.substr(temp_.find_last_of(".") + 1).data());
-		resources.insert(std::make_pair(mPath, std::move(std::shared_ptr<IResource>(ireimp_->ImportFromFile(mPath)))));
-
-		return resources[mPath];
-
-		//If we could not find an importer
-	}
-	catch (...) {
-		return nullptr;
-	}
-}
-
-// ------------------------------------------------------------------------
-/*! Get Importer By Extension
-*
-*   Gets an importer by it's extension
-*/ // --------------------------------------------------------------------
-IResourceImporter* ResourceManager::GetImporterByExtension(raw_text ext) const noexcept {
-	return importers.at(ext);
-}
-
-// ------------------------------------------------------------------------
-/*! Remove Resource
-*
-*   Removes a resource
-*/ // --------------------------------------------------------------------
-void ResourceManager::RemoveResource(raw_text name) noexcept {
-	resources.erase(name);
-}
-
-void ResourceManager::ShutDown() {
-	std::for_each(importers.begin(), importers.end(), [](const std::pair<std::string, IResourceImporter*>& x)
-		{
-			Core::Memory::Allocator<IResourceImporter>::deallocate(x.second);
-		});
-
-	resources.clear();
-}
-
-// ------------------------------------------------------------------------
-/*! Destructor
-*
-*   EMPTY FUNCTION
-*/ // --------------------------------------------------------------------
-IResource::~IResource() {}

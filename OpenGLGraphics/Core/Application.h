@@ -43,7 +43,7 @@ namespace Core {
 	GraphicApplication<WINDOW, PIPELINE>::GraphicApplication() {
 		static_assert(std::is_base_of<Core::Window, WINDOW>::value);
 		static_assert(std::is_base_of<Core::Graphics::Pipeline, PIPELINE>::value);
-		Singleton<ResourceManager>::Instance().Initialize();
+		Singleton<Core::Assets::ResourceManager>::Instance().Initialize();
 		SetDimensions({ 1600, 900 });
 		mWindow.Create();
 		mPipe.Init();
@@ -57,7 +57,7 @@ namespace Core {
 	template<class WINDOW, class PIPELINE>
 	GraphicApplication<WINDOW, PIPELINE>::~GraphicApplication() {
 		mPipe.Shutdown();
-		Singleton<ResourceManager>::Instance().ShutDown();
+		Singleton<Core::Assets::ResourceManager>::Instance().ShutDown();
 	}
 
 	// ------------------------------------------------------------------------

@@ -23,7 +23,7 @@ namespace Graphics {
 				float CalculateSphereOfInfluence() const override;
 				void GenerateShadowMap();
 				void RenderShadowsMap(glm::mat4 camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
-				void SetUniforms(const Asset<Core::Graphics::ShaderProgram>& shader);
+				void SetUniforms(const Core::Assets::Asset<Core::Graphics::ShaderProgram>& shader);
 
 			};
 			DirectionalLight(const std::weak_ptr<Core::Object>& parent);

@@ -1451,7 +1451,7 @@
     <ClInclude Include="Core\ECSystem\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\ResourceManager.h">
+    <ClInclude Include="Core\Assets\ResourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CommonDefines.h">

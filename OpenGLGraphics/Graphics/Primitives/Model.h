@@ -45,8 +45,8 @@ namespace Core {
 			DONTDISCARD GLuint inline GetHandle() const noexcept;
 			DONTDISCARD size_t inline GetVertexCount() const noexcept;
 			void SetShaderUniforms(const ShaderProgram& s) const;
-			DONTDISCARD inline AssetReference<Texture> GetDiffuseTexture() const noexcept;
-			DONTDISCARD inline AssetReference<Texture> GetNormalTexture() const noexcept;
+			DONTDISCARD inline Core::Assets::AssetReference<Texture> GetDiffuseTexture() const noexcept;
+			DONTDISCARD inline Core::Assets::AssetReference<Texture> GetNormalTexture() const noexcept;
 
 		private:
 			void UploadToGPU(std::vector<float>& vertices, std::vector<int>& indexes);
@@ -57,8 +57,8 @@ namespace Core {
 			std::size_t mCount;
 			GLuint mVAO, mVBO, mIBO;
 			::Graphics::Material mMaterial;
-			Asset<Texture> mDiffuseTex;
-			Asset<Texture> mNormalTex;
+			Core::Assets::Asset<Texture> mDiffuseTex;
+			Core::Assets::Asset<Texture> mNormalTex;
 #pragma endregion
 		};
 
@@ -85,7 +85,7 @@ namespace Core {
 		*
 		*   Returns an Asset Reference to the Diffuse Texture
 		*/ //----------------------------------------------------------------------
-		AssetReference<Texture> Model::GetDiffuseTexture() const noexcept {
+		Core::Assets::AssetReference<Texture> Model::GetDiffuseTexture() const noexcept {
 			return mDiffuseTex;
 		}
 
@@ -94,7 +94,7 @@ namespace Core {
 		*
 		*   Returns an Asset Reference to the Diffuse Texture
 		*/ //----------------------------------------------------------------------
-		AssetReference<Texture> Model::GetNormalTexture() const noexcept {
+		Core::Assets::AssetReference<Texture> Model::GetNormalTexture() const noexcept {
 			return mNormalTex;
 		}
 	}

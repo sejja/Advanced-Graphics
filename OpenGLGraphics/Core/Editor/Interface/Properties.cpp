@@ -10,7 +10,7 @@
 #include "Core/Editor/SelectedObj.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 #include "Core/Editor/Interface/AssetIcon.h"
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
 #include "Core/Singleton.h"
 #include "Core/Editor/Editor.h"
 #include "Core/Network/Server.h"
@@ -30,7 +30,7 @@
 
 
 SelectedObj& selectedObjIns = Singleton<Editor>::Instance().GetSelectedObj();
-auto& resmg = Singleton<ResourceManager>::Instance();
+auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
 
 
 //TODO: SACAR LOS SENDTOPEER DE AQUI 
@@ -406,7 +406,7 @@ void CreateSliderRow(const char* rowName, float& sliderValue, float minValue, fl
     ImGui::SliderFloat(SLIDERID.c_str(), &sliderValue, minValue, maxValue, "%.3f");
     ImGui::SameLine();
 
-    auto reloadText = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/lockClosed.jpg")->Get();
+    auto reloadText = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/lockClosed.jpg")->Get();
     ImGui::ImageButton((void*)(intptr_t)reloadText->GetTextureHandle(), ImVec2(13, 13));
 
 
@@ -665,7 +665,7 @@ void Properties::MaterialsOptions() {
         ImGui::TableSetColumnIndex(1);
 
 
-        auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Content\\Textures\\Brick.png")->Get();
+        auto tex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Content\\Textures\\Brick.png")->Get();
         ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
 
 
@@ -690,7 +690,7 @@ void Properties::MaterialsOptions() {
             AssetIcon* iconPtr = (AssetIcon*)payload->Data;
             nombreTexturaTemporal = iconPtr->nombre;
             printf("RUTA: %s\n", iconPtr->ruta);
-            auto nuevaTex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(iconPtr->ruta)->Get();
+            auto nuevaTex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(iconPtr->ruta)->Get();
 
 
         }
@@ -726,7 +726,7 @@ void Properties::MeshOptions() {
         ImGui::TableSetColumnIndex(1);
 
 
-        auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/model.png")->Get();
+        auto tex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/model.png")->Get();
         ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
 
 
@@ -790,7 +790,7 @@ void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline)
         ImGui::TableSetColumnIndex(1);
 
 
-        auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/shader.png")->Get();
+        auto tex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/shader.png")->Get();
         ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
 
 
@@ -818,9 +818,9 @@ void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline)
             //meshComp->SetShaderProgram(resmg.GetResource<Gra>("Content/Shaders/Refractive.shader"));
 
           
-            Asset<ShaderProgram> newShader = resmg.GetResource<ShaderProgram>(asset->ruta);
-            AssetReference<ShaderProgram> curShaderRef = meshComp->GetShaderProgram();
-            Asset<ShaderProgram> curShader = curShaderRef.lock();;
+            Core::Assets::Asset<ShaderProgram> newShader = resmg.GetResource<ShaderProgram>(asset->ruta);
+            Core::Assets::AssetReference<ShaderProgram> curShaderRef = meshComp->GetShaderProgram();
+            Core::Assets::Asset<ShaderProgram> curShader = curShaderRef.lock();;
             
             
             /*

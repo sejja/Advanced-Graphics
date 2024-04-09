@@ -50,14 +50,14 @@ namespace Core {
 			GLuint GetBloomTexture() { return mBloomRenderer->BloomTexture(); }
 		
 
-			void updateRenderablesGroups(const Asset<ShaderProgram>& curShader, const Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable);
+			void updateRenderablesGroups(const Core::Assets::Asset<ShaderProgram>& curShader, const Core::Assets::Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable);
 
 		private:
 			void GeometryPass();
 			void RenderGUI();
-			void FlushObsoletes(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes);
-			void GroupRender(std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
-				const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it,
+			void FlushObsoletes(std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes);
+			void GroupRender(std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
+				const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it,
 				ShaderProgram* shader);
 			void LightingPass();
 			void RenderShadowMaps();
@@ -66,7 +66,7 @@ namespace Core {
 			void DirectionalLightPass();
 			void BloomPass(GLuint targetbuffer);
 
-			std::unordered_map<Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
+			std::unordered_map<Core::Assets::Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 
 			std::weak_ptr<Core::Particles::ParticleMangager> particleManager;
 
@@ -75,7 +75,7 @@ namespace Core {
 			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<GBuffer> mGBuffer;
 			std::unique_ptr<::Graphics::Architecture::LightPass> mLightPass;
-			Asset<ShaderProgram> mDirectionalLightShader;
+			Core::Assets::Asset<ShaderProgram> mDirectionalLightShader;
 			std::unique_ptr<FrameBuffer> mFrameBuffer;
 			std::unique_ptr<HDRBuffer> mHDRBuffer;
 			std::unique_ptr<SamplingBuffer> mSamplingBuffer;
@@ -85,7 +85,7 @@ namespace Core {
 
 
 			GLboolean AntiAliasing = false;
-			Asset<ShaderProgram> RendererShader;
+			Core::Assets::Asset<ShaderProgram> RendererShader;
 			float exposure = 1;
 			std::unique_ptr<debug_system> mDebug;
 			std::unique_ptr<::Graphics::Architecture::Bloom::BloomRenderer> mBloomRenderer;

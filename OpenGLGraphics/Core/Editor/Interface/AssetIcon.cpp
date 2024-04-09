@@ -1,7 +1,7 @@
 #include "AssetIcon.h"
 #include "Dependencies/ImGui/imgui.h"
 #include "Core/Singleton.h"
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
 #include "Graphics/Primitives/Texture.h"
 
 
@@ -40,7 +40,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 	//ImGui::Button("Hola", ImVec2(100, 100));
 
 	if (tipo == AssetType::TEXTURE) {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(ruta)->Get(); //Que cojones es la sintaxis de esta línea???
+		auto tex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(ruta)->Get(); //Que cojones es la sintaxis de esta línea???
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 		ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		clicked = ImGui::IsItemClicked();
@@ -68,7 +68,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 	 
 	}
 	else {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(assetTypeImages[tipo].c_str())->Get(); //Que cojones es la sintaxis de esta línea???
+		auto tex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(assetTypeImages[tipo].c_str())->Get(); //Que cojones es la sintaxis de esta línea???
 		//ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		//ImGui::Button("Hola", ImVec2(100, 100));
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));

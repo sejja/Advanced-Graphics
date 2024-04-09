@@ -9,7 +9,8 @@
 #ifndef _SHADER_IMPORTER__H_
 #define _SHADER_IMPORTER__H_
 
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
+#include "Graphics/Primitives/ShaderProgram.h"
 
 namespace Core {
 	namespace Assets {

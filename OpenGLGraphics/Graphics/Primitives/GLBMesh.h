@@ -34,11 +34,11 @@ namespace Graphics {
         public:
             Mesh(const std::vector<Vertex>& vertices, 
                 const std::vector<unsigned int>& indices, 
-                const std::vector<Asset<Core::Graphics::Texture>>& textures);
+                const std::vector<Core::Assets::Asset<Core::Graphics::Texture>>& textures);
             void Draw(const Core::Graphics::ShaderProgram& shader);
 
         private:
-            std::vector<Asset<Core::Graphics::Texture>> textures;
+            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> textures;
             std::size_t mCount;
             GLuint mVao, mVbo, mEbo;
         };

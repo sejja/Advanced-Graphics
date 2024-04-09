@@ -35,8 +35,8 @@ namespace Graphics{
                 GLuint mScreenQuadVAO, mScreenQuadVBO;
                 glm::ivec2 mSrcViewportSize;
                 glm::vec2 mSrcViewportSizeFloat;
-                Asset<Core::Graphics::ShaderProgram> mDownsampleShader;
-                Asset<Core::Graphics::ShaderProgram> mUpsampleShader;
+                Core::Assets::Asset<Core::Graphics::ShaderProgram> mDownsampleShader;
+                Core::Assets::Asset<Core::Graphics::ShaderProgram> mUpsampleShader;
             };
 		}
 	}

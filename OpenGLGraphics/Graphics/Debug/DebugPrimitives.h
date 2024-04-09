@@ -8,7 +8,7 @@
 class Primitive {
 public:
 	std::vector<glm::vec3> mVertices;
-	Asset<Core::Graphics::ShaderProgram> mShader = nullptr;
+	Core::Assets::Asset<Core::Graphics::ShaderProgram> mShader = nullptr;
 
 	Primitive();
 	~Primitive();

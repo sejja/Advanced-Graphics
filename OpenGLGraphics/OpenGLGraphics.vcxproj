@@ -280,7 +280,7 @@
     </ClInclude>
     <ClInclude Include="Core\Memory\ObjectAllocator.h" />
     <ClInclude Include="Core\Memory\PageAllocator.h" />
-    <ClInclude Include="Core\ResourceManager.h" />
+    <ClInclude Include="Core\Assets\ResourceManager.h" />
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
     <ClInclude Include="Dependencies\ImGui\imgui.h" />
     <ClInclude Include="Dependencies\ImGui\imgui_impl_opengl3.h" />

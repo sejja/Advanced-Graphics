@@ -8,8 +8,8 @@ namespace Core {
 
         Skybox::Skybox(const std::weak_ptr<Object>& parent) :
             Component(parent) {
-            mShaderProgram = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/SkyBox.shader");
-            mModel = Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/cube_face.obj");
+            mShaderProgram = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/SkyBox.shader");
+            mModel = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/cube_face.obj");
             sCurrentSky = this;
         }
 

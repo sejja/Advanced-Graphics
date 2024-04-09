@@ -83,7 +83,7 @@ namespace Graphics {
             // data to fill
             std::vector<Vertex> vertices;
             std::vector<unsigned int> indices;
-            std::vector<Asset<Core::Graphics::Texture>> textures;
+            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> textures;
 
             // walk through each of the mesh's vertices
             for (unsigned int i = 0; i < mesh->mNumVertices; i++)
@@ -149,24 +149,24 @@ namespace Graphics {
             // normal: texture_normalN
 
             // 1. diffuse maps
-            std::vector<Asset<Core::Graphics::Texture>> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, dir);
+            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, dir);
             textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
             // 2. specular maps
-            std::vector<Asset<Core::Graphics::Texture>> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, dir);
+            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, dir);
             textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
             // 3. normal maps
-            std::vector<Asset<Core::Graphics::Texture>> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, dir);
+            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, dir);
             textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
             // 4. height maps
-            std::vector<Asset<Core::Graphics::Texture>> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, dir);
+            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, dir);
             textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
             // return a mesh object created from the extracted mesh data
             return Mesh(vertices, indices, textures);
         }
 
-        std::vector<Asset<Core::Graphics::Texture>> GLBModel::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& dir) {
-            std::vector<Asset<Core::Graphics::Texture>> textures;
+        std::vector<Core::Assets::Asset<Core::Graphics::Texture>> GLBModel::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& dir) {
+            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> textures;
             for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
             {
                 aiString str;
@@ -175,13 +175,13 @@ namespace Graphics {
                 bool skip = false;
 
                 if (type == aiTextureType_DIFFUSE) {
-                    Asset<Core::Graphics::Texture> texture = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>((dir + "/" + str.C_Str()).c_str());
+                    Core::Assets::Asset<Core::Graphics::Texture> texture = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>((dir + "/" + str.C_Str()).c_str());
 
                     texture->Get()->SetTextureType(Core::Graphics::Texture::eDiffuse);
                     textures.push_back(texture);
                 }
                 else if (type == aiTextureType_NORMALS) {
-                    Asset<Core::Graphics::Texture> texture = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>((dir + "/" + str.C_Str()).c_str());
+                    Core::Assets::Asset<Core::Graphics::Texture> texture = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>((dir + "/" + str.C_Str()).c_str());
 
                     texture->Get()->SetTextureType(Core::Graphics::Texture::eNormal);
                     textures.push_back(texture);

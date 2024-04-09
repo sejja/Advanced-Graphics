@@ -15,7 +15,7 @@
 #include "gtc/matrix_transform.hpp"
 #include "CommonDefines.h"
 #include "Graphics/Primitives/ShaderProgram.h"
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
 
 namespace Graphics {
 	namespace Primitives {
@@ -29,7 +29,7 @@ namespace Graphics {
 					CascadedShadowMap();
 					void CreateShadowMapGPUData();
 					void Bind();
-					void SetUniforms(const Asset<Core::Graphics::ShaderProgram>& shader);
+					void SetUniforms(const Core::Assets::Asset<Core::Graphics::ShaderProgram>& shader);
 					void Render(glm::mat4 camview, glm::vec3 pos, glm::vec3 dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
 					std::vector<glm::mat4> GetLightSpaceMatrices(glm::mat4 camview, glm::vec3 lightdir);
 					glm::mat4 GetLightSpaceMatrix(glm::mat4 camview, glm::vec3 lightdir, const float nearPlane, const float farPlane);
@@ -40,7 +40,7 @@ namespace Graphics {
 					float depthMapResolution = 4096;
 					std::vector<float> shadowCascadeLevels;
 					std::vector<glm::mat4> mLightMatrices;
-					Asset<Core::Graphics::ShaderProgram> shadowMapShader;
+					Core::Assets::Asset<Core::Graphics::ShaderProgram> shadowMapShader;
 				};
 			}
 		}

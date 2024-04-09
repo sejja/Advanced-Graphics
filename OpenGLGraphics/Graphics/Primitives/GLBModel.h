@@ -48,7 +48,7 @@ namespace Graphics {
 
             // checks all material textures of a given type and loads the textures if they're not loaded yet.
             // the required info is returned as a Texture struct.
-            std::vector<Asset<Core::Graphics::Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& dir);
+            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& dir);
 
             std::string modelPath;
         };

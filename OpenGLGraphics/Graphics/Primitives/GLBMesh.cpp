@@ -10,7 +10,7 @@
 
 namespace Graphics {
 	namespace Primitives {
-		Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Asset<Core::Graphics::Texture>>& textures) {
+		Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Core::Assets::Asset<Core::Graphics::Texture>>& textures) {
 			this->textures = textures;
 
             // create buffers/arrays

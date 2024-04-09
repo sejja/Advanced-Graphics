@@ -121,7 +121,7 @@ namespace Core
 				std::string id;
 
 				GLuint VAO, VBO;
-				Asset<Core::Graphics::ShaderProgram> shaderProgram;
+				Core::Assets::Asset<Core::Graphics::ShaderProgram> shaderProgram;
 				std::vector<Particle> particles;
 				Core::Primitives::Camera* camera;
 				glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);

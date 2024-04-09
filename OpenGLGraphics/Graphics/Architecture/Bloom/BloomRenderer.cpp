@@ -82,8 +82,8 @@ namespace Graphics {
                     throw BloomRendererException("Failed to initialize bloom FBO - cannot create bloom renderer!");
 
                 // Shaders
-                mDownsampleShader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Downsampling.shader");
-                mUpsampleShader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Upsampling.shader");
+                mDownsampleShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Downsampling.shader");
+                mUpsampleShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Upsampling.shader");
 
                 float quadVertices[] = {
                     // upper-left triangle

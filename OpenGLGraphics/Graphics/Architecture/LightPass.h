@@ -15,7 +15,7 @@
 #include "Bloom/BloomRenderer.h"
 #include "Graphics/Primitives/GLBModel.h"
 #include "Graphics/Primitives/ShaderProgram.h"
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
 #include "Graphics/Primitives/Lights/Light.h"
 #include "Graphics/Primitives/Lights/DirectionalLight.h"
 #include "Graphics/Primitives/Lights/SpotLight.h"
@@ -34,11 +34,11 @@ namespace Graphics {
 			void RenderScreenQuad();
 			void StencilPass(glm::vec3& pos, float sphere);
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
-			Asset<::Graphics::Primitives::GLBModel> mLightSphere;
-			Asset<Core::Graphics::ShaderProgram> mLightSphereShader;
-			Asset<Core::Graphics::ShaderProgram> mDirectionalShader;
-			Asset<Core::Graphics::ShaderProgram> mPointShader;
-			Asset<Core::Graphics::ShaderProgram> mSpotShader;
+			Core::Assets::Asset<::Graphics::Primitives::GLBModel> mLightSphere;
+			Core::Assets::Asset<Core::Graphics::ShaderProgram> mLightSphereShader;
+			Core::Assets::Asset<Core::Graphics::ShaderProgram> mDirectionalShader;
+			Core::Assets::Asset<Core::Graphics::ShaderProgram> mPointShader;
+			Core::Assets::Asset<Core::Graphics::ShaderProgram> mSpotShader;
 			static std::unordered_map<std::size_t, Graphics::Primitives::DirectionalLight::DirectionalLightData*> sDirectionalLightData;
 			static std::unordered_map<std::size_t, Graphics::Primitives::SpotLight::SpotLightData*> sSpotLightData;
 			static std::unordered_map<std::size_t, Graphics::Primitives::PointLight::PointLightData*> sPointLightData;
