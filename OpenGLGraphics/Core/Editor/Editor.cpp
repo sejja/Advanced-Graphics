@@ -10,7 +10,7 @@
 
 
 Editor::Editor() : editorLocked(false) {
-	this->database = new Core::Editor::Database("../AssetLoader/database.db");
+	this->database = new Core::Editor::Database("database.db");
 	database->getAssetTypeImages();
 	AssetIcon::assetTypeImages = database->getAssetTypeImages();
 	//assetManager = std::make_unique < AssetManager >();
