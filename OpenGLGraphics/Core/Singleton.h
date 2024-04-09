@@ -2,17 +2,19 @@
 //	Global.h
 //	OpenGL Graphics
 //
-//	Created by Diego Revilla on 15/04/23
-//	Copyright © 2023. All Rights reserved
+//	Created by Diego Revilla on 11/04/24
+//	Copyright © 2024. All Rights reserved
 //
 
 #ifndef _GLOBAL__H_
 #define _GLOBAL__H_
 
+#include "CommonDefines.h"
+
 template <typename T>
 class Singleton {
 public:
-    static T& Instance();
+    DONTDISCARD static T& Instance();
     
 protected:
     Singleton() {}

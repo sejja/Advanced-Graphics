@@ -10,7 +10,7 @@
 #define _APPLICATION__H_
 
 #include <functional>
-#include "Core/Window.h"
+#include "Core/Window/Window.h"
 #include "Core/Graphics/Pipeline.h"
 #include "Core/ECSystem/Scene.h"
 #include "Core/Input/InputManager.h"
@@ -41,7 +41,7 @@ namespace Core {
 
 	template<class WINDOW, class PIPELINE>
 	GraphicApplication<WINDOW, PIPELINE>::GraphicApplication() {
-		static_assert(std::is_base_of<Core::Window, WINDOW>::value);
+		static_assert(std::is_base_of<Core::Window::Window, WINDOW>::value);
 		static_assert(std::is_base_of<Core::Graphics::Pipeline, PIPELINE>::value);
 		Singleton<Core::Assets::ResourceManager>::Instance().Initialize();
 		SetDimensions({ 1600, 900 });

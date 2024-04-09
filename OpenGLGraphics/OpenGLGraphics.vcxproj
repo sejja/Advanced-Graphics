@@ -752,7 +752,7 @@
     <ClInclude Include="Dependencies\STB\stb_voxel_render.h" />
     <ClInclude Include="Dependencies\STB\stretchy_buffer.h" />
     <ClInclude Include="Core\Graphics\Pipeline.h" />
-    <ClInclude Include="Core\Window.h" />
+    <ClInclude Include="Core\Window\Window.h" />
     <ClInclude Include="Graphics\OpenGLPipeline.h" />
     <ClInclude Include="Core\Math\Transform.h" />
     <ClInclude Include="Core\Singleton.h" />

@@ -18,7 +18,7 @@ namespace Core {
 		*   Constructs a G-Buffer, with 3 Textures (Position, Normal, Albedo)
 		*/ //----------------------------------------------------------------------
 		GBuffer::GBuffer() {
-			auto dim = Singleton<SDLWindow>::Instance().GetDimensions();
+			auto dim = Singleton<Core::Window::SDLWindow>::Instance().GetDimensions();
 			dim = { 1600, 900 };
 			glGenFramebuffers(1, &mBuffer);
 			glBindFramebuffer(GL_FRAMEBUFFER, mBuffer);

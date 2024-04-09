@@ -1418,7 +1418,7 @@
     <ClInclude Include="Core\Graphics\Pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Window.h">
+    <ClInclude Include="Core\Window\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Application.h">
