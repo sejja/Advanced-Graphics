@@ -55,30 +55,36 @@ namespace Graphics {
                 return;
             }
 
+            aiMatrix4x4t<float> mat;
+
+
             if (!scene->mRootNode)
                 for (int i = 0; i < scene->mNumMeshes; i++)
-                    meshes.push_back(processMesh(scene->mMeshes[i], scene, directory));
+                    meshes.push_back(processMesh(scene->mMeshes[i], scene, directory, scene->mRootNode->mTransformation));
             else  // process ASSIMP's root node recursively
-                processNode(scene->mRootNode, scene, directory);
+                processNode(scene->mRootNode, scene, directory, mat);
         }
 
-        void GLBModel::processNode(aiNode* node, const aiScene* scene, const std::string& dir) {
-            // process each mesh located at the current node
+        void GLBModel::processNode(aiNode* node, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform) {
+           
+           transform *= node->mTransformation;
+           
+           // process each mesh located at the current node
             for (unsigned int i = 0; i < node->mNumMeshes; i++)
             {
                 // the node object only contains indices to index the actual objects in the scene. 
                 // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
                 aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-                meshes.push_back(processMesh(mesh, scene, dir));
+                meshes.push_back(processMesh(mesh, scene, dir, transform));
             }
             // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
             for (unsigned int i = 0; i < node->mNumChildren; i++)
             {
-                processNode(node->mChildren[i], scene, dir);
+                processNode(node->mChildren[i], scene, dir, transform);
             }
         }
 
-        Mesh GLBModel::processMesh(aiMesh* mesh, const aiScene* scene, const std::string& dir)
+        Mesh GLBModel::processMesh(aiMesh* mesh, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform)
         {
             // data to fill
             std::vector<Vertex> vertices;
@@ -91,9 +97,14 @@ namespace Graphics {
                 Vertex vertex;
                 glm::vec3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
                 // positions
-                vector.x = mesh->mVertices[i].x;
-                vector.y = mesh->mVertices[i].y;
-                vector.z = mesh->mVertices[i].z;
+                aiVector3D pos = mesh->mVertices[i];
+
+                aiMatrix4x4t<float> mat = transform;
+                aiVector3D pos2 = mat * pos;
+
+                vector.x = pos2.x;
+                vector.y = pos2.y;
+                vector.z = pos2.z;
                 vertex.mPosition = vector;
                 // normals
                 if (mesh->HasNormals())

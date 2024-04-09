@@ -42,9 +42,9 @@ namespace Graphics {
             void loadModel(std::string const& path);
 
             // processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
-            void processNode(aiNode* node, const aiScene* scene, const std::string& dir);
+            void processNode(aiNode* node, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform);
 
-            Mesh processMesh(aiMesh* mesh, const aiScene* scene, const std::string& dir);
+            Mesh processMesh(aiMesh* mesh, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform);
 
             // checks all material textures of a given type and loads the textures if they're not loaded yet.
             // the required info is returned as a Texture struct.
