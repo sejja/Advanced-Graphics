@@ -298,6 +298,8 @@ namespace Core {
 			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
 			glEnable(GL_DEPTH_TEST);
 
+			//RenderParticlesSystems();
+
 			BloomPass(mHDRBuffer->GetHandle());
 			mLightPass->RenderLights(*mGBuffer, *mBloomRenderer);
 			
