@@ -57,7 +57,6 @@ namespace Core {
 	template<class WINDOW, class PIPELINE>
 	GraphicApplication<WINDOW, PIPELINE>::~GraphicApplication() {
 		mPipe.Shutdown();
-		Singleton<Core::Assets::ResourceManager>::Instance().ShutDown();
 	}
 
 	// ------------------------------------------------------------------------
@@ -68,7 +67,6 @@ namespace Core {
 	template<class WINDOW, class PIPELINE>
 	void GraphicApplication<WINDOW, PIPELINE>::Run() {
 		Core::Input::InputManager& inptmgr = Singleton<Core::Input::InputManager>::Instance();
-
 		//Main Loop
 		while (mWindow.Present()) {
 			inptmgr.ProcessInput();

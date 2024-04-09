@@ -42,7 +42,7 @@
     <ClCompile Include="Core\ECSystem\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\ResourceManager.cpp">
+    <ClCompile Include="Core\Assets\ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Assets\ModelImporter.cpp">

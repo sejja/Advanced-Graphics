@@ -51,7 +51,7 @@ namespace Core {
 			glDisable(GL_STENCIL_TEST);
 			glClearColor(0.f, 0.f, 0.f, 0.f);
 			mGBuffer = std::make_unique<GBuffer>();
-			mDirectionalLightShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DirectionalLight.shader");
+			mDirectionalLightShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredDirectionalLighting.shader");
 
 
 			mFrameBuffer = std::make_unique<FrameBuffer>();

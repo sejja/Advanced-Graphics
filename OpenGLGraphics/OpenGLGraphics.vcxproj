@@ -198,7 +198,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Core\ResourceManager.cpp" />
+    <ClCompile Include="Core\Assets\ResourceManager.cpp" />
     <ClCompile Include="Dependencies\GLEW\Source\glew.c" />
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp" />

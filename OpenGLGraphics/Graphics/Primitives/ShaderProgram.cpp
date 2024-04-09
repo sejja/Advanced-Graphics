@@ -7,7 +7,7 @@
 //
 
 #include <glew.h>
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
 #include "ShaderProgram.h"
 #include <iostream>
 

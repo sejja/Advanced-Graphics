@@ -46,20 +46,20 @@ namespace Core {
 
 		class ResourceManager {
 		public:
+			CLASS_EXCEPTION(ResourceManager)
 			using raw_text = const char*;
 
 			template<typename Ty_>
 			DONTDISCARD Asset<Ty_> GetResource(raw_text name);
 			DONTDISCARD std::shared_ptr<IResource> GetResource(raw_text name);
-			DONTDISCARD IResourceImporter* GetImporterByExtension(raw_text ext) const;
+			DONTDISCARD std::shared_ptr<IResourceImporter> GetImporterByExtension(raw_text ext) const;
 			void RemoveResource(raw_text name);
 			void Initialize();
-			void ShutDown();
 
 		protected:
 			std::shared_ptr<IResource> AddResource(raw_text mPath);
 			std::unordered_map<std::string, std::shared_ptr<IResource>> mResources;
-			std::unordered_map<std::string, std::unique_ptr<IResourceImporter>> mImporters;
+			std::unordered_map<std::string, std::shared_ptr<IResourceImporter>> mImporters;
 		};
 		
 		// ------------------------------------------------------------------------
