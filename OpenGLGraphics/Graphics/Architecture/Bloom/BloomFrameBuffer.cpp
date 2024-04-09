@@ -9,7 +9,7 @@
 #include "BloomFrameBuffer.h"
 #include <glew.h>
 #include <iostream>
-
+ 
 namespace Graphics {
 	namespace Architecture {
 		namespace Bloom {
