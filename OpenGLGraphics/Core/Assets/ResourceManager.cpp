@@ -42,7 +42,7 @@ namespace Core {
 		*   Gets a resource given the name
 		*/ // --------------------------------------------------------------------
 		std::shared_ptr<IResource> ResourceManager::GetResource(raw_text name) {
-			assert(strlen(name) > 0, "Maybe you should think about giving an actual asset path, you clown");
+			assert(strlen(name) > 0);
 			std::unordered_map<std::string, std::shared_ptr<IResource>>::const_iterator it = mResources.find(name);
 
 			//If we do indeed have the resource
@@ -57,7 +57,7 @@ namespace Core {
 		std::shared_ptr<IResource> ResourceManager::AddResource(raw_text mPath) {
 			std::string_view temp_(mPath);
 
-			assert(!temp_.empty(), "Maybe you should think about giving an actual asset path, you clown");
+			assert(!temp_.empty());
 
 			//Try importing from file
 			try {
@@ -67,7 +67,7 @@ namespace Core {
 						ImportFromFile(mPath))))).first->second;
 
 				//If we could not find an importer
-			} catch (std::exception & e) {
+			} catch (std::exception&) {
 				throw ResourceManagerException("Could not find an importer for the file");
 			}
 		}

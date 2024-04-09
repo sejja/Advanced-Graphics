@@ -13,17 +13,34 @@
 
 template <typename T>
 class Singleton {
-public:
-    DONTDISCARD static T& Instance();
-    
-protected:
-    Singleton() {}
-    ~Singleton() {}
-   
+#pragma region //Construtors&Destructor
+    Singleton();
+    ~Singleton();
 public:
     Singleton(Singleton const&) = delete;
     Singleton& operator=(Singleton const&) = delete;
+#pragma endregion
+#pragma region //Functions
+    constexpr DONTDISCARD static T& Instance();
+#pragma endregion
+
 };
+
+// ------------------------------------------------------------------------
+/*! Constructor
+*
+*   EMPTY FUNCTION
+*/ //----------------------------------------------------------------------
+template<typename T>
+Singleton<T>::Singleton() {}
+
+// ------------------------------------------------------------------------
+/*! Destructor
+*
+*   EMPTY FUNCTION
+*/ //----------------------------------------------------------------------
+template<typename T>
+Singleton<T>::~Singleton() {}
 
 // ------------------------------------------------------------------------
 /*! Instance
@@ -31,7 +48,7 @@ public:
 *   Returns THE instance of the global object
 */ //----------------------------------------------------------------------
 template<typename T>
-T& Singleton<T>::Instance() {
+constexpr T& Singleton<T>::Instance() {
     static T instance;
 
     return instance;
