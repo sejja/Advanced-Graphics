@@ -50,7 +50,7 @@ namespace Core {
 			glDisable(GL_BLEND);
 			glDisable(GL_STENCIL_TEST);
 			glClearColor(0.f, 0.f, 0.f, 0.f);
-			mGBuffer = std::make_unique<GBuffer>();
+			mGBuffer = std::make_unique<GBuffer>(mDimensions);
 			mDirectionalLightShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredDirectionalLighting.shader");
 
 
@@ -96,8 +96,7 @@ namespace Core {
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 			glBindBufferRange(GL_UNIFORM_BUFFER, 0, mUniformBuffer, 0, 2 * sizeof(glm::mat4) + sizeof(glm::vec3));
-			mBloomRenderer = std::make_unique<::Graphics::Architecture::Bloom::BloomRenderer>();
-			mBloomRenderer->Init(mDimensions.x, mDimensions.y);
+			mBloomRenderer = std::make_unique<::Graphics::Architecture::Bloom::BloomRenderer>(mDimensions);
 			mLightPass = std::make_unique<::Graphics::Architecture::LightPass>();
 			Singleton<::Editor>::Instance().assetManager.init();
 		}
@@ -321,6 +320,8 @@ namespace Core {
 			mHDRBuffer->BindTexture();
 			RendererShader->Get()->Bind();
 			RendererShader->Get()->SetShaderUniform("exposure", exposure);
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, mBloomRenderer->BloomTexture());
 			mLightPass.get()->RenderScreenQuad();
 
 			mFrameBuffer->Unbind();

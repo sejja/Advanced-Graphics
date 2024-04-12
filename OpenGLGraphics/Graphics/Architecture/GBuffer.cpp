@@ -17,9 +17,7 @@ namespace Core {
 		*
 		*   Constructs a G-Buffer, with 3 Textures (Position, Normal, Albedo)
 		*/ //----------------------------------------------------------------------
-		GBuffer::GBuffer() {
-			auto dim = Singleton<Core::Window::SDLWindow>::Instance().GetDimensions();
-			dim = { 1600, 900 };
+		GBuffer::GBuffer(const glm::u16vec2 dim) {
 			glGenFramebuffers(1, &mBuffer);
 			glBindFramebuffer(GL_FRAMEBUFFER, mBuffer);
 
@@ -88,7 +86,7 @@ namespace Core {
 		*
 		*   Binds the G-Buffer for drawing
 		*/ //----------------------------------------------------------------------
-		void GBuffer::Bind() {
+		void GBuffer::Bind() const {
 			glBindFramebuffer(GL_FRAMEBUFFER, mBuffer);
 		}
 
@@ -97,7 +95,7 @@ namespace Core {
 		*
 		*   Copies the Depth Values, so we can Forward Render after Deferred
 		*/ //----------------------------------------------------------------------
-		void GBuffer::BlitDepthBuffer(GLuint tobuff) {
+		void GBuffer::BlitDepthBuffer(GLuint tobuff) const {
 			glBindFramebuffer(GL_READ_FRAMEBUFFER, mBuffer);
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, tobuff); // write to default framebuffer
 			glBlitFramebuffer( 0, 0, 1600, 900, 0, 0, 1600, 900, GL_DEPTH_BUFFER_BIT, GL_NEAREST );
@@ -109,7 +107,7 @@ namespace Core {
 		*
 		*   Returns the Handle for the position-stride texture
 		*/ //----------------------------------------------------------------------
-		GLuint GBuffer::GetPositionTextureHandle() {
+		GLuint GBuffer::GetPositionTextureHandle() const {
 			return mPosition;
 		}
 
@@ -118,7 +116,7 @@ namespace Core {
 		*
 		*   Returns the Handle for the normal-stride texture
 		*/ //----------------------------------------------------------------------
-		GLuint GBuffer::GetNormalTextureHandle() {
+		GLuint GBuffer::GetNormalTextureHandle() const {
 			return mNormal;
 		}
 
@@ -127,7 +125,7 @@ namespace Core {
 		*
 		*   Returns the Handle for the albedo-stride texture
 		*/ //----------------------------------------------------------------------
-		GLuint GBuffer::GetAlbedoTextureHandle() {
+		GLuint GBuffer::GetAlbedoTextureHandle() const {
 			return mAlbedoSpecular;
 		}
 
@@ -136,7 +134,7 @@ namespace Core {
 		*
 		*   Returns the Handle for the birhgntess channel
 		*/ //----------------------------------------------------------------------
-		GLuint GBuffer::GetBrightnessTextureHandle() {
+		GLuint GBuffer::GetBrightnessTextureHandle() const {
 			return mBrightness;
 		}
 
@@ -145,7 +143,7 @@ namespace Core {
 		*
 		*   G-Buffer clears the G-Buffer
 		*/ //----------------------------------------------------------------------
-		void GBuffer::ClearBuffer() {
+		void GBuffer::ClearBuffer() const {
 			glClearColor(0.0, 0.0, 0.0, 1.0);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}

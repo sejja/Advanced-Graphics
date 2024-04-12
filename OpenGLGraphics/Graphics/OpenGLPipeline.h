@@ -86,7 +86,7 @@ namespace Core {
 
 			GLboolean AntiAliasing = false;
 			Core::Assets::Asset<ShaderProgram> RendererShader;
-			float exposure = 1;
+			float exposure = 5;
 			std::unique_ptr<debug_system> mDebug;
 			std::unique_ptr<::Graphics::Architecture::Bloom::BloomRenderer> mBloomRenderer;
 		};

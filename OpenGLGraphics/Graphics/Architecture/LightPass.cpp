@@ -99,8 +99,6 @@ namespace Graphics {
 			glBindTexture(GL_TEXTURE_2D, gBuffer.GetNormalTextureHandle());
 			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, gBuffer.GetAlbedoTextureHandle());
-			glActiveTexture(GL_TEXTURE3);
-			glBindTexture(GL_TEXTURE_2D, bloomRend.BloomTexture());
 			glViewport(0, 0, 1600, 900);
 			glEnable(GL_STENCIL_TEST);
 

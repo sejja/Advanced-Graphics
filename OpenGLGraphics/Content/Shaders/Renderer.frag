@@ -5,8 +5,19 @@ out vec4 FragColor;
 layout (location = 0) in vec2 texCoords;
 
 layout (binding = 0) uniform sampler2D screenTexture;
+layout(binding = 1) uniform sampler2D bBloomTexture;
 
 uniform float exposure;
+
+// ------------------------------------------------------------------------
+/*! Bloom Calculation
+*
+*   Extracts the bloom color aberration from the final color and the bloom channel
+*/ //----------------------------------------------------------------------
+vec4 bloom(vec4 finalcolor) {
+    vec4 bloomColor = texture(bBloomTexture, texCoords).rgba;
+    return mix(finalcolor, bloomColor, 0.5); // linear interpolation
+}
 
 void main()
 {
@@ -23,5 +34,5 @@ void main()
   
     //FragColor = vec4(1.0f, 0.f, 0.f, 1.f);
 
-    FragColor = vec4(mapped , 1.0f);
+    FragColor = bloom(vec4(mapped , 1.0f));
 }

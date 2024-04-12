@@ -31,7 +31,7 @@ namespace Graphics {
 
 			void RenderShadowMaps(glm::mat4 camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
 			void RenderLights(Core::Graphics::GBuffer& gBuffer, Bloom::BloomRenderer& bloomRend);
-			void RenderScreenQuad();
+			static void RenderScreenQuad();
 			void StencilPass(glm::vec3& pos, float sphere);
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 			Core::Assets::Asset<::Graphics::Primitives::GLBModel> mLightSphere;
