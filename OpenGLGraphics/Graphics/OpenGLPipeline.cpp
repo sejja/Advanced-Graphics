@@ -292,20 +292,20 @@ namespace Core {
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
-
+			
 			//Bind and Clean
 			if (AntiAliasing) {mSamplingBuffer->Bind();mSamplingBuffer->Clear();}
-			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
+			else { mHDRBuffer->Bind(); }//mHDRBuffer->Clear();}
 			//glEnable(GL_DEPTH_TEST);
 
 			//RenderParticlesSystems();
-
-			BloomPass(mHDRBuffer->GetHandle());
-			mLightPass->RenderLights(*mGBuffer, *mBloomRenderer);
+			//glDisable(GL_DEPTH_TEST);
+			//BloomPass(mHDRBuffer->GetHandle());
+			//mLightPass->RenderLights(*mGBuffer, *mBloomRenderer);
 			
-			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
-			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
-
+			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle(), mDimensions);
+			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle(), mDimensions);
+			//glEnable(GL_DEPTH_TEST);
 			Skybox::sCurrentSky->Render(cam, *this);
 
 			RenderParticlesSystems();
@@ -314,7 +314,7 @@ namespace Core {
 			{
 				glBindFramebuffer(GL_READ_FRAMEBUFFER, mSamplingBuffer->GetHandle());
 				glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mHDRBuffer->GetHandle());
-				glBlitFramebuffer(0, 0, mDimensions.x, mDimensions.y, 0, 0, mDimensions.x, mDimensions.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+				glBlitFramebuffer(0, 0, sceneFrameDimensions.x, sceneFrameDimensions.y, 0, 0, sceneFrameDimensions.x, sceneFrameDimensions.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 			}
 
 			mFrameBuffer->Bind();
@@ -373,8 +373,8 @@ namespace Core {
 			glCullFace(GL_BACK);
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glEnable(GL_ALPHA_TEST);
-			glAlphaFunc(GL_GREATER, 0.1f);
+			//glEnable(GL_ALPHA_TEST);
+			//glAlphaFunc(GL_GREATER, 0.1f);
 
 			std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 

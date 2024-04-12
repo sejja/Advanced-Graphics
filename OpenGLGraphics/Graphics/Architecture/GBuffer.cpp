@@ -97,10 +97,12 @@ namespace Core {
 		*
 		*   Copies the Depth Values, so we can Forward Render after Deferred
 		*/ //----------------------------------------------------------------------
-		void GBuffer::BlitDepthBuffer(GLuint tobuff) {
+		void GBuffer::BlitDepthBuffer(GLuint tobuff, glm::lowp_u16vec2 sceneFrameDimensions) {
 			glBindFramebuffer(GL_READ_FRAMEBUFFER, mBuffer);
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, tobuff); // write to default framebuffer
-			glBlitFramebuffer( 0, 0, 1600, 900, 0, 0, 1600, 900, GL_DEPTH_BUFFER_BIT, GL_NEAREST );
+			printf("%x \n", glGetError());
+			glBlitFramebuffer(NULL, NULL, sceneFrameDimensions.x, sceneFrameDimensions.y, NULL, NULL, sceneFrameDimensions.x, sceneFrameDimensions.y, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+			printf("%x \n",glGetError());
 			glBindFramebuffer(GL_FRAMEBUFFER, tobuff);
 		}
 

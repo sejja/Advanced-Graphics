@@ -24,7 +24,7 @@ namespace Core {
 			~GBuffer();
 			void Bind();
 			void BindLightingShader();
-			void BlitDepthBuffer(GLuint buff = NULL);
+			void BlitDepthBuffer(GLuint buff = NULL, glm::lowp_u16vec2 sceneFrameDimensions = glm::lowp_u16vec2(1600,900));
 			Core::Assets::Asset<ShaderProgram> GetLightingShader();
 			GLuint GetPositionTextureHandle();
 			GLuint GetNormalTextureHandle();
