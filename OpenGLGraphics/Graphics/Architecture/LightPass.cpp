@@ -173,7 +173,7 @@ namespace Graphics {
 		}
 
 		void LightPass::StencilPass(glm::vec3& pos, float sphere) {
-			glEnable(GL_DEPTH_TEST);
+			//glEnable(GL_DEPTH_TEST);
 			glDisable(GL_CULL_FACE);
 			glClear(GL_STENCIL_BUFFER_BIT);
 			glStencilFunc(GL_ALWAYS, 0, 0);
