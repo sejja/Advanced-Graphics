@@ -21,6 +21,7 @@
 #include "Dependencies/ImGui/imgui_impl_sdl2.h"
 #include "Core/Editor/Editor.h"
 #include "Graphics/Tools/OpenGLInfo.h"
+#include "Graphics/Architecture/Utils/GLUtils.h"
 
 
 using namespace Core::Graphics;
@@ -99,6 +100,7 @@ namespace Core {
 			mBloomRenderer = std::make_unique<::Graphics::Architecture::Bloom::BloomRenderer>(mDimensions);
 			mLightPass = std::make_unique<::Graphics::Architecture::LightPass>();
 			Singleton<::Editor>::Instance().assetManager.init();
+			::Graphics::Architecture::Utils::GLUtils::Init();
 		}
 
 		::Graphics::Architecture::GBuffer* OpenGLPipeline::GetGBuffer() {
@@ -267,7 +269,7 @@ namespace Core {
 		void OpenGLPipeline::RenderShadowMaps() {
 			std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
-			mLightPass->RenderShadowMaps(cam.GetViewMatrix(), [&obsoletes, this](ShaderProgram* shader) {
+			mLightPass->RenderShadowMaps({1600, 900}, cam.GetViewMatrix(), [&obsoletes, this](ShaderProgram* shader) {
 				//Render all objects
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
 				[this, &obsoletes, &shader](const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
@@ -298,7 +300,7 @@ namespace Core {
 			glEnable(GL_DEPTH_TEST);
 
 			BloomPass(mHDRBuffer->GetHandle());
-			mLightPass->RenderLights(*mGBuffer, *mBloomRenderer);
+			mLightPass->RenderLights({1600, 900}, *mGBuffer);
 			
 			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
 			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
@@ -322,7 +324,7 @@ namespace Core {
 			RendererShader->Get()->SetShaderUniform("exposure", exposure);
 			glActiveTexture(GL_TEXTURE1);
 			glBindTexture(GL_TEXTURE_2D, mBloomRenderer->BloomTexture());
-			mLightPass.get()->RenderScreenQuad();
+			::Graphics::Architecture::Utils::GLUtils::RenderScreenQuad();
 
 			mFrameBuffer->Unbind();
 
@@ -440,7 +442,7 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::DirectionalLightPass() {	
 			mDirectionalLightShader->Get()->Bind();
-			mLightPass.get()->RenderScreenQuad();
+			::Graphics::Architecture::Utils::GLUtils::RenderScreenQuad();
 		}
 
 		void OpenGLPipeline::BloomPass(GLuint targetbuffer)

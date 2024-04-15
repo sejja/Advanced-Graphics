@@ -19,7 +19,7 @@ namespace Graphics {
 		PointLight::PointLight(const std::weak_ptr<Core::Object>& parent)
 			: Light(parent) {
 				mData = new PointLightData();
-				Graphics::Architecture::LightPass::sPointLightData.insert(std::make_pair(mIndex, (PointLightData*)mData));
+				Graphics::Architecture::LightPass::AddPointLight(mIndex, std::shared_ptr<PointLightData>((PointLightData*)mData));
 		}
 
 		float PointLight::PointLightData::CalculateSphereOfInfluence() const {

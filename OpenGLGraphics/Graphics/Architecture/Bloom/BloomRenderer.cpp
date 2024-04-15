@@ -8,6 +8,7 @@
 
 #include "BloomRenderer.h"
 #include "Graphics/Architecture/LightPass.h"
+#include "../Utils/GLUtils.h"
 
 namespace Graphics {
 	namespace Architecture {
@@ -69,7 +70,7 @@ namespace Graphics {
                         GL_TEXTURE_2D, mip.GetTexture(), NULL);
 
                     // Render screen-filled quad of resolution of current mip
-                    LightPass::RenderScreenQuad();
+                    Utils::GLUtils::RenderScreenQuad();
 
                     glm::ivec2 srcResolution = glm::ivec2(mipSize.x, mipSize.y);
                     // Set current mip resolution as srcResolution for next iteration
@@ -111,7 +112,7 @@ namespace Graphics {
                         GL_TEXTURE_2D, nextMip.GetTexture(), NULL);
 
                     // Render screen-filled quad of resolution of current mip
-                    LightPass::RenderScreenQuad();
+                    Utils::GLUtils::RenderScreenQuad();
                 }
             }
 		}
