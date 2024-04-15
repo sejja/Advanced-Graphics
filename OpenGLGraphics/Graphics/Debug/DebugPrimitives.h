@@ -1,34 +1,45 @@
+﻿//
+//	DebugPrimitives.h
+//	OpenGL Graphics
+//
+//	Created by Diego Revilla on 15/04/24
+//	Copyright � 2024 . All Rights reserved
+//
+
 #ifndef __PRIMITIVE_HPP__
 #define __PRIMITIVE_HPP__
 
-#include <vector>
 #include <vec3.hpp>
-#include "Graphics/Primitives/ShaderProgram.h""
+#include "Graphics/Primitives/ShaderProgram.h"
 
-class Primitive {
-public:
-	std::vector<glm::vec3> mVertices;
-	Core::Assets::Asset<Core::Graphics::ShaderProgram> mShader = nullptr;
+namespace Graphics {
+	namespace Debug {
+		class DebugPrimitive {
+#pragma region //Constructor & Destructor
+		public:
+			DebugPrimitive();
+			~DebugPrimitive();
+#pragma endregion
 
-	Primitive();
-	~Primitive();
+#pragma region //Methods
+			void InitPoint();
+			void InitSegment();
+			void InitAABB();
+			void InitTriangle(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c);
+			void InitPlane();
+			void InitSphereDisc();
+			void InitFrustum();
+			void Draw() const;
+		private:
+			void InitializeBuffers(std::vector<glm::vec3>& vertices);
+#pragma endregion
 
-	void InitializeBuffers();
-	void LoadShader(const char* shaderpath);
-
-	void InitPoint();
-	void InitSegment();
-	void InitAABB();
-	void InitTriangle(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c);
-	void InitPlane();
-	void InitSphereDisc();
-	void InitFrustum();
-	void Clear();
-	unsigned VtxCount();
-	void BindForDrawing();
-private:
-	GLuint mVAO = 0;
-	GLuint mVBO = 0;
-};
+#pragma region //Members
+			GLuint mVAO, mVBO;
+			std::size_t mVertexCount;
+#pragma endregion
+		};
+	}
+}
 
 #endif // __PRIMITIVE_HPP__
