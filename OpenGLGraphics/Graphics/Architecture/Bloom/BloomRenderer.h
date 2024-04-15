@@ -28,7 +28,7 @@ namespace Graphics{
 
             #pragma region //Methods
                 void RenderBloomTexture(const GLuint srcTexture, float filterRadius, const GLuint targetbuffer) const;
-                GLuint inline BloomTexture() const;
+                DONTDISCARD GLuint inline BloomTexture() const;
 
             private:
                 void RenderDownsamples(const GLuint srcTexture) const;

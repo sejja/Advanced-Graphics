@@ -51,7 +51,7 @@ namespace Graphics {
 
             #pragma region //Methods
                 void Bind() const;
-                const MipChain& GetMipChain() const;
+                DONTDISCARD const MipChain& GetMipChain() const;
             #pragma endregion
 
             #pragma region //Members

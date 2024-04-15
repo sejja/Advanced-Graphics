@@ -39,8 +39,6 @@ namespace Graphics {
                 // check completion status
                 if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
                     throw BloomFramebufferException("Framebuffer is incomplete");
-
-                glBindFramebuffer(GL_FRAMEBUFFER, NULL);
             }
 
             // ------------------------------------------------------------------------

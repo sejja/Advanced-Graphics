@@ -50,7 +50,7 @@ namespace Core {
 			glDisable(GL_BLEND);
 			glDisable(GL_STENCIL_TEST);
 			glClearColor(0.f, 0.f, 0.f, 0.f);
-			mGBuffer = std::make_unique<GBuffer>(mDimensions);
+			mGBuffer = std::make_unique<::Graphics::Architecture::GBuffer>(mDimensions);
 			mDirectionalLightShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredDirectionalLighting.shader");
 
 
@@ -101,7 +101,7 @@ namespace Core {
 			Singleton<::Editor>::Instance().assetManager.init();
 		}
 
-		GBuffer* OpenGLPipeline::GetGBuffer() {
+		::Graphics::Architecture::GBuffer* OpenGLPipeline::GetGBuffer() {
 			return mGBuffer.get();
 		}
 

@@ -16,7 +16,7 @@ uniform float exposure;
 */ //----------------------------------------------------------------------
 vec4 bloom(vec4 finalcolor) {
     vec4 bloomColor = texture(bBloomTexture, texCoords).rgba;
-    return mix(finalcolor, bloomColor, 0.5); // linear interpolation
+    return finalcolor + bloomColor; // linear interpolation
 }
 
 void main()

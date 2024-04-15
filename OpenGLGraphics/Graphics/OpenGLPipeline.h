@@ -37,7 +37,7 @@ namespace Core {
 			virtual void SetDimensions(const glm::lowp_u16vec2& dim) override;
 			inline void AddRenderable(const std::weak_ptr<Renderable>& renderer);
 			void SetParticleManager(std::shared_ptr<Core::Particles::ParticleMangager> particleManager);
-			GBuffer* GetGBuffer();
+			::Graphics::Architecture::GBuffer* GetGBuffer();
 			FrameBuffer* GetRenderFrameBuffer();
 			GLuint GetRenderTexture();
 			std::vector<FrameBuffer> GetShadowMappingBuffer() { return mShadowBuffers; };
@@ -73,7 +73,7 @@ namespace Core {
 			glm::lowp_u16vec2 mDimensions;
 			glm::lowp_u16vec2 sceneFrameDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
-			std::unique_ptr<GBuffer> mGBuffer;
+			std::unique_ptr<::Graphics::Architecture::GBuffer> mGBuffer;
 			std::unique_ptr<::Graphics::Architecture::LightPass> mLightPass;
 			Core::Assets::Asset<ShaderProgram> mDirectionalLightShader;
 			std::unique_ptr<FrameBuffer> mFrameBuffer;
@@ -86,7 +86,7 @@ namespace Core {
 
 			GLboolean AntiAliasing = false;
 			Core::Assets::Asset<ShaderProgram> RendererShader;
-			float exposure = 5;
+			float exposure = 1;
 			std::unique_ptr<debug_system> mDebug;
 			std::unique_ptr<::Graphics::Architecture::Bloom::BloomRenderer> mBloomRenderer;
 		};
