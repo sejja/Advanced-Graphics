@@ -14,10 +14,12 @@
 namespace Core {
 	namespace Window {
 		class Window {
+		#pragma region //Functions
 		public:
 			virtual void Create() = 0;
 			virtual bool Present() = 0;
 			virtual void SetDimensions(const glm::lowp_u16vec2& dim) = 0;
+		#pragma endregion
 		};
 	}
 }

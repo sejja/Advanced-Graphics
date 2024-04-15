@@ -18,24 +18,35 @@
 namespace Core {
 	namespace Assets {
 		struct IResource {
+		#pragma region //Destrucor
 			virtual ~IResource();
+		#pragma endregion
 		};
 
 		class IResourceImporter {
+		#pragma region //Functions
 		public:
 			virtual std::shared_ptr<IResource> ImportFromFile(const std::string_view& filename) const = 0;
+		#pragma endregion
 		};
 
 		template<typename Ty_>
 		class TResource : public IResource {
+		#pragma region //Constructors
 		public:
 			TResource(Ty_* const data);
 			~TResource();
+		#pragma endregion
+
+		#pragma region //Functions
 			DONTDISCARD Ty_ inline* Get() noexcept;
 			DONTDISCARD Ty_ inline* GetAndRelease();
+		#pragma endregion
 
+		#pragma region //Members
 		private:
 			std::unique_ptr<Ty_> mRawData;
+		#pragma endregion
 		};
 
 		template<typename T>
@@ -45,21 +56,27 @@ namespace Core {
 		using AssetReference = std::weak_ptr<TResource<T>>;
 
 		class ResourceManager {
+		#pragma region //Declarations
 		public:
 			CLASS_EXCEPTION(ResourceManager)
 			using raw_text = const char*;
+		#pragma endregion
 
+		#pragma region //Functions
 			template<typename Ty_>
 			DONTDISCARD Asset<Ty_> GetResource(raw_text name);
 			DONTDISCARD std::shared_ptr<IResource> GetResource(raw_text name);
 			DONTDISCARD std::shared_ptr<IResourceImporter> GetImporterByExtension(raw_text ext) const;
 			void RemoveResource(raw_text name);
 			void Initialize();
+		#pragma endregion
 
+		#pragma region //Members
 		protected:
 			std::shared_ptr<IResource> AddResource(raw_text mPath);
 			std::unordered_map<std::string, std::shared_ptr<IResource>> mResources;
 			std::unordered_map<std::string, std::shared_ptr<IResourceImporter>> mImporters;
+		#pragma endregion
 		};
 		
 		// ------------------------------------------------------------------------

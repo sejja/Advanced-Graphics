@@ -306,7 +306,9 @@ namespace Core {
 			//Bind and Clean
 			if (AntiAliasing) {mSamplingBuffer->Bind();mSamplingBuffer->Clear();}
 			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
-			glEnable(GL_DEPTH_TEST);
+			//glEnable(GL_DEPTH_TEST);
+
+			//RenderParticlesSystems();
 
 			BloomPass(mHDRBuffer->GetHandle());
 			mLightPass->RenderLights({1600, 900}, *mGBuffer);
@@ -314,9 +316,9 @@ namespace Core {
 			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
 			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 
-			RenderParticlesSystems();
-
 			Skybox::sCurrentSky->Render(cam, *this);
+
+			RenderParticlesSystems();
 
 			if (AntiAliasing) 
 			{
@@ -379,7 +381,7 @@ namespace Core {
 		void OpenGLPipeline::GeometryPass() {
 			glDepthMask(GL_TRUE);
 			glDisable(GL_BLEND);
-			glEnable(GL_DEPTH_TEST);
+			//glEnable(GL_DEPTH_TEST);
 			glCullFace(GL_BACK);
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

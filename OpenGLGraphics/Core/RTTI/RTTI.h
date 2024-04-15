@@ -16,9 +16,9 @@ namespace Core {
 	namespace RTTI {
 		// ------------------------------------------------------------------------
 		/*! Is A
-				*
-						*   Is "other" a <<type>>
-								*/ // ---------------------------------------------------------------------
+		*
+		*   Is "other" a <<type>>
+		*/ // ---------------------------------------------------------------------
 		template<typename TYPE, typename OTHERTYPE>
 		DONTDISCARD constexpr inline bool IsA(OTHERTYPE* other) noexcept {
 			return dynamic_cast<TYPE*>(other);
@@ -26,9 +26,9 @@ namespace Core {
 
 		// ------------------------------------------------------------------------
 		/*! Is A
-				*
-						*   Is "other" a <<type>>
-								*/ // ---------------------------------------------------------------------
+		*
+		*   Is "other" a <<type>>
+		*/ // ---------------------------------------------------------------------
 		template<typename TYPE, typename OTHERTYPE>
 		DONTDISCARD constexpr inline bool IsChild() noexcept {
 			return std::is_base_of<OTHERTYPE, TYPE>::value;
