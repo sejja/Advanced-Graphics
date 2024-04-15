@@ -9,7 +9,7 @@
 #include "Core/ECSystem/Object.h"
 #include "Core/ParticleSystem/ParticleSystem.h"
 #include "Core/ParticleSystem/FireSystem.h"
-
+#include "Graphics/Primitives/Decal.h"
 
 
 
@@ -21,7 +21,6 @@ public:
     void sendToPeer(const json& message);
     void sendObjectIfChanged(const std::shared_ptr<Core::Object>& obj);
     void sendParticleIfChanged(const std::shared_ptr<Core::Particles::FireSystem>& fireSystem);
-
 
 protected:
     SOCKET serverSocket, clientSocket;

@@ -22,6 +22,7 @@
 #include "Core/Editor/Editor.h"
 #include "Graphics/Tools/OpenGLInfo.h"
 #include "Graphics/Architecture/Utils/GLUtils.h"
+#include "Graphics/Primitives/Decal.h"
 
 
 using namespace Core::Graphics;
@@ -101,6 +102,7 @@ namespace Core {
 			mLightPass = std::make_unique<::Graphics::Architecture::LightPass>();
 			Singleton<::Editor>::Instance().assetManager.init();
 			::Graphics::Architecture::Utils::GLUtils::Init();
+			mDebug = std::make_unique<debug_system>(&cam);
 		}
 
 		::Graphics::Architecture::GBuffer* OpenGLPipeline::GetGBuffer() {
@@ -293,6 +295,13 @@ namespace Core {
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
+
+			auto x = Singleton<::Editor>::Instance().GetSelectedObj().GetSelectedComponent();
+			
+			if (RTTI::IsA<Decal>(x.get())) {
+				mDebug->draw_aabb(x.get()->GetParent().lock()->GetPosition(),
+					x.get()->GetParent().lock()->GetScale(), glm::vec4(1, 0.6, 0.2, 1));
+			}
 
 			//Bind and Clean
 			if (AntiAliasing) {mSamplingBuffer->Bind();mSamplingBuffer->Clear();}

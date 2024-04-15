@@ -39,11 +39,13 @@ void main() {
         mat3(oTangent, oBitangent, oNormal) * 
         (texture(uNormalTex, oUVs).rgb * 2.0f - 1.0f));
     // and the diffuse per-fragment color
-    const vec4 albedo = texture(uDiffuseTex, oUVs);
+    const vec4 albedo = texture(uDiffuseTex, oUVs) ;
     if(albedo.a < 0.1) discard;
     else gAlbedoSpec.rgb = albedo.rgb;
     gBrightness = vec3(0, 0, 0);
 }
+
+
 
 
 
