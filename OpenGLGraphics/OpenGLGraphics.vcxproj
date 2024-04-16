@@ -199,6 +199,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Core\Assets\ResourceManager.cpp" />
+    <ClCompile Include="Core\ParticleSystem\SmokeSystem.cpp" />
     <ClCompile Include="Dependencies\GLEW\Source\glew.c" />
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp" />
@@ -274,6 +275,7 @@
     <ClInclude Include="Core\ParticleSystem\FireSystem.h" />
     <ClInclude Include="Core\ParticleSystem\ParticleManager.h" />
     <ClInclude Include="Core\ParticleSystem\ParticleSystem.h" />
+    <ClInclude Include="Core\ParticleSystem\SmokeSystem.h" />
     <ClInclude Include="Core\RTTI\RTTI.h" />
     <ClInclude Include="Core\Events\TypeInfo.h" />
     <ClInclude Include="Core\Input\InputManager.h">

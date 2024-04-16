@@ -246,6 +246,9 @@
     <ClCompile Include="Graphics\Primitives\Decal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\ParticleSystem\SmokeSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -1788,6 +1791,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Primitives\Decal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ParticleSystem\SmokeSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
