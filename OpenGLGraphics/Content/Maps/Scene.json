@@ -3,11 +3,11 @@
         {
             "_id": "1",
             "components": [
-                {
-                    "model": "Content/Meshes/cube_averaged.obj",
-                    "shader": "Content/Shaders/DeferredGeometry.shader",
-                    "type": "Model Renderer"
-                }
+              {
+                "model": "Content/Meshes/Dragon/scene.gltf",
+                "shader": "Content/Shaders/DeferredGeometry.shader",
+                "type": "Model Renderer"
+              }
             ],
             "name": "Prueba",
             "position": [
@@ -21,19 +21,20 @@
                 0.0
             ],
             "scale": [
-                10.0,
-                10.0,
-                10.0
+                1.0,
+                1.0,
+                1.0
             ]
         },
         {
             "_id": "2",
             "components": [
-                {
-                    "model": "Content/Meshes/cube_averaged.obj",
-                    "shader": "Content/Shaders/DeferredGeometry.shader",
-                    "type": "Model Renderer"
-                }
+              {
+                "type": "Directional Light",
+                "color": [ 1, 1, 1 ],
+                "direction": [ 0.34, 0.87, 0.34 ],
+                "shadowCaster":  1
+              }
             ],
             "name": "Prueba2",
             "position": [
@@ -47,265 +48,9 @@
                 0.0
             ],
             "scale": [
-                10.0,
-                10.0,
-                10.0
-            ]
-        },
-        {
-            "_id": "3",
-            "components": [
-                {
-                    "color": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "direction": [
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
-                    "shadowCaster": 0,
-                    "type": "Directional Light"
-                }
-            ],
-            "name": "Luz1",
-            "position": [
-                2.0,
-                2.0,
-                2.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                10.0,
-                10.0,
-                10.0
-            ]
-        },
-        {
-            "_id": "4",
-            "components": [
-                {
-                    "color": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "direction": [
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
-                    "shadowCaster": 0,
-                    "type": "Directional Light"
-                },
-                {
-                    "color": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "innerAngle": 0.0,
-                    "outterAngle": 0.0,
-                    "radius": 10.0,
-                    "shadowCaster": 0,
-                    "type": "Point Light"
-                },
-                {
-                    "color": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "direction": [
-                        0.0,
-                        0.0,
-                        1.0
-                    ],
-                    "innerAngle": 10.0,
-                    "outterAngle": 10.0,
-                    "shadowCaster": 0,
-                    "type": "Spot Light"
-                }
-            ],
-            "name": "Luz2",
-            "position": [
-                2.0,
-                2.0,
-                2.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                10.0,
-                10.0,
-                10.0
-            ]
-        },
-        {
-            "_id": "",
-            "name": "Sky_bg",
-            "position": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "_id": "PARTICLE_MANAGER",
-            "name": "ParticleManager",
-            "position": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ],
-            "rotation": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ],
-            "scale": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ]
-        },
-        {
-            "_id": "",
-            "name": "Sky_bg",
-            "position": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "_id": "PARTICLE_MANAGER",
-            "name": "ParticleManager",
-            "position": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ],
-            "rotation": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ],
-            "scale": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ]
-        },
-        {
-            "_id": "",
-            "name": "Sky_bg",
-            "position": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "_id": "PARTICLE_MANAGER",
-            "name": "ParticleManager",
-            "position": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ],
-            "rotation": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ],
-            "scale": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ]
-        },
-        {
-            "_id": "",
-            "components": [
-                null
-            ],
-            "name": "Sky_bg",
-            "position": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "_id": "PARTICLE_MANAGER",
-            "components": [
-                null
-            ],
-            "name": "ParticleManager",
-            "position": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ],
-            "rotation": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ],
-            "scale": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
+                1.0,
+                1.0,
+                1.0
             ]
         }
     ]

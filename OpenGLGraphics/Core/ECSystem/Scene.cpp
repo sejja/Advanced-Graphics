@@ -64,7 +64,7 @@ namespace Core {
 
 		/*std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();*/
 
-		std::ifstream f(file.data());
+		std::ifstream f("Content/Maps/Scene.json");
 		json data = json::parse(f);
 
 		json objects = data["objects"];

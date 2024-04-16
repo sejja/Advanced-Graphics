@@ -16,6 +16,8 @@ static bool show_deferred_rendering = false;
 void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     if (ImGui::BeginMainMenuBar()) {
 
+        RenderFileMenu();
+
         if (ImGui::BeginMenu("Edit")) {
 
             if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
@@ -156,6 +158,16 @@ void MainMenu::ServerStateInfo()
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(43.0f / 255.0f, 190.0f / 255.0f, 165.0f / 255.0f, 1.0f));
         ImGui::BeginMenu(ICON_FA_SERVER "  Connected to peer");
         ImGui::PopStyleColor();
+    }
+
+}
+
+void MainMenu::RenderFileMenu() {
+    
+    if (ImGui::BeginMenu) {
+        if (ImGui::MenuItem("Save", "CTRL+S")) {
+
+        }
     }
 
 }

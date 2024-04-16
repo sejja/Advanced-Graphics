@@ -1,0 +1,109 @@
+{
+    "objects": [
+        {
+            "_id": "1",
+            "components": [
+                {
+                    "model": "Content/Meshes/Dragon/scene.gltf",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                }
+            ],
+            "name": "Prueba",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "2",
+            "components": [
+                {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "direction": [
+                        0.3400000035762787,
+                        0.8700000047683716,
+                        0.3400000035762787
+                    ],
+                    "shadowCaster": 1,
+                    "type": "Directional Light"
+                }
+            ],
+            "name": "Prueba2",
+            "position": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "",
+            "components": [
+                null
+            ],
+            "name": "Sky_bg",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "_id": "PARTICLE_MANAGER",
+            "components": [
+                null
+            ],
+            "name": "ParticleManager",
+            "position": [
+                -431602080.0,
+                -431602080.0,
+                -431602080.0
+            ],
+            "rotation": [
+                -431602080.0,
+                -431602080.0,
+                -431602080.0
+            ],
+            "scale": [
+                -431602080.0,
+                -431602080.0,
+                -431602080.0
+            ]
+        }
+    ]
+}
