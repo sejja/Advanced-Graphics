@@ -27,6 +27,8 @@
 #include "Graphics/Primitives/Lights/SpotLight.h"
 #include <Core/ECSystem/Scene.h>
 #include <Core/AppWrapper.h>
+#include "Graphics/Primitives/Decal.h"
+#include "Core/RTTI/RTTI.h"
 
 
 SelectedObj& selectedObjIns = Singleton<Editor>::Instance().GetSelectedObj();
@@ -68,6 +70,7 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     std::shared_ptr<::Graphics::Primitives::Light> lightComp = NULL;
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = NULL;
     std::shared_ptr<Core::Particles::FireSystem> fireSystem = NULL;
+    std::shared_ptr<Decal> decal = NULL;
 
     particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(comp);
 
@@ -87,6 +90,7 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(comp);
     meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp);
     fireSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(comp);
+    decal = std::dynamic_pointer_cast<Decal>(comp);
 
 
     
@@ -130,6 +134,12 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
             ParticleTransform();
             FireSize();
             sendToPeer(fireSystem);
+        }
+    }
+
+    else if (decal) {
+        if (ImGui::CollapsingHeader(ICON_FA_IMAGE " Textures", ImGuiTreeNodeFlags_DefaultOpen)) {
+            DecalOptions();
         }
     }
 
@@ -247,6 +257,10 @@ void Properties::objectOutliner() {
 
             }
 
+            if (ImGui::Selectable(ICON_FA_NOTE_STICKY " Decal")) {
+                obj->AddComponent(std::move(std::make_shared<Decal>(obj)));
+            }
+
             ImGui::EndPopup();
         }
 
@@ -311,6 +325,11 @@ void Properties::selectedObjectTree() {
 				selectedObjIns.SetSelectedComponent(comp);
 			}
 		}
+        else if (Core::RTTI::IsA<Decal>(comp.get())) {
+            if (ImGui::Selectable(ICON_FA_NOTE_STICKY " Decal", isCompSelectedObj)) {
+                selectedObjIns.SetSelectedComponent(comp);
+            }
+        }
         else {
             if (ImGui::Selectable(ICON_FA_QUESTION" tipo de comp raro?", isCompSelectedObj)) {
                 selectedObjIns.SetSelectedComponent(comp);
@@ -957,10 +976,71 @@ void Properties::UpdateLightCompsPos(std::shared_ptr<Core::Object> obj)
 	}
 }
 
+void Properties::DecalOptions() {
+    static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
+    static ImVec2 cell_padding(4.0f, 8.0f);
+    ImGuiDragDropFlags flags = 0 | ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+    ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
+
+    std::shared_ptr<Decal> decal = std::dynamic_pointer_cast<Decal>(selectedObjIns.GetSelectedComponent());
+
+    if (ImGui::BeginTable("materials_table", 2, flags1)) {
+
+        ImGui::TableNextRow();
+
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Element 0");
+        ImGui::TableSetColumnIndex(1);
 
 
+        auto tex = decal->mDiffuse->Get();
+        ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
 
 
+        ImGui::SameLine();
+        ImGui::BeginGroup();
 
 
+        ImGui::Text(nombreTexturaTemporal.c_str());
 
+        ImGui::Button(ICON_FA_ARROW_TURN_UP);
+        ImGui::SameLine();
+        ImGui::Button(ICON_FA_FOLDER_OPEN);
+
+
+        ImGui::EndGroup();
+
+        tex = decal->mNormal->Get();
+        ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+
+
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+
+
+        ImGui::Text(nombreTexturaTemporal.c_str());
+
+        ImGui::Button(ICON_FA_ARROW_TURN_UP);
+        ImGui::SameLine();
+        ImGui::Button(ICON_FA_FOLDER_OPEN);
+
+
+        ImGui::EndGroup();
+
+
+    }
+    ImGui::EndTable();
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
+            AssetIcon* iconPtr = (AssetIcon*)payload->Data;
+            nombreTexturaTemporal = iconPtr->nombre;
+            printf("RUTA: %s\n", iconPtr->ruta);
+            auto nuevaTex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(iconPtr->ruta)->Get();
+
+
+        }
+        ImGui::EndDragDropTarget();
+    }
+
+    ImGui::PopStyleVar();
+}

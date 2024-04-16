@@ -63,7 +63,7 @@ namespace Core
 
 					//Get camera projection and view
 					glm::mat4 view = camera->GetViewMatrix(); 
-					glm::mat4 uProjection = this->projection;
+					glm::mat4 uProjection = this->camera->GetProjectionMatrix();
 
 					//New instance of systemProperties
 					glm::vec4 color = this->baseColor;

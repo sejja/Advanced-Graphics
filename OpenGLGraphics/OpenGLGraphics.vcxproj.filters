@@ -240,6 +240,12 @@
     <ClCompile Include="Dependencies\GLEW\Source\glew.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Architecture\Utils\GLUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Primitives\Decal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -1778,6 +1784,12 @@
     <ClInclude Include="Dependencies\SQLite3\sqlite3.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Architecture\Utils\GLUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Primitives\Decal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\SDL\Include\SDL_config.h.cmake" />
@@ -2701,6 +2713,42 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Content\Scenes\textures\white.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_basic_m.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_bullet_d.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_bullet_n.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_crack_d.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_crack_n.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_damagefloor_d.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_damagefloor_n.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_plaster_d.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_plaster_n.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_skull_d.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_skull_m.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_skull_n.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

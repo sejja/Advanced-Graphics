@@ -23,14 +23,51 @@ namespace Core {
 		*   Constructs the Camera, with its position and subscribes to events
 		*/ // ---------------------------------------------------------------------
 		Camera::Camera() :
-			mPosition(0, 0, 100), mTargetPosition(0, 0, 0) {
+			Position(0, 0, 100), Front(0, 0, -1), Yaw(-90.f), Pitch(0.f), WorldUp(0, 1, 0) {
+			static float lastX = 0, lastY = 0;
+			static bool firstMouse = true;
 			auto& ed = Singleton<Events::EventDispatcher>::Instance();
-			ed.Subscribe(*this, Core::Input::InputManager::A_Down(), [this](const Events::Event& event) {mPosition.x -= 1; });
-			ed.Subscribe(*this, Core::Input::InputManager::W_Down(), [this](const Events::Event& event) {mPosition.z -= 1; });
-			ed.Subscribe(*this, Core::Input::InputManager::D_Down(), [this](const Events::Event& event) {mPosition.x += 1; });
-			ed.Subscribe(*this, Core::Input::InputManager::S_Down(), [this](const Events::Event& event) {mPosition.z += 1; });
-			ed.Subscribe(*this, Core::Input::InputManager::Q_Down(), [this](const Events::Event& event) {mPosition.y -= 1; });
-			ed.Subscribe(*this, Core::Input::InputManager::E_Down(), [this](const Events::Event& event) {mPosition.y += 1; });
+			ed.Subscribe(*this, Core::Input::InputManager::A_Down(), [this](const Events::Event& event) { Position -= Right; UpdateCameraVectors();});
+			ed.Subscribe(*this, Core::Input::InputManager::W_Down(), [this](const Events::Event& event) {Position += Front; UpdateCameraVectors(); });
+			ed.Subscribe(*this, Core::Input::InputManager::D_Down(), [this](const Events::Event& event) {Position += Right; UpdateCameraVectors(); });
+			ed.Subscribe(*this, Core::Input::InputManager::S_Down(), [this](const Events::Event& event) {Position -= Front; UpdateCameraVectors(); });
+			ed.Subscribe(*this, Core::Input::InputManager::MouseMotion(), [this](const Events::Event& event) {
+				glm::u16vec2 mouseMotion = (static_cast<const Core::Input::InputManager::MouseMotion&>(event)).mMovement;
+				if (firstMouse)
+				{
+					lastX = mouseMotion.x;
+					lastY = mouseMotion.y;
+					firstMouse = false;
+				}
+				
+				float xoffset = mouseMotion.x - lastX;
+				float yoffset = lastY - mouseMotion.y;
+				lastX = mouseMotion.x;
+				lastY = mouseMotion.y;
+
+				if(Singleton<Core::Input::InputManager>::Instance().IsKeyDown(VK_LBUTTON)) {
+					float sensitivity = 0.1f;
+					xoffset *= sensitivity;
+					yoffset *= sensitivity;
+
+					Yaw += xoffset;
+					Pitch += yoffset;
+
+					if (Pitch > 89.0f)
+						Pitch = 89.0f;
+					if (Pitch < -89.0f)
+						Pitch = -89.0f;
+
+					glm::vec3 direction;
+					direction.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+					direction.y = sin(glm::radians(Pitch));
+					direction.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+					direction = glm::normalize(direction);
+					UpdateCameraVectors();
+				}
+			});
+
+			UpdateCameraVectors();
 		}
 
 		// ------------------------------------------------------------------------
@@ -48,6 +85,17 @@ namespace Core {
 			ed.Unsubscribe(*this, Core::Input::InputManager::Q_Down());
 		}
 
+		void Camera::UpdateCameraVectors() {
+			glm::vec3 front;
+			front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+			front.y = sin(glm::radians(Pitch));
+			front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+			Front = glm::normalize(front);
+			// also re-calculate the Right and Up vector
+			Right = glm::normalize(glm::cross(Front, WorldUp));  // normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
+			Up = glm::normalize(glm::cross(Right, Front));
+		}
+
 		// ------------------------------------------------------------------------
 		/*! Get Projection Matrix
 		*
@@ -57,7 +105,7 @@ namespace Core {
 			float aspectRatio = Singleton<::Editor>::Instance().GetAspectRatio();
 			float fov = *Singleton<::Editor>::Instance().GetFOV();
 
-			return glm::perspective(glm::radians(fov), aspectRatio, 0.1f, zfar);
+			return glm::perspective(glm::radians(fov), aspectRatio, 0.1f, 10000.f);
 		}
 	}
 }

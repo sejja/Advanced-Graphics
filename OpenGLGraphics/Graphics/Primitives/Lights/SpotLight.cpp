@@ -19,7 +19,7 @@ namespace Graphics {
 		SpotLight::SpotLight(const std::weak_ptr<Core::Object>& parent)
 			: Light(parent) {
 				mData = new SpotLightData();
-				Graphics::Architecture::LightPass::sSpotLightData.insert(std::make_pair(mIndex, (SpotLightData*)mData));
+				Graphics::Architecture::LightPass::AddSpotLight(mIndex, std::shared_ptr<SpotLightData>((SpotLightData*)mData));
 				((SpotLightData*)mData)->GenerateShadowMap();
 		}
 

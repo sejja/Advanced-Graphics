@@ -19,7 +19,7 @@ namespace Graphics {
 		DirectionalLight::DirectionalLight(const std::weak_ptr<Core::Object>& parent) 
 			: Light(parent) {
 			mData = new DirectionalLightData;
-			Graphics::Architecture::LightPass::sDirectionalLightData.insert(std::make_pair(mIndex, (DirectionalLightData*)mData));
+			Graphics::Architecture::LightPass::AddDirectionalLight(mIndex, std::shared_ptr<DirectionalLightData>((DirectionalLightData*)mData));
 		}
 
 		float DirectionalLight::DirectionalLightData::CalculateSphereOfInfluence() const {

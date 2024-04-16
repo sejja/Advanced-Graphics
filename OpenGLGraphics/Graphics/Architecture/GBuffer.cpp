@@ -7,19 +7,17 @@
 //
 
 #include "GBuffer.h"
-#include "Core/Window/SDLWindow.h"
 #include "Core/Singleton.h"
 
-namespace Core {
-	namespace Graphics {
+namespace Graphics {
+	namespace Architecture {
 		// ------------------------------------------------------------------------
 		/*! Default Constructor
 		*
 		*   Constructs a G-Buffer, with 3 Textures (Position, Normal, Albedo)
 		*/ //----------------------------------------------------------------------
-		GBuffer::GBuffer() {
-			auto dim = Singleton<Core::Window::SDLWindow>::Instance().GetDimensions();
-			dim = { 1600, 900 };
+		GBuffer::GBuffer(const glm::u16vec2 dim) :
+			mDimensions(dim) {
 			glGenFramebuffers(1, &mBuffer);
 			glBindFramebuffer(GL_FRAMEBUFFER, mBuffer);
 
@@ -42,7 +40,7 @@ namespace Core {
 			// - color + specular color buffer
 			glGenTextures(1, &mAlbedoSpecular);
 			glBindTexture(GL_TEXTURE_2D, mAlbedoSpecular);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dim.x, dim.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, dim.x, dim.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT2, GL_TEXTURE_2D, mAlbedoSpecular, 0);
@@ -50,25 +48,23 @@ namespace Core {
 			//Brightness color buffer
 			glGenTextures(1, &mBrightness);
 			glBindTexture(GL_TEXTURE_2D, mBrightness);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, dim.x, dim.y, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, dim.x, dim.y, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT3, GL_TEXTURE_2D, mBrightness, 0);
 
 			// - tell OpenGL which color attachments we'll use (of this framebuffer) for rendering 
-			unsigned int attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
-			glDrawBuffers(4, attachments);
+			GLenum attachments[4] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
+			glDrawBuffers(sizeof(attachments) / sizeof(GLenum), attachments);
 ;
 			// create and attach depth buffer (renderbuffer)
-			unsigned int rboDepth;
-			glGenRenderbuffers(1, &rboDepth);
-			glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
+			glGenRenderbuffers(1, &mDepth);
+			glBindRenderbuffer(GL_RENDERBUFFER, mDepth);
 			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, dim.x, dim.y);
-			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, mDepth);
 			// finally check if framebuffer is complete
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 				throw GBufferException("G-Buffer was unable to be created fully");
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		}
 
 		// ------------------------------------------------------------------------
@@ -80,6 +76,8 @@ namespace Core {
 			glDeleteTextures(1, &mPosition);
 			glDeleteTextures(1, &mNormal);
 			glDeleteTextures(1, &mAlbedoSpecular);
+			glDeleteTextures(1, &mBrightness);
+			glDeleteRenderbuffers(1, &mDepth);
 			glDeleteBuffers(1, &mBuffer);
 		}
 
@@ -88,7 +86,7 @@ namespace Core {
 		*
 		*   Binds the G-Buffer for drawing
 		*/ //----------------------------------------------------------------------
-		void GBuffer::Bind() {
+		void GBuffer::Bind() const {
 			glBindFramebuffer(GL_FRAMEBUFFER, mBuffer);
 		}
 
@@ -97,47 +95,11 @@ namespace Core {
 		*
 		*   Copies the Depth Values, so we can Forward Render after Deferred
 		*/ //----------------------------------------------------------------------
-		void GBuffer::BlitDepthBuffer(GLuint tobuff) {
+		void GBuffer::BlitDepthBuffer(const GLuint tobuff) const {
 			glBindFramebuffer(GL_READ_FRAMEBUFFER, mBuffer);
 			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, tobuff); // write to default framebuffer
-			glBlitFramebuffer( 0, 0, 1600, 900, 0, 0, 1600, 900, GL_DEPTH_BUFFER_BIT, GL_NEAREST );
+			glBlitFramebuffer( 0, 0, mDimensions.x, mDimensions.y, 0, 0, mDimensions.x, mDimensions.y, GL_DEPTH_BUFFER_BIT, GL_NEAREST );
 			glBindFramebuffer(GL_FRAMEBUFFER, tobuff);
-		}
-
-		// ------------------------------------------------------------------------
-		/*! Get Position Texture Handle
-		*
-		*   Returns the Handle for the position-stride texture
-		*/ //----------------------------------------------------------------------
-		GLuint GBuffer::GetPositionTextureHandle() {
-			return mPosition;
-		}
-
-		// ------------------------------------------------------------------------
-		/*! get Normal Texture Handle
-		*
-		*   Returns the Handle for the normal-stride texture
-		*/ //----------------------------------------------------------------------
-		GLuint GBuffer::GetNormalTextureHandle() {
-			return mNormal;
-		}
-
-		// ------------------------------------------------------------------------
-		/*! Geometry Pass
-		*
-		*   Returns the Handle for the albedo-stride texture
-		*/ //----------------------------------------------------------------------
-		GLuint GBuffer::GetAlbedoTextureHandle() {
-			return mAlbedoSpecular;
-		}
-
-		// ------------------------------------------------------------------------
-		/*! Geometry Pass
-		*
-		*   Returns the Handle for the birhgntess channel
-		*/ //----------------------------------------------------------------------
-		GLuint GBuffer::GetBrightnessTextureHandle() {
-			return mBrightness;
 		}
 
 		// ------------------------------------------------------------------------
@@ -145,8 +107,7 @@ namespace Core {
 		*
 		*   G-Buffer clears the G-Buffer
 		*/ //----------------------------------------------------------------------
-		void GBuffer::ClearBuffer() {
-			glClearColor(0.0, 0.0, 0.0, 1.0);
+		void GBuffer::ClearBuffer() const {
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		}
 	}
