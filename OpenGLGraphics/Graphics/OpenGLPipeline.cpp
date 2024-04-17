@@ -23,6 +23,7 @@
 #include "Graphics/Tools/OpenGLInfo.h"
 #include "Graphics/Architecture/Utils/GLUtils.h"
 #include "Graphics/Primitives/Decal.h"
+#include "Dependencies/ImGuizmo/ImGuizmo.h"
 
 
 using namespace Core::Graphics;
@@ -176,6 +177,7 @@ namespace Core {
 			ImGui_ImplSDL2_NewFrame();
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
+			ImGuizmo::BeginFrame();
 
 
 			// Create the docking environment

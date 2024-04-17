@@ -168,6 +168,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Core\Editor\Interface\Guizmo.cpp" />
     <ClCompile Include="Core\Editor\Interface\TextEditor.cpp" />
     <ClCompile Include="Core\Editor\ShaderCompiler\clientWindows.c" />
     <ClCompile Include="Core\Network\Client.cpp" />
@@ -200,6 +201,7 @@
     </ClCompile>
     <ClCompile Include="Core\Assets\ResourceManager.cpp" />
     <ClCompile Include="Dependencies\GLEW\Source\glew.c" />
+    <ClCompile Include="Dependencies\ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_draw.cpp" />
@@ -246,6 +248,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
+    <ClInclude Include="Core\Editor\Interface\Guizmo.h" />
     <ClInclude Include="Core\Memory\Allocator.h" />
     <ClInclude Include="CommonDefines.h" />
     <ClInclude Include="Core\AppWrapper.h" />
@@ -284,6 +287,8 @@
     <ClInclude Include="Core\Memory\ObjectAllocator.h" />
     <ClInclude Include="Core\Memory\PageAllocator.h" />
     <ClInclude Include="Core\Assets\ResourceManager.h" />
+    <ClInclude Include="D:\Asier\Descargas\ImApp.h" />
+    <ClInclude Include="Dependencies\ImGuizmo\ImGuizmo.h" />
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
     <ClInclude Include="Dependencies\ImGui\imgui.h" />
     <ClInclude Include="Dependencies\ImGui\imgui_impl_opengl3.h" />
