@@ -35,12 +35,13 @@ namespace Graphics {
 			DONTDISCARD GLuint inline GetNormalTextureHandle() const;
 			DONTDISCARD GLuint inline GetAlbedoTextureHandle() const;
 			DONTDISCARD GLuint inline GetBrightnessTextureHandle() const;
+			DONTDISCARD GLuint inline GetDepthTextureHandle() const;
 			void ClearBuffer() const;
 		#pragma endregion
 
 		#pragma region //Members
 		private:
-			GLuint mBuffer, mPosition, mNormal, mAlbedoSpecular, mBrightness, mDepth;
+			GLuint mBuffer, mPosition, mNormal, mAlbedoSpecular, mBrightness, mDepth, mDepthTexture;
 			glm::u16vec2 mDimensions;
 		#pragma endregion
 		};
@@ -79,6 +80,15 @@ namespace Graphics {
 		*/ //----------------------------------------------------------------------
 		GLuint GBuffer::GetBrightnessTextureHandle() const {
 			return mBrightness;
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Get Brightness Texture Handle
+		*
+		*   Returns the Handle for the brightness texture
+		*/ //----------------------------------------------------------------------
+		GLuint GBuffer::GetDepthTextureHandle() const {
+			return mDepthTexture;
 		}
 	}
 }

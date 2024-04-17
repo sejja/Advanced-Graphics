@@ -246,6 +246,9 @@
     <ClCompile Include="Graphics\Primitives\Decal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Architecture\GeometryDeform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -1790,6 +1793,9 @@
     <ClInclude Include="Graphics\Primitives\Decal.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Architecture\GeometryDeform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\SDL\Include\SDL_config.h.cmake" />
@@ -2269,6 +2275,9 @@
     <None Include="Content\Shaders\DeferredLighting.shader" />
     <None Include="Content\Maps\Minecraft.level" />
     <None Include="Content\Maps\Japan.level" />
+    <None Include="Content\Shaders\GeometryDecal.frag" />
+    <None Include="Content\Shaders\GeometryDecal.shader" />
+    <None Include="Content\Shaders\GeometryDecal.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />

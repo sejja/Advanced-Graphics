@@ -295,6 +295,7 @@ namespace Core {
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
+			mGeometryDeform.DecalPass(*mGBuffer);
 
 			auto x = Singleton<::Editor>::Instance().GetSelectedObj().GetSelectedComponent();
 			
@@ -459,6 +460,13 @@ namespace Core {
 		void OpenGLPipeline::BloomPass(GLuint targetbuffer)
 		{
 			mBloomRenderer->RenderBloomTexture(mGBuffer->GetBrightnessTextureHandle(), 0.005f, targetbuffer);
+		}
+
+		void OpenGLPipeline::DecalPass() {
+			glDepthFunc(GL_GREATER);
+			glDepthMask(GL_FALSE);
+			glCullFace(GL_FRONT);
+
 		}
 
 		void OpenGLPipeline::RenderParticlesSystems()

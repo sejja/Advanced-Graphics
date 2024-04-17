@@ -161,7 +161,7 @@ namespace Graphics {
 			Core::Graphics::ShaderProgram* light = mLightSphereShader->Get();
 			light->Bind();
 			light->SetShaderUniform("uModel", &matrix);
-			mLightSphere->Get()->Draw(*light);
+			mLightSphere->Get()->Draw();
 		}
 	}
 }

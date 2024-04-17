@@ -15,9 +15,9 @@ namespace Graphics {
 			loadModel(path);
 		}
 
-		void GLBModel::Draw(Core::Graphics::ShaderProgram& shader) {
+		void GLBModel::Draw() {
             for (unsigned int i = 0; i < meshes.size(); i++)
-				meshes[i].Draw(shader);
+				meshes[i].Draw();
 		}
 
         std::string GLBModel::getDirectory()

@@ -49,7 +49,7 @@ namespace Graphics {
             mCount = indices.size();
 		}
 
-        void Mesh::Draw(const Core::Graphics::ShaderProgram& shader) {
+        void Mesh::Draw() {
             // bind appropriate textures
             unsigned int diffuseNr = 1;
             unsigned int specularNr = 1;

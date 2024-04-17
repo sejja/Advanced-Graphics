@@ -20,6 +20,7 @@
 #include "Debug/DebugShapes.h"
 #include "Graphics/Architecture/Bloom/BloomRenderer.h"
 #include "Graphics/Architecture/LightPass.h"
+#include "Graphics/Architecture/GeometryDeform.h"
 
 using namespace Core::Graphics;
 
@@ -65,6 +66,7 @@ namespace Core {
 			void RenderParticlesSystems();
 			void DirectionalLightPass();
 			void BloomPass(GLuint targetbuffer);
+			void DecalPass();
 
 			std::unordered_map<Core::Assets::Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 
@@ -79,6 +81,7 @@ namespace Core {
 			std::unique_ptr<FrameBuffer> mFrameBuffer;
 			std::unique_ptr<HDRBuffer> mHDRBuffer;
 			std::unique_ptr<SamplingBuffer> mSamplingBuffer;
+			::Graphics::Architecture::GeometryDeform mGeometryDeform;
 			GLuint mUniformBuffer;
 
 			GLuint mScreenQuadVAO, mScreenQuadVBO;

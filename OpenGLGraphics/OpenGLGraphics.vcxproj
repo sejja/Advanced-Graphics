@@ -211,6 +211,7 @@
     <ClCompile Include="Graphics\Architecture\Bloom\BloomFrameBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\Bloom\BloomRenderer.cpp" />
     <ClCompile Include="Graphics\Architecture\GBuffer.cpp" />
+    <ClCompile Include="Graphics\Architecture\GeometryDeform.cpp" />
     <ClCompile Include="Graphics\Architecture\HDRBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\SamplingBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\LightPass.cpp" />
@@ -335,6 +336,7 @@
     <ClInclude Include="Dependencies\Json\single_include\json.hpp" />
     <ClInclude Include="Dependencies\SQLite3\sqlite3.h" />
     <ClInclude Include="Graphics\Architecture\GBuffer.h" />
+    <ClInclude Include="Graphics\Architecture\GeometryDeform.h" />
     <ClInclude Include="Graphics\Architecture\HDRBuffer.h" />
     <ClInclude Include="Graphics\Architecture\LightPass.h" />
     <ClInclude Include="Graphics\Architecture\SamplingBuffer.h" />
@@ -793,6 +795,9 @@
     <None Include="Content\Shaders\FireParticle.shader" />
     <None Include="Content\Shaders\DeferredPointLighting.frag" />
     <None Include="Content\Shaders\DeferredSpotLighting.frag" />
+    <None Include="Content\Shaders\GeometryDecal.frag" />
+    <None Include="Content\Shaders\GeometryDecal.shader" />
+    <None Include="Content\Shaders\GeometryDecal.vert" />
     <None Include="Content\Shaders\Renderer.frag" />
     <None Include="Content\Shaders\FireParticle.vert" />
     <None Include="Content\Shaders\Refractive.frag" />
