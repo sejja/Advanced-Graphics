@@ -37,7 +37,7 @@ namespace Graphics {
 			std::reinterpret_pointer_cast<SpotLightData>(mData)->mInner = inner;
 		}
 
-		void SpotLight::SetOutter(float outter)
+		void SpotLight::SetOuter(float outter)
 		{
 			std::reinterpret_pointer_cast<SpotLightData>(mData)->mOutter = outter;
 		}

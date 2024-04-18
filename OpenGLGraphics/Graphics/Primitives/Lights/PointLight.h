@@ -18,33 +18,72 @@ namespace Graphics {
 		#pragma region //Declaration
 			struct PointLightData : public Light::BackedLightData {
 			#pragma region //Methods
-				float CalculateSphereOfInfluence() const noexcept;
+				float inline CalculateSphereOfInfluence() const noexcept;
 			#pragma endregion
 
 			#pragma region //Members
 				float mRadius;
-				float mInner;
-				float mOutter;
 				float mFallOff;
 			#pragma endregion
 			};
-			#pragma endregion
+		#pragma endregion
 
-			#pragma region //Constructor
+		#pragma region //Constructor
 			PointLight(const std::weak_ptr<Core::Object>& parent);
-			#pragma endregion
+		#pragma endregion
 
-			#pragma region //Methods
-			void SetRadius(const float radius) noexcept;
-			void SetInner(const float inner) noexcept;
-			void SetOutter(const float outter) noexcept;
-			void SetFallOff(const float falloff) noexcept;
-			DONTDISCARD float GetRadius() const noexcept;
-			DONTDISCARD float GetInner() const noexcept;
-			DONTDISCARD float GetOutter() const noexcept;
-			DONTDISCARD float GetFallOff() const noexcept;
-			#pragma endregion
+		#pragma region //Methods
+			void inline SetRadius(const float radius) noexcept;
+			void inline SetFallOff(const float falloff) noexcept;
+			DONTDISCARD float inline GetRadius() const noexcept;
+			DONTDISCARD float inline GetFallOff() const noexcept;
+		#pragma endregion
 		};
+
+		// ------------------------------------------------------------------------
+		/*! Set Radius
+		*
+		*  Sets the light radius
+		*/ //----------------------------------------------------------------------
+		void PointLight::SetRadius(const float radius) noexcept {
+			std::reinterpret_pointer_cast<PointLightData>(mData)->mRadius = radius;
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Set FallOff
+		*
+		*  Sets the light's FallOff
+		*/ //----------------------------------------------------------------------
+		void PointLight::SetFallOff(const float falloff) noexcept {
+			std::reinterpret_pointer_cast<PointLightData>(mData)->mFallOff = falloff;
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Get Radius
+		*
+		*  Returns the light radius
+		*/ //----------------------------------------------------------------------
+		float PointLight::GetRadius() const noexcept {
+			return std::reinterpret_pointer_cast<PointLightData>(mData)->mRadius;
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Get FallOff
+		*
+		*  Returns the light falloff
+		*/ //----------------------------------------------------------------------
+		float PointLight::GetFallOff() const noexcept {
+			return std::reinterpret_pointer_cast<PointLightData>(mData)->mFallOff;
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Calculate Sphere of Influence
+		*
+		*  Calculates the Sphere of influence in which the light affect's some pixels
+		*/ //----------------------------------------------------------------------
+		float PointLight::PointLightData::CalculateSphereOfInfluence() const noexcept {
+			return PI * mRadius * 2 / 3;
+		}
 	}
 }
 

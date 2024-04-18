@@ -33,7 +33,7 @@ namespace Graphics {
 			void SetDirection(glm::vec3 direction);
 			void SetRadius(float radius);
 			void SetInner(float inner);
-			void SetOutter(float outter);
+			void SetOuter(float outter);
 			void SetFallOff(float falloff);
 			void SetShadowCaster(bool shadow);
 			glm::vec3 GetDirection();

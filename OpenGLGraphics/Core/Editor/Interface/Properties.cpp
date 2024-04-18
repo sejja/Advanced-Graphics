@@ -245,8 +245,6 @@ void Properties::objectOutliner() {
                 std::shared_ptr<::Graphics::Primitives::PointLight> light;
                 light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
                 light->SetRadius(1.0f);
-                light->SetOutter(0.8f);
-                light->SetInner(0.5f);
                 light->SetFallOff(0.5f);
 
                 light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));   
@@ -546,8 +544,6 @@ void Properties::LightTypeOptions(){
         if (auto pointLight = std::dynamic_pointer_cast<::Graphics::Primitives::PointLight>(lightComp)) {
 
             float lightRadius = pointLight->GetRadius();
-            float inner = pointLight->GetInner();
-            float outer = pointLight->GetOutter();
             float fallOff = pointLight->GetFallOff();
 
 
@@ -559,18 +555,6 @@ void Properties::LightTypeOptions(){
 
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::Text("Inner");
-            ImGui::TableSetColumnIndex(1);
-            ImGui::SliderFloat("##Inner", &inner, 0.0f, 100.0f, "%.2f");
-
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::Text("Outter");
-            ImGui::TableSetColumnIndex(1);
-            ImGui::SliderFloat("##Outter", &outer, 0.0f, 100.0f, "%.2f");
-
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
             ImGui::Text("FallOff");
             ImGui::TableSetColumnIndex(1);
             ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f");
@@ -578,8 +562,6 @@ void Properties::LightTypeOptions(){
             ImGui::EndTable();
 
             pointLight->SetRadius(lightRadius);
-            pointLight->SetInner(inner);
-            pointLight->SetOutter(outer);
             pointLight->SetFallOff(fallOff);
         }
         else if (auto directionalLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::DirectionalLight>(lightComp)) {
@@ -643,7 +625,7 @@ void Properties::LightTypeOptions(){
             TransformRow("  Direction", dirX, dirY, dirZ);
             spotLight->SetRadius(lightRadius);
             spotLight->SetInner(inner);
-            spotLight->SetOutter(outer);
+            spotLight->SetOuter(outer);
             spotLight->SetFallOff(fallOff);
             spotLight->SetDirection(glm::normalize(glm::vec3(dirX, dirY, dirZ)));
             spotLight->SetShadowCaster(shadowCaster);

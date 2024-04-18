@@ -74,8 +74,6 @@ namespace Core {
 			if (x.type == "POINT") {
 				light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
 				std::reinterpret_pointer_cast<::Graphics::Primitives::PointLight>(light)->SetRadius(x.att.x);
-				std::reinterpret_pointer_cast<::Graphics::Primitives::PointLight>(light)->SetInner(x.inner);
-				std::reinterpret_pointer_cast<::Graphics::Primitives::PointLight>(light)->SetOutter(x.outer);
 				std::reinterpret_pointer_cast<::Graphics::Primitives::PointLight>(light)->SetFallOff(x.falloff);
 			}
 
@@ -91,7 +89,7 @@ namespace Core {
 
 				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetRadius(x.att.x);
 				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetInner(x.inner);
-				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetOutter(x.outer);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetOuter(x.outer);
 				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetFallOff(x.falloff);
 				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetShadowCaster(1);
 				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetDirection(x.dir);
