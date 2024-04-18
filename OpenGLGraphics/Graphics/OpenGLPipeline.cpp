@@ -299,7 +299,7 @@ namespace Core {
 
 			auto x = Singleton<::Editor>::Instance().GetSelectedObj().GetSelectedComponent();
 			
-			if (RTTI::IsA<Decal>(x.get())) {
+			if (RTTI::IsA<::Graphics::Primitives::Decal>(x.get())) {
 				mDebug->DrawAABB(x.get()->GetParent().lock()->GetPosition(),
 					x.get()->GetParent().lock()->GetScale(), glm::vec4(1, 0.6, 0.2, 1), cam);
 			}

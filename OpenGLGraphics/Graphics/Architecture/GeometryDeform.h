@@ -17,12 +17,24 @@
 namespace Graphics {
 	namespace Architecture {
 		class GeometryDeform {
+		#pragma region //Constructor & Destructor
 		public:
 			GeometryDeform();
 			~GeometryDeform();
-			void DecalPass(const GBuffer& gbuffer);
+		#pragma endregion
 
-			static std::vector<Decal*> mDecals;
+		#pragma region //Methods
+			void DecalPass(const GBuffer& gbuffer);
+			static void AddDecal(Primitives::Decal* decal);
+			static void RemoveDecal(Primitives::Decal* decal);
+		#pragma endregion
+
+		#pragma region //Members
+		private:
+			static std::vector<Primitives::Decal*> mDecals;
+			Core::Assets::Asset<Primitives::GLBModel> mModel;
+			Core::Assets::Asset<Core::Graphics::ShaderProgram> mShader;
+		#pragma endregion
 		};
 	}
 }

@@ -1,0 +1,11 @@
+Model Information:
+* title:	Futuristic City Chunk ( 4 runner)
+* source:	https://sketchfab.com/3d-models/futuristic-city-chunk-4-runner-b9639a88b981451f9c8b2440361dbb31
+* author:	LxNazarov (https://sketchfab.com/LxNazarov)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Futuristic City Chunk ( 4 runner)" (https://sketchfab.com/3d-models/futuristic-city-chunk-4-runner-b9639a88b981451f9c8b2440361dbb31) by LxNazarov (https://sketchfab.com/LxNazarov) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

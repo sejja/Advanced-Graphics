@@ -216,6 +216,9 @@
     <ClCompile Include="Graphics\Architecture\HDRBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\SamplingBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\LightPass.cpp" />
+    <ClCompile Include="Graphics\Architecture\SSAO\Kernel.cpp" />
+    <ClCompile Include="Graphics\Architecture\SSAO\SSAOBuffer.cpp" />
+    <ClCompile Include="Graphics\Architecture\SSAO\SSAONoise.cpp" />
     <ClCompile Include="Graphics\Architecture\Utils\GLUtils.cpp" />
     <ClCompile Include="Graphics\Debug\DebugPrimitives.cpp" />
     <ClCompile Include="Graphics\Debug\DebugShapes.cpp" />
@@ -247,6 +250,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
+    <ClInclude Include="Core\Math\Lerp.h" />
     <ClInclude Include="Core\Memory\Allocator.h" />
     <ClInclude Include="CommonDefines.h" />
     <ClInclude Include="Core\AppWrapper.h" />
@@ -343,6 +347,9 @@
     <ClInclude Include="Graphics\Architecture\InstancedRendering\InstancedRendering.h" />
     <ClInclude Include="Graphics\Architecture\LightPass.h" />
     <ClInclude Include="Graphics\Architecture\SamplingBuffer.h" />
+    <ClInclude Include="Graphics\Architecture\SSAO\Kernel.h" />
+    <ClInclude Include="Graphics\Architecture\SSAO\SSAOBuffer.h" />
+    <ClInclude Include="Graphics\Architecture\SSAO\SSAONoise.h" />
     <ClInclude Include="Graphics\Architecture\Utils\GLUtils.h" />
     <ClInclude Include="Graphics\Debug\DebugPrimitives.h" />
     <ClInclude Include="Graphics\Debug\DebugShapes.h" />
@@ -772,6 +779,7 @@
   <ItemGroup>
     <None Include="Content\Maps\Minecraft.level" />
     <None Include="Content\Maps\Japan.level" />
+    <None Include="Content\Maps\Cyberpunk.level" />
     <None Include="Content\Maps\Sponza.level" />
     <None Include="Content\Meshes\backpack.mtl" />
     <None Include="Content\Scenes\README.md" />
