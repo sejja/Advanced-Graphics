@@ -3,6 +3,7 @@
 #include <Dependencies/Json/single_include/json.hpp>
 #include "Core/Network/Client.h"
 #include "Core/Network/Server.h"
+#include "Core/AppWrapper.h"
 
 
 static bool show_tool_metrics = false;
@@ -139,6 +140,12 @@ void MainMenu::RenderRemoteControlMenu() {
         ImGui::EndMenu();
     }
 
+    if(ImGui::BeginPopupModal("Save As.."))
+    {
+        ImGui::Text("Save As..");
+        ImGui::EndPopup();
+    }
+
 
 }
 
@@ -164,10 +171,22 @@ void MainMenu::ServerStateInfo()
 
 void MainMenu::RenderFileMenu() {
     
-    if (ImGui::BeginMenu) {
+    if (ImGui::BeginMenu("File")) {
         if (ImGui::MenuItem("Save", "CTRL+S")) {
-
+            AppWrapper& app = Singleton<AppWrapper>::Instance();
+            app.getScene().Save("Content/Maps/Scene4.json");
         }
+        if (ImGui::MenuItem("Save As..")) {
+			AppWrapper& app = Singleton<AppWrapper>::Instance();
+            ImGui::OpenPopup("Save As..");
+            if (ImGui::BeginPopupModal("Save As..", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+                ImGui::Text("Save As..");
+                ImGui::EndPopup();
+            }
+			//app.getScene().Save("Content/Maps/Scene4.json");
+		}
+        
+        ImGui::EndMenu();
     }
 
 }
