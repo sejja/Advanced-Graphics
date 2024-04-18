@@ -87,14 +87,14 @@ namespace Graphics {
         Mesh GLBModel::processMesh(aiMesh* mesh, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform)
         {
             // data to fill
-            std::vector<Vertex> vertices;
+            std::vector<Mesh::Vertex> vertices;
             std::vector<unsigned int> indices;
             std::vector<Core::Assets::Asset<Core::Graphics::Texture>> textures;
 
             // walk through each of the mesh's vertices
             for (unsigned int i = 0; i < mesh->mNumVertices; i++)
             {
-                Vertex vertex;
+                Mesh::Vertex vertex;
                 glm::vec3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
                 // positions
                 aiVector3D pos = mesh->mVertices[i];

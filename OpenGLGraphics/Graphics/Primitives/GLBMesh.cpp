@@ -11,9 +11,15 @@
 namespace Graphics {
 	namespace Primitives {
 		Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Core::Assets::Asset<Core::Graphics::Texture>>& textures) {
-			this->textures = textures;
-
             // create buffers/arrays
+            if (textures.size() > 1) {
+                mDiffuse = textures[0];
+                mNormal = textures[1];
+            }
+            else if (textures.size()) {
+                mDiffuse = textures[0];
+            }
+            
             glGenVertexArrays(1, &mVao);
             glGenBuffers(1, &mVbo);
             glGenBuffers(1, &mEbo);
@@ -49,16 +55,18 @@ namespace Graphics {
             mCount = indices.size();
 		}
 
-        void Mesh::Draw() {
+        void Mesh::Draw() const {
             // bind appropriate textures
             unsigned int diffuseNr = 1;
             unsigned int specularNr = 1;
             unsigned int normalNr = 1;
             unsigned int heightNr = 1;
-            for (unsigned int i = 0; i < textures.size(); i++)
-            {
-                textures[i]->Get()->Bind();
-            }
+            
+            if(mDiffuse)
+                mDiffuse->Get()->Bind();
+
+            if(mNormal)
+                mNormal->Get()->Bind();
 
             // draw mesh
             glBindVertexArray(mVao);

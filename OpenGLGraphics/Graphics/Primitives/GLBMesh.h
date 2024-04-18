@@ -10,37 +10,47 @@
 #define _GRAPHIC_LANGUAGE_BINARY_MESH__H_
 
 #include <glm.hpp>
-#include <string>
 #include <vector>
 #include "ShaderProgram.h"
 #include "Texture.h"
+#include "Core/Assets/ResourceManager.h"
 
 namespace Graphics {
 	namespace Primitives {
-        struct Vertex {
-            // position
-            glm::vec3 mPosition;
-            // normal
-            glm::vec3 mNormal;
-            // texCoords
-            glm::vec2 mUV;
-            // tangent
-            glm::vec3 mTangent;
-            // bitangent
-            glm::vec3 mBitangent;
-        };
-
         class Mesh {
+        #pragma region //Declarations
         public:
-            Mesh(const std::vector<Vertex>& vertices, 
-                const std::vector<unsigned int>& indices, 
-                const std::vector<Core::Assets::Asset<Core::Graphics::Texture>>& textures);
-            void Draw();
+            struct Vertex {
+                // position
+                glm::vec3 mPosition;
+                // normal
+                glm::vec3 mNormal;
+                // texCoords
+                glm::vec2 mUV;
+                // tangent
+                glm::vec3 mTangent;
+                // bitangent
+                glm::vec3 mBitangent;
+            };
+        #pragma endregion
 
+        #pragma region //Constructor
+            Mesh(const std::vector<Vertex>& vertices, 
+                const std::vector<unsigned>& indices, 
+                const std::vector<Core::Assets::Asset<Core::Graphics::Texture>>& textures);
+        #pragma endregion
+
+        #pragma region //Methods
+            void Draw() const;
+        #pragma endregion
+
+        #pragma region //Members
         private:
-            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> textures;
+            Core::Assets::Asset<Core::Graphics::Texture> mDiffuse;
+            Core::Assets::Asset<Core::Graphics::Texture> mNormal;
             std::size_t mCount;
             GLuint mVao, mVbo, mEbo;
+        #pragma endregion
         };
 	}
 }
