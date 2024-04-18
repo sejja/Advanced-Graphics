@@ -28,8 +28,8 @@ namespace Graphics {
 		#pragma region //Methods
 			void Render() const;
 			void Render(Core::Graphics::ShaderProgram& prog) const;
-			DONTDISCARD Core::Assets::AssetReference<Core::Graphics::Texture> GetDiffuse() const noexcept;
-			DONTDISCARD Core::Assets::AssetReference<Core::Graphics::Texture> GetNormal() const noexcept;
+			DONTDISCARD Core::Assets::AssetReference<Core::Graphics::Texture> inline GetDiffuse() const noexcept;
+			DONTDISCARD Core::Assets::AssetReference<Core::Graphics::Texture> inline GetNormal() const noexcept;
 		#pragma endregion
 
 		#pragma region //Members
@@ -38,6 +38,24 @@ namespace Graphics {
 			Core::Assets::Asset<Core::Graphics::Texture> mNormal;
 		#pragma endregion
 		};
+
+		// ------------------------------------------------------------------------
+		/*! Get Diffuse
+		*
+		*  Returns the Diffuse texture of the Decal
+		*/ //----------------------------------------------------------------------
+		Core::Assets::AssetReference<Core::Graphics::Texture> Decal::GetDiffuse() const noexcept {
+			return mDiffuse;
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Get Normal
+		*
+		* Returns the Normal texture of the Decal
+		*/ //----------------------------------------------------------------------
+		Core::Assets::AssetReference<Core::Graphics::Texture> Decal::GetNormal() const noexcept {
+			return mNormal;
+		}
 	}
 }
 
