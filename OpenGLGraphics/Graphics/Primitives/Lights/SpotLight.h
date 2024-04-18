@@ -10,10 +10,11 @@
 #define _SPOT_LIHGT_H_
 
 #include "Light.h"
+#include "Graphics/Tools/FrameBuffer.h"
 
 namespace Graphics {
 	namespace Primitives {
-		class SpotLight : public Light {
+		class SpotLight : public Lights::Light {
 		public:
 			struct SpotLightData : public Light::BackedLightData {
 				glm::vec3 mDirection;

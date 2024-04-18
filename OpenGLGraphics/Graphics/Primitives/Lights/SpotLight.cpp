@@ -18,9 +18,9 @@ namespace Graphics {
 		*/ //----------------------------------------------------------------------
 		SpotLight::SpotLight(const std::weak_ptr<Core::Object>& parent)
 			: Light(parent) {
-				mData = new SpotLightData();
-				Graphics::Architecture::LightPass::AddSpotLight(mIndex, std::shared_ptr<SpotLightData>((SpotLightData*)mData));
-				((SpotLightData*)mData)->GenerateShadowMap();
+				mData = std::make_shared<SpotLightData>();
+				Graphics::Architecture::LightPass::AddSpotLight(std::reinterpret_pointer_cast<SpotLightData>(mData));
+				std::reinterpret_pointer_cast<SpotLightData>(mData)->GenerateShadowMap();
 		}
 
 		float SpotLight::SpotLightData::CalculateSphereOfInfluence() const {

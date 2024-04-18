@@ -18,8 +18,8 @@ namespace Graphics {
 		*/ //----------------------------------------------------------------------
 		PointLight::PointLight(const std::weak_ptr<Core::Object>& parent)
 			: Light(parent) {
-				mData = new PointLightData();
-				Graphics::Architecture::LightPass::AddPointLight(mIndex, std::shared_ptr<PointLightData>((PointLightData*)mData));
+				mData = std::make_shared<PointLightData>();
+				Graphics::Architecture::LightPass::AddPointLight(std::reinterpret_pointer_cast<PointLightData>(mData));
 		}
 
 		float PointLight::PointLightData::CalculateSphereOfInfluence() const {

@@ -62,7 +62,7 @@ namespace Core {
 			obj->SetRotation(glm::vec3(0.f, 0.f, 0.f));
 			obj->SetScale({ 1.f, 1.f, 1.f });
 			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj));
-			std::shared_ptr<::Graphics::Primitives::Light> light;
+			std::shared_ptr<::Graphics::Primitives::Lights::Light> light;
 			renderer->SetMesh(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
 			renderer->SetShaderProgram(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
 
@@ -73,36 +73,36 @@ namespace Core {
 			//If the light is a point light
 			if (x.type == "POINT") {
 				light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mRadius = x.att.x;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mInner = x.inner;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mOutter = x.outer;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mFallOff = x.falloff;
+				((::Graphics::Primitives::PointLight::PointLightData*)light->GetData().lock().get())->mRadius = x.att.x;
+				((::Graphics::Primitives::PointLight::PointLightData*)light->GetData().lock().get())->mInner = x.inner;
+				((::Graphics::Primitives::PointLight::PointLightData*)light->GetData().lock().get())->mOutter = x.outer;
+				((::Graphics::Primitives::PointLight::PointLightData*)light->GetData().lock().get())->mFallOff = x.falloff;
 			}
 
 			//If the light is a directional light
 			else if (x.type == "DIR") {
-				light = std::move(std::make_shared<::Graphics::Primitives::DirectionalLight>(obj));
-				((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)light->mData)->mDirection = glm::normalize(x.dir);
+				light = std::move(std::make_shared<::Graphics::Primitives::Lights::DirectionalLight>(obj));
+				((::Graphics::Primitives::Lights::DirectionalLight::DirectionalLightData*)light->GetData().lock().get())->mDirection = glm::normalize(x.dir);
 			}
 
 			//else, it's a spot light
 			else {
 				light = std::move(std::make_shared<::Graphics::Primitives::SpotLight>(obj));
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mShadowCaster = 1;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mRadius = x.att.x;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mInner = x.inner;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mOutter = x.outer;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mFallOff = x.falloff;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mDirection = x.dir;
+				((::Graphics::Primitives::SpotLight::SpotLightData*)light->GetData().lock().get())->mShadowCaster = 1;
+				((::Graphics::Primitives::SpotLight::SpotLightData*)light->GetData().lock().get())->mRadius = x.att.x;
+				((::Graphics::Primitives::SpotLight::SpotLightData*)light->GetData().lock().get())->mInner = x.inner;
+				((::Graphics::Primitives::SpotLight::SpotLightData*)light->GetData().lock().get())->mOutter = x.outer;
+				((::Graphics::Primitives::SpotLight::SpotLightData*)light->GetData().lock().get())->mFallOff = x.falloff;
+				((::Graphics::Primitives::SpotLight::SpotLightData*)light->GetData().lock().get())->mDirection = x.dir;
 			}
 
-			light->SetPosition(glm::vec3(0.0f,0.0f,0.0f),x.pos);
+			light->SetPosition(glm::vec3(0.0f,0.0f,0.0f));
 			light->SetColor(x.col);
 			printf("COLOR: %f %f %f\n", x.col.x, x.col.y, x.col.z);
 
 
 			std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> weakrend = renderer;
-			std::weak_ptr< ::Graphics::Primitives::Light> lightrend = light;
+			std::weak_ptr< ::Graphics::Primitives::Lights::Light> lightrend = light;
 
 			obj->AddComponent(std::move(weakrend));
 			obj->AddComponent(std::move(lightrend));

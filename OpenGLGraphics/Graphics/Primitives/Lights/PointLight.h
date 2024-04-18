@@ -13,7 +13,7 @@
 
 namespace Graphics {
 	namespace Primitives {
-		class PointLight : public Light {
+		class PointLight : public Lights::Light {
 		public:
 			struct PointLightData : public Light::BackedLightData {
 				float mRadius;

@@ -4,48 +4,39 @@
 
 namespace Graphics {
 	namespace Primitives {
-		std::size_t Light::sLightReg = 0;
+		namespace Lights {
+			Light::Light(const std::weak_ptr<Core::Object>& parent) :
+				Component(parent) {
+			}
 
-		Light::Light(std::weak_ptr<Core::Object> parent) : 
-			Component(parent), mIndex(sLightReg++){
+			Light::~Light() {
+			}
+
+			void Light::SetPosition(const glm::vec3& relativePos) noexcept {
+				mData->mPosition = GetParent().lock()->GetPosition() + relativePos;
+			}
+
+			glm::vec3 Light::GetColor() const noexcept
+			{
+				return mData->mColor;
+			}
+
+			void Light::SetColor(const glm::vec3& color) noexcept
+			{
+				mData->mColor = color;
+			}
+
+			void Light::SetData(const std::weak_ptr<BackedLightData>& data) {
+				mData = data.lock();
+			}
+
+			std::weak_ptr<Light::BackedLightData> Light::GetData() const noexcept {
+				return mData;
+			}
+
+			glm::vec3 Light::GetPosition() const noexcept {
+				return mData->mPosition - GetParent().lock()->GetPosition();
+			}
 		}
-
-		Light::~Light() {
-		}
-
-		void Light::Update() {
-			
-		}
-
-		void Light::SetPosition(const glm::vec3& relativePos,const glm::vec3 objPos) {
-			mData->mRelativePosition = relativePos;
-			mData->mPosition = objPos + relativePos;
-		}
-
-		glm::vec3 Light::GetColor() const
-		{
-			return mData->mColor;
-		}
-
-		void Light::SetColor(const glm::vec3& color)
-		{
-			mData->mColor = color;
-		}
-
-		glm::vec3 Light::GetPosition() const {
-			return mData->mRelativePosition;
-		}
-
-		
-
-		void Light::BackedLightData::GenerateShadowMap()
-		{
-			std::cout << "UNDEFINED VIRTUAL FUNCTION GenerateShadowMap \n";
-		}
-
-		
-
-
-
 	}
 }
