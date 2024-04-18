@@ -13,10 +13,10 @@ namespace Graphics {
 	namespace Primitives {
 		namespace Lights {
 			// ------------------------------------------------------------------------
-		/*! Default Constructor
-		*
-		*  Constructor for the DirectionalLight class
-		*/ //----------------------------------------------------------------------
+			/*! Default Constructor
+			*
+			*  Constructor for the DirectionalLight class
+			*/ //----------------------------------------------------------------------
 			DirectionalLight::DirectionalLight(const std::weak_ptr<Core::Object>& parent)
 				: Light(parent) {
 				mData = std::make_shared<DirectionalLightData>();

@@ -73,27 +73,28 @@ namespace Core {
 			//If the light is a point light
 			if (x.type == "POINT") {
 				light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
-				((::Graphics::Primitives::PointLight::PointLightData*)light->GetData().lock().get())->mRadius = x.att.x;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->GetData().lock().get())->mInner = x.inner;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->GetData().lock().get())->mOutter = x.outer;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->GetData().lock().get())->mFallOff = x.falloff;
+				std::reinterpret_pointer_cast<::Graphics::Primitives::PointLight>(light)->SetRadius(x.att.x);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::PointLight>(light)->SetInner(x.inner);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::PointLight>(light)->SetOutter(x.outer);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::PointLight>(light)->SetFallOff(x.falloff);
 			}
 
 			//If the light is a directional light
 			else if (x.type == "DIR") {
 				light = std::move(std::make_shared<::Graphics::Primitives::Lights::DirectionalLight>(obj));
-				((::Graphics::Primitives::Lights::DirectionalLight::DirectionalLightData*)light->GetData().lock().get())->mDirection = glm::normalize(x.dir);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::Lights::DirectionalLight>(light)->SetDirection(glm::normalize(x.dir));
 			}
 
 			//else, it's a spot light
 			else {
 				light = std::move(std::make_shared<::Graphics::Primitives::SpotLight>(obj));
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->GetData().lock().get())->mShadowCaster = 1;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->GetData().lock().get())->mRadius = x.att.x;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->GetData().lock().get())->mInner = x.inner;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->GetData().lock().get())->mOutter = x.outer;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->GetData().lock().get())->mFallOff = x.falloff;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->GetData().lock().get())->mDirection = x.dir;
+
+				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetRadius(x.att.x);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetInner(x.inner);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetOutter(x.outer);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetFallOff(x.falloff);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetShadowCaster(1);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetDirection(x.dir);
 			}
 
 			light->SetPosition(glm::vec3(0.0f,0.0f,0.0f));

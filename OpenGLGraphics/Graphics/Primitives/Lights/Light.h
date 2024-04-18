@@ -33,16 +33,13 @@ namespace Graphics {
 
 			#pragma region //Constructor & Destructor
 				Light(const std::weak_ptr<Core::Object>& parent);
-				~Light();
 			#pragma endregion
 
 			#pragma region //Methods
-				DONTDISCARD glm::vec3 GetPosition() const noexcept;
+				DONTDISCARD glm::vec3 inline GetPosition() const noexcept;
 				void SetPosition(const glm::vec3& position) noexcept;
-				DONTDISCARD glm::vec3 GetColor() const noexcept;
-				void SetColor(const glm::vec3& color) noexcept;
-				void SetData(const std::weak_ptr<BackedLightData>& data);
-				std::weak_ptr<BackedLightData> GetData() const noexcept;
+				DONTDISCARD glm::vec3 inline GetColor() const noexcept;
+				void inline SetColor(const glm::vec3& color) noexcept;
 			#pragma endregion
 
 			#pragma region //Members
@@ -50,6 +47,33 @@ namespace Graphics {
 				std::shared_ptr<BackedLightData> mData;
 			#pragma endregion
 			};
+
+			// ------------------------------------------------------------------------
+			/*! Get Color
+			*
+			*   Returns the color of the light
+			*/ //----------------------------------------------------------------------
+			glm::vec3 Light::GetColor() const noexcept {
+				return mData->mColor;
+			}
+
+			// ------------------------------------------------------------------------
+			/*! Set Color
+			*
+			*   Sets the color of the light
+			*/ //----------------------------------------------------------------------
+			void Light::SetColor(const glm::vec3& color) noexcept {
+				mData->mColor = color;
+			}
+
+			// ------------------------------------------------------------------------
+			/*! Get Position
+			*
+			*   Gets the position of the light, relative to the parent
+			*/ //----------------------------------------------------------------------
+			glm::vec3 Light::GetPosition() const noexcept {
+				return GetParent().expired() ? glm::vec3() : mData->mPosition - GetParent().lock()->GetPosition();
+			}
 		}
 	}
 }

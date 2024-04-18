@@ -36,7 +36,29 @@ namespace Graphics {
 #pragma region //Constructor & Destructor
 				DirectionalLight(const std::weak_ptr<Core::Object>& parent);
 #pragma endregion
+
+#pragma region //Methods
+				DONTDISCARD glm::vec3 inline GetDirection() const noexcept;
+				void inline SetDirection(const glm::vec3& direction) noexcept;
 			};
+
+			// ------------------------------------------------------------------------
+			/*! Get Direction
+			*
+			*  Gets the Direction the light impacts the surfaces
+			*/ //----------------------------------------------------------------------
+			glm::vec3 DirectionalLight::GetDirection() const noexcept {
+				return std::reinterpret_pointer_cast<DirectionalLightData>(mData)->mDirection;
+			}
+
+			// ------------------------------------------------------------------------
+			/*! Set Direction
+			*
+			*  Sets the Direction in which the light impacts the surfaces
+			*/ //----------------------------------------------------------------------
+			void DirectionalLight::SetDirection(const glm::vec3& direction) noexcept {
+				 std::reinterpret_pointer_cast<DirectionalLightData>(mData)->mDirection = direction;
+			}
 		}
 	}
 }

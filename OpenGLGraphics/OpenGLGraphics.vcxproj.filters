@@ -2278,6 +2278,7 @@
     <None Include="Content\Shaders\GeometryDecal.frag" />
     <None Include="Content\Shaders\GeometryDecal.shader" />
     <None Include="Content\Shaders\GeometryDecal.vert" />
+    <None Include="Content\Maps\NewSponza.level" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />

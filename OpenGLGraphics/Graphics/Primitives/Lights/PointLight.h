@@ -24,6 +24,14 @@ namespace Graphics {
 				void GenerateShadowMap();
 			};
 			PointLight(const std::weak_ptr<Core::Object>& parent);
+			void SetRadius(float radius);
+			void SetInner(float inner);
+			void SetOutter(float outter);
+			void SetFallOff(float falloff);
+			float GetRadius();
+			float GetInner();
+			float GetOutter();
+			float GetFallOff();
 		};
 	}
 }

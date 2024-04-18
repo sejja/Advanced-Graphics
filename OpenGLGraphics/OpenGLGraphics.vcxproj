@@ -769,6 +769,7 @@
   <ItemGroup>
     <None Include="Content\Maps\Minecraft.level" />
     <None Include="Content\Maps\Japan.level" />
+    <None Include="Content\Maps\NewSponza.level" />
     <None Include="Content\Maps\Sponza.level" />
     <None Include="Content\Meshes\backpack.mtl" />
     <None Include="Content\Scenes\README.md" />
