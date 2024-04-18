@@ -70,7 +70,7 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = NULL;
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = NULL;
     std::shared_ptr<Core::Particles::FireSystem> fireSystem = NULL;
-    std::shared_ptr<Decal> decal = NULL;
+    std::shared_ptr<Graphics::Primitives::Decal> decal = NULL;
 
     particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(comp);
 
@@ -90,7 +90,7 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(comp);
     meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp);
     fireSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(comp);
-    decal = std::dynamic_pointer_cast<Decal>(comp);
+    decal = std::dynamic_pointer_cast<Graphics::Primitives::Decal>(comp);
 
 
     
@@ -256,7 +256,7 @@ void Properties::objectOutliner() {
             }
 
             if (ImGui::Selectable(ICON_FA_NOTE_STICKY " Decal")) {
-                obj->AddComponent(std::move(std::make_shared<Decal>(obj)));
+                obj->AddComponent(std::move(std::make_shared<Graphics::Primitives::Decal>(obj)));
             }
 
             ImGui::EndPopup();
@@ -323,7 +323,7 @@ void Properties::selectedObjectTree() {
 				selectedObjIns.SetSelectedComponent(comp);
 			}
 		}
-        else if (Core::RTTI::IsA<Decal>(comp.get())) {
+        else if (Core::RTTI::IsA<Graphics::Primitives::Decal>(comp.get())) {
             if (ImGui::Selectable(ICON_FA_NOTE_STICKY " Decal", isCompSelectedObj)) {
                 selectedObjIns.SetSelectedComponent(comp);
             }
@@ -963,7 +963,7 @@ void Properties::DecalOptions() {
     ImGuiDragDropFlags flags = 0 | ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
 
-    std::shared_ptr<Decal> decal = std::dynamic_pointer_cast<Decal>(selectedObjIns.GetSelectedComponent());
+    std::shared_ptr<Graphics::Primitives::Decal> decal = std::dynamic_pointer_cast<Graphics::Primitives::Decal>(selectedObjIns.GetSelectedComponent());
 
     if (ImGui::BeginTable("materials_table", 2, flags1)) {
 
@@ -974,7 +974,7 @@ void Properties::DecalOptions() {
         ImGui::TableSetColumnIndex(1);
 
 
-        auto tex = decal->mDiffuse->Get();
+        auto tex = decal->GetDiffuse().lock()->Get();
         ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
 
 
@@ -991,7 +991,7 @@ void Properties::DecalOptions() {
 
         ImGui::EndGroup();
 
-        tex = decal->mNormal->Get();
+        tex = decal->GetNormal().lock()->Get();
         ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
 
 
