@@ -35,7 +35,7 @@ namespace Graphics {
             Mesh(const std::vector<Vertex>& vertices, 
                 const std::vector<unsigned int>& indices, 
                 const std::vector<Core::Assets::Asset<Core::Graphics::Texture>>& textures);
-            void Draw(const Core::Graphics::ShaderProgram& shader);
+            void Draw();
 
         private:
             std::vector<Core::Assets::Asset<Core::Graphics::Texture>> textures;

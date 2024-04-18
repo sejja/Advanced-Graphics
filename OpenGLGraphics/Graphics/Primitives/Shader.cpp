@@ -142,6 +142,14 @@ namespace Core {
 				GLint result;
 				glGetShaderiv(static_cast<GLuint>(mHandle), GL_COMPILE_STATUS, &result);
 
+				
+				if (!result) {
+					//error
+					GLchar InfoLog[256];
+					glGetShaderInfoLog(mHandle, sizeof(InfoLog), NULL, InfoLog);
+					std::cout << "Error compiling shader: " << InfoLog << std::endl;
+				}
+
 #ifdef _DEBUG
 				//If there has been errors during compilation
 				if (!result) throw ShaderException("Couldn't compile shader");

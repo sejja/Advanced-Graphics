@@ -45,7 +45,12 @@ namespace Core {
 
 				GLint status;
 				glGetProgramiv(mHandle, GL_LINK_STATUS, &status);
-				
+				GLchar ErrorLog[1024] = { 0 };
+				if (status == GL_FALSE) {
+					glGetProgramInfoLog(mHandle, sizeof(ErrorLog), NULL, ErrorLog);
+					fprintf(stderr, "Error linking shader program: '%s'\n", ErrorLog);
+				}
+
 				if (status == GL_FALSE) throw ShaderProgramException("Shader Program Failed to Link");
 			}
 		}

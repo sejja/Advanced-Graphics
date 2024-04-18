@@ -102,7 +102,7 @@ namespace Core {
 			mLightPass = std::make_unique<::Graphics::Architecture::LightPass>();
 			Singleton<::Editor>::Instance().assetManager.init();
 			::Graphics::Architecture::Utils::GLUtils::Init();
-			mDebug = std::make_unique<debug_system>(&cam);
+			mDebug = std::make_unique<::Graphics::Debug::DebugSystem>();
 		}
 
 		::Graphics::Architecture::GBuffer* OpenGLPipeline::GetGBuffer() {
@@ -295,12 +295,13 @@ namespace Core {
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
+			mGeometryDeform.DecalPass(*mGBuffer);
 
 			auto x = Singleton<::Editor>::Instance().GetSelectedObj().GetSelectedComponent();
 			
 			if (RTTI::IsA<Decal>(x.get())) {
-				mDebug->draw_aabb(x.get()->GetParent().lock()->GetPosition(),
-					x.get()->GetParent().lock()->GetScale(), glm::vec4(1, 0.6, 0.2, 1));
+				mDebug->DrawAABB(x.get()->GetParent().lock()->GetPosition(),
+					x.get()->GetParent().lock()->GetScale(), glm::vec4(1, 0.6, 0.2, 1), cam);
 			}
 
 			//Bind and Clean
@@ -461,6 +462,13 @@ namespace Core {
 		void OpenGLPipeline::BloomPass(GLuint targetbuffer)
 		{
 			mBloomRenderer->RenderBloomTexture(mGBuffer->GetBrightnessTextureHandle(), 0.005f, targetbuffer);
+		}
+
+		void OpenGLPipeline::DecalPass() {
+			glDepthFunc(GL_GREATER);
+			glDepthMask(GL_FALSE);
+			glCullFace(GL_FRONT);
+
 		}
 
 		void OpenGLPipeline::RenderParticlesSystems()

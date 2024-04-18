@@ -28,7 +28,7 @@ namespace Graphics {
             GLBModel(std::string const& path);
 
             // draws the model, and thus all its meshes
-            void Draw(Core::Graphics::ShaderProgram& shader);
+            void Draw();
 
             //get the model's directory
             std::string getDirectory();

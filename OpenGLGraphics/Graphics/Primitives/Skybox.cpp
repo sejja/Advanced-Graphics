@@ -80,7 +80,7 @@ namespace Core {
             mShaderProgram->Get()->SetShaderUniform("uTransform", &projection);
             mShaderProgram->Get()->SetShaderUniform("uView", &view);
 
-            mModel->Get()->Draw(*mShaderProgram->Get());
+            mModel->Get()->Draw();
 
             //Enable depth mask & culling again
             glEnable(GL_CULL_FACE);
