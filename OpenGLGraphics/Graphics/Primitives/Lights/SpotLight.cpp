@@ -23,70 +23,14 @@ namespace Graphics {
 				std::reinterpret_pointer_cast<SpotLightData>(mData)->GenerateShadowMap();
 		}
 
-		void SpotLight::SetDirection(const glm::vec3& direction) noexcept {
-			std::reinterpret_pointer_cast<SpotLightData>(mData)->mDirection = direction;
-		}
-
-		void SpotLight::SetRadius(float radius) noexcept
-		{
-			std::reinterpret_pointer_cast<SpotLightData>(mData)->mRadius = radius;
-		}
-
-		void SpotLight::SetInner(float inner) noexcept
-		{
-			std::reinterpret_pointer_cast<SpotLightData>(mData)->mInner = inner;
-		}
-
-		void SpotLight::SetOuter(float outter) noexcept
-		{
-			std::reinterpret_pointer_cast<SpotLightData>(mData)->mOutter = outter;
-		}
-
-		void SpotLight::SetFallOff(float falloff) noexcept
-		{
-			std::reinterpret_pointer_cast<SpotLightData>(mData)->mFallOff = falloff;
-		}
-
-		void SpotLight::SetShadowCaster(bool shadow) noexcept {
-			std::reinterpret_pointer_cast<SpotLightData>(mData)->mShadowCaster = shadow;
-		}
-
-		glm::vec3 SpotLight::GetDirection() const noexcept
-		{
-			return std::reinterpret_pointer_cast<SpotLightData>(mData)->mDirection;
-		}
-
-		float SpotLight::GetRadius() const noexcept
-		{
-			return std::reinterpret_pointer_cast<SpotLightData>(mData)->mRadius;
-		}
-
-		float SpotLight::GetInner() const noexcept
-		{
-			return std::reinterpret_pointer_cast<SpotLightData>(mData)->mInner;
-		}
-
-		float SpotLight::GetOutter() const noexcept
-		{
-			return std::reinterpret_pointer_cast<SpotLightData>(mData)->mOutter;
-		}
-
-		float SpotLight::GetFallOff() const noexcept
-		{
-			return std::reinterpret_pointer_cast<SpotLightData>(mData)->mFallOff;
-		}
-
-		bool SpotLight::GetShadowCasting() const noexcept
-		{
-			return std::reinterpret_pointer_cast<SpotLightData>(mData)->mShadowCaster;
-		}
-
-		float SpotLight::SpotLightData::CalculateSphereOfInfluence() const noexcept {
-			return 2 * mRadius;
-		}
+		// ------------------------------------------------------------------------
+		/*! Generate Shadow Map
+		*
+		*  Generates the Shadow Map for texturing the shadows
+		*/ //----------------------------------------------------------------------
 		void SpotLight::SpotLightData::GenerateShadowMap() {
 			mShadowMap.Create();
-			mShadowMap.CreateRenderTexture({1600, 900});
+			mShadowMap.CreateRenderTexture({1600, 900}, true, false);
 		}
 	}
 }

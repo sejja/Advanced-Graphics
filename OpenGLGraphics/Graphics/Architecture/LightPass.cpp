@@ -50,17 +50,21 @@ namespace Graphics {
 
 			//Renders all Shadow maps from spot lighting
 			for (const auto& x : sSpotLightData) {
-				Core::Graphics::FrameBuffer& shmp = x->mShadowMap;
-				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 2.f, 2000.f);
-				glm::mat4 lightView = glm::lookAt(x->mPosition, x->mDirection, glm::vec3(0, 1, 0));
 
-				shmp.Bind();
-				shmp.Clear(true);
-				shadow->SetShaderUniform("uProjection", &lightProjection);
-				shadow->SetShaderUniform("uView", &lightView);
-				rend_func(shadow);
-				shmp.Unbind();
-				x->mShadowMatrix = lightProjection * lightView;
+				//If it does cast shadows
+				if (x->mShadowCaster) {
+					Core::Graphics::FrameBuffer& shmp = x->mShadowMap;
+					glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 0.1f, 1000.f);
+					glm::mat4 lightView = glm::lookAt(x->mPosition, x->mDirection, glm::vec3(0, 1, 0));
+
+					shmp.Bind();
+					shmp.Clear(true);
+					shadow->SetShaderUniform("uProjection", &lightProjection);
+					shadow->SetShaderUniform("uView", &lightView);
+					rend_func(shadow);
+					shmp.Unbind();
+					x->mShadowMatrix = lightProjection * lightView;
+				}
 			}
 		}
 
@@ -114,7 +118,8 @@ namespace Graphics {
 				shadptr->SetShaderUniform((id + ".mInnerAngle").c_str(), &x->mInner);
 				shadptr->SetShaderUniform((id + ".mOutterAngle").c_str(), &x->mOutter);
 				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x->mFallOff);
-				
+				shadptr->SetShaderUniform((id + ".mCastShadows").c_str(), &x->mShadowCaster);
+
 				//avoid uploading the shadow texture if it doesn't cast shadows
 				if (x->mShadowCaster) {
 					shadptr->SetShaderUniform("uShadowMatrix", &x->mShadowMatrix);
