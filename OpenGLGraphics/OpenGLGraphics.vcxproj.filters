@@ -1796,7 +1796,7 @@
     <ClInclude Include="Core\ParticleSystem\SmokeSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Architecture\InstancedRendering.h">
+    <ClInclude Include="Graphics\Architecture\InstancedRendering\InstancedRendering.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

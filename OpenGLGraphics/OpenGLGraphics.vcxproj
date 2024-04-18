@@ -338,7 +338,7 @@
     <ClInclude Include="Dependencies\SQLite3\sqlite3.h" />
     <ClInclude Include="Graphics\Architecture\GBuffer.h" />
     <ClInclude Include="Graphics\Architecture\HDRBuffer.h" />
-    <ClInclude Include="Graphics\Architecture\InstancedRendering.h" />
+    <ClInclude Include="Graphics\Architecture\InstancedRendering\InstancedRendering.h" />
     <ClInclude Include="Graphics\Architecture\LightPass.h" />
     <ClInclude Include="Graphics\Architecture\SamplingBuffer.h" />
     <ClInclude Include="Graphics\Architecture\Utils\GLUtils.h" />

@@ -1,4 +1,9 @@
 #pragma once
+
+#include <iostream>
+#include <map>
+#include <String>
+
 #ifndef __InstanceRenderer__
 #define __InstanceRenderer__
 
