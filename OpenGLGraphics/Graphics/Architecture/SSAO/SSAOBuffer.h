@@ -11,6 +11,8 @@
 
 #include <glew.h>
 #include <glm.hpp>
+#include "Graphics/Architecture/GBuffer.h"
+#include "SSAONoise.h"
 
 namespace Graphics {
 	namespace Architecture {
@@ -18,9 +20,11 @@ namespace Graphics {
 			class SSAOBuffer {
 			public:
 				SSAOBuffer(const glm::u16vec2& dim);
+				void RenderAO(const GBuffer& gbuffer);
 
 			private:
-				GLuint mHandle, mColorBuffer;
+				GLuint mHandle, mColorBuffer, mBlurBuffer;
+				SSAONoise mNoise;
 			};
 		}
 	}

@@ -27,6 +27,17 @@ namespace Graphics {
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mColorBuffer, 0);
+
+				glBindFramebuffer(GL_FRAMEBUFFER, mBlurBuffer);
+				glGenTextures(1, &mBlurBuffer);
+				glBindTexture(GL_TEXTURE_2D, mBlurBuffer);
+				glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, dim.x, dim.y, 0, GL_RED, GL_FLOAT, NULL);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mBlurBuffer, 0);
+			}
+			void SSAOBuffer::RenderAO(const GBuffer& gbuffer) {
+				
 			}
 		}
 	}
