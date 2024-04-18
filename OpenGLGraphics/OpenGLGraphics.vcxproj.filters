@@ -48,9 +48,6 @@
     <ClCompile Include="Core\Assets\ModelImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Primitives\Model.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

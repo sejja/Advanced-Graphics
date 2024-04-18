@@ -234,7 +234,6 @@
     <ClCompile Include="Graphics\Primitives\Material.cpp" />
     <ClCompile Include="Graphics\Primitives\Shader.cpp" />
     <ClCompile Include="Graphics\Primitives\ShaderProgram.cpp" />
-    <ClCompile Include="Graphics\Primitives\Model.cpp" />
     <ClCompile Include="Graphics\Primitives\Skybox.cpp" />
     <ClCompile Include="Graphics\Primitives\Texture.cpp" />
     <ClCompile Include="Graphics\Primitives\Renderables.cpp" />
