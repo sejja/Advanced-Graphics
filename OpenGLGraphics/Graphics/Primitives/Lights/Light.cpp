@@ -31,6 +31,15 @@ namespace Graphics {
 
 				mData->mPosition = GetParent().lock()->GetPosition() + relativePos;
 			}
+			
+			// ------------------------------------------------------------------------
+			/*! Constructor
+			*
+			*   Default initialices the Light data
+			*/ //----------------------------------------------------------------------
+			Light::BackedLightData::BackedLightData() :
+				mColor(), mPosition(), mShadowCaster() {
+			}
 		}
 	}
 }

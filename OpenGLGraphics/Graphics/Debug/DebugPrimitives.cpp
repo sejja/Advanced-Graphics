@@ -63,7 +63,7 @@ namespace Graphics {
             //Unbind after usage
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
-            mVertexCount = vertices.size();
+            mVertexCount = static_cast<GLsizei>(vertices.size());
         }
 
 

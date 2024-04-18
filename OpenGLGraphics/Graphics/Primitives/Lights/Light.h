@@ -19,6 +19,9 @@ namespace Graphics {
 			#pragma region //Declarations
 			public:
 				struct BackedLightData {
+				#pragma region //Contructor
+					BackedLightData();
+				#pragma
 				#pragma region //Methods
 					virtual float CalculateSphereOfInfluence() const = 0;
 				#pragma endregion

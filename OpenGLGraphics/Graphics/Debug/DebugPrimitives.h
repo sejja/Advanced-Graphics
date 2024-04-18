@@ -36,7 +36,7 @@ namespace Graphics {
 
 #pragma region //Members
 			GLuint mVAO, mVBO;
-			std::size_t mVertexCount;
+			GLsizei mVertexCount;
 #pragma endregion
 		};
 	}

@@ -249,6 +249,9 @@
     <ClCompile Include="Graphics\Architecture\GeometryDeform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Architecture\SSAO\Kernel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -1794,6 +1797,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Architecture\GeometryDeform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\SSAO\Kernel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
