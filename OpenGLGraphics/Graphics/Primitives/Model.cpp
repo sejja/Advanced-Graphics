@@ -199,10 +199,6 @@ namespace Core {
 						mMaterial.SetShininess(materials[shapes[s].mesh.material_ids[f]].shininess);*/
 					}
 					else {
-						mMaterial.SetAmbient(glm::vec4(1.f, 1.f, 1.f, 1.f));
-						mMaterial.SetDiffuse(glm::vec4(1.f, 1.f, 1.f, 1.f));
-						mMaterial.SetEmissive(glm::vec4(1.f, 1.f, 1.f, 1.f));
-						mMaterial.SetSpecular(glm::vec4(1.f, 1.f, 1.f, 1.f));
 						mMaterial.SetShininess(1.f);
 					}
 				}
@@ -213,12 +209,6 @@ namespace Core {
 
 		void Model::SetShaderUniforms(const Core::Graphics::ShaderProgram& s) const {
 			float _shininess = mMaterial.GetShininess();
-			glm::vec4 buffer[] = {
-				mMaterial.GetEmissive(),
-				mMaterial.GetAmbient(),
-				mMaterial.GetDiffuse(),
-				mMaterial.GetSpecular(),
-			};
 
 			//s.SetShaderUniform("uMaterial.emission", buffer);
 			//s.SetShaderUniform("uMaterial.ambient", buffer + 1);

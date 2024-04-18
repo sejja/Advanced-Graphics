@@ -10,15 +10,17 @@
 #include <exception>
 
 namespace Graphics {
-    // ------------------------------------------------------------------------
-    /*! Set Shininess
-    *
-    *  Sets the Shininess intensity of a Material
-    */ // ---------------------------------------------------------------------
-	void Material::SetShininess(const float n) {
-        if (n < 0.f || n > 1.f)
-            throw std::exception("n is not in the range of 0 to 1");
-            
-		mShininess = n;
-	}
+    namespace Primitives {
+        // ------------------------------------------------------------------------
+        /*! Set Shininess
+        *
+        *  Sets the Shininess intensity of a Material
+        */ // ---------------------------------------------------------------------
+        void Material::SetShininess(const float n) {
+            if (n < 0.f || n > 1.f)
+                throw std::exception("n is not in the range of 0 to 1");
+
+            mShininess = n;
+        }
+    }
 }

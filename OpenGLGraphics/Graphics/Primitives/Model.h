@@ -56,7 +56,7 @@ namespace Core {
 #pragma region //Variables
 			std::size_t mCount;
 			GLuint mVAO, mVBO, mIBO;
-			::Graphics::Material mMaterial;
+			::Graphics::Primitives::Material mMaterial;
 			Core::Assets::Asset<Texture> mDiffuseTex;
 			Core::Assets::Asset<Texture> mNormalTex;
 #pragma endregion
