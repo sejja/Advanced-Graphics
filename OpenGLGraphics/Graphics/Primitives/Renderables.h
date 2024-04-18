@@ -12,7 +12,6 @@
 #include "glm.hpp"
 #include "Core/ECSystem/Component.h"
 #include "Core/Graphics/Pipeline.h"
-#include "Graphics/Primitives/Model.h"
 #include "Core/Assets/ResourceManager.h"
 #include "Graphics/Primitives/ShaderProgram.h"
 #include "Graphics/Primitives/GLBModel.h"

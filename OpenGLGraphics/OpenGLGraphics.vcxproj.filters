@@ -1475,9 +1475,6 @@
     <ClInclude Include="Core\Assets\ModelImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Graphics\Primitives\Model.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Graphics\Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>

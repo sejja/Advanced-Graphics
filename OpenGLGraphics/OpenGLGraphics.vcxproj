@@ -366,7 +366,6 @@
     <ClInclude Include="Graphics\Primitives\Material.h" />
     <ClInclude Include="Graphics\Primitives\Shader.h" />
     <ClInclude Include="Graphics\Primitives\ShaderProgram.h" />
-    <ClInclude Include="Graphics\Primitives\Model.h" />
     <ClInclude Include="Graphics\Primitives\Skybox.h" />
     <ClInclude Include="Graphics\Primitives\Texture.h" />
     <ClInclude Include="Graphics\Primitives\Renderables.h" />
