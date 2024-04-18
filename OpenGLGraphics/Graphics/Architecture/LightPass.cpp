@@ -42,8 +42,7 @@ namespace Graphics {
 			glViewport(0, 0, dim.x, dim.y);
 
 			//Renders all Shadow maps from directional lighting
-			for (const auto& 
-				x : sDirectionalLightData)
+			for (const auto& x : sDirectionalLightData)
 				x.second->RenderShadowsMap(camview, rend_func);
 
 			Core::Graphics::ShaderProgram* shadow = mShadowShader->Get();

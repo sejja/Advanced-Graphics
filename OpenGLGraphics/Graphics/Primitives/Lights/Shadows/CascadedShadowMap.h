@@ -23,21 +23,24 @@ namespace Graphics {
 				constexpr GLsizei c_cascaded_map_res = 4096;
 
 				class CascadedShadowMap {
+				#pragma region //Declarations
+					CLASS_EXCEPTION(CascadedShadowMap)
+				#pragma endregion
+
 				#pragma region //Constructor
 				public:
 					CascadedShadowMap();
 				#pragma endregion
 
 				#pragma region //Methods
-					void CreateShadowMapGPUData();
 					void Bind() const;
 					void SetUniforms(const Core::Assets::Asset<Core::Graphics::ShaderProgram>& shader);
 					void Render(glm::mat4 camview, glm::vec3 pos, glm::vec3 dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
 				
 				private:
-					std::array<glm::mat4, 5> GetLightSpaceMatrices(const glm::mat4& camview, const glm::vec3& lightdir) const;
-					glm::mat4 GetLightSpaceMatrix(const glm::mat4& camview, const glm::vec3& lightdir, const float nearPlane, const float farPlane) const;
-					std::array<glm::vec4, 8> GetFrustrumCornersWorldSpace(const glm::mat4& mtx) const;
+					DONTDISCARD std::array<glm::mat4, 5> GetLightSpaceMatrices(const glm::mat4& camview, const glm::vec3& lightdir) const;
+					DONTDISCARD glm::mat4 GetLightSpaceMatrix(const glm::mat4& camview, const glm::vec3& lightdir, const float nearPlane, const float farPlane) const;
+					DONTDISCARD std::array<glm::vec4, 8> GetFrustrumCornersWorldSpace(const glm::mat4& mtx) const;
 				#pragma endregion
 
 				#pragma region //Members
