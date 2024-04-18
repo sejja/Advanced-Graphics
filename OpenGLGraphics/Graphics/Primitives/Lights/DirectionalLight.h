@@ -21,7 +21,6 @@ namespace Graphics {
 			struct DirectionalLightData : public Light::BackedLightData {
 			#pragma region //Methods
 				DONTDISCARD float CalculateSphereOfInfluence() const override;
-				void GenerateShadowMap();
 				void RenderShadowsMap(const glm::mat4& camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
 				void SetUniforms(const Core::Assets::Asset<Core::Graphics::ShaderProgram>& shader);
 			#pragma endregion

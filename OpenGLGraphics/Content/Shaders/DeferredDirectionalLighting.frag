@@ -106,7 +106,7 @@ void main() {
     const vec3 normal = texture(gNormal, oUVs).rgb;
     float shadow = 1.1 - ShadowCalculation(texture(gPosition, oUVs).rgb) * 0.75;
 
-    FragColor = texture(gAlbedoSpec, oUVs) * vec4(((shadow * (max(dot(normal, uLight.mDirection), 0.0) * uLight.mColor 
+    FragColor = texture(gAlbedoSpec, oUVs) * vec4(((shadow * (max(dot(normal, uLight.mDirection), 0.1) * uLight.mColor 
             //specular
             + uLight.mColor * pow(max(dot(normalize(ubCameraPosition - texture(gPosition, oUVs).rgb), 
                 reflect(-uLight.mDirection, normal)), 0.0), 32)))), 1.0);
