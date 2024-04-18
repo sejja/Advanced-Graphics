@@ -22,42 +22,40 @@ namespace Graphics {
 				Graphics::Architecture::LightPass::AddPointLight(std::reinterpret_pointer_cast<PointLightData>(mData));
 		}
 
-		void PointLight::SetRadius(float radius) {
+		void PointLight::SetRadius(const float radius) noexcept {
 			std::reinterpret_pointer_cast<PointLightData>(mData)->mRadius = radius;
 		}
 
-		void PointLight::SetInner(float inner) {
+		void PointLight::SetInner(const float inner) noexcept {
 			std::reinterpret_pointer_cast<PointLightData>(mData)->mInner = inner;
 		}
 
-		void PointLight::SetOutter(float outter) {
+		void PointLight::SetOutter(const float outter) noexcept {
 			std::reinterpret_pointer_cast<PointLightData>(mData)->mOutter = outter;
 		}
 
-		void PointLight::SetFallOff(float falloff) {
+		void PointLight::SetFallOff(const float falloff) noexcept {
 			std::reinterpret_pointer_cast<PointLightData>(mData)->mFallOff = falloff;
 		}
 
-		float PointLight::GetRadius() {
+		float PointLight::GetRadius() const noexcept {
 			return std::reinterpret_pointer_cast<PointLightData>(mData)->mRadius;
 		}
 
-		float PointLight::GetInner() {
+		float PointLight::GetInner() const noexcept {
 			return std::reinterpret_pointer_cast<PointLightData>(mData)->mInner;
 		}
 
-		float PointLight::GetOutter() {
+		float PointLight::GetOutter() const noexcept {
 			return std::reinterpret_pointer_cast<PointLightData>(mData)->mOutter;
 		}
 
-		float PointLight::GetFallOff() {
+		float PointLight::GetFallOff() const noexcept {
 			return std::reinterpret_pointer_cast<PointLightData>(mData)->mFallOff;
 		}
 
-		float PointLight::PointLightData::CalculateSphereOfInfluence() const {
+		float PointLight::PointLightData::CalculateSphereOfInfluence() const noexcept {
 			return 2 * mRadius;
-		}
-		void PointLight::PointLightData::GenerateShadowMap() {
 		}
 	}
 }

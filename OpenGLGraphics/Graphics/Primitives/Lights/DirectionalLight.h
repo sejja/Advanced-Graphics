@@ -21,9 +21,9 @@ namespace Graphics {
 			public:
 				struct DirectionalLightData : public Light::BackedLightData {
 #pragma region //Methods
-					DONTDISCARD float CalculateSphereOfInfluence() const override;
-					void RenderShadowsMap(const glm::mat4& camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
-					void SetUniforms(const Core::Assets::Asset<Core::Graphics::ShaderProgram>& shader);
+					DONTDISCARD float CalculateSphereOfInfluence() const noexcept override;
+					void inline RenderShadowsMap(const glm::mat4& camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
+					void inline SetUniforms(const Core::Assets::Asset<Core::Graphics::ShaderProgram>& shader);
 #pragma endregion
 
 #pragma region //Members
@@ -35,6 +35,7 @@ namespace Graphics {
 
 #pragma region //Constructor & Destructor
 				DirectionalLight(const std::weak_ptr<Core::Object>& parent);
+				~DirectionalLight();
 #pragma endregion
 
 #pragma region //Methods
@@ -58,6 +59,24 @@ namespace Graphics {
 			*/ //----------------------------------------------------------------------
 			void DirectionalLight::SetDirection(const glm::vec3& direction) noexcept {
 				 std::reinterpret_pointer_cast<DirectionalLightData>(mData)->mDirection = direction;
+			}
+
+			// ------------------------------------------------------------------------
+			/*! Render Shadow Map
+			*
+			*  REnders the shadow map depth buffer
+			*/ //----------------------------------------------------------------------
+			void DirectionalLight::DirectionalLightData::RenderShadowsMap(const glm::mat4& camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
+				mShadowMap.Render(camview, mPosition, mDirection, rend_func);
+			}
+
+			// ------------------------------------------------------------------------
+			/*! Set Uniforms
+			*
+			*  Sets the Uniforms to the shaders needed to render the light's shadow
+			*/ //----------------------------------------------------------------------
+			void DirectionalLight::DirectionalLightData::SetUniforms(const Core::Assets::Asset<Core::Graphics::ShaderProgram>& shader) {
+				mShadowMap.SetUniforms(shader);
 			}
 		}
 	}

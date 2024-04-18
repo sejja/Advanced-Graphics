@@ -66,7 +66,6 @@ namespace Graphics {
             mVertexCount = static_cast<GLsizei>(vertices.size());
         }
 
-
         // ------------------------------------------------------------------------
         /*! Initialize Buffers
         *
