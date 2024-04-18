@@ -60,8 +60,9 @@ namespace Graphics {
         *   Constructs meshes from a bunch of vertices, indices, a diffuse texture and a normal texture
         */ //----------------------------------------------------------------------
         void Mesh::Draw() const {
+            // bind appropriate textures
             if(mDiffuse) mDiffuse->Get()->Bind();
-
+            // bind normal map
             if(mNormal) mNormal->Get()->Bind();
 
             // draw mesh

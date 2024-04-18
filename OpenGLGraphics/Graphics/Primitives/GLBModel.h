@@ -35,19 +35,19 @@ namespace Graphics {
 
         private:
             // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
-            void loadModel(std::string const& path);
+            void LoadModel(std::string const& path);
 
             // processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
-            void processNode(aiNode* node, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform);
+            void ProcessNode(aiNode* node, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform);
+            Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform);
 
-            Mesh processMesh(aiMesh* mesh, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform);
+            // checks all material textures of a given type and loads the textures if they're not loaded yet.
+            // the required info is returned as a Texture struct.
+            Core::Assets::Asset<Core::Graphics::Texture> LoadMaterialTextures(aiMaterial* mat, const aiTextureType type, const std::string& dir);
          #pragma endregion
 
          #pragma region //Members
             std::vector<Mesh> mMeshes;
-            // checks all material textures of a given type and loads the textures if they're not loaded yet.
-            // the required info is returned as a Texture struct.
-            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> loadMaterialTextures(aiMaterial* mat, const aiTextureType type, const std::string& dir);
          #pragma endregion
         };
 	}
