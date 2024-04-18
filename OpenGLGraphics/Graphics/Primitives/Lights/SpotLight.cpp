@@ -23,65 +23,65 @@ namespace Graphics {
 				std::reinterpret_pointer_cast<SpotLightData>(mData)->GenerateShadowMap();
 		}
 
-		void SpotLight::SetDirection(glm::vec3 direction) {
+		void SpotLight::SetDirection(const glm::vec3& direction) noexcept {
 			std::reinterpret_pointer_cast<SpotLightData>(mData)->mDirection = direction;
 		}
 
-		void SpotLight::SetRadius(float radius)
+		void SpotLight::SetRadius(float radius) noexcept
 		{
 			std::reinterpret_pointer_cast<SpotLightData>(mData)->mRadius = radius;
 		}
 
-		void SpotLight::SetInner(float inner)
+		void SpotLight::SetInner(float inner) noexcept
 		{
 			std::reinterpret_pointer_cast<SpotLightData>(mData)->mInner = inner;
 		}
 
-		void SpotLight::SetOuter(float outter)
+		void SpotLight::SetOuter(float outter) noexcept
 		{
 			std::reinterpret_pointer_cast<SpotLightData>(mData)->mOutter = outter;
 		}
 
-		void SpotLight::SetFallOff(float falloff)
+		void SpotLight::SetFallOff(float falloff) noexcept
 		{
 			std::reinterpret_pointer_cast<SpotLightData>(mData)->mFallOff = falloff;
 		}
 
-		void SpotLight::SetShadowCaster(bool shadow) {
+		void SpotLight::SetShadowCaster(bool shadow) noexcept {
 			std::reinterpret_pointer_cast<SpotLightData>(mData)->mShadowCaster = shadow;
 		}
 
-		glm::vec3 SpotLight::GetDirection()
+		glm::vec3 SpotLight::GetDirection() const noexcept
 		{
 			return std::reinterpret_pointer_cast<SpotLightData>(mData)->mDirection;
 		}
 
-		float SpotLight::GetRadius()
+		float SpotLight::GetRadius() const noexcept
 		{
 			return std::reinterpret_pointer_cast<SpotLightData>(mData)->mRadius;
 		}
 
-		float SpotLight::GetInner()
+		float SpotLight::GetInner() const noexcept
 		{
 			return std::reinterpret_pointer_cast<SpotLightData>(mData)->mInner;
 		}
 
-		float SpotLight::GetOutter()
+		float SpotLight::GetOutter() const noexcept
 		{
 			return std::reinterpret_pointer_cast<SpotLightData>(mData)->mOutter;
 		}
 
-		float SpotLight::GetFallOff()
+		float SpotLight::GetFallOff() const noexcept
 		{
 			return std::reinterpret_pointer_cast<SpotLightData>(mData)->mFallOff;
 		}
 
-		bool SpotLight::GetShadowCasting()
+		bool SpotLight::GetShadowCasting() const noexcept
 		{
 			return std::reinterpret_pointer_cast<SpotLightData>(mData)->mShadowCaster;
 		}
 
-		float SpotLight::SpotLightData::CalculateSphereOfInfluence() const {
+		float SpotLight::SpotLightData::CalculateSphereOfInfluence() const noexcept {
 			return 2 * mRadius;
 		}
 		void SpotLight::SpotLightData::GenerateShadowMap() {

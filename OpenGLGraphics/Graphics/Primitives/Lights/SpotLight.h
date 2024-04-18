@@ -15,8 +15,15 @@
 namespace Graphics {
 	namespace Primitives {
 		class SpotLight : public Lights::Light {
+		#pragma region 
 		public:
 			struct SpotLightData : public Light::BackedLightData {
+			#pragma region //Methods
+				float CalculateSphereOfInfluence() const noexcept;
+				void GenerateShadowMap();
+			#pragma endregion
+
+			#pragma region //Members
 				glm::vec3 mDirection;
 				float mRadius;
 				float mInner;
@@ -24,24 +31,28 @@ namespace Graphics {
 				float mFallOff;
 				glm::mat4 mShadowMatrix;
 				Core::Graphics::FrameBuffer mShadowMap;
-				float CalculateSphereOfInfluence() const;
-				void GenerateShadowMap();
+			#pragma endregion
 			};
-
+		#pragma endregion
 			
+		#pragma region //Constructor
 			SpotLight(const std::weak_ptr<Core::Object>& parent);
-			void SetDirection(glm::vec3 direction);
-			void SetRadius(float radius);
-			void SetInner(float inner);
-			void SetOuter(float outter);
-			void SetFallOff(float falloff);
-			void SetShadowCaster(bool shadow);
-			glm::vec3 GetDirection();
-			float GetRadius();
-			float GetInner();
-			float GetOutter();
-			float GetFallOff();
-			bool GetShadowCasting();
+		#pragma endregion
+
+		#pragma region //Methods
+			void SetDirection(const glm::vec3& direction) noexcept;
+			void SetRadius(const float radius) noexcept;
+			void SetInner(const float inner) noexcept;
+			void SetOuter(const float outter) noexcept;
+			void SetFallOff(const float falloff) noexcept;
+			void SetShadowCaster(const bool shadow) noexcept;
+			DONTDISCARD glm::vec3 GetDirection() const noexcept;
+			DONTDISCARD float GetRadius() const noexcept;
+			DONTDISCARD float GetInner() const noexcept;
+			DONTDISCARD float GetOutter() const noexcept;
+			DONTDISCARD float GetFallOff() const noexcept;
+			DONTDISCARD bool GetShadowCasting() const noexcept;
+		#pragma endregion
 		};
 	}
 }
