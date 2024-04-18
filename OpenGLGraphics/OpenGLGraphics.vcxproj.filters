@@ -255,6 +255,9 @@
     <ClCompile Include="Graphics\Architecture\SSAO\SSAONoise.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Architecture\SSAO\SSAOBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -1809,6 +1812,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Architecture\SSAO\SSAONoise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\SSAO\SSAOBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
