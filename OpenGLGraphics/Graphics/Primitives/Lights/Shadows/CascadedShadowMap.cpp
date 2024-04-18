@@ -94,7 +94,7 @@ namespace Graphics {
 					});
 
                     // Tune this parameter according to the scene
-                    constexpr float zMult = 20.0f;
+                    constexpr float zMult = 10.0f;
                     if (minZ < 0)
                         minZ *= zMult;
                     else
@@ -183,6 +183,8 @@ namespace Graphics {
                     glClear(GL_DEPTH_BUFFER_BIT);
                     glCullFace(GL_FRONT);  // peter panning
                     rend_func(shd);
+                    glCullFace(GL_BACK);
+                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
                 }
 
                 // ------------------------------------------------------------------------
