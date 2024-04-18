@@ -6,6 +6,8 @@
 #include "../Editor.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 #include "Core/Editor/Interface/TextEditor.h"
+#include <fstream>
+#include <iostream>
 
 
 void drawDropWindow();
@@ -37,7 +39,25 @@ void AssetManager::Render() {
 	if (ImGui::Button(ICON_FA_HOUSE, ImVec2(25, 25))) {
 		init();
 	}
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_FILE_CIRCLE_PLUS, ImVec2(25, 25))) {
+		showFileDialog = true;
+	}
 
+	if (showFileDialog) {
+		ImGui::OpenPopup("Save File");
+	}
+		
+	if (ImGui::BeginPopupModal("Save File", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+		ImGui::Text("Enter file name:");
+		ImGui::InputText("##filename",filename, sizeof(filename));
+		if (ImGui::Button("OK")) {
+			createFile(filename);
+			showFileDialog = false;
+			ImGui::CloseCurrentPopup();
+		}
+		ImGui::EndPopup();
+	}
 	ImGui::SameLine();
 	ImGui::BeginGroup();
 	ImGui::Dummy(ImVec2(0,1));
@@ -103,6 +123,18 @@ void AssetManager::changeDirectory(int i)
 	//assets = editor->database->getFilesOfFolder(assets[i].ruta);
 	// Aquí queda memoria sin liberar??
 	assets = Singleton<Editor>::Instance().database->getFilesOfFolder(assets[i].ruta);
+}
+
+void AssetManager::createFile(const char* filename)
+{
+	std::ofstream file(filename);
+	if (file.is_open()) {
+		file << "Patata";
+		file.close();
+	}
+	else {
+		std::cerr << "Failed to create file '" << filename << "'." << std::endl;
+	}
 }
 
 int AssetManager::elementosPorFila(int anchoVentana, int anchoElemento)
