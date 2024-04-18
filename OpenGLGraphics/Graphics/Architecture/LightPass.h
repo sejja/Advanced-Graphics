@@ -47,7 +47,7 @@ namespace Graphics {
 
 		#pragma region //Members
 		private:
-			Core::Assets::Asset<::Graphics::Primitives::GLBModel> mLightSphere;
+			Core::Assets::Asset<::Graphics::Primitives::Model> mLightSphere;
 			Core::Assets::Asset<Core::Graphics::ShaderProgram> mLightSphereShader;
 			Core::Assets::Asset<Core::Graphics::ShaderProgram> mDirectionalShader;
 			Core::Assets::Asset<Core::Graphics::ShaderProgram> mPointShader;

@@ -24,7 +24,7 @@ namespace Graphics {
 		*/ //----------------------------------------------------------------------
 		LightPass::LightPass() {
 			Core::Assets::ResourceManager& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
-			mLightSphere = resmg.GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj");
+			mLightSphere = resmg.GetResource<::Graphics::Primitives::Model>("Content/Meshes/sphere_20_averaged.obj");
 			mLightSphereShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/ForwardRender.shader");
 			mDirectionalShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredDirectionalLighting.shader");
 			mPointShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredPointLighting.shader");

@@ -650,7 +650,7 @@ void Properties::MaterialsOptions() {
     
 
     if (glbModel) {
-        std::string directory = glbModel->Get()->getPath();
+        //std::string directory = glbModel->Get()->getPath();
         //printf("Directory: %s\n", directory.c_str());
     }
     
@@ -713,7 +713,7 @@ void Properties::MeshOptions() {
     auto glbModel = meshComp->GetMesh().lock();
 
     if (glbModel) {
-        std::string directory = glbModel->Get()->getPath();
+        //std::string directory = glbModel->Get()->getPath();
         //printf("Directory: %s\n", directory.c_str());
     }
 
@@ -751,7 +751,7 @@ void Properties::MeshOptions() {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* asset = (AssetIcon*)payload->Data;
             printf("RUTA MESH: %s\n", asset->ruta);
-            meshComp->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(asset->ruta));
+            meshComp->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>(asset->ruta));
         }
         ImGui::EndDragDropTarget();
     }
@@ -775,7 +775,7 @@ void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline)
     auto glbModel = meshComp->GetMesh().lock();
 
     if (glbModel) {
-        std::string directory = glbModel->Get()->getPath();
+        //std::string directory = glbModel->Get()->getPath();
         //printf("Directory: %s\n", directory.c_str());
     }
 

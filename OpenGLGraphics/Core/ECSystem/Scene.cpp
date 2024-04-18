@@ -42,7 +42,7 @@ namespace Core {
 			//obj->SetType() tiene que ser un enum
 
 			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
-			renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(x.mesh.c_str()));
+			renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>(x.mesh.c_str()));
 
 			if (x.name == "suzanne_mesh")
 				renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/Refractive.shader"));
@@ -63,7 +63,7 @@ namespace Core {
 			obj->SetScale({ 1.f, 1.f, 1.f });
 			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj));
 			std::shared_ptr<::Graphics::Primitives::Lights::Light> light;
-			renderer->SetMesh(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
+			renderer->SetMesh(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<::Graphics::Primitives::Model>("Content/Meshes/sphere_20_averaged.obj"));
 			renderer->SetShaderProgram(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
 
 			//TEMPORAL PARA SABER SI ES LUZ HASTA NUEVO LEVEL 

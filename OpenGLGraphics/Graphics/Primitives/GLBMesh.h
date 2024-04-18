@@ -37,7 +37,8 @@ namespace Graphics {
         #pragma region //Constructor
             Mesh(const std::vector<Vertex>& vertices, 
                 const std::vector<unsigned>& indices, 
-                const std::vector<Core::Assets::Asset<Core::Graphics::Texture>>& textures);
+                const Core::Assets::Asset<Core::Graphics::Texture>& diffuse,
+                const Core::Assets::Asset<Core::Graphics::Texture>& normal);
         #pragma endregion
 
         #pragma region //Methods
@@ -48,7 +49,7 @@ namespace Graphics {
         private:
             Core::Assets::Asset<Core::Graphics::Texture> mDiffuse;
             Core::Assets::Asset<Core::Graphics::Texture> mNormal;
-            std::size_t mCount;
+            GLsizei mCount;
             GLuint mVao, mVbo, mEbo;
         #pragma endregion
         };

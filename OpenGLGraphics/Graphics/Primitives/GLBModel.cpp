@@ -11,27 +11,17 @@
 
 namespace Graphics {
 	namespace Primitives {
-		GLBModel::GLBModel(std::string const& path) {
+		Model::Model(std::string const& path) {
 			loadModel(path);
 		}
 
-		void GLBModel::Draw() {
-            for (unsigned int i = 0; i < meshes.size(); i++)
-				meshes[i].Draw();
+		void Model::Draw() {
+            for (unsigned int i = 0; i < mMeshes.size(); i++)
+				mMeshes[i].Draw();
 		}
 
-        std::string GLBModel::getDirectory()
+        void Model::loadModel(std::string const& path)
         {
-            return modelPath.substr(0, modelPath.find_last_of('/'));
-        }
-
-        std::string GLBModel::getPath() {
-            return modelPath;
-        }
-
-        void GLBModel::loadModel(std::string const& path)
-        {
-            modelPath = path;
 
             std::string directory;
             const size_t last_slash_idx = path.rfind('\\');
@@ -48,10 +38,10 @@ namespace Graphics {
             const aiScene* scene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_FixInfacingNormals );
             // check for errors
             if(scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
-            std::cout << "ERROR::ASSIMP:: INCOMPLETE DATA" << std::endl;
+                throw ModelException("ERROR::ASSIMP:: INCOMPLETE DATA");
 
             if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-                std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
+                throw ModelException(importer.GetErrorString());
                 return;
             }
 
@@ -60,12 +50,12 @@ namespace Graphics {
 
             if (!scene->mRootNode)
                 for (int i = 0; i < scene->mNumMeshes; i++)
-                    meshes.push_back(processMesh(scene->mMeshes[i], scene, directory, scene->mRootNode->mTransformation));
+                    mMeshes.push_back(processMesh(scene->mMeshes[i], scene, directory, scene->mRootNode->mTransformation));
             else  // process ASSIMP's root node recursively
                 processNode(scene->mRootNode, scene, directory, mat);
         }
 
-        void GLBModel::processNode(aiNode* node, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform) {
+        void Model::processNode(aiNode* node, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform) {
            
            transform *= node->mTransformation;
            
@@ -75,7 +65,7 @@ namespace Graphics {
                 // the node object only contains indices to index the actual objects in the scene. 
                 // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
                 aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-                meshes.push_back(processMesh(mesh, scene, dir, transform));
+                mMeshes.push_back(processMesh(mesh, scene, dir, transform));
             }
             // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
             for (unsigned int i = 0; i < node->mNumChildren; i++)
@@ -84,7 +74,7 @@ namespace Graphics {
             }
         }
 
-        Mesh GLBModel::processMesh(aiMesh* mesh, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform)
+        Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform)
         {
             // data to fill
             std::vector<Mesh::Vertex> vertices;
@@ -172,11 +162,18 @@ namespace Graphics {
             std::vector<Core::Assets::Asset<Core::Graphics::Texture>> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, dir);
             textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
 
+            if(textures.size() > 1)
+                // return a mesh object created from the extracted mesh data
+                return Mesh(vertices, indices, textures[0], textures[1]);
+            else if(textures.size())
+                // return a mesh object created from the extracted mesh data
+                return Mesh(vertices, indices, textures[0], nullptr);
+
             // return a mesh object created from the extracted mesh data
-            return Mesh(vertices, indices, textures);
+            return Mesh(vertices, indices, nullptr, nullptr);
         }
 
-        std::vector<Core::Assets::Asset<Core::Graphics::Texture>> GLBModel::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& dir) {
+        std::vector<Core::Assets::Asset<Core::Graphics::Texture>> Model::loadMaterialTextures(aiMaterial* mat, const aiTextureType type, const std::string& dir) {
             std::vector<Core::Assets::Asset<Core::Graphics::Texture>> textures;
             for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
             {

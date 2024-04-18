@@ -82,7 +82,7 @@ void Outliner::RenderOptions()
 
 
 		std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
-		renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/cube_face.obj"));
+		renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>("Content/Meshes/cube_face.obj"));
 
 		renderer->SetShaderProgram(resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredGeometry.shader"));
 

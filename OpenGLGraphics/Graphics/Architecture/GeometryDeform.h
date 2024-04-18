@@ -32,7 +32,7 @@ namespace Graphics {
 		#pragma region //Members
 		private:
 			static std::vector<Primitives::Decal*> mDecals;
-			Core::Assets::Asset<Primitives::GLBModel> mModel;
+			Core::Assets::Asset<Primitives::Model> mModel;
 			Core::Assets::Asset<Core::Graphics::ShaderProgram> mShader;
 		#pragma endregion
 		};

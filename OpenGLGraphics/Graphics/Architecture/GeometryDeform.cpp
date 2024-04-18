@@ -18,7 +18,7 @@ namespace Graphics {
 		GeometryDeform::~GeometryDeform() {}
 
 		void GeometryDeform::DecalPass(const GBuffer& gbuffer) {
-			mModel = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Graphics::Primitives::GLBModel>("Content/Meshes/cube_averaged.obj");
+			mModel = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Graphics::Primitives::Model>("Content/Meshes/cube_averaged.obj");
 			mShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/GeometryDecal.shader");
 			mShader->Get()->Bind();
 			glActiveTexture(GL_TEXTURE3);
