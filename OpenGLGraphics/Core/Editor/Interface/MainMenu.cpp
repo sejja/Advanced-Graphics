@@ -61,7 +61,37 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     if (show_tool_metrics)
         ImGui::ShowMetricsWindow(&show_tool_metrics);
 
+    //ImGui::Text("Hladfa");
 
+    if (savePopup) ImGui::OpenPopup("Save As");
+
+    if (ImGui::BeginPopupModal("Save As", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+        std::cout << "Mostrando popup" << std::endl;
+        //ImGui::Text("Filename: ");
+        //ImGui::SameLine();
+        ImGui::InputTextWithHint("", "Filename", saveFileName, 100);
+        std::cout << "Nombre: " << saveFileName << std::endl;
+        int width = ImGui::GetWindowSize().x;
+        int buttonHeight = 30;
+        int buttonWidth = 100;
+        ImGui::Dummy(ImVec2(0, 5));
+        ImGui::SetCursorPosX(width / 2 - buttonWidth - 3); //A ojo
+        if (ImGui::Button("Save", ImVec2(buttonWidth, buttonHeight))) {
+            AppWrapper& app = Singleton<AppWrapper>::Instance();
+            //std::cout << saveFileName << std::endl;
+            app.getScene().Save("Content/Maps/" + std::string(saveFileName) + ".json");
+            savePopup = false;
+            previouslySaved = true;
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(buttonWidth, buttonHeight))) {
+            savePopup = false;
+			ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+    
 }
 
 void MainMenu::RenderRemoteControlMenu() {
@@ -140,12 +170,6 @@ void MainMenu::RenderRemoteControlMenu() {
         ImGui::EndMenu();
     }
 
-    if(ImGui::BeginPopupModal("Save As.."))
-    {
-        ImGui::Text("Save As..");
-        ImGui::EndPopup();
-    }
-
 
 }
 
@@ -172,18 +196,13 @@ void MainMenu::ServerStateInfo()
 void MainMenu::RenderFileMenu() {
     
     if (ImGui::BeginMenu("File")) {
-        if (ImGui::MenuItem("Save", "CTRL+S")) {
+        if (ImGui::MenuItem("Save", "CTRL+S", false, previouslySaved)) {
             AppWrapper& app = Singleton<AppWrapper>::Instance();
-            app.getScene().Save("Content/Maps/Scene4.json");
+            app.getScene().Save("Content/Maps/" + std::string(saveFileName) + ".json");
         }
         if (ImGui::MenuItem("Save As..")) {
-			AppWrapper& app = Singleton<AppWrapper>::Instance();
             ImGui::OpenPopup("Save As..");
-            if (ImGui::BeginPopupModal("Save As..", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-                ImGui::Text("Save As..");
-                ImGui::EndPopup();
-            }
-			//app.getScene().Save("Content/Maps/Scene4.json");
+            savePopup = true;
 		}
         
         ImGui::EndMenu();

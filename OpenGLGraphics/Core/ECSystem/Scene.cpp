@@ -223,7 +223,8 @@ namespace Core {
 
 	void Scene::Save(const std::string_view& filename) {
 		auto resmg = Singleton<ResourceManager>::Instance();
-		printf("Listos para guardar\n");
+		//printf("Listos para guardar\n");
+		std::cout << filename << std::endl;
 		json data;
 		for (int i = 0; i < mObjects.size(); i++) {
 			json object;
