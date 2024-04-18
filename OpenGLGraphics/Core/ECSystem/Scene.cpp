@@ -5,7 +5,7 @@
 //	Created by Diego Revilla on 03/03/24
 //	Copyright © 2024. All Rights reserved
 //
-
+#include <iostream>
 #include "Scene.h"
 #include "Core/Graphics/Pipeline.h"
 #include "Graphics/Primitives/Lights/DirectionalLight.h"
@@ -41,8 +41,12 @@ namespace Core {
 			obj->SetID(x.name);//temp , tiene que ser unico
 			//obj->SetType() tiene que ser un enum
 
+			
+
 			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
 			renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(x.mesh.c_str()));
+
+			std::cout << renderer.get()->GetMesh().lock() << "\n";
 
 			if (x.name == "suzanne_mesh")
 				renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/Refractive.shader"));
@@ -97,7 +101,7 @@ namespace Core {
 
 			light->SetPosition(glm::vec3(0.0f,0.0f,0.0f));
 			light->SetColor(x.col);
-			printf("COLOR: %f %f %f\n", x.col.x, x.col.y, x.col.z);
+			//printf("COLOR: %f %f %f\n", x.col.x, x.col.y, x.col.z);
 
 
 			std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> weakrend = renderer;
