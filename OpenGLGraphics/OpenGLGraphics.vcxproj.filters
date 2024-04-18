@@ -252,6 +252,9 @@
     <ClCompile Include="Graphics\Architecture\SSAO\Kernel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Architecture\SSAO\SSAONoise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -1803,6 +1806,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Math\Lerp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\SSAO\SSAONoise.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

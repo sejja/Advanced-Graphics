@@ -216,6 +216,7 @@
     <ClCompile Include="Graphics\Architecture\SamplingBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\LightPass.cpp" />
     <ClCompile Include="Graphics\Architecture\SSAO\Kernel.cpp" />
+    <ClCompile Include="Graphics\Architecture\SSAO\SSAONoise.cpp" />
     <ClCompile Include="Graphics\Architecture\Utils\GLUtils.cpp" />
     <ClCompile Include="Graphics\Debug\DebugPrimitives.cpp" />
     <ClCompile Include="Graphics\Debug\DebugShapes.cpp" />
@@ -343,6 +344,7 @@
     <ClInclude Include="Graphics\Architecture\LightPass.h" />
     <ClInclude Include="Graphics\Architecture\SamplingBuffer.h" />
     <ClInclude Include="Graphics\Architecture\SSAO\Kernel.h" />
+    <ClInclude Include="Graphics\Architecture\SSAO\SSAONoise.h" />
     <ClInclude Include="Graphics\Architecture\Utils\GLUtils.h" />
     <ClInclude Include="Graphics\Debug\DebugPrimitives.h" />
     <ClInclude Include="Graphics\Debug\DebugShapes.h" />
