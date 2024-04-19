@@ -33,6 +33,7 @@ namespace Core {
 	namespace Graphics {
 		static Primitives::Camera cam;
 
+
 		OpenGLPipeline::~OpenGLPipeline() {
 			ImGui_ImplOpenGL3_Shutdown();
 			ImGui_ImplSDL2_Shutdown();
@@ -347,6 +348,11 @@ namespace Core {
 			
 		}
 
+
+		Primitives::Camera* OpenGLPipeline::getCamera()
+		{
+			return &cam;
+		}
 
 		void OpenGLPipeline::updateRenderablesGroups(const Core::Assets::Asset<ShaderProgram>& curShader, const Core::Assets::Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable)
 		{

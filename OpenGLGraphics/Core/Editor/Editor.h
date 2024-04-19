@@ -11,6 +11,7 @@
 #include "Interface/AssetManager.h"
 #include "Interface/SceneView.h"
 #include "Interface/MainMenu.h"
+#include "Interface/Guizmo.h"
 #include "Core/Editor/SelectedObj.h"
 #include "database.h"
 #include "Core/Editor/Interface/TextEditor.h"
@@ -35,25 +36,36 @@ public:
 
     void setSceneFrameDimensions(const glm::lowp_u16vec2& dim) { sceneFrameDimensions = dim; }
     float GetAspectRatio() { return static_cast<float>(sceneFrameDimensions.x) / static_cast<float>(sceneFrameDimensions.y); }
+    glm::lowp_u16vec2 GetSceneFrameDimensions() { return sceneFrameDimensions; }
+
+
+
+    //void setSceneFramePosition(const ImVec2& pos) { sceneFramePosition = pos; }
+    //ImVec2 GetSceneFramePosition() { return sceneFramePosition; }
+
+    //void setWindowDrawList(ImDrawList* drawList) { drawList = drawList; }
+    //ImDrawList* GetWindowDrawList() { return drawList; }
+
 
     float *GetFOV() { return &fov; }
     
 
 private:
-    bool editorLocked;
     SelectedObj selectedObj;
-
     MainMenu mainMenu;
     Properties properties;
-    
     Outliner outliner;
     SceneView sceneView;
+    Guizmo guizmo;
 
     glm::lowp_u16vec2 sceneFrameDimensions;
+    ImVec2 sceneFramePosition;
+
+    ImDrawList* drawList;
 
     float fov = 45.0f;
+    bool editorLocked;
 
-    
 };
 
 

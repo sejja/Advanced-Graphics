@@ -45,7 +45,7 @@ void Guizmo::Draw()
 		ImGuizmo::Manipulate(
 			glm::value_ptr(camView), 
 			glm::value_ptr(camProjection),
-			ImGuizmo::OPERATION::TRANSLATE, 
+			ImGuizmo::OPERATION::SCALE, 
 			ImGuizmo::LOCAL, 
 			glm::value_ptr(modelMatrix)
 		);

@@ -10,6 +10,9 @@
 void SceneView::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 	ImGui::Begin(ICON_FA_VIDEO " Scene");
+	ImGuizmo::SetDrawlist();
+
+
 	ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
 	//habría que setear la vista de la camara de la escena a este viewport tmb
 
@@ -17,12 +20,26 @@ void SceneView::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	dim.x = static_cast<uint16_t>(viewportPanelSize.x);
 	dim.y = static_cast<uint16_t>(viewportPanelSize.y);
 
+	ImVec2 windowPos = ImGui::GetWindowPos();
+
+	ImGuizmo::SetRect(
+		windowPos.x, windowPos.y,
+		viewportPanelSize.x, viewportPanelSize.y
+	);
+
 	//printf("Viewport size 1: %d, %d\n", dim.x, dim.y);
 
 	//pipeline.setSceneFrameDimensions(dim);
 	//pipeline.Render();
 
 	Singleton<Editor>::Instance().setSceneFrameDimensions(dim);
+
+	
+	//Singleton<Editor>::Instance().setSceneFrameDimensions(dim);
+	//Singleton<Editor>::Instance().setSceneFramePosition(windowPos);
+	//Singleton<Editor>::Instance().setWindowDrawList(ImGui::GetWindowDrawList());
+
+	
 
 	
 	ImGui::Image(reinterpret_cast<void*>(pipeline.GetRenderTexture()), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });

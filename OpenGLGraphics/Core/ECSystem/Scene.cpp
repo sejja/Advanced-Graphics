@@ -98,8 +98,6 @@ namespace Core {
 
 			light->SetPosition(glm::vec3(0.0f,0.0f,0.0f),x.pos);
 			light->SetColor(x.col);
-			printf("COLOR: %f %f %f\n", x.col.x, x.col.y, x.col.z);
-
 
 			std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> weakrend = renderer;
 			std::weak_ptr< ::Graphics::Primitives::Light> lightrend = light;

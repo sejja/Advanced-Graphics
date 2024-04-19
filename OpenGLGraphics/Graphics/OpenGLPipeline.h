@@ -21,6 +21,7 @@
 #include "Graphics/Architecture/Bloom/BloomRenderer.h"
 #include "Graphics/Architecture/LightPass.h"
 #include "Graphics/Architecture/GeometryDeform.h"
+#include "Graphics/Camera.h"
 
 using namespace Core::Graphics;
 
@@ -49,6 +50,8 @@ namespace Core {
 			GLboolean& getAntiAliasing() { return AntiAliasing; }
 			void setAntiAliasing(GLboolean aa) { AntiAliasing = aa; }
 			GLuint GetBloomTexture() { return mBloomRenderer->BloomTexture(); }
+
+			Primitives::Camera* getCamera();
 		
 
 			void updateRenderablesGroups(const Core::Assets::Asset<ShaderProgram>& curShader, const Core::Assets::Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable);
