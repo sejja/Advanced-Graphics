@@ -23,7 +23,7 @@ namespace Graphics {
 			#pragma endregion
 
 			#pragma region //Methods
-				std::vector<glm::vec3> HemisphereNoise();
+				std::vector<glm::vec3> ZTangentNoise();
 			#pragma endregion
 
 			#pragma region //Members

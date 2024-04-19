@@ -13,6 +13,7 @@
 #include <glm.hpp>
 #include "Graphics/Architecture/GBuffer.h"
 #include "SSAONoise.h"
+#include "Core/Assets/ResourceManager.h"
 
 namespace Graphics {
 	namespace Architecture {
@@ -25,6 +26,8 @@ namespace Graphics {
 			private:
 				GLuint mHandle, mColorBuffer, mBlurBuffer;
 				SSAONoise mNoise;
+				std::vector<glm::vec3> mKernel;
+				Core::Assets::Asset<Core::Graphics::ShaderProgram> mShaderSSAO;
 			};
 		}
 	}

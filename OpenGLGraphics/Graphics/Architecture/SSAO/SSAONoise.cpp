@@ -18,7 +18,7 @@ namespace Graphics {
 			*  Gnerates a granular hemisphere texture for sampling oclussion
 			*/ //----------------------------------------------------------------------
 			SSAONoise::SSAONoise() {
-				std::vector<glm::vec3> ssaoNoise = HemisphereNoise();
+				std::vector<glm::vec3> ssaoNoise = ZTangentNoise();
 
 				glGenTextures(1, &mNoiseTexture);
 				glBindTexture(GL_TEXTURE_2D, mNoiseTexture);
@@ -32,19 +32,16 @@ namespace Graphics {
 			// ------------------------------------------------------------------------
 			/*! Hemisphere Noise
 			*
-			*  Creates the Noise distributed that forms a hemisphere (north), without weights
+			*  Creates the Noise distributed that forms a tangent space in the z-axis
 			*/ //----------------------------------------------------------------------
-			std::vector<glm::vec3> SSAONoise::HemisphereNoise() {
+			std::vector<glm::vec3> SSAONoise::ZTangentNoise() {
 				std::uniform_real_distribution<float> randomFloats(0.0, 1.0);
 				std::default_random_engine generator;
 
 				std::vector<glm::vec3> ssaoNoise;
 
 				for (unsigned int i = 0; i < 16; i++) {
-					glm::vec3 noise(
-						randomFloats(generator) * 2.0 - 1.0,
-						randomFloats(generator) * 2.0 - 1.0,
-						0.0f);
+					glm::vec3 noise(randomFloats(generator) * 2.0 - 1.0, randomFloats(generator) * 2.0 - 1.0, 0.0f); // rotate around z-axis (in tangent space)
 					ssaoNoise.push_back(noise);
 				}
 

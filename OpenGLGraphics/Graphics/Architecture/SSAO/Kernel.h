@@ -16,6 +16,7 @@ namespace Graphics {
 	namespace Architecture {
 		namespace SSAO {
 			class Kernel {
+			public:
 				static std::vector<glm::vec3> SSAOKernel();
 			};
 		}

@@ -826,6 +826,9 @@
     <None Include="Content\Shaders\SkyBox.shader" />
     <None Include="Content\Shaders\Skybox.spv" />
     <None Include="Content\Shaders\SkyBox.vert" />
+    <None Include="Content\Shaders\SSAO.frag" />
+    <None Include="Content\Shaders\SSAO.shader" />
+    <None Include="Content\Shaders\SSAO.vert" />
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\Transform.spv" />
     <None Include="Content\Shaders\Transform.vert" />
