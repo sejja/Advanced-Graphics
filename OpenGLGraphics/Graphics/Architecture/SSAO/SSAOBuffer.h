@@ -22,6 +22,7 @@ namespace Graphics {
 			public:
 				SSAOBuffer(const glm::u16vec2& dim);
 				void RenderAO(const GBuffer& gbuffer);
+				GLuint inline GetSSAOTexture() const noexcept;
 
 			private:
 				GLuint mHandle, mColorBuffer, mBlurBuffer, mBlurTexture;
@@ -29,6 +30,10 @@ namespace Graphics {
 				std::vector<glm::vec3> mKernel;
 				Core::Assets::Asset<Core::Graphics::ShaderProgram> mShaderSSAO, mBlurShader, mSSAOBlur;
 			};
+
+			GLuint SSAOBuffer::GetSSAOTexture() const noexcept {
+				return mBlurTexture;
+			}
 		}
 	}
 }

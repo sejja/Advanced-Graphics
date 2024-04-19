@@ -18,6 +18,7 @@
 #include "Graphics/Primitives/Lights/DirectionalLight.h"
 #include "Graphics/Primitives/Lights/SpotLight.h"
 #include "Graphics/Primitives/Lights/PointLight.h"
+#include "Graphics/Architecture/SSAO/SSAOBuffer.h"
 #include <functional>
 
 namespace Graphics {
@@ -35,7 +36,7 @@ namespace Graphics {
 
 		#pragma region //Methods
 			void RenderShadowMaps(const glm::u16vec2 dim, const glm::mat4& camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) const;
-			void RenderLights(const glm::u16vec2 dim, const GBuffer& gBuffer) const;
+			void RenderLights(const glm::u16vec2 dim, const GBuffer& gBuffer, const SSAO::SSAOBuffer& ssao) const;
 			void StencilPass(const glm::vec3& pos, const float sphere) const;
 			static void inline AddPointLight(const std::shared_ptr<Graphics::Primitives::PointLight::PointLightData>& data);
 			static void inline AddSpotLight(const std::shared_ptr<Graphics::Primitives::SpotLight::SpotLightData>& data);

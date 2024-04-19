@@ -313,7 +313,7 @@ namespace Core {
 			//RenderParticlesSystems();
 
 			BloomPass(mHDRBuffer->GetHandle());
-			mLightPass->RenderLights({1600, 900}, *mGBuffer);
+			mLightPass->RenderLights({1600, 900}, *mGBuffer, *mSSAOBuffer);
 			
 			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
 			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());

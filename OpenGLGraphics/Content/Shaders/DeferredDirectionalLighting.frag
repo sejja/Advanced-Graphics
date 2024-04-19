@@ -15,6 +15,7 @@ in vec2 oUVs;
 layout(binding = 0) uniform sampler2D gPosition;
 layout(binding = 1) uniform sampler2D gNormal;
 layout(binding = 2) uniform sampler2D gAlbedoSpec;
+layout(binding = 3) uniform sampler2D gSSAO;
 layout(binding = 4) uniform sampler2DArray uShadowMap;
 uniform int cascadeCount;
 uniform float cascadePlaneDistances[16];
@@ -105,8 +106,9 @@ void main() {
     // retrieve data from G-buffer
     const vec3 normal = texture(gNormal, oUVs).rgb;
     float shadow = 1.1 - ShadowCalculation(texture(gPosition, oUVs).rgb) * 0.75;
+    float AmbientOcclusion = texture(gSSAO, oUVs).r;
 
-    FragColor = texture(gAlbedoSpec, oUVs) * vec4(((shadow * (max(dot(normal, uLight.mDirection), 0.1) * uLight.mColor 
+    FragColor = texture(gAlbedoSpec, oUVs) * AmbientOcclusion * vec4(((shadow * (max(dot(normal, uLight.mDirection), 0.1) * uLight.mColor 
             //specular
             + uLight.mColor * pow(max(dot(normalize(ubCameraPosition - texture(gPosition, oUVs).rgb), 
                 reflect(-uLight.mDirection, normal)), 0.0), 32)))), 1.0);

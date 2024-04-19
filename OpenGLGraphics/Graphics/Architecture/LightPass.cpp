@@ -74,7 +74,7 @@ namespace Graphics {
 		*   Using the buffers created on the geometry pass, we can
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
-		void LightPass::RenderLights(const glm::u16vec2 dim, const GBuffer& gBuffer) const {
+		void LightPass::RenderLights(const glm::u16vec2 dim, const GBuffer& gBuffer, const SSAO::SSAOBuffer& ssao) const {
 			glEnable(GL_BLEND);
 			glBlendEquation(GL_FUNC_ADD);
 			glBlendFunc(GL_ONE, GL_ONE);
@@ -85,6 +85,8 @@ namespace Graphics {
 			glBindTexture(GL_TEXTURE_2D, gBuffer.GetNormalTextureHandle());
 			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, gBuffer.GetAlbedoTextureHandle());
+			glActiveTexture(GL_TEXTURE3);
+			glBindTexture(GL_TEXTURE_2D, ssao.GetSSAOTexture());
 			glViewport(0, 0, dim.x, dim.y);
 			glEnable(GL_STENCIL_TEST);
 			glEnable(GL_DEPTH_TEST);

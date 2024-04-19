@@ -15,6 +15,7 @@ in vec2 oUVs;
 layout(binding = 0) uniform sampler2D gPosition;
 layout(binding = 1) uniform sampler2D gNormal;
 layout(binding = 2) uniform sampler2D gAlbedoSpec;
+layout(binding = 3) uniform sampler2D gSSAO;
 layout(binding = 4) uniform sampler2D uShadowMap;
 
 struct Light {
@@ -77,7 +78,7 @@ void main() {
     // retrieve data from G-buffer
     const vec3 fragPos = texture(gPosition, oUVs).rgb;
     const vec3 normal = texture(gNormal, oUVs).rgb;
-
+    float AmbientOcclusion = texture(gSSAO, oUVs).r;
     float shadow = 1;
     
     const vec3 lightDir = normalize(uLight.mPosition - fragPos);
@@ -99,7 +100,7 @@ void main() {
 
 			    spotlight = clamp(spotlight,0,1);
 
-    FragColor = texture(gAlbedoSpec, oUVs) * vec4( att 
+    FragColor = texture(gAlbedoSpec, oUVs) * AmbientOcclusion * vec4( att 
             //ambient
             * ((spotlight * 
             //shadowmapping
