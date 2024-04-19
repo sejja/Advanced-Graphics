@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 out float FragColor;
 
 in vec2 TexCoords;
@@ -9,15 +9,19 @@ uniform sampler2D texNoise;
 
 uniform vec3 samples[64];
 
+layout (std140, binding = 0) uniform UniformBuffer {
+	mat4 ubView;
+	mat4 ubProjection;
+    vec3 ubCameraPosition;
+};
+
 // parameters (you'd probably want to use them as uniforms to more easily tweak the effect)
 int kernelSize = 64;
 float radius = 0.5;
 float bias = 0.025;
 
 // tile noise texture over screen based on screen dimensions divided by noise size
-const vec2 noiseScale = vec2(800.0/4.0, 600.0/4.0); 
-
-uniform mat4 projection;
+const vec2 noiseScale = vec2(1600.0/4.0, 900.0/4.0); 
 
 void main() {
     // get input for SSAO algorithm
@@ -38,7 +42,7 @@ void main() {
         
         // project sample position (to sample texture) (to get position on screen/texture)
         vec4 offset = vec4(samplePos, 1.0);
-        offset = projection * offset; // from view to clip-space
+        offset = ubProjection * offset; // from view to clip-space
         offset.xyz /= offset.w; // perspective divide
         offset.xyz = offset.xyz * 0.5 + 0.5; // transform to range 0.0 - 1.0
         

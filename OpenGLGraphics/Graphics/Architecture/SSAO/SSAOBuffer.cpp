@@ -8,6 +8,7 @@
 
 #include "SSAOBuffer.h"
 #include "Kernel.h"
+#include "Graphics/Architecture/Utils/GLUtils.h"
 
 namespace Graphics {
 	namespace Architecture {
@@ -37,23 +38,29 @@ namespace Graphics {
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mBlurBuffer, 0);
 				mKernel = Kernel::SSAOKernel();
+				mShaderSSAO = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Core/Shaders/SSAO.shader");
 			}
+
+			// ------------------------------------------------------------------------
+			/*! Render Ambient Oclussion
+			*
+			*  Renders the Ambient Oclussion buffer with the nonrmal and position textures
+			*/ //----------------------------------------------------------------------
 			void SSAOBuffer::RenderAO(const GBuffer& gbuffer) {
 				glBindFramebuffer(GL_FRAMEBUFFER, mHandle);
 				glClear(GL_COLOR_BUFFER_BIT);
-				/*shaderSSAO.use();
+				mShaderSSAO->Get()->Bind();
 				// Send kernel + rotation 
 				for (unsigned int i = 0; i < 64; ++i)
-					shaderSSAO.setVec3("samples[" + std::to_string(i) + "]", ssaoKernel[i]);
-				shaderSSAO.setMat4("projection", projection);
+					mShaderSSAO->Get()->SetShaderUniform("samples[" + std::to_string(i) + "]", &mKernel[i]);
 				glActiveTexture(GL_TEXTURE0);
-				glBindTexture(GL_TEXTURE_2D, gPosition);
+				glBindTexture(GL_TEXTURE_2D, gbuffer.GetPositionTextureHandle());
 				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, gNormal);
+				glBindTexture(GL_TEXTURE_2D, gbuffer.GetNormalTextureHandle());
 				glActiveTexture(GL_TEXTURE2);
-				glBindTexture(GL_TEXTURE_2D, noiseTexture);
-				renderQuad();
-				glBindFramebuffer(GL_FRAMEBUFFER, 0);*/
+				glBindTexture(GL_TEXTURE_2D, mNoise.GetNoiseTexture());
+				Utils::GLUtils::RenderScreenQuad();
+				glBindFramebuffer(GL_FRAMEBUFFER, 0);
 			}
 		}
 	}

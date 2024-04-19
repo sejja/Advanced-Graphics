@@ -24,6 +24,7 @@ namespace Graphics {
 
 			#pragma region //Methods
 				std::vector<glm::vec3> ZTangentNoise();
+				GLuint inline GetNoiseTexture() const noexcept;
 			#pragma endregion
 
 			#pragma region //Members
@@ -31,6 +32,15 @@ namespace Graphics {
 				GLuint mNoiseTexture;
 			#pragma endregion
 			};
+
+			// ------------------------------------------------------------------------
+			/*! Get Noise Texture
+			*
+			*  Returns the Noise Texture generated
+			*/ //----------------------------------------------------------------------
+			GLuint inline SSAONoise::GetNoiseTexture() const noexcept {
+				return mNoiseTexture;
+			}
 		}
 	}
 }
