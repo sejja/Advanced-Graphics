@@ -24,10 +24,10 @@ namespace Graphics {
 				void RenderAO(const GBuffer& gbuffer);
 
 			private:
-				GLuint mHandle, mColorBuffer, mBlurBuffer;
+				GLuint mHandle, mColorBuffer, mBlurBuffer, mBlurTexture;
 				SSAONoise mNoise;
 				std::vector<glm::vec3> mKernel;
-				Core::Assets::Asset<Core::Graphics::ShaderProgram> mShaderSSAO;
+				Core::Assets::Asset<Core::Graphics::ShaderProgram> mShaderSSAO, mBlurShader, mSSAOBlur;
 			};
 		}
 	}

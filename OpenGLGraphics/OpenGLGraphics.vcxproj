@@ -829,6 +829,8 @@
     <None Include="Content\Shaders\SSAO.frag" />
     <None Include="Content\Shaders\SSAO.shader" />
     <None Include="Content\Shaders\SSAO.vert" />
+    <None Include="Content\Shaders\SSAOBlur.frag" />
+    <None Include="Content\Shaders\SSAOBlur.shader" />
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\Transform.spv" />
     <None Include="Content\Shaders\Transform.vert" />

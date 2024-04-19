@@ -2297,6 +2297,8 @@
     <None Include="Content\Shaders\SSAO.frag" />
     <None Include="Content\Shaders\SSAO.shader" />
     <None Include="Content\Shaders\SSAO.vert" />
+    <None Include="Content\Shaders\SSAOBlur.frag" />
+    <None Include="Content\Shaders\SSAOBlur.shader" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
