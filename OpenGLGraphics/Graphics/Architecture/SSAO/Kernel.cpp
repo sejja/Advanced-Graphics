@@ -14,6 +14,11 @@
 namespace Graphics {
 	namespace Architecture {
 		namespace SSAO {
+            float ourLerp(float a, float b, float f)
+            {
+                return a + f * (b - a);
+            }
+
             // ------------------------------------------------------------------------
             /*! SSAO Kernel
             *
@@ -32,7 +37,7 @@ namespace Graphics {
                     float scale = float(i) / 64.0f;
 
                     // scale samples s.t. they're more aligned to center of kernel
-                    scale = Core::Math::Lerp(0.1f, 1.0f, scale * scale);
+                    scale = ourLerp(0.1f, 1.0f, scale * scale);
                     sample *= scale;
                     ssaoKernel.push_back(sample);
                 }

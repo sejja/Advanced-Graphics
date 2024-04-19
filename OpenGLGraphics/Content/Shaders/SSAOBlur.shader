@@ -1,4 +1,4 @@
 {
-	"Vertex" : "Content/Shaders/SSAO.vert",
+	"Vertex" : "Content/Shaders/Renderer.vert",
 	"Fragment" : "Content/Shaders/SSAOBlur.frag"
 }

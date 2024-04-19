@@ -9,6 +9,7 @@
 #include "SSAOBuffer.h"
 #include "Kernel.h"
 #include "Graphics/Architecture/Utils/GLUtils.h"
+#include "gtc/matrix_transform.hpp"
 
 namespace Graphics {
 	namespace Architecture {
@@ -38,6 +39,7 @@ namespace Graphics {
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mBlurTexture, 0);
+
 				mKernel = Kernel::SSAOKernel();
 				mShaderSSAO = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/SSAO.shader");
 				mSSAOBlur = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/SSAOBlur.shader");
@@ -55,6 +57,7 @@ namespace Graphics {
 				// Send kernel + rotation 
 				for (unsigned int i = 0; i < 64; ++i)
 					mShaderSSAO->Get()->SetShaderUniform("samples[" + std::to_string(i) + "]", &mKernel[i]);
+				//mShaderSSAO->Get()->SetShaderUniform("projection", &projection);
 				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, gbuffer.GetPositionTextureHandle());
 				glActiveTexture(GL_TEXTURE1);

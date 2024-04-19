@@ -15,7 +15,6 @@ in vec2 oUVs;
 layout(binding = 0) uniform sampler2D gPosition;
 layout(binding = 1) uniform sampler2D gNormal;
 layout(binding = 2) uniform sampler2D gAlbedoSpec;
-layout(binding = 3) uniform sampler2D gSSAO;
 layout(binding = 4) uniform sampler2D uShadowMap;
 
 struct Light {
@@ -78,16 +77,16 @@ void main() {
     // retrieve data from G-buffer
     const vec3 fragPos = texture(gPosition, oUVs).rgb;
     const vec3 normal = texture(gNormal, oUVs).rgb;
-    float AmbientOcclusion = texture(gSSAO, oUVs).r;
+
     float shadow = 1;
     
-    const vec3 lightDir = normalize(uLight.mPosition - fragPos);
-    const float att = pow(smoothstep(uLight.mRadius, 0, length(uLight.mPosition - fragPos)), uLight.mFallOff);
+    const vec3 lightDir = normalize(vec3(ubView * vec4(uLight.mPosition, 1)) - fragPos);
+    const float att = pow(smoothstep(uLight.mRadius, 0, length(vec3(ubView * vec4(uLight.mPosition, 1)) - fragPos)), uLight.mFallOff);
     float spotlight =1;
     const float aplha = dot(-lightDir, normalize(uLight.mDirection));
 
                  if(uLight.mCastShadows)
-                     shadow = 1 - ShadowCalculation(uShadowMatrix * vec4(fragPos, 1), normal);
+                     shadow = 1 - ShadowCalculation(uShadowMatrix * (inverse(ubView) * vec4(fragPos, 1)), normal);
 
                 //If the outer anngle is larger than the perpendicularity between the incident lightray and the viewers vector
 			    if(aplha < cos(uLight.mOutterAngle))
@@ -100,7 +99,7 @@ void main() {
 
 			    spotlight = clamp(spotlight,0,1);
 
-    FragColor = texture(gAlbedoSpec, oUVs) * AmbientOcclusion * vec4( att 
+    FragColor = texture(gAlbedoSpec, oUVs) * vec4( att 
             //ambient
             * ((spotlight * 
             //shadowmapping
@@ -108,6 +107,6 @@ void main() {
             //difuse
             * (max(dot(normal, lightDir), 0.0) * uLight.mColor 
             //specular
-            + uLight.mColor * pow(max(dot(normalize(ubCameraPosition - fragPos), 
+            + uLight.mColor * pow(max(dot(normalize(vec3(ubView * vec4(ubCameraPosition, 1)) - fragPos), 
                 reflect(-lightDir, normal)), 0.0), 32)))), 1.0);
 } 
