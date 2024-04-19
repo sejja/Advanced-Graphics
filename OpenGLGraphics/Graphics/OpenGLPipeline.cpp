@@ -31,7 +31,6 @@ using namespace std;
 namespace Core {
 	namespace Graphics {
 		static Primitives::Camera cam;
-
 		OpenGLPipeline::~OpenGLPipeline() {
 			ImGui_ImplOpenGL3_Shutdown();
 			ImGui_ImplSDL2_Shutdown();
@@ -103,6 +102,7 @@ namespace Core {
 			Singleton<::Editor>::Instance().assetManager.init();
 			::Graphics::Architecture::Utils::GLUtils::Init();
 			mDebug = std::make_unique<::Graphics::Debug::DebugSystem>();
+			mSSAOBuffer = std::make_unique<::Graphics::Architecture::SSAO::SSAOBuffer>(mDimensions);
 		}
 
 		::Graphics::Architecture::GBuffer* OpenGLPipeline::GetGBuffer() {
@@ -295,6 +295,7 @@ namespace Core {
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
+			mSSAOBuffer->RenderAO(*mGBuffer);
 			mGeometryDeform.DecalPass(*mGBuffer);
 
 			auto x = Singleton<::Editor>::Instance().GetSelectedObj().GetSelectedComponent();

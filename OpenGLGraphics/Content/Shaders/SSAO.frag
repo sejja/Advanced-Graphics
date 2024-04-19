@@ -3,9 +3,9 @@ out float FragColor;
 
 in vec2 TexCoords;
 
-uniform sampler2D gPosition;
-uniform sampler2D gNormal;
-uniform sampler2D texNoise;
+layout(binding = 0) uniform sampler2D gPosition;
+layout(binding = 1) uniform sampler2D gNormal;
+layout(binding = 2) uniform sampler2D gTexNoise;
 
 uniform vec3 samples[64];
 
@@ -27,7 +27,7 @@ void main() {
     // get input for SSAO algorithm
     vec3 fragPos = texture(gPosition, TexCoords).xyz;
     vec3 normal = normalize(texture(gNormal, TexCoords).rgb);
-    vec3 randomVec = normalize(texture(texNoise, TexCoords * noiseScale).xyz);
+    vec3 randomVec = normalize(texture(gTexNoise, TexCoords * noiseScale).xyz);
     // create TBN change-of-basis matrix: from tangent-space to view-space
     vec3 tangent = normalize(randomVec - normal * dot(randomVec, normal));
     vec3 bitangent = cross(normal, tangent);

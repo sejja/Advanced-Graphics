@@ -38,7 +38,7 @@ namespace Graphics {
 				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, mBlurBuffer, 0);
 				mKernel = Kernel::SSAOKernel();
-				mShaderSSAO = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Core/Shaders/SSAO.shader");
+				mShaderSSAO = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/SSAO.shader");
 			}
 
 			// ------------------------------------------------------------------------

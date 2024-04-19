@@ -21,6 +21,7 @@
 #include "Graphics/Architecture/Bloom/BloomRenderer.h"
 #include "Graphics/Architecture/LightPass.h"
 #include "Graphics/Architecture/GeometryDeform.h"
+#include "Graphics/Architecture/SSAO/SSAOBuffer.h"
 
 using namespace Core::Graphics;
 
@@ -92,6 +93,7 @@ namespace Core {
 			float exposure = 1;
 			std::unique_ptr<::Graphics::Debug::DebugSystem> mDebug;
 			std::unique_ptr<::Graphics::Architecture::Bloom::BloomRenderer> mBloomRenderer;
+			std::unique_ptr<::Graphics::Architecture::SSAO::SSAOBuffer> mSSAOBuffer;
 		};
 
 		// ------------------------------------------------------------------------
