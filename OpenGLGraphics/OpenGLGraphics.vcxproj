@@ -214,6 +214,9 @@
     <ClCompile Include="Graphics\Architecture\GBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\GeometryDeform.cpp" />
     <ClCompile Include="Graphics\Architecture\HDRBuffer.cpp" />
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMesh.h" />
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMeshMap.h" />
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\MeshMap.cpp" />
     <ClCompile Include="Graphics\Architecture\SamplingBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\LightPass.cpp" />
     <ClCompile Include="Graphics\Architecture\SSAO\Kernel.cpp" />
