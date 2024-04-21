@@ -149,7 +149,7 @@ namespace Graphics {
 		*	unnafected pixels by light
 		*/ //----------------------------------------------------------------------
 		void LightPass::StencilPass(const glm::vec3& pos, const float sphere) const {
-			glClear(GL_STENCIL_BUFFER_BIT);
+			/*glClear(GL_STENCIL_BUFFER_BIT);
 			glStencilFunc(GL_ALWAYS, 0, 0);
 			glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
 			glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
@@ -161,7 +161,7 @@ namespace Graphics {
 			Core::Graphics::ShaderProgram* light = mLightSphereShader->Get();
 			light->Bind();
 			light->SetShaderUniform("uModel", &matrix);
-			mLightSphere->Get()->Draw(*light);
+			mLightSphere->Get()->Draw(*light);*/
 		}
 	}
 }
