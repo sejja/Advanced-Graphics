@@ -16,8 +16,10 @@ namespace Graphics {
 			 */
 			void InstancedMeshMap::put(std::weak_ptr<Graphics::Primitives::Mesh> key, std::weak_ptr<Core::Object> value)
 			{
+				
 				if (this->ptr_Mesh_Objetcs_Map.find(key) != this->ptr_Mesh_Objetcs_Map.end()) this->ptr_Mesh_Objetcs_Map[key].objects.lock().get()->push_back(value);
 				else  this->ptr_Mesh_Objetcs_Map[key] = CreateRenderNode(value);
+				
 			}
 
 			InstancedRenderNode InstancedMeshMap::CreateRenderNode(std::weak_ptr<Core::Object> value)
@@ -35,11 +37,14 @@ namespace Graphics {
 
 			std::weak_ptr<Graphics::Architecture::InstancedRendering::InstancedMesh>  InstancedMeshMap::get(std::weak_ptr<Graphics::Primitives::Mesh> key)
 			{
+				
 				return this->ptr_Mesh_Objetcs_Map[key].instancedMesh;
+				
 			}
 
 			void InstancedMeshMap::fetch_Instanced()
 			{
+
 				for (const auto& mesh : this->ptr_Mesh_Objetcs_Map)
 				{
 					if (mesh.second.objects.lock().get()->size() > 1)
@@ -47,7 +52,7 @@ namespace Graphics {
 
 						if (!mesh.second.instancedMesh.lock().get()->initiated)
 						{
-							initInstancedMesh(mesh.second.instancedMesh.lock().get()); //Just dont do that
+							this->initInstancedMesh(mesh.second.instancedMesh.lock().get()); //Just dont do that
 						}
 						this->ptr_InstancedMesh_Objects_Map[mesh.second.instancedMesh] = mesh.second.objects;
 					}
@@ -57,9 +62,10 @@ namespace Graphics {
 						mesh.second.instancedMesh.lock().get()->initiated = false;
 					}
 				}
+
 			}
 
-			void initInstancedMesh(InstancedMesh* instancedMesh) {
+			void InstancedMeshMap::initInstancedMesh(InstancedMesh* instancedMesh) {
 				instancedMesh->initiated = true;
 			}
 		}
