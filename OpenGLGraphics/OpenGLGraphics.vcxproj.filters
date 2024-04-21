@@ -270,6 +270,15 @@
     <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMeshMap.h">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMeshMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedRendering.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
