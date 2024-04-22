@@ -17,14 +17,14 @@ namespace Graphics {
 			void InstancedMeshMap::put(std::weak_ptr<Graphics::Primitives::Mesh> key, std::weak_ptr<Core::Object> value)
 			{
 				
-				if (this->ptr_Mesh_Objetcs_Map.find(key) != this->ptr_Mesh_Objetcs_Map.end()) this->ptr_Mesh_Objetcs_Map[key].objects.lock().get()->push_back(value);
-				else  this->ptr_Mesh_Objetcs_Map[key] = CreateRenderNode(value);
+				if (this->ptr_Mesh_Objetcs_Map.find(key.lock()) != this->ptr_Mesh_Objetcs_Map.end()) this->ptr_Mesh_Objetcs_Map[key.lock()].objects.get()->push_back(value.lock());
+				else  this->ptr_Mesh_Objetcs_Map[key.lock()] = CreateRenderNode(value);
 				
 			}
-
+			
 			InstancedRenderNode InstancedMeshMap::CreateRenderNode(std::weak_ptr<Core::Object> value)
 			{
-				auto objectVector = std::make_shared<std::vector<std::weak_ptr<Core::Object>>>();
+				auto objectVector = std::make_shared<std::vector<std::shared_ptr<Core::Object>>>();
 				if (auto lockedValue = value.lock())  objectVector->push_back(lockedValue);
 				auto mesh = std::make_shared<Graphics::Architecture::InstancedRendering::InstancedMesh>();
 
@@ -38,7 +38,7 @@ namespace Graphics {
 			std::weak_ptr<Graphics::Architecture::InstancedRendering::InstancedMesh>  InstancedMeshMap::get(std::weak_ptr<Graphics::Primitives::Mesh> key)
 			{
 				
-				return this->ptr_Mesh_Objetcs_Map[key].instancedMesh;
+				return this->ptr_Mesh_Objetcs_Map[key.lock()].instancedMesh;
 				
 			}
 
@@ -47,19 +47,18 @@ namespace Graphics {
 
 				for (const auto& mesh : this->ptr_Mesh_Objetcs_Map)
 				{
-					if (mesh.second.objects.lock().get()->size() > 1)
+					if (mesh.second.objects.get()->size() > 1)
 					{
-
-						if (!mesh.second.instancedMesh.lock().get()->initiated)
+						if (!mesh.second.instancedMesh.get()->initiated)
 						{
-							this->initInstancedMesh(mesh.second.instancedMesh.lock().get()); //Just dont do that
+							this->initInstancedMesh(mesh.second.instancedMesh.get()); //Just dont do that
 						}
 						this->ptr_InstancedMesh_Objects_Map[mesh.second.instancedMesh] = mesh.second.objects;
 					}
 					else
 					{
 						this->ptr_InstancedMesh_Objects_Map.erase(mesh.second.instancedMesh);
-						mesh.second.instancedMesh.lock().get()->initiated = false;
+						mesh.second.instancedMesh.get()->initiated = false;
 					}
 				}
 

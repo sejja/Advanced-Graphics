@@ -13,8 +13,8 @@ namespace Graphics {
 
 			typedef struct InstancedRenderNode
 			{
-				std::weak_ptr<std::vector<std::weak_ptr<Core::Object>>> objects;
-				std::weak_ptr<InstancedMesh> instancedMesh;
+				std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> objects;
+				std::shared_ptr<InstancedMesh> instancedMesh;
 			}InstancedRenderNode;
 
 			/// <summary>
@@ -28,8 +28,8 @@ namespace Graphics {
 				void initInstancedMesh(InstancedMesh* instancedMesh);
 				InstancedRenderNode CreateRenderNode(std::weak_ptr<Core::Object> value);
 			private:
-				std::unordered_map< std::weak_ptr<InstancedMesh>, std::weak_ptr<std::vector<std::weak_ptr<Core::Object>>> > ptr_InstancedMesh_Objects_Map;
-				std::unordered_map< std::weak_ptr<Graphics::Primitives::Mesh>, InstancedRenderNode > ptr_Mesh_Objetcs_Map;
+				std::unordered_map< std::shared_ptr<InstancedMesh>, std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> > ptr_InstancedMesh_Objects_Map;
+				std::unordered_map< std::shared_ptr<Graphics::Primitives::Mesh>, InstancedRenderNode > ptr_Mesh_Objetcs_Map;
 			};
 		}
 	}
