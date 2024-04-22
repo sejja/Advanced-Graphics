@@ -25,6 +25,7 @@ private:
     void FireSize();
     void UpdateLightCompsPos(std::shared_ptr<Core::Object> obj);
     void DecalOptions();
+    void TransformGuizmoTypeSelect();
 
 
     void selectedObjectTree();

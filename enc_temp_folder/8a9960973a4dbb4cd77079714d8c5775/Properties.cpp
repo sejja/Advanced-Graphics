@@ -100,9 +100,11 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
             UpdateLightCompsPos(obj);
             sendToPeer(obj);
         }
-        if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_CIRCLE " Guizmo type", ImGuiTreeNodeFlags_DefaultOpen)) {
+        if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_CIRCLE "Guizmo type", ImGuiTreeNodeFlags_DefaultOpen)) {
             TransformGuizmoTypeSelect();
         }
+
+        
 	}
 
     if (meshComp) {
@@ -118,15 +120,18 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     }
 
     else if (lightComp) {
+
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Light Position", ImGuiTreeNodeFlags_DefaultOpen)) {
             LightTransform();
         }
         if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "  Light Options", ImGuiTreeNodeFlags_DefaultOpen)) {
             LightingOptions();
         }
-        if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB " Light Type Options", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+        if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "Light Type Options", ImGuiTreeNodeFlags_DefaultOpen)) {
             LightTypeOptions();
         }
+
     }
 
     else if (fireSystem) {
@@ -284,6 +289,7 @@ void Properties::objectOutliner() {
 
 
 
+
 void Properties::selectedObjectTree() {
 
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
@@ -341,6 +347,8 @@ void Properties::selectedObjectTree() {
     ImGui::Unindent();
     ImGui::EndChildFrame();
 }
+
+
 
 
 void colorPickerBtn(static ImVec4& color) {

@@ -37,7 +37,7 @@ public:
     void setSceneFrameDimensions(const glm::lowp_u16vec2& dim) { sceneFrameDimensions = dim; }
     float GetAspectRatio() { return static_cast<float>(sceneFrameDimensions.x) / static_cast<float>(sceneFrameDimensions.y); }
     glm::lowp_u16vec2 GetSceneFrameDimensions() { return sceneFrameDimensions; }
-
+    
 
 
     //void setSceneFramePosition(const ImVec2& pos) { sceneFramePosition = pos; }
@@ -48,6 +48,9 @@ public:
 
 
     float *GetFOV() { return &fov; }
+
+    void SetGuizmoMode(ImGuizmo::OPERATION mode) { guizmoMode = mode; }
+    ImGuizmo::OPERATION* GetGuizmoMode() { return &guizmoMode; }
     
 
 private:
@@ -58,8 +61,11 @@ private:
     SceneView sceneView;
     Guizmo guizmo;
 
+
     glm::lowp_u16vec2 sceneFrameDimensions;
     ImVec2 sceneFramePosition;
+    ImGuizmo::OPERATION guizmoMode = ImGuizmo::OPERATION::TRANSLATE;
+
 
     ImDrawList* drawList;
 

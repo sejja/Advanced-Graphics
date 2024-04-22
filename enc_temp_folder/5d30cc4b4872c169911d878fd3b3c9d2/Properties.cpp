@@ -100,9 +100,11 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
             UpdateLightCompsPos(obj);
             sendToPeer(obj);
         }
-        if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_CIRCLE " Guizmo type", ImGuiTreeNodeFlags_DefaultOpen)) {
+        if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_CIRCLE "Guizmo type", ImGuiTreeNodeFlags_DefaultOpen)) {
             TransformGuizmoTypeSelect();
         }
+
+        
 	}
 
     if (meshComp) {
@@ -118,15 +120,18 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     }
 
     else if (lightComp) {
+
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_DOT " Light Position", ImGuiTreeNodeFlags_DefaultOpen)) {
             LightTransform();
         }
         if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "  Light Options", ImGuiTreeNodeFlags_DefaultOpen)) {
             LightingOptions();
         }
-        if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB " Light Type Options", ImGuiTreeNodeFlags_DefaultOpen)) {
+
+        if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB "Light Type Options", ImGuiTreeNodeFlags_DefaultOpen)) {
             LightTypeOptions();
         }
+
     }
 
     else if (fireSystem) {
@@ -284,6 +289,7 @@ void Properties::objectOutliner() {
 
 
 
+
 void Properties::selectedObjectTree() {
 
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
@@ -341,6 +347,8 @@ void Properties::selectedObjectTree() {
     ImGui::Unindent();
     ImGui::EndChildFrame();
 }
+
+
 
 
 void colorPickerBtn(static ImVec4& color) {
@@ -459,17 +467,12 @@ void Properties::TransformOptions() {
 
 
 void Properties::TransformGuizmoTypeSelect() {
-    ImGuizmo::OPERATION curMode = *Singleton<Editor>::Instance().GetGuizmoMode();
+    ImGuizmo::OPERATION* curMode = Singleton<Editor>::Instance().GetGuizmoMode();
     ImGui::RadioButton("Translate", reinterpret_cast<int*>(&curMode), static_cast<int>(ImGuizmo::OPERATION::TRANSLATE));
     ImGui::SameLine();
     ImGui::RadioButton("Rotate", reinterpret_cast<int*>(&curMode), static_cast<int>(ImGuizmo::OPERATION::ROTATE));
     ImGui::SameLine();
     ImGui::RadioButton("Scale", reinterpret_cast<int*>(&curMode), static_cast<int>(ImGuizmo::OPERATION::SCALE));
-
-    if (*Singleton<Editor>::Instance().GetGuizmoMode() != curMode) {
-        *Singleton<Editor>::Instance().GetGuizmoMode() = curMode;
-    }
-
 }
 
 void Properties::LightTransform() {

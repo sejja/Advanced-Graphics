@@ -78,6 +78,7 @@ namespace Core {
 		glm::u16vec2 InputManager::GetWindowCoordinatesMousePosition() const noexcept {
 			int x, y;
 			Uint32 buttons = SDL_GetMouseState(&x, &y);
+
 			return  { x, y };
 		}
 

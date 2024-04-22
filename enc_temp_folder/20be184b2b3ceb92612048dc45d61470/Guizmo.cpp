@@ -45,12 +45,14 @@ void Guizmo::Draw()
 		ImGuizmo::Manipulate(
 			glm::value_ptr(camView), 
 			glm::value_ptr(camProjection),
-			ImGuizmo::OPERATION::ROTATE, 
+			ImGuizmo::OPERATION::TRANSLATE, 
 			ImGuizmo::LOCAL, 
 			glm::value_ptr(modelMatrix)
 		);
 
 		if (ImGuizmo::IsUsing()) {
+			Singleton<Editor>::Instance().SetEditorLocked(true);
+
 			glm::vec3 position = glm::vec3(modelMatrix[3]);
 			glm::vec3 rotation = glm::eulerAngles(glm::quat_cast(modelMatrix));
 			glm::vec3 scale = glm::vec3(

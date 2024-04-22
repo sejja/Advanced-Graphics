@@ -16,19 +16,17 @@ void Guizmo::Render(Core::Primitives::Camera* camera)
 void Guizmo::Draw()
 {
 	SelectedObj& selectedObjIns = Singleton<Editor>::Instance().GetSelectedObj();
+	ImGuizmo::OPERATION curMode = *Singleton<Editor>::Instance().GetGuizmoMode();
+
 
 	if (selectedObjIns.GetSelectedObject()) {
 		ImGuizmo::AllowAxisFlip(false);
 		ImGuizmo::SetOrthographic(false);
 
 		//ImGuizmo::SetDrawlist(Singleton<Editor>::Instance().GetWindowDrawList());
-	
-
 
 		//glm::lowp_u16vec2 windowSize = Singleton<Editor>::Instance().GetSceneFrameDimensions();
 		//ImVec2 scenePosition = Singleton<Editor>::Instance().GetSceneFramePosition();
-
-		
 
 		glm::mat4 camView = cam->GetViewMatrix();
 		glm::mat4 camProjection = cam->GetProjectionMatrix();
@@ -45,12 +43,14 @@ void Guizmo::Draw()
 		ImGuizmo::Manipulate(
 			glm::value_ptr(camView), 
 			glm::value_ptr(camProjection),
-			ImGuizmo::OPERATION::TRANSLATE, 
+			curMode,
 			ImGuizmo::LOCAL, 
 			glm::value_ptr(modelMatrix)
 		);
 
 		if (ImGuizmo::IsUsing()) {
+			Singleton<Editor>::Instance().SetEditorLocked(true);
+
 			glm::vec3 position = glm::vec3(modelMatrix[3]);
 			glm::vec3 rotation = glm::eulerAngles(glm::quat_cast(modelMatrix));
 			glm::vec3 scale = glm::vec3(
