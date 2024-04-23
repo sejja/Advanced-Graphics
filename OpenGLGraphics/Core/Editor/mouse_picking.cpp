@@ -5,15 +5,14 @@
 
 
 glm::vec3 MousePicking::calculateRayDirection(glm::vec2 mousePos, int viewportWidth, int viewportHeight, Core::Primitives::Camera* cam) {
-    // Obtener las coordenadas normalizadas del mouse en el rango [-1, 1]
     float mouseXNorm = (2.0f * mousePos.x) / viewportWidth - 1.0f;
     float mouseYNorm = 1.0f - (2.0f * mousePos.y) / viewportHeight;
 
     // Calcular la dirección del rayo en el espacio de la cámara
     glm::vec4 rayClip = glm::vec4(mouseXNorm, mouseYNorm, -1.0f, 1.0f);
     glm::vec4 rayEye = glm::inverse(cam->GetProjectionMatrix()) * rayClip;
-    rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f); // Z apunta hacia adelante pero no es un punto
-    glm::vec3 rayWorld = glm::normalize(glm::vec3(glm::inverse(cam->GetViewMatrix()) * rayEye));// Usa la matriz de vista
+    rayEye = glm::vec4(rayEye.x, rayEye.y, -1.0f, 0.0f);
+    glm::vec3 rayWorld = glm::normalize(glm::vec3(glm::inverse(cam->GetViewMatrix()) * rayEye));
 
     return rayWorld;
 }
