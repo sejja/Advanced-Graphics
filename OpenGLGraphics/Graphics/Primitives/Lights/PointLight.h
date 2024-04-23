@@ -22,6 +22,8 @@ namespace Graphics {
 				float mFallOff;
 				float CalculateSphereOfInfluence() const;
 				void GenerateShadowMap();
+				Core::Graphics::FrameBuffer depthMapFBO;
+				unsigned int depthCubemap;
 			};
 			PointLight(const std::weak_ptr<Core::Object>& parent);
 		};

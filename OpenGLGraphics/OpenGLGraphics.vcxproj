@@ -786,6 +786,9 @@
     <None Include="Content\Shaders\FireParticle.shader" />
     <None Include="Content\Shaders\DeferredPointLighting.frag" />
     <None Include="Content\Shaders\DeferredSpotLighting.frag" />
+    <None Include="Content\Shaders\PointShadow.frag" />
+    <None Include="Content\Shaders\PointShadow.shader" />
+    <None Include="Content\Shaders\PointShadow.vert" />
     <None Include="Content\Shaders\Renderer.frag" />
     <None Include="Content\Shaders\FireParticle.vert" />
     <None Include="Content\Shaders\Refractive.frag" />

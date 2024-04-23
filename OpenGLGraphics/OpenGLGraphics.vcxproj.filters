@@ -2250,6 +2250,9 @@
     <None Include="Content\Shaders\DeferredLighting.frag" />
     <None Include="Content\Shaders\DeferredLighting.shader" />
     <None Include="Content\Maps\Minecraft.level" />
+    <None Include="Content\Shaders\PointShadow.shader" />
+    <None Include="Content\Shaders\PointShadow.frag" />
+    <None Include="Content\Shaders\PointShadow.vert" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />

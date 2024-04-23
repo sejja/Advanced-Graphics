@@ -79,6 +79,17 @@ namespace Graphics {
 				x.second->mShadowMap.Unbind();
 				x.second->mShadowMatrix = shadow_matrix;
 			}
+
+			glViewport(0, 0, 1024, 1024); //Creo
+			for (auto& x : sPointLightData) {
+				auto lightData = x.second;
+				lightData->depthMapFBO.Bind();
+				lightData->depthMapFBO.Clear(true);
+				//Configurar shader
+				//const auto shader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
+				//rend_func(shader); //Renderizar
+				lightData->depthMapFBO.Unbind();
+			}
 		}
 
 		// ------------------------------------------------------------------------
