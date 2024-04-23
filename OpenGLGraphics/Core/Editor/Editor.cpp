@@ -27,7 +27,13 @@ void Editor::SetEditorLocked(bool locked) {
 void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 	//If any input is being used, camera controls are locked
-	editorLocked = ImGui::IsAnyItemActive() || texteditor.isFocused();
+	editorLocked = properties.isFocused() || texteditor.isFocused();
+	
+	//SceneView
+	sceneView.Render(pipeline);
+
+	//Guizmo
+	guizmo.Render(pipeline.getCamera());
 
 	mainMenu.Render(pipeline);
 	assetManager.Render();
@@ -35,13 +41,10 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	outliner.Render();
 
 
-	//SceneView
-	sceneView.Render(pipeline);
 	
 	texteditor.Render("Shader Editor",1);
 
-	//Guizmo
-	guizmo.Render(pipeline.getCamera());
+	
 
 	
 

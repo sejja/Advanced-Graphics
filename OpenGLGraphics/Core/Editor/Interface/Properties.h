@@ -12,6 +12,8 @@ class Properties {
 public:
     void Render(Core::Graphics::OpenGLPipeline& pipeline);
 
+    bool isFocused() { return focused; }
+
 private:
     void TransformOptions();
     void LightTransform();
@@ -30,6 +32,8 @@ private:
 
     void selectedObjectTree();
     void objectOutliner();
+
+    bool focused = false;
 
 
 

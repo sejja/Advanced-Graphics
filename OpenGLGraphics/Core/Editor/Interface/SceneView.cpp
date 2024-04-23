@@ -10,6 +10,7 @@
 void SceneView::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 	ImGui::Begin(ICON_FA_VIDEO " Scene");
+	ImGuizmo::BeginFrame();
 	ImGuizmo::SetDrawlist();
 
 

@@ -67,12 +67,18 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     std::shared_ptr<Core::Component> comp = selectedObjIns.GetSelectedComponent();
 
     std::shared_ptr<Core::Particles::ParticleSystem> particleSystem = NULL;
+    std::shared_ptr<Core::Particles::ParticleMangager> particleManager = NULL;
     std::shared_ptr<::Graphics::Primitives::Light> lightComp = NULL;
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = NULL;
     std::shared_ptr<Core::Particles::FireSystem> fireSystem = NULL;
     std::shared_ptr<Decal> decal = NULL;
 
     particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(comp);
+    //particleManager = std::dynamic_pointer_cast<Core::Particles::ParticleMangager>(obj);
+
+    
+
+    focused = ImGui::IsWindowFocused();
 
 
     //bool isParticleManager = obj->GetID().c_str() == "PARTICLE_MANAGER";
@@ -134,6 +140,9 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
             ParticleTransform();
             FireSize();
             sendToPeer(fireSystem);
+        }
+        if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_CIRCLE " Guizmo type", ImGuiTreeNodeFlags_DefaultOpen)) {
+            TransformGuizmoTypeSelect();
         }
     }
 
@@ -459,12 +468,26 @@ void Properties::TransformOptions() {
 
 
 void Properties::TransformGuizmoTypeSelect() {
+
+    std::shared_ptr<Core::Component> comp = selectedObjIns.GetSelectedComponent();
+    auto fireSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(comp);
+
+
     ImGuizmo::OPERATION curMode = *Singleton<Editor>::Instance().GetGuizmoMode();
-    ImGui::RadioButton("Translate", reinterpret_cast<int*>(&curMode), static_cast<int>(ImGuizmo::OPERATION::TRANSLATE));
-    ImGui::SameLine();
-    ImGui::RadioButton("Rotate", reinterpret_cast<int*>(&curMode), static_cast<int>(ImGuizmo::OPERATION::ROTATE));
-    ImGui::SameLine();
-    ImGui::RadioButton("Scale", reinterpret_cast<int*>(&curMode), static_cast<int>(ImGuizmo::OPERATION::SCALE));
+
+    if (!fireSystem) {
+        ImGui::RadioButton("Translate", reinterpret_cast<int*>(&curMode), static_cast<int>(ImGuizmo::OPERATION::TRANSLATE));
+        ImGui::SameLine();
+        ImGui::RadioButton("Rotate", reinterpret_cast<int*>(&curMode), static_cast<int>(ImGuizmo::OPERATION::ROTATE));
+        ImGui::SameLine();
+        ImGui::RadioButton("Scale", reinterpret_cast<int*>(&curMode), static_cast<int>(ImGuizmo::OPERATION::SCALE));
+    }
+    else {
+        ImGui::RadioButton("Center", reinterpret_cast<int*>(&curMode), static_cast<int>(ImGuizmo::OPERATION::TRANSLATE));
+        ImGui::SameLine();
+        ImGui::RadioButton("Radius", reinterpret_cast<int*>(&curMode), static_cast<int>(ImGuizmo::OPERATION::SCALE));
+    }
+
 
     if (*Singleton<Editor>::Instance().GetGuizmoMode() != curMode) {
         *Singleton<Editor>::Instance().GetGuizmoMode() = curMode;

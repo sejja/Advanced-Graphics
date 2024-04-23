@@ -178,7 +178,7 @@ namespace Core {
 			ImGui_ImplSDL2_NewFrame();
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
-			ImGuizmo::BeginFrame();
+			//ImGuizmo::BeginFrame();
 
 
 			// Create the docking environment
