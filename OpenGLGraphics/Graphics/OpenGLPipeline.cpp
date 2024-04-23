@@ -262,9 +262,6 @@ namespace Core {
 			colors[ImGuiCol_::ImGuiCol_ModalWindowDimBg] = { 0.80f, 0.80f, 0.80f, 0.35f };
 
 
-
-
-
 			//Render editor
 			Singleton<::Editor>::Instance().Render(*this);
 

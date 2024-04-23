@@ -34,6 +34,9 @@ namespace Graphics {
             std::string getDirectory();
             std::string getPath();
 
+            
+            aiAABB& getAABB() { return aabb; }
+
 
 
 
@@ -51,6 +54,8 @@ namespace Graphics {
             std::vector<Core::Assets::Asset<Core::Graphics::Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& dir);
 
             std::string modelPath;
+
+            aiAABB& aabb;
         };
 	}
 }

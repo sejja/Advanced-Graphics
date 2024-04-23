@@ -1,7 +1,6 @@
 ﻿#include "Outliner.h"
 #include "Dependencies/ImGui/imgui.h"
 #include "Core/Assets/ResourceManager.h"
-#include "Core/ECSystem/Scene.h"
 #include "Core/AppWrapper.h"
 #include "Core/ECSystem/Scene.h"
 #include "Core/Editor/SelectedObj.h"

@@ -170,6 +170,7 @@
   <ItemGroup>
     <ClCompile Include="Core\Editor\Interface\Guizmo.cpp" />
     <ClCompile Include="Core\Editor\Interface\TextEditor.cpp" />
+    <ClCompile Include="Core\Editor\mouse_picking.cpp" />
     <ClCompile Include="Core\Editor\ShaderCompiler\clientWindows.c" />
     <ClCompile Include="Core\Network\Client.cpp" />
     <ClCompile Include="Core\Network\Common.cpp" />
@@ -249,6 +250,7 @@
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
     <ClInclude Include="Core\Editor\Interface\Guizmo.h" />
+    <ClInclude Include="Core\Editor\mouse_picking.h" />
     <ClInclude Include="Core\Memory\Allocator.h" />
     <ClInclude Include="CommonDefines.h" />
     <ClInclude Include="Core\AppWrapper.h" />

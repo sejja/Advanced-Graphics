@@ -76,10 +76,7 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(comp);
     //particleManager = std::dynamic_pointer_cast<Core::Particles::ParticleMangager>(obj);
 
-    
-
     focused = ImGui::IsWindowFocused();
-
 
     //bool isParticleManager = obj->GetID().c_str() == "PARTICLE_MANAGER";
     
@@ -766,6 +763,7 @@ void Properties::MeshOptions() {
 
     auto glbModel = meshComp->GetMesh().lock();
 
+    
     if (glbModel) {
         std::string directory = glbModel->Get()->getPath();
         //printf("Directory: %s\n", directory.c_str());

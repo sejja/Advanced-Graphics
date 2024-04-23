@@ -11,9 +11,10 @@
 
 namespace Graphics {
 	namespace Primitives {
-		GLBModel::GLBModel(std::string const& path) {
-			loadModel(path);
-		}
+        GLBModel::GLBModel(std::string const& path)
+            : modelPath(path), aabb(*new aiAABB()) {
+            loadModel(path);
+        }
 
 		void GLBModel::Draw() {
             for (unsigned int i = 0; i < meshes.size(); i++)
@@ -45,7 +46,7 @@ namespace Graphics {
 
             // read file via ASSIMP
             Assimp::Importer importer;
-            const aiScene* scene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_FixInfacingNormals );
+            const aiScene* scene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_FixInfacingNormals | aiProcess_GenBoundingBoxes);
             // check for errors
             if(scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
             std::cout << "ERROR::ASSIMP:: INCOMPLETE DATA" << std::endl;
@@ -54,6 +55,10 @@ namespace Graphics {
                 std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
                 return;
             }
+
+            //aabb 
+            aabb = scene->mMeshes[0]->mAABB;
+
 
             aiMatrix4x4t<float> mat;
 

@@ -38,13 +38,8 @@ public:
     float GetAspectRatio() { return static_cast<float>(sceneFrameDimensions.x) / static_cast<float>(sceneFrameDimensions.y); }
     glm::lowp_u16vec2 GetSceneFrameDimensions() { return sceneFrameDimensions; }
     
-
-
-    //void setSceneFramePosition(const ImVec2& pos) { sceneFramePosition = pos; }
-    //ImVec2 GetSceneFramePosition() { return sceneFramePosition; }
-
-    //void setWindowDrawList(ImDrawList* drawList) { drawList = drawList; }
-    //ImDrawList* GetWindowDrawList() { return drawList; }
+    void setSceneFramePosition(const ImVec2& pos) { sceneFramePosition = pos; }
+    ImVec2 GetSceneFramePosition() { return sceneFramePosition; }
 
 
     float *GetFOV() { return &fov; }
