@@ -1,4 +1,5 @@
 #include "InstancedMeshMap.h"
+#include <iostream>
 
 namespace Graphics {
 	namespace Architecture {
@@ -14,12 +15,10 @@ namespace Graphics {
 			 * @param key A weak pointer to an InstancedRendering::InstancedMesh, used as the key in the map.
 			 * @param value A weak pointer to a Core::Object, which is the value to be added to the vector associated with the key.
 			 */
-			void InstancedMeshMap::put(std::weak_ptr<Graphics::Primitives::Mesh> key, std::weak_ptr<Core::Object> value)
+			void InstancedMeshMap::put(Graphics::Primitives::Mesh* key, std::weak_ptr<Core::Object> value)
 			{
-				
-				if (this->ptr_Mesh_Objetcs_Map.find(key.lock()) != this->ptr_Mesh_Objetcs_Map.end()) this->ptr_Mesh_Objetcs_Map[key.lock()].objects.get()->push_back(value.lock());
-				else  this->ptr_Mesh_Objetcs_Map[key.lock()] = CreateRenderNode(value);
-				
+				if (this->ptr_Mesh_Objetcs_Map.find(key) != this->ptr_Mesh_Objetcs_Map.end()) this->ptr_Mesh_Objetcs_Map[key].objects.get()->push_back(value.lock());
+				else  this->ptr_Mesh_Objetcs_Map[key] = CreateRenderNode(value);
 			}
 			
 			InstancedRenderNode InstancedMeshMap::CreateRenderNode(std::weak_ptr<Core::Object> value)
@@ -38,13 +37,13 @@ namespace Graphics {
 			std::weak_ptr<Graphics::Architecture::InstancedRendering::InstancedMesh>  InstancedMeshMap::get(std::weak_ptr<Graphics::Primitives::Mesh> key)
 			{
 				
-				return this->ptr_Mesh_Objetcs_Map[key.lock()].instancedMesh;
+				return this->ptr_Mesh_Objetcs_Map[key.lock().get()].instancedMesh;
 				
 			}
 
 			void InstancedMeshMap::fetch_Instanced()
 			{
-
+				//printInstancedMap();
 				for (const auto& mesh : this->ptr_Mesh_Objetcs_Map)
 				{
 					if (mesh.second.objects.get()->size() > 1)
@@ -66,6 +65,35 @@ namespace Graphics {
 
 			void InstancedMeshMap::initInstancedMesh(InstancedMesh* instancedMesh) {
 				instancedMesh->initiated = true;
+			}
+
+			void InstancedMeshMap::printInstancedMap()
+			{
+				using namespace std; // Diego Revilla dont kill me pls
+
+				for (const auto& pair : this->ptr_InstancedMesh_Objects_Map)
+				{
+					cout << "InstancedMesh = " << pair.first << ": \n";
+					for_each(pair.second.get()->begin(), pair.second.get()->end(), [](const std::weak_ptr<Core::Object> ptr_object) {
+						cout << "\t Object: " << ptr_object.lock() << " | ID : " << ptr_object.lock().get()->GetID() << " | Name : " << ptr_object.lock().get()->GetName() << "\n";
+					});
+				}
+				cout << "Map size: " << this->ptr_InstancedMesh_Objects_Map.size() << std::endl;
+			}
+
+			void InstancedMeshMap::printMeshMap()
+			{
+				using namespace std;
+				for (const auto& pair : this->ptr_Mesh_Objetcs_Map)
+				{
+					cout << "Mesh = " << pair.first << ": \n";
+					for_each(pair.second.objects->begin(), pair.second.objects->end(), [](const std::weak_ptr<Core::Object> ptr_object) {
+						cout << "\t Object: " << ptr_object.lock() << " | ID : " << ptr_object.lock().get()->GetID() << " | Name : " << ptr_object.lock().get()->GetName() << "\n";
+					});
+					cout << "Size: " << pair.second.objects->size() << "\n";
+					cout << "Instanced: " << pair.second.instancedMesh->initiated << "\n";
+				}
+				cout << "Map size: " << this->ptr_Mesh_Objetcs_Map.size() << std::endl;
 			}
 		}
 	}

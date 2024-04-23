@@ -24,16 +24,18 @@ namespace Graphics {
 				InstanceRenderer();
 				~InstanceRenderer();
 
-
 				void add_To_InstancedRendering(std::weak_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL> > renderer, std::weak_ptr<Core::Object> object);
 				void render();
 				int is_Instanced(std::weak_ptr<Core::Object> object);
 				int removeObject(std::weak_ptr<Core::Object> object);
+				void fetch();
 
 			private:
 				/*This is a hasmap where key is a weak pointer to a GLB Model and whose value is instanced mesh, different models can point to the same mesh */
 				std::unordered_map < std::shared_ptr<Graphics::Primitives::GLBModel >, Graphics::Architecture::InstancedRendering::InstancedMesh > ptr_GLBModel_HashMap;
-				InstancedMeshMap meshMap;
+
+				/*  It is a raw pointer to a Singleton */
+				InstancedMeshMap* meshMap;
 			};
 		}
 	}

@@ -22,14 +22,20 @@ namespace Graphics {
 			/// </summary>
 			class InstancedMeshMap {
 			public:
-				void put(std::weak_ptr<Graphics::Primitives::Mesh> key, std::weak_ptr<Core::Object> value);
+				void put(Graphics::Primitives::Mesh* key, std::weak_ptr<Core::Object> value);
 				std::weak_ptr<InstancedMesh> get(std::weak_ptr<Graphics::Primitives::Mesh> key);
 				void fetch_Instanced();
 				void initInstancedMesh(InstancedMesh* instancedMesh);
 				InstancedRenderNode CreateRenderNode(std::weak_ptr<Core::Object> value);
+
+				void printInstancedMap();
+				void printMeshMap();
 			private:
+				/* This map link a mesh to every object that has this mesh  */
 				std::unordered_map< std::shared_ptr<InstancedMesh>, std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> > ptr_InstancedMesh_Objects_Map;
-				std::unordered_map< std::shared_ptr<Graphics::Primitives::Mesh>, InstancedRenderNode > ptr_Mesh_Objetcs_Map;
+
+				/* This map link a mesh to every instanced Instanced render node where there is a vector of each object that is rendering in the instanced mesh, in case of contai only one object the instanced rendering is not initiated */
+				std::unordered_map< Graphics::Primitives::Mesh* , InstancedRenderNode > ptr_Mesh_Objetcs_Map;
 			};
 		}
 	}

@@ -261,9 +261,6 @@
     <ClCompile Include="Core\ParticleSystem\SmokeSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Graphics\Architecture\InstancedRendering\MeshMap.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMesh.h">
       <Filter>Source Files</Filter>
     </ClCompile>

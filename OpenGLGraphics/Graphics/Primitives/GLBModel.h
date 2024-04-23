@@ -34,6 +34,8 @@ namespace Graphics {
             std::string getDirectory();
             std::string getPath();
 
+            std::vector<Mesh>* getMeshes();
+
         private:
             // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
             void loadModel(std::string const& path);
