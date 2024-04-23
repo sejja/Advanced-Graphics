@@ -1,6 +1,15 @@
 #include "mouse_picking.h"
 #include "Core/AppWrapper.h"
 #include "Core/ECSystem/Scene.h"
+#include <algorithm>
+#include <windows.h>
+#include "Core/Editor/Editor.h"
+#include "Core/Editor/SelectedObj.h"
+#include "Core/Singleton.h"
+
+
+
+
 
 
 
@@ -23,9 +32,14 @@ void MousePicking::performRayCasting(glm::vec2 mousePos, int viewportWidth, int 
     // Calculate the ray direction
     glm::vec3 rayDirection = calculateRayDirection(mousePos, viewportWidth, viewportHeight, cam);
 
+    //std::cout << "Ray Direction: " << rayDirection.x << " " << rayDirection.y << " " << rayDirection.z << std::endl;    
+
     // Get the scene and its objects
     Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
     const std::vector<std::shared_ptr<Core::Object>>& sceneObjects = scene.GetObjects();
+
+    std::shared_ptr<Core::Object> selectedObject;
+    float minDistance = std::numeric_limits<float>::infinity();
 
     for (const auto& obj : sceneObjects) {
         glm::vec3 position = obj->GetPosition();
@@ -36,43 +50,64 @@ void MousePicking::performRayCasting(glm::vec2 mousePos, int viewportWidth, int 
                 auto glbModel = meshComp->GetMesh().lock();
                 if (glbModel) {
                     auto boundingBox = glbModel->Get()->getAABB();
-                    //std::cout << "Bounding Box: " << boundingBox.mMin.x << " " << boundingBox.mMin.y << " " << boundingBox.mMin.z << std::endl;
-                    if (IntersectRayWithMesh(cam->GetPosition(), rayDirection, boundingBox.mMin, boundingBox.mMax)) {
+
+                    //std::cout << "NAME: " << obj->GetName() << " Bounding Box: " << boundingBox.mMin.x << " " << boundingBox.mMin.y << " " << boundingBox.mMin.z << std::endl;
+                    float iDistance = IntersectRayWithMesh(cam->GetPosition(), rayDirection, boundingBox.mMin, boundingBox.mMax, scale, position);
+                    if (iDistance >= 0) {
                         std::cout << "Intersected with object: " << obj->GetName() << std::endl;
+
+                        if (iDistance < minDistance) {
+							minDistance = iDistance;
+							selectedObject = obj;
+						}
+
                     }
                 }
             }
-        }
-        
-       
+        } 
+    }
+    SelectedObj& selectedObjIns = Singleton<Editor>::Instance().GetSelectedObj();
+    selectedObjIns.SetSelectedObject(selectedObject);
+    selectedObjIns.SetSelectedComponent(nullptr);
+}
 
-
-        
+float intersectionMax(float a, float b, float c) {
+    if (a > b && a > c) {
+        return a;
+    }
+    else if (b > c) {
+        return b;
+    }
+    else {
+        return c;
     }
 }
 
-bool MousePicking::IntersectRayWithMesh(glm::vec3 rayOrigin, glm::vec3 rayDirection, aiVector3D minExtents, aiVector3D maxExtents) {
-    float tMin = (minExtents.x - rayOrigin.x) / rayDirection.x;
-    float tMax = (maxExtents.x - rayOrigin.x) / rayDirection.x;
+float MousePicking::IntersectRayWithMesh(glm::vec3 rayOrigin, glm::vec3 rayDirection, aiVector3D mMin, aiVector3D mMax, glm::vec3 scale, glm::vec3 position) {
+    float txMin = (mMin.x*scale.x - rayOrigin.x + position.x) / rayDirection.x;
+    float txMax = (mMax.x*scale.x - rayOrigin.x + position.x) / rayDirection.x;
 
-    if (tMin > tMax) std::swap(tMin, tMax);
+    float tyMin = (mMin.y*scale.y - rayOrigin.y + position.y) / rayDirection.y;
+    float tyMax = (mMax.y*scale.y - rayOrigin.y + position.y) / rayDirection.y;
 
-    float tyMin = (minExtents.y - rayOrigin.y) / rayDirection.y;
-    float tyMax = (maxExtents.y - rayOrigin.y) / rayDirection.y;
+    float tzMin = (mMin.z * scale.z - rayOrigin.z + position.z) / rayDirection.z;
+    float tzMax = (mMax.z * scale.z - rayOrigin.z + position.z) / rayDirection.z;
 
+    if (txMin > txMax) std::swap(txMin, txMax);
     if (tyMin > tyMax) std::swap(tyMin, tyMax);
-
-    if ((tMin > tyMax) || (tyMin > tMax)) return false;
-
-    if (tyMin > tMin) tMin = tyMin;
-    if (tyMax < tMax) tMax = tyMax;
-
-    float tzMin = (minExtents.z - rayOrigin.z) / rayDirection.z;
-    float tzMax = (maxExtents.z - rayOrigin.z) / rayDirection.z;
-
     if (tzMin > tzMax) std::swap(tzMin, tzMax);
 
-    if ((tMin > tzMax) || (tzMin > tMax)) return false;
 
-    return true;
+    if ((txMin > tyMax) || (tyMin > txMax)) return -1; // la distancia no puede ser negativa asike quiere decir no intersección
+
+    if (tyMin > txMin) txMin = tyMin;
+    if (tyMax < txMax) txMax = tyMax;
+
+    if ((txMin > tzMax) || (tzMin > txMax)) return -1;
+
+    float tIntersection = intersectionMax(txMin, tyMin, tzMin);
+    glm::vec3 IntersectionP = rayOrigin + tIntersection * rayDirection;
+    float distIntersection = glm::distance(IntersectionP, rayOrigin);
+
+    return distIntersection;
 }

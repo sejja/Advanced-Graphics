@@ -15,12 +15,14 @@ public:
 
 
 private:
-	int viewportWidth;
-	int viewportHeight; 
-	Core::Primitives::Camera* cam;
-
 	glm::vec3 calculateRayDirection(glm::vec2 mousePos, int viewportWidth, int viewportHeight, Core::Primitives::Camera* cam);
-	bool IntersectRayWithMesh(glm::vec3 rayOrigin, glm::vec3 rayDirection, aiVector3D minExtents, aiVector3D maxExtents);
+
+	//--------------------------------------------------------------------------------------------
+	// IntersectRayWithMesh
+	// 
+	// Returns the distance from the cam to the intersection point
+	//--------------------------------------------------------------------------------------------
+	float IntersectRayWithMesh(glm::vec3 rayOrigin, glm::vec3 rayDirection, aiVector3D mMin, aiVector3D mMax, glm::vec3 scale, glm::vec3 position);
 
 
 
