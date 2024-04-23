@@ -62,11 +62,9 @@ namespace Core {
 			});
 		//Singleton<::Graphics::Architecture::InstancedRendering::InstancedMeshMap>::Instance().printMeshMap();
 
-		instanceRenderer.fetch();
-
 		int i = 0;
 
-		std::for_each(std::execution::seq, mParser.lights.begin(), mParser.lights.end(), [this, &i, &upload](const SceneParser::Light& x) {
+		std::for_each(std::execution::seq, mParser.lights.begin(), mParser.lights.end(), [this, &i, &upload, &instanceRenderer](const SceneParser::Light& x) {
 			std::shared_ptr<Core::Object> obj = std::move(std::make_shared<Core::Object>());
 			obj->SetPosition(x.pos);
 			obj->SetRotation(glm::vec3(0.f, 0.f, 0.f));
@@ -76,6 +74,7 @@ namespace Core {
 			renderer->SetMesh(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
 			renderer->SetShaderProgram(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
 
+			instanceRenderer.add_To_InstancedRendering(renderer, obj);
 			//TEMPORAL PARA SABER SI ES LUZ HASTA NUEVO LEVEL 
 			obj->SetName(x.type + " Light_light");
 			
@@ -129,6 +128,8 @@ namespace Core {
 		sky->AddComponent(std::move(skycomp));
 		sky->SetName("Sky_bg");
 		mObjects.emplace_back(sky);
+
+		instanceRenderer.fetch();
 
 		/*Test data*/
 		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());

@@ -5,8 +5,9 @@
 //	Created by Diego Revilla on 20/02/23
 //	Copyright � 2023. All Rights reserved
 //
-
+#include <iostream>
 #include "GLBMesh.h"
+#include "Graphics/Architecture/InstancedRendering/InstancedRendering.h"
 
 namespace Graphics {
 	namespace Primitives {
@@ -50,6 +51,22 @@ namespace Graphics {
 		}
 
         void Mesh::Draw() {
+
+            //try {
+                //throw CSomeOtherException();
+                //std::cout << this << std::endl;
+
+                int isInstanced = Singleton<Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().is_Instanced(this);
+            
+                if (isInstanced) {
+                    return; //If the mesh ins instanced wo dont draw it again
+                }
+            //}
+            //catch (...) {
+
+
+
+            //}
             // bind appropriate textures
             unsigned int diffuseNr = 1;
             unsigned int specularNr = 1;

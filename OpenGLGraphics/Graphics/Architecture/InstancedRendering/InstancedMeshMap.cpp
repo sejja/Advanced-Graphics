@@ -60,7 +60,6 @@ namespace Graphics {
 						mesh.second.instancedMesh.get()->initiated = false;
 					}
 				}
-
 			}
 
 			void InstancedMeshMap::initInstancedMesh(InstancedMesh* instancedMesh) {
@@ -94,6 +93,11 @@ namespace Graphics {
 					cout << "Instanced: " << pair.second.instancedMesh->initiated << "\n";
 				}
 				cout << "Map size: " << this->ptr_Mesh_Objetcs_Map.size() << std::endl;
+			}
+
+			std::unordered_map< Graphics::Primitives::Mesh*, InstancedRenderNode >* InstancedMeshMap::getInstancedMap()
+			{
+				return  &(this->ptr_Mesh_Objetcs_Map);
 			}
 		}
 	}
