@@ -31,8 +31,6 @@ namespace Graphics {
 				void fetch();
 
 			private:
-				/*This is a hasmap where key is a weak pointer to a GLB Model and whose value is instanced mesh, different models can point to the same mesh */
-				//std::unordered_map < std::shared_ptr<Graphics::Primitives::GLBModel >, Graphics::Architecture::InstancedRendering::InstancedMesh > ptr_GLBModel_HashMap;
 
 				/*  It is a raw pointer to a Singleton */
 				InstancedMeshMap* meshMap;
