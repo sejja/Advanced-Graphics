@@ -219,7 +219,6 @@
     <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMeshMap.cpp" />
     <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMeshMap.h" />
     <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedRendering.cpp" />
-    <ClCompile Include="Graphics\Architecture\InstancedRendering\MeshMap.cpp" />
     <ClCompile Include="Graphics\Architecture\SamplingBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\LightPass.cpp" />
     <ClCompile Include="Graphics\Architecture\SSAO\Kernel.cpp" />
