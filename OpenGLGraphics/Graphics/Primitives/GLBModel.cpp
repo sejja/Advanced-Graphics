@@ -200,5 +200,10 @@ namespace Graphics {
             }
             return textures;
         }
+
+        std::vector<Mesh>* GLBModel::getMeshes()
+        {
+            return &(this->meshes);
+        }
 	}
 }

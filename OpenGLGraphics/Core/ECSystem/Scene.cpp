@@ -22,6 +22,8 @@
 #include "Core/AppWrapper.h"
 #include "Core/Graphics/Pipeline.h"
 
+#include "Graphics/Architecture/InstancedRendering/InstancedRendering.h"
+
 namespace Core {
 	// ------------------------------------------------------------------------
 	/*! Create Scene
@@ -31,8 +33,9 @@ namespace Core {
 	void Scene::CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
 		mParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
+		auto& instanceRenderer = Singleton<::Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance();
 
-		std::for_each(std::execution::unseq, mParser.objects.begin(), mParser.objects.end(), [this, &upload, &resmg](const SceneParser::Transform& x) {
+		std::for_each(std::execution::unseq, mParser.objects.begin(), mParser.objects.end(), [this, &upload, &resmg, &instanceRenderer](const SceneParser::Transform& x) {
 			std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
 			obj->SetPosition(x.pos);
 			obj->SetRotation(glm::radians(x.rot));
@@ -44,7 +47,9 @@ namespace Core {
 			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
 			renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(x.mesh.c_str()));
 
-			std::cout << renderer.get()->GetMesh().lock() << "\n"; // <- This confirms that every same geometry has a pointer to the same instance of model
+			//std::cout << renderer.get()->GetMesh().lock() << "\n"; // <- This confirms that every same geometry has a pointer to the same instance of model
+
+			instanceRenderer.add_To_InstancedRendering(renderer, obj);
 
 			if (x.name == "suzanne_mesh")
 				renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/Refractive.shader"));
@@ -55,10 +60,11 @@ namespace Core {
 			upload(obj);
 			mObjects.emplace_back(std::move(obj));
 			});
+		//Singleton<::Graphics::Architecture::InstancedRendering::InstancedMeshMap>::Instance().printMeshMap();
 
 		int i = 0;
 
-		std::for_each(std::execution::seq, mParser.lights.begin(), mParser.lights.end(), [this, &i, &upload](const SceneParser::Light& x) {
+		std::for_each(std::execution::seq, mParser.lights.begin(), mParser.lights.end(), [this, &i, &upload, &instanceRenderer](const SceneParser::Light& x) {
 			std::shared_ptr<Core::Object> obj = std::move(std::make_shared<Core::Object>());
 			obj->SetPosition(x.pos);
 			obj->SetRotation(glm::vec3(0.f, 0.f, 0.f));
@@ -68,6 +74,7 @@ namespace Core {
 			renderer->SetMesh(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
 			renderer->SetShaderProgram(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
 
+			instanceRenderer.add_To_InstancedRendering(renderer, obj);
 			//TEMPORAL PARA SABER SI ES LUZ HASTA NUEVO LEVEL 
 			obj->SetName(x.type + " Light_light");
 			
@@ -121,6 +128,8 @@ namespace Core {
 		sky->AddComponent(std::move(skycomp));
 		sky->SetName("Sky_bg");
 		mObjects.emplace_back(sky);
+
+		instanceRenderer.fetch();
 
 		/*Test data*/
 		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
