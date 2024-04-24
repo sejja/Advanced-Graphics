@@ -53,6 +53,7 @@ namespace Graphics {
 							this->initInstancedMesh(mesh.second.instancedMesh.get()); //Just dont do that
 						}
 						this->ptr_InstancedMesh_Objects_Map[mesh.second.instancedMesh] = mesh.second.objects;
+						mesh.second.instancedMesh.get()->updateTransforms(mesh.second.objects);
 					}
 					else
 					{
@@ -98,6 +99,14 @@ namespace Graphics {
 			std::unordered_map< Graphics::Primitives::Mesh*, InstancedRenderNode >* InstancedMeshMap::getInstancedMap()
 			{
 				return  &(this->ptr_Mesh_Objetcs_Map);
+			}
+
+			void InstancedMeshMap::InstancedRender()
+			{
+				for (const auto& pair : this->ptr_InstancedMesh_Objects_Map)
+				{
+					pair.first->drawInstanced( pair.second );
+				}
 			}
 		}
 	}

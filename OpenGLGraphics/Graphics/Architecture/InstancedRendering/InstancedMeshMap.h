@@ -28,6 +28,7 @@ namespace Graphics {
 				void initInstancedMesh(InstancedMesh* instancedMesh);
 				InstancedRenderNode CreateRenderNode(std::weak_ptr<Core::Object> value);
 				std::unordered_map< Graphics::Primitives::Mesh*, InstancedRenderNode >* getInstancedMap();
+				void InstancedRender();
 
 				void printInstancedMap();
 				void printMeshMap();

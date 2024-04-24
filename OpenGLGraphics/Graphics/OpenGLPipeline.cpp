@@ -23,7 +23,7 @@
 #include "Graphics/Tools/OpenGLInfo.h"
 #include "Graphics/Architecture/Utils/GLUtils.h"
 #include "Graphics/Primitives/Decal.h"
-
+#include "Graphics/Architecture/InstancedRendering/InstancedRendering.h"
 
 using namespace Core::Graphics;
 using namespace std;
@@ -294,6 +294,7 @@ namespace Core {
 			RenderShadowMaps();
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
+
 			GeometryPass();
 			mGeometryDeform.DecalPass(*mGBuffer);
 
@@ -399,6 +400,8 @@ namespace Core {
 
 				mGBuffer->Bind();
 				mGBuffer->ClearBuffer();
+
+				Singleton<::Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().render();
 
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
 					[this, &obsoletes, &projection, &view](const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {

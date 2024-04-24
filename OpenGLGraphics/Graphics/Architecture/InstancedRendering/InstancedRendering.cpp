@@ -25,9 +25,13 @@ namespace Graphics::Architecture::InstancedRendering
 		//std::cout << "Size: " << meshes->size() << "\n";
 	}
 
-	void InstanceRenderer::render()
+	void InstanceRenderer::render(int fetch)
 	{
-		std::cout << "ERROR: UNIMPLEMENTED FUNCTION render\n";
+
+		if (fetch) this->meshMap->fetch_Instanced();
+
+		this->meshMap->InstancedRender();
+
 	}
 
 	int InstanceRenderer::is_Instanced(Graphics::Primitives::Mesh* mesh)
@@ -43,7 +47,7 @@ namespace Graphics::Architecture::InstancedRendering
 
 	int InstanceRenderer::removeObject(std::weak_ptr<Core::Object> object)
 	{
-		std::cout << "ERROR: UNIMPLEMENTED FUNCTION is_Instanced\n";
+		std::cout << "ERROR: UNIMPLEMENTED FUNCTION removeObject\n";
 		return -1;
 	}
 

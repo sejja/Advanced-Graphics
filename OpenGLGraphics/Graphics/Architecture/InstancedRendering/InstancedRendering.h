@@ -25,7 +25,7 @@ namespace Graphics {
 				~InstanceRenderer();
 
 				void add_To_InstancedRendering(std::weak_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL> > renderer, std::weak_ptr<Core::Object> object);
-				void render();
+				void render( int fetch = 0 );
 				int is_Instanced(Graphics::Primitives::Mesh* mesh);
 				int removeObject(std::weak_ptr<Core::Object> object);
 				void fetch();
@@ -41,4 +41,4 @@ namespace Graphics {
 	}
 }
 
-#endif // !
+#endif
