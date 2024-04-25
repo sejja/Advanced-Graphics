@@ -172,7 +172,7 @@ void TextPaddingWBg(const char* text, ImVec4 bgColor) {
 }
 
 
-void TransformRow(const char* title, float& x_val, float& y_val, float& z_val) {
+void TransformRow(const char* title, float& x_val, float& y_val, float& z_val,bool& axisLock) {
     static char defaultValue[16] = "0";
     const float f32_zero = -1000.f;
     const float f32_one = 1000.f;
@@ -192,7 +192,17 @@ void TransformRow(const char* title, float& x_val, float& y_val, float& z_val) {
         ImGui::Text(title);
         ImGui::TableSetColumnIndex(1);
 
-        ImGui::Button(ICON_FA_LOCK);
+        if (axisLock) {
+            if (ImGui::Button(ICON_FA_LOCK)) {
+				axisLock = false;
+			}
+		}
+        else {
+            if (ImGui::Button(ICON_FA_LOCK_OPEN)) {
+				axisLock = true;
+			}
+		}
+        
         ImGui::SameLine();
         ImGui::SetNextItemWidth(remainingWidth * inputSize);
         ImGui::DragScalar("##X", ImGuiDataType_Float, &x_val, dragJump, &f32_zero, &f32_one, "%.2f");
@@ -440,8 +450,9 @@ void Properties::ParticleTransform() {
     std::shared_ptr<Core::Particles::FireSystem> particleSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(particleComp);
 
     glm::vec3 curCenter = particleSystem->GetSystemCenter();
+    bool axisLock;
 
-    TransformRow("Center", curCenter[0], curCenter[1], curCenter[2]);
+    TransformRow("Center", curCenter[0], curCenter[1], curCenter[2],axisLock);
 
     particleSystem->SetSystemCenter(curCenter);
 }
@@ -453,9 +464,11 @@ void Properties::TransformOptions() {
     glm::vec3 curRot = obj->GetRotation();
     glm::vec3 curScale = obj->GetScale();
 
-    TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
-    TransformRow("  Rotation", curRot[0], curRot[1], curRot[2]);
-    TransformRow("  Scale", curScale[0], curScale[1], curScale[2]);
+    bool axisLock;
+
+    TransformRow("  Location", curPos[0], curPos[1], curPos[2], axisLock);
+    TransformRow("  Rotation", curRot[0], curRot[1], curRot[2], axisLock);
+    TransformRow("  Scale", curScale[0], curScale[1], curScale[2], axisLock);
 
     obj->SetPosition(curPos);
     obj->SetRotation(curRot);
@@ -496,7 +509,8 @@ void Properties::LightTransform() {
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
     std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
 	glm::vec3 curPos = lightComp->GetPosition();
-	TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
+    bool axisLock;
+	TransformRow("  Location", curPos[0], curPos[1], curPos[2], axisLock);
 	lightComp->SetPosition(curPos, obj->GetPosition());
 }
 
@@ -621,8 +635,9 @@ void Properties::LightTypeOptions(){
             float dirZ = ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)directionalLight->mData)->mDirection.z;
 
             ImGui::EndTable();
+            bool axisLock;
 
-            TransformRow("  Direction", dirX, dirY, dirZ);
+            TransformRow("  Direction", dirX, dirY, dirZ, axisLock);
 
             glm::vec3 normalizedDirection = glm::normalize(glm::vec3(dirX, dirY, dirZ));
             ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)directionalLight->mData)->mDirection = normalizedDirection;
@@ -671,8 +686,8 @@ void Properties::LightTypeOptions(){
             ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f");
 
             ImGui::EndTable();
-
-            TransformRow("  Direction", dirX, dirY, dirZ);
+            bool axisLock;
+            TransformRow("  Direction", dirX, dirY, dirZ, axisLock);
 
             ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mRadius = lightRadius;
 			((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mInner = inner;
@@ -699,10 +714,9 @@ void Properties::MaterialsOptions() {
 
     auto glbModel = meshComp->GetMesh().lock();
     
-
     if (glbModel) {
         std::string directory = glbModel->Get()->getPath();
-        //printf("Directory: %s\n", directory.c_str());
+        printf("Directory: %s\n", directory.c_str());
     }
     
 
@@ -929,8 +943,8 @@ void Properties::FireSize() {
 
 
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
-
-    TransformRow("  Radius    ", curRadius[0], curRadius[1], curRadius[2]);
+    bool axisLock;
+    TransformRow("  Radius    ", curRadius[0], curRadius[1], curRadius[2], axisLock);
 
     if (ImGui::BeginTable("fire_size_table", 2, flags1)) {
 

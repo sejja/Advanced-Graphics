@@ -36,7 +36,8 @@ void SceneView::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	Singleton<Editor>::Instance().setSceneFramePosition(screen_pos);
 
 	//picking
-	if (ImGui::IsMouseClicked(0)) {
+	
+	if (ImGui::IsMouseClicked(0) && mousePosition.x <= viewportPanelSize.x && mousePosition.y <= viewportPanelSize.y) {
 		mousePicking.performRayCasting(mousePosition, viewportPanelSize.x, viewportPanelSize.y, pipeline.getCamera());
 	}
 	

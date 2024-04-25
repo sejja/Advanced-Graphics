@@ -47,7 +47,7 @@ namespace Core {
 				lastX = mouseMotion.x;
 				lastY = mouseMotion.y;
 
-				if(Singleton<Core::Input::InputManager>::Instance().IsKeyDown(VK_LBUTTON)) {
+				if(Singleton<Core::Input::InputManager>::Instance().IsKeyDown(VK_RBUTTON)) {
 					float sensitivity = 0.1f;
 					xoffset *= sensitivity;
 					yoffset *= sensitivity;
