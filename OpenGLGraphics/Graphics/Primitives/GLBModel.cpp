@@ -15,7 +15,7 @@ namespace Graphics {
         *
         *   Loads a Model from a file
         */ //----------------------------------------------------------------------
-		Model::Model(std::string const& path) {
+		Model::Model(std::string const& path) : aabb(*new aiAABB()) {
 			LoadModel(path);
 		}
 
@@ -27,6 +27,16 @@ namespace Graphics {
 		void Model::Draw() {
             std::for_each(mMeshes.begin(), mMeshes.end(), [](Mesh& mesh) { mesh.Draw(); });
 		}
+
+        aiAABB& Model::getAABB()
+        {
+            return aabb;
+        }
+
+        std::vector<Mesh>& Model::getMeshes()
+        {
+           return mMeshes;
+        }
 
         // ------------------------------------------------------------------------
         /*! Load Model
@@ -44,7 +54,7 @@ namespace Graphics {
 
             // read file via ASSIMP
             Assimp::Importer importer;
-            const aiScene* scene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_FixInfacingNormals | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph);
+            const aiScene* scene = importer.ReadFile(path, aiProcess_GenBoundingBoxes | aiProcess_CalcTangentSpace | aiProcess_FixInfacingNormals | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph);
             // check for errors
             if(scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
                 throw ModelException("ERROR::ASSIMP:: INCOMPLETE DATA");

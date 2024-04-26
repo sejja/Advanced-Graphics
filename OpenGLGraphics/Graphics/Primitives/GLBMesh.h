@@ -32,6 +32,7 @@ namespace Graphics {
                 // bitangent
                 glm::vec3 mBitangent;
             };
+
         #pragma endregion
 
         #pragma region //Constructor
@@ -44,6 +45,13 @@ namespace Graphics {
         #pragma region //Methods
             void Draw() const;
         #pragma endregion
+
+        Core::Assets::Asset<Core::Graphics::Texture> getDiffuse() const { return mDiffuse; }
+        Core::Assets::Asset<Core::Graphics::Texture> getNormal() const { return mNormal; }
+
+        void setDiffuse(Core::Assets::Asset<Core::Graphics::Texture> diffuse) { mDiffuse = diffuse; }
+        void setNormal(Core::Assets::Asset<Core::Graphics::Texture> normal) { mNormal = normal; }
+
 
         #pragma region //Members
         private:

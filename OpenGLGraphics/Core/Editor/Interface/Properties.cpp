@@ -508,7 +508,7 @@ void Properties::LightTransform() {
     std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(selectedObjIns.GetSelectedComponent());
 	glm::vec3 curPos = lightComp->GetPosition();
     bool axisLock;
-	TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
+	TransformRow("  Location", curPos[0], curPos[1], curPos[2],axisLock);
 	lightComp->SetPosition(curPos);
 }
 
@@ -669,7 +669,8 @@ void Properties::LightTypeOptions(){
 
             ImGui::EndTable();
 
-            TransformRow("  Direction", dirX, dirY, dirZ);
+            bool axisLock;
+            TransformRow("  Direction", dirX, dirY, dirZ,axisLock);
             spotLight->SetRadius(lightRadius);
             spotLight->SetInner(inner);
             spotLight->SetOuter(outer);
@@ -685,68 +686,72 @@ void Properties::LightTypeOptions(){
 static std::string nombreTexturaTemporal = "Textura def";
 
 void Properties::MaterialsOptions() {
-
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
     static ImVec2 cell_padding(4.0f, 8.0f);
     ImGuiDragDropFlags flags = 0 | ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
-
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
 
     auto glbModel = meshComp->GetMesh().lock();
-    
-    if (glbModel) {
-        //std::string directory = glbModel->Get()->getPath();
-        //printf("Directory: %s\n", directory.c_str());
-    }
-    
 
-
-    if (ImGui::BeginTable("materials_table", 2, flags1)) {
-
+    if (ImGui::BeginTable("normal_tex", 2, flags1)) {
         ImGui::TableNextRow();
-
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Element 0");
         ImGui::TableSetColumnIndex(1);
-
-
-        auto tex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Content\\Textures\\Brick.png")->Get();
-        ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
-
-
+        auto curTex = glbModel->Get()->getMeshes()[0].getNormal()->Get();
+        ImGui::Image((void*)(intptr_t)curTex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
         ImGui::SameLine();
         ImGui::BeginGroup();
-
-
         ImGui::Text(nombreTexturaTemporal.c_str());
-
         ImGui::Button(ICON_FA_ARROW_TURN_UP);
         ImGui::SameLine();
         ImGui::Button(ICON_FA_FOLDER_OPEN);
-
-
         ImGui::EndGroup();
-
-
     }
     ImGui::EndTable();
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* iconPtr = (AssetIcon*)payload->Data;
             nombreTexturaTemporal = iconPtr->nombre;
-            printf("RUTA: %s\n", iconPtr->ruta);
-            auto nuevaTex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(iconPtr->ruta)->Get();
-
-
+            printf("RUTA NORMAL TEX: %s\n", iconPtr->ruta);
+            Core::Assets::Asset<Core::Graphics::Texture> normalTexture = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(iconPtr->ruta);
+            for (auto& mesh : glbModel->Get()->getMeshes()) {
+                mesh.setNormal(normalTexture);
+            }
         }
         ImGui::EndDragDropTarget();
     }
-
+    if (ImGui::BeginTable("difuse_tex", 2, flags1)) {
+        ImGui::TableNextRow();
+        ImGui::TableSetColumnIndex(0);
+        ImGui::Text("Element 1");
+        ImGui::TableSetColumnIndex(1);
+        auto curTex = glbModel->Get()->getMeshes()[0].getDiffuse()->Get();
+        ImGui::Image((void*)(intptr_t)curTex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+        ImGui::SameLine();
+        ImGui::BeginGroup();
+        ImGui::Text(nombreTexturaTemporal.c_str());
+        ImGui::Button(ICON_FA_ARROW_TURN_UP);
+        ImGui::SameLine();
+        ImGui::Button(ICON_FA_FOLDER_OPEN);
+        ImGui::EndGroup();
+    }
+    ImGui::EndTable();
+    if (ImGui::BeginDragDropTarget()) {
+        if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
+            AssetIcon* iconPtr = (AssetIcon*)payload->Data;
+            nombreTexturaTemporal = iconPtr->nombre;
+            Core::Assets::Asset<Core::Graphics::Texture> diffuseTexture = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(iconPtr->ruta);
+            for (auto& mesh : glbModel->Get()->getMeshes()) {
+                mesh.setDiffuse(diffuseTexture);
+            }
+        }
+        ImGui::EndDragDropTarget();
+    }
     ImGui::PopStyleVar();
-
-
 }
+
 
 void Properties::MeshOptions() {
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
@@ -901,11 +906,6 @@ void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline)
 
     ImGui::PopStyleVar();
 }
-
-
-
-
-
 
 
 void Properties::FireSize() {

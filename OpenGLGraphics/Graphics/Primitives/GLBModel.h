@@ -37,7 +37,10 @@ namespace Graphics {
             std::string getDirectory();
             std::string getPath();
 
+            //get aabb
+            aiAABB& getAABB();
 
+            std::vector<Mesh>& getMeshes();
 
 
         private:
