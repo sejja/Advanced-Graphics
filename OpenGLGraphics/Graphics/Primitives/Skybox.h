@@ -16,6 +16,7 @@ namespace Core {
 			void LoadCubeMap(std::string path);
 			void CreateCubeMap();
 			void Render(Core::Primitives::Camera& cam, Core::Graphics::OpenGLPipeline& pipeline);
+			void RenderSpecific(glm::mat4 view, glm::mat4 projection, Core::Graphics::OpenGLPipeline& pipeline);
 			void UploadSkyboxCubeMap();
 			static Skybox* sCurrentSky;
 		private:

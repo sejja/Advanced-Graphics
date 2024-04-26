@@ -103,6 +103,14 @@ namespace Core {
 			Singleton<::Editor>::Instance().assetManager.init();
 			::Graphics::Architecture::Utils::GLUtils::Init();
 			mDebug = std::make_unique<debug_system>(&cam);
+
+			// CubemapReflections
+			cubeMapDirections[0] = glm::vec3(1.0f, 0.0f, 0.0f);  // +X
+			cubeMapDirections[1] = glm::vec3(-1.0f, 0.0f, 0.0f); // -X
+			cubeMapDirections[2] = glm::vec3(0.0f, 1.0f, 0.0f);  // +Y
+			cubeMapDirections[3] = glm::vec3(0.0f, -1.0f, 0.0f); // -Y
+			cubeMapDirections[4] = glm::vec3(0.0f, 0.0f, 1.0f);  // +Z
+			cubeMapDirections[5] = glm::vec3(0.0f, 0.0f, -1.0f); // -Z
 		}
 
 		::Graphics::Architecture::GBuffer* OpenGLPipeline::GetGBuffer() {
@@ -290,11 +298,17 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::Render() {
 			RenderGUI();
+
+			
 			
 			RenderShadowMaps();
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
-			UpdateUniformBuffers();
-			GeometryPass();
+			//if (firstTime) {
+				//RenderReflectionCubemap(cam.GetPosition());
+				firstTime = false;
+			//}
+			UpdateUniformBuffers(cam.GetViewMatrix(),cam.GetProjectionMatrix()); // SI
+			GeometryPass(); //si
 
 			auto x = Singleton<::Editor>::Instance().GetSelectedObj().GetSelectedComponent();
 			
@@ -302,24 +316,24 @@ namespace Core {
 				mDebug->draw_aabb(x.get()->GetParent().lock()->GetPosition(),
 					x.get()->GetParent().lock()->GetScale(), glm::vec4(1, 0.6, 0.2, 1));
 			}
-
+			
 			//Bind and Clean
 			if (AntiAliasing) {mSamplingBuffer->Bind();mSamplingBuffer->Clear();}
 			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
 			//glEnable(GL_DEPTH_TEST);
 
 			//RenderParticlesSystems();
+			
+			BloomPass(mHDRBuffer->GetHandle()); //si
+			mLightPass->RenderLights({1600, 900}, *mGBuffer); //si
 
-			BloomPass(mHDRBuffer->GetHandle());
-			
-			
 			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
-			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
-			
-			Skybox::sCurrentSky->Render(cam, *this);
-			mLightPass->RenderLights({ 1600, 900 }, *mGBuffer);
-			RenderParticlesSystems();
+			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle()); //SI
 
+			Skybox::sCurrentSky->Render(cam, *this); //SI
+
+			RenderParticlesSystems();
+			RenderReflectionCubemap(cam.GetPosition());
 			if (AntiAliasing) 
 			{
 				glBindFramebuffer(GL_READ_FRAMEBUFFER, mSamplingBuffer->GetHandle());
@@ -432,10 +446,7 @@ namespace Core {
 		*
 		*   Updates the Uniform Buffers on the GPU across Shaders
 		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::UpdateUniformBuffers() {
-
-			glm::mat4 view = cam.GetViewMatrix();
-			glm::mat4 projection = cam.GetProjectionMatrix();
+		void OpenGLPipeline::UpdateUniformBuffers(glm::mat4 view, glm::mat4 projection) {
 		
 			glBindBuffer(GL_UNIFORM_BUFFER, mUniformBuffer);
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &view);
@@ -480,5 +491,62 @@ namespace Core {
 		unsigned int quadVAO = 0;
 		unsigned int quadVBO;
 	}
+
+	void OpenGLPipeline::RenderReflectionCubemap(const glm::vec3& position)
+	{
+	    // Set up framebuffer and cubemap
+	    GLuint reflectionFramebuffer;
+	    GLuint reflectionCubemap;
+	    int reflectionSize = 512;
+	    
+	    glGenFramebuffers(1, &reflectionFramebuffer);
+	    glGenTextures(1, &reflectionCubemap);
+	    glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionCubemap);
+	
+	    // Set cubemap parameters
+	    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+	    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+	    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+	
+	    // Set up cubemap faces
+	    for (GLuint i = 0; i < 6; ++i)
+	    {
+	        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, reflectionSize, reflectionSize, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+	    }
+	
+	    glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
+	
+	    // Render to each cubemap face
+	    for (GLuint i = 0; i < 6; ++i)
+	    {
+			glViewport(0, 0, reflectionSize, reflectionSize);
+	        // Set the camera to look in the direction of the cubemap face
+	        glm::mat4 view = glm::lookAt(position, position + cubeMapDirections[i], glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::mat4 projectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 100.0f);
+	
+	        // Render scene with this view matrix
+	        // Call your rendering functions here, e.g., GeometryPass(), Skybox::sCurrentSky->Render(cam, *this)
+			UpdateUniformBuffers(view, projectionMatrix);
+			GeometryPass();
+			BloomPass(reflectionFramebuffer);
+			mLightPass->RenderLights({ 512, 512 }, *mGBuffer);
+			mGBuffer->BlitDepthBuffer(reflectionFramebuffer);
+	
+			Skybox::sCurrentSky->RenderSpecific(view,projectionMatrix, *this);
+	        // You may want to read back the rendered data from each face if needed
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionCubemap, 0);
+			
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	    }
+	
+	    // Cleanup
+	    glDeleteFramebuffers(1, &reflectionFramebuffer);
+	    glDeleteTextures(1, &reflectionCubemap);
+		glViewport(0, 0, mDimensions.x, mDimensions.y);
+	}
+
+
 
 }

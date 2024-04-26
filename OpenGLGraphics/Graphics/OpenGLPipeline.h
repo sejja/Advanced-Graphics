@@ -61,10 +61,11 @@ namespace Core {
 				ShaderProgram* shader);
 			void LightingPass();
 			void RenderShadowMaps();
-			void UpdateUniformBuffers();
+			void UpdateUniformBuffers(glm::mat4 view, glm::mat4 projection);
 			void RenderParticlesSystems();
 			void DirectionalLightPass();
 			void BloomPass(GLuint targetbuffer);
+			void RenderReflectionCubemap(const glm::vec3& position);
 
 			std::unordered_map<Core::Assets::Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 
@@ -80,6 +81,10 @@ namespace Core {
 			std::unique_ptr<HDRBuffer> mHDRBuffer;
 			std::unique_ptr<SamplingBuffer> mSamplingBuffer;
 			GLuint mUniformBuffer;
+
+			// CubemapReflections
+			glm::vec3 cubeMapDirections[6];
+			bool firstTime = true;
 
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 

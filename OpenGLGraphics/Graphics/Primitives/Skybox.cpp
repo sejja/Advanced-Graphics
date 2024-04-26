@@ -88,6 +88,31 @@ namespace Core {
 
             glDepthFunc(GL_LESS);
         }
+        void Skybox::RenderSpecific(glm::mat4 view, glm::mat4 projection, Core::Graphics::OpenGLPipeline& pipeline) {
+            //Disable depth mask, enable it later
+            glDepthMask(GL_FALSE);
+            glDisable(GL_CULL_FACE);
+            glDepthFunc(GL_LEQUAL);
+
+            // Bind the program and this object's VAO
+            mShaderProgram->Get()->Bind();
+
+            glActiveTexture(GL_TEXTURE0);
+            glBindTexture(GL_TEXTURE_CUBE_MAP, mMapHandle);
+
+
+
+            mShaderProgram->Get()->SetShaderUniform("uTransform", &projection);
+            mShaderProgram->Get()->SetShaderUniform("uView", &view);
+
+            mModel->Get()->Draw(*mShaderProgram->Get());
+
+            //Enable depth mask & culling again
+            glEnable(GL_CULL_FACE);
+            glDepthMask(GL_TRUE);
+
+            glDepthFunc(GL_LESS);
+        }
 
         void Skybox::UploadSkyboxCubeMap() {
             glActiveTexture(GL_TEXTURE9);

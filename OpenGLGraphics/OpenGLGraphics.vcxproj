@@ -210,6 +210,7 @@
     <ClCompile Include="Dependencies\SQLite3\sqlite3.c" />
     <ClCompile Include="Graphics\Architecture\Bloom\BloomFrameBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\Bloom\BloomRenderer.cpp" />
+    <ClCompile Include="Graphics\Architecture\CubemapFramebuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\GBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\HDRBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\SamplingBuffer.cpp" />
@@ -334,6 +335,7 @@
     <ClInclude Include="Dependencies\Json\include\thirdparty\hedley\hedley_undef.hpp" />
     <ClInclude Include="Dependencies\Json\single_include\json.hpp" />
     <ClInclude Include="Dependencies\SQLite3\sqlite3.h" />
+    <ClInclude Include="Graphics\Architecture\CubemapFramebuffer.h" />
     <ClInclude Include="Graphics\Architecture\GBuffer.h" />
     <ClInclude Include="Graphics\Architecture\HDRBuffer.h" />
     <ClInclude Include="Graphics\Architecture\LightPass.h" />

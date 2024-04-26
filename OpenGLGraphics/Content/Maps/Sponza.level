@@ -8,20 +8,21 @@ camPosition 0 0 110
 camTarget 0 0 50
 camUp 0 1 0
     
+
+
+
 #scene data
 object Palace
-translate 0 -10 0
-rotation 0 0 0
+translate 0 -10 40
+rotation 90 0 0
 scale 0.2 0.2 0.2
 mesh Content/Scenes/Sponza/Sponza.gltf 
 
-
-#scene data
-object Dragon
-translate 0 -10 0
+object Sphere
+translate 0 0 0
 rotation 0 0 0
-scale 0.4 0.4 0.4
-mesh Content/Meshes/Dragon/scene.gltf
+scale 20 20 20
+mesh Content/Meshes/sphere_20_averaged.obj
 
 #light data
 light
