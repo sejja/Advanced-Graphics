@@ -10,10 +10,16 @@
 
 namespace Graphics {
 	namespace Primitives {
-		Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Core::Assets::Asset<Core::Graphics::Texture>>& textures) {
-			this->textures = textures;
-
-            // create buffers/arrays
+        // ------------------------------------------------------------------------
+        /*! Custom Constructor
+        *
+        *   Constructs meshes from a bunch of vertices, indices, a diffuse texture and a normal texture
+        */ //----------------------------------------------------------------------
+		Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const Core::Assets::Asset<Core::Graphics::Texture>& diffuse,
+            const Core::Assets::Asset<Core::Graphics::Texture>& normal) {
+           mDiffuse = diffuse;
+           mNormal = normal;
+            
             glGenVertexArrays(1, &mVao);
             glGenBuffers(1, &mVbo);
             glGenBuffers(1, &mEbo);
@@ -45,28 +51,23 @@ namespace Graphics {
             // vertex bitangent
             glEnableVertexAttribArray(4);
             glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, mBitangent));
-            glBindVertexArray(0);
-            mCount = indices.size();
+            mCount = static_cast<GLsizei>(indices.size());
 		}
 
-        void Mesh::Draw() {
+        // ------------------------------------------------------------------------
+        /*! Custom Constructor
+        *
+        *   Constructs meshes from a bunch of vertices, indices, a diffuse texture and a normal texture
+        */ //----------------------------------------------------------------------
+        void Mesh::Draw() const {
             // bind appropriate textures
-            unsigned int diffuseNr = 1;
-            unsigned int specularNr = 1;
-            unsigned int normalNr = 1;
-            unsigned int heightNr = 1;
-            for (unsigned int i = 0; i < textures.size(); i++)
-            {
-                textures[i]->Get()->Bind();
-            }
+            if(mDiffuse) mDiffuse->Get()->Bind();
+            // bind normal map
+            if(mNormal) mNormal->Get()->Bind();
 
             // draw mesh
             glBindVertexArray(mVao);
             glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(mCount), GL_UNSIGNED_INT, 0);
-            glBindVertexArray(0);
-
-            // always good practice to set everything back to defaults once configured.
-            glActiveTexture(GL_TEXTURE0);
         }
 	}
 }

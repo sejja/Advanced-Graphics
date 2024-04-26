@@ -42,7 +42,7 @@ namespace Core {
 			//obj->SetType() tiene que ser un enum
 
 			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
-			renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(x.mesh.c_str()));
+			renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>(x.mesh.c_str()));
 
 			if (x.name == "suzanne_mesh")
 				renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>("Content/Shaders/Refractive.shader"));
@@ -62,8 +62,8 @@ namespace Core {
 			obj->SetRotation(glm::vec3(0.f, 0.f, 0.f));
 			obj->SetScale({ 1.f, 1.f, 1.f });
 			std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::move(std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj));
-			std::shared_ptr<::Graphics::Primitives::Light> light;
-			renderer->SetMesh(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
+			std::shared_ptr<::Graphics::Primitives::Lights::Light> light;
+			renderer->SetMesh(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<::Graphics::Primitives::Model>("Content/Meshes/sphere_20_averaged.obj"));
 			renderer->SetShaderProgram(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
 
 			//TEMPORAL PARA SABER SI ES LUZ HASTA NUEVO LEVEL 
@@ -73,34 +73,33 @@ namespace Core {
 			//If the light is a point light
 			if (x.type == "POINT") {
 				light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mRadius = x.att.x;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mInner = x.inner;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mOutter = x.outer;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mFallOff = x.falloff;
+				std::reinterpret_pointer_cast<::Graphics::Primitives::PointLight>(light)->SetRadius(x.att.x);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::PointLight>(light)->SetFallOff(x.falloff);
 			}
 
 			//If the light is a directional light
 			else if (x.type == "DIR") {
-				light = std::move(std::make_shared<::Graphics::Primitives::DirectionalLight>(obj));
-				((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)light->mData)->mDirection = glm::normalize(x.dir);
+				light = std::move(std::make_shared<::Graphics::Primitives::Lights::DirectionalLight>(obj));
+				std::reinterpret_pointer_cast<::Graphics::Primitives::Lights::DirectionalLight>(light)->SetDirection(glm::normalize(x.dir));
 			}
 
 			//else, it's a spot light
 			else {
 				light = std::move(std::make_shared<::Graphics::Primitives::SpotLight>(obj));
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mShadowCaster = 1;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mRadius = x.att.x;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mInner = x.inner;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mOutter = x.outer;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mFallOff = x.falloff;
-				((::Graphics::Primitives::SpotLight::SpotLightData*)light->mData)->mDirection = x.dir;
+
+				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetRadius(x.att.x);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetInner(x.inner);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetOuter(x.outer);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetFallOff(x.falloff);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetShadowCaster(1);
+				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetDirection(x.dir);
 			}
 
-			light->SetPosition(glm::vec3(0.0f,0.0f,0.0f),x.pos);
+			light->SetPosition(glm::vec3(0.0f,0.0f,0.0f));
 			light->SetColor(x.col);
 
 			std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> weakrend = renderer;
-			std::weak_ptr< ::Graphics::Primitives::Light> lightrend = light;
+			std::weak_ptr< ::Graphics::Primitives::Lights::Light> lightrend = light;
 
 			obj->AddComponent(std::move(weakrend));
 			obj->AddComponent(std::move(lightrend));

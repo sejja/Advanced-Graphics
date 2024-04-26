@@ -32,8 +32,6 @@ using namespace std;
 namespace Core {
 	namespace Graphics {
 		static Primitives::Camera cam;
-
-
 		OpenGLPipeline::~OpenGLPipeline() {
 			ImGui_ImplOpenGL3_Shutdown();
 			ImGui_ImplSDL2_Shutdown();
@@ -105,6 +103,7 @@ namespace Core {
 			Singleton<::Editor>::Instance().assetManager.init();
 			::Graphics::Architecture::Utils::GLUtils::Init();
 			mDebug = std::make_unique<::Graphics::Debug::DebugSystem>();
+			mSSAOBuffer = std::make_unique<::Graphics::Architecture::SSAO::SSAOBuffer>(mDimensions);
 		}
 
 		::Graphics::Architecture::GBuffer* OpenGLPipeline::GetGBuffer() {
@@ -295,11 +294,12 @@ namespace Core {
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
+			mSSAOBuffer->RenderAO(*mGBuffer);
 			mGeometryDeform.DecalPass(*mGBuffer);
 
 			auto x = Singleton<::Editor>::Instance().GetSelectedObj().GetSelectedComponent();
 			
-			if (RTTI::IsA<Decal>(x.get())) {
+			if (RTTI::IsA<::Graphics::Primitives::Decal>(x.get())) {
 				mDebug->DrawAABB(x.get()->GetParent().lock()->GetPosition(),
 					x.get()->GetParent().lock()->GetScale(), glm::vec4(1, 0.6, 0.2, 1), cam);
 			}
@@ -312,7 +312,7 @@ namespace Core {
 			//RenderParticlesSystems();
 
 			BloomPass(mHDRBuffer->GetHandle());
-			mLightPass->RenderLights({1600, 900}, *mGBuffer);
+			mLightPass->RenderLights({1600, 900}, *mGBuffer, *mSSAOBuffer);
 			
 			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
 			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());

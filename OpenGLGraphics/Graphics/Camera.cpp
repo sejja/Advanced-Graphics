@@ -23,7 +23,7 @@ namespace Core {
 		*   Constructs the Camera, with its position and subscribes to events
 		*/ // ---------------------------------------------------------------------
 		Camera::Camera() :
-			Position(0, 0, 100), Front(0, 0, -1), Yaw(-90.f), Pitch(0.f), WorldUp(0, 1, 0) {
+			Position(0, 0, 0), Front(0, 0, -1), Yaw(-90.f), Pitch(0.f), WorldUp(0, 1, 0) {
 			static float lastX = 0, lastY = 0;
 			static bool firstMouse = true;
 			auto& ed = Singleton<Events::EventDispatcher>::Instance();

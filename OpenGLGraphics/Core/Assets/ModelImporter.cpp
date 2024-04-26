@@ -19,16 +19,16 @@ namespace Core {
 		*  Imports a model from a file
 		*/ // ---------------------------------------------------------------------
 		std::shared_ptr<IResource> ModelImporter::ImportFromFile(const std::string_view& filename) const {
-			using ::Graphics::Primitives::GLBModel;
+			using ::Graphics::Primitives::Model;
 			using ::Core::Memory::PageAllocator;
 
-			const PageAllocator<TResource<GLBModel>> resalloc;
-			const PageAllocator<GLBModel> modealloc;
+			const PageAllocator<TResource<Model>> resalloc;
+			const PageAllocator<Model> modealloc;
 
-			Asset<GLBModel> rawResource(resalloc.New(1, 
-				modealloc.New(1, std::string(filename))), [resalloc, modealloc](TResource<GLBModel>* const p) {
-					const PageAllocator<TResource<GLBModel>> resalloc;
-					const PageAllocator<GLBModel> modealloc;
+			Asset<Model> rawResource(resalloc.New(1, 
+				modealloc.New(1, std::string(filename))), [resalloc, modealloc](TResource<Model>* const p) {
+					const PageAllocator<TResource<Model>> resalloc;
+					const PageAllocator<Model> modealloc;
 					modealloc.terminate(p->Get());
 					resalloc.deallocate(p);
 				});

@@ -12,7 +12,6 @@
 #include "glm.hpp"
 #include "Core/ECSystem/Component.h"
 #include "Core/Graphics/Pipeline.h"
-#include "Graphics/Primitives/Model.h"
 #include "Core/Assets/ResourceManager.h"
 #include "Graphics/Primitives/ShaderProgram.h"
 #include "Graphics/Primitives/GLBModel.h"
@@ -48,13 +47,13 @@ namespace Core {
 #pragma endregion
 
 #pragma region //Functions
-			inline void SetMesh(const Core::Assets::AssetReference<::Graphics::Primitives::GLBModel>& model);
+			inline void SetMesh(const Core::Assets::AssetReference<::Graphics::Primitives::Model>& model);
 			
 			
 			inline void SetShaderProgram(const Core::Assets::AssetReference<Graphics::ShaderProgram>& s);
 
 			DONTDISCARD inline Core::Assets::AssetReference<Graphics::ShaderProgram> GetShaderProgram();
-			DONTDISCARD inline Core::Assets::AssetReference<::Graphics::Primitives::GLBModel> GetMesh() const;
+			DONTDISCARD inline Core::Assets::AssetReference<::Graphics::Primitives::Model> GetMesh() const;
 
 			void Render() const noexcept override;
 			inline void SetProcudesShadow(const bool shadow) noexcept;
@@ -64,7 +63,7 @@ namespace Core {
 
 #pragma region //Variables
 		private:
-			Core::Assets::Asset<::Graphics::Primitives::GLBModel> mModel;
+			Core::Assets::Asset<::Graphics::Primitives::Model> mModel;
 			Core::Assets::Asset<Graphics::ShaderProgram> mShaderProgram;
 #pragma endregion
 		};
@@ -74,7 +73,7 @@ namespace Core {
 		*
 		*   Sets the Mesh associated with this renderer
 		*/ // ---------------------------------------------------------------------
-		void GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::SetMesh(const Core::Assets::AssetReference<::Graphics::Primitives::GLBModel>& model) {
+		void GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::SetMesh(const Core::Assets::AssetReference<::Graphics::Primitives::Model>& model) {
 			mModel = model.lock();
 		}
 
@@ -104,7 +103,7 @@ namespace Core {
 		* Gets the Mesh associated with this renderer
 		*/ // ---------------------------------------------------------------------
 
-		Core::Assets::AssetReference<::Graphics::Primitives::GLBModel> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetMesh() const {
+		Core::Assets::AssetReference<::Graphics::Primitives::Model> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetMesh() const {
 			return mModel;
 		}
 
