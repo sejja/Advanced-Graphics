@@ -25,14 +25,16 @@ namespace Graphics {
 				void put(Graphics::Primitives::Mesh* key, std::weak_ptr<Core::Object> value);
 				std::weak_ptr<InstancedMesh> get(std::weak_ptr<Graphics::Primitives::Mesh> key);
 				void fetch_Instanced();
-				void initInstancedMesh(InstancedMesh* instancedMesh);
-				InstancedRenderNode CreateRenderNode(std::weak_ptr<Core::Object> value);
 				std::unordered_map< Graphics::Primitives::Mesh*, InstancedRenderNode >* getInstancedMap();
 				void InstancedRender();
 
 				void printInstancedMap();
 				void printMeshMap();
 			private:
+
+				void initInstancedMesh(InstancedMesh* instancedMesh, Graphics::Primitives::Mesh* mesh);
+				InstancedRenderNode CreateRenderNode(std::weak_ptr<Core::Object> value);
+
 				/* This map link a mesh to every object that has this mesh  */
 				std::unordered_map< std::shared_ptr<InstancedMesh>, std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> > ptr_InstancedMesh_Objects_Map;
 

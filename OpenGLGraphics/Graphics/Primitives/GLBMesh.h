@@ -36,6 +36,10 @@ namespace Graphics {
                 const std::vector<unsigned int>& indices, 
                 const std::vector<Core::Assets::Asset<Core::Graphics::Texture>>& textures);
             void Draw();
+            void bindTextures();
+            GLuint getVao();
+            GLuint getVbo();
+            GLuint getCount();
 
         private:
             std::vector<Core::Assets::Asset<Core::Graphics::Texture>> textures;

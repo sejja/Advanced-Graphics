@@ -50,6 +50,14 @@ namespace Graphics {
             mCount = indices.size();
 		}
 
+        void Mesh::bindTextures()
+        {
+            for (unsigned int i = 0; i < textures.size(); i++)
+            {
+                textures[i]->Get()->Bind();
+            }
+        }
+
         void Mesh::Draw() {
 
             //try {
@@ -67,15 +75,13 @@ namespace Graphics {
 
 
             //}
-            // bind appropriate textures
+            //bind appropriate textures
             unsigned int diffuseNr = 1;
             unsigned int specularNr = 1;
             unsigned int normalNr = 1;
             unsigned int heightNr = 1;
-            for (unsigned int i = 0; i < textures.size(); i++)
-            {
-                textures[i]->Get()->Bind();
-            }
+            
+            bindTextures();
 
             // draw mesh
             glBindVertexArray(mVao);
@@ -84,6 +90,21 @@ namespace Graphics {
 
             // always good practice to set everything back to defaults once configured.
             glActiveTexture(GL_TEXTURE0);
+        }
+
+        GLuint Mesh::getVao()
+        {
+            return this->mVao;
+        }
+
+        GLuint Mesh::getVbo()
+        {
+            return this->mVbo;
+        }
+
+        GLuint Mesh::getCount()
+        {
+            return this->mCount;
         }
 	}
 }

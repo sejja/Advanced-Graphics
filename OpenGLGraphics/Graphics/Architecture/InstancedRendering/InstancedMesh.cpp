@@ -7,7 +7,7 @@ namespace Graphics {
 		namespace InstancedRendering {
 			InstancedMesh::InstancedMesh()
 			{
-
+				//this->asociatedMesh = std::make_shared<Graphics::Primitives::Mesh>(asociatedMesh);
 			}
 			InstancedMesh::~InstancedMesh()
 			{
@@ -16,7 +16,17 @@ namespace Graphics {
 
 			void InstancedMesh::drawInstanced(std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> instancedObject) const
 			{
-				std::cout << "UNIMPLEMENTED FUNCTION drawInstanced IN InstancedMesh: " << this << "\n";
+				//std::cout << "UNIMPLEMENTED FUNCTION drawInstanced IN InstancedMesh: " << this << "\n";
+
+				this->asociatedMesh->bindTextures();
+
+				// draw mesh
+				glBindVertexArray(this->asociatedMesh->getVao());
+				glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(this->asociatedMesh->getCount()), GL_UNSIGNED_INT, 0, static_cast<int>(instancedObject->size()));
+				glBindVertexArray(0);
+
+				// always good practice to set everything back to defaults once configured.
+				glActiveTexture(GL_TEXTURE0);
 			}
 
 			void InstancedMesh::updateTransforms(std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> instancedObjects)
@@ -32,6 +42,11 @@ namespace Graphics {
 					//std::cout << "Instanced Rendering: " << parent.get() << "\n";
 					this->getTransforms_ptr()->push_back(matrix);
 				});
+			}
+
+			void InstancedMesh::setAssociatedMesh(Graphics::Primitives::Mesh* mesh)
+			{
+				this->asociatedMesh = std::make_shared<Graphics::Primitives::Mesh>(*mesh);
 			}
 
 			std::vector<glm::mat4>* InstancedMesh::getTransforms_ptr()

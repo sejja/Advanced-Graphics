@@ -3,6 +3,7 @@
 #include <iostream>
 #include <vector>
 #include "Core/ECSystem/Object.h"
+#include "../../Graphics/Primitives/GLBMesh.h"
 
 #ifndef _INSTANCEDMESH_
 #define _INSTANCEDMESH_
@@ -19,13 +20,15 @@ namespace Graphics {
 
 				void drawInstanced(std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> instancedObject) const;
 				void updateTransforms(std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> instancedObjects);
+				void setAssociatedMesh(Graphics::Primitives::Mesh* mesh);
+
 				std::vector<glm::mat4>* getTransforms_ptr(); 
 
 				bool initiated = false;
 
 			private:
-				GLuint VAO, VBO;
 				std::vector<glm::mat4> transforms;
+				std::shared_ptr<Graphics::Primitives::Mesh> asociatedMesh;
 			};
 		}
 	}

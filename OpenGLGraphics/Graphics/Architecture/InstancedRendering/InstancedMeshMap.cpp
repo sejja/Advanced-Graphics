@@ -50,7 +50,7 @@ namespace Graphics {
 					{
 						if (!mesh.second.instancedMesh.get()->initiated)
 						{
-							this->initInstancedMesh(mesh.second.instancedMesh.get()); //Just dont do that
+							this->initInstancedMesh(mesh.second.instancedMesh.get(), mesh.first);
 						}
 						this->ptr_InstancedMesh_Objects_Map[mesh.second.instancedMesh] = mesh.second.objects;
 						mesh.second.instancedMesh.get()->updateTransforms(mesh.second.objects);
@@ -63,8 +63,9 @@ namespace Graphics {
 				}
 			}
 
-			void InstancedMeshMap::initInstancedMesh(InstancedMesh* instancedMesh) {
+			void InstancedMeshMap::initInstancedMesh(InstancedMesh* instancedMesh, Graphics::Primitives::Mesh* mesh) {
 				instancedMesh->initiated = true;
+				instancedMesh->setAssociatedMesh(mesh);
 			}
 
 			void InstancedMeshMap::printInstancedMap()
