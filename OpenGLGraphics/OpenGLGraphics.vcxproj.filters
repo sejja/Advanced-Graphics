@@ -1826,12 +1826,6 @@
     <ClInclude Include="Dependencies\ImGuizmo\ImGuizmo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Editor\Interface\Guizmo.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Core\Editor\mouse_picking.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\SDL\Include\SDL_config.h.cmake" />
@@ -2800,6 +2794,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Content\Textures\decal_skull_n.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="D:\Asier\Descargas\NoTexture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\NoTexture.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -66,12 +66,11 @@ void Outliner::RenderOptions()
 	ImGui::SetNextItemWidth(remainingWidth * 0.50f);
 	ImGui::InputTextWithHint("##SearchItem", ICON_FA_MAGNIFYING_GLASS " Search item", str1, IM_ARRAYSIZE(str1));
 
-	//New Folder
+	//NEW OBJECT
 	ImGui::SameLine();
 	if (ImGui::Button(ICON_FA_CIRCLE_PLUS" New Object")) {
 		Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
 		auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
-
 		std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
 		obj->SetPosition(glm::vec3(0.0f,0.0f,0.0f));
 		obj->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -79,59 +78,65 @@ void Outliner::RenderOptions()
 		obj->SetName("New Object");
 		obj->SetID("New Object");
 
-
 		std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
 		renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>("Content/Meshes/cube_face.obj"));
-
 		renderer->SetShaderProgram(resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredGeometry.shader"));
-
 		obj->AddComponent(std::move(renderer));
-
 		scene.addObject(obj);
-
 	}
+
 }
 
-void Outliner::RenderSceneObjects()
-{
+void Outliner::RenderSceneObjects(){
 	Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
-
 	//Tree with list of selectable items in scene
 	ImGui::SetNextItemOpen(true, ImGuiCond_Once);
 	const std::vector<std::shared_ptr<Core::Object>>& sceneObjects = scene.GetObjects();
-
 	if (ImGui::TreeNode(ICON_FA_HOUSE " Main (Editor)")) {
 		static std::string selectedNodeChild = "None";
-
 		int i = 0;
 		for (const auto& obj : sceneObjects) {
 			//Check if object is selected
 			boolean isNodeSelected = obj == selectedObj.GetSelectedObject();
 			std::string displayName = formatObjName(obj);
-
-
-
-
 			ImGui::SetNextItemAllowOverlap();
-
 			ImGui::PushID(i);
 
+			
 			if (ImGui::Selectable(displayName.c_str(), isNodeSelected)) {
 				selectedObj.SetSelectedObject(obj);
 				selectedObj.SetSelectedComponent(nullptr);
+
 			}
+			if (ImGui::BeginPopupContextItem()) // <-- use last item id as popup id
+			{
+				selectedObj.SetSelectedObject(obj);
+				selectedObj.SetSelectedComponent(nullptr);
+				ImGui::Text("This a popup for \"%s\"!");
+				if (ImGui::Button("Close"))
+					ImGui::CloseCurrentPopup();
+				ImGui::EndPopup();
+			}
+			ImGui::SetItemTooltip("Right-click to open popup");
+
+
 
 			ImGui::PopID();
 			i++;
-
 		}
-
 		ImGui::TreePop();
 	}
-
 	ImGui::Spacing();
 	std::string itemNum = std::to_string(sceneObjects.size()) + " items in scene";
 	ImGui::Text(itemNum.c_str());
-
 	ImGui::Spacing(); 
 }
+
+
+
+			
+		
+		
+	
+	
+

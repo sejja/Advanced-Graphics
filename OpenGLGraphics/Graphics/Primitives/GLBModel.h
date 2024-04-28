@@ -36,6 +36,7 @@ namespace Graphics {
             //get the model's directory
             std::string getDirectory();
             std::string getPath();
+			std::string getName();
 
             //get aabb
             aiAABB& getAABB();

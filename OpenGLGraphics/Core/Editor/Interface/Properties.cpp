@@ -171,7 +171,6 @@ void TextPaddingWBg(const char* text, ImVec4 bgColor) {
     ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), text);
 }
 
-
 void TransformRow(const char* title, float& x_val, float& y_val, float& z_val,bool& axisLock) {
     static char defaultValue[16] = "0";
     const float f32_zero = -1000.f;
@@ -231,131 +230,6 @@ void TransformRow(const char* title, float& x_val, float& y_val, float& z_val,bo
     }
 
 }
-
-
-void Properties::objectOutliner() {
-    std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
-
-    //TODO : Object y no particle manager
-    if (obj) {
-        ImGui::Text("%s %s", ICON_FA_CUBES, obj->GetName().c_str()); ImGui::SameLine();
-
-        if (ImGui::Button(ICON_FA_PLUS " Add")) {
-            ImGui::OpenPopup("new_component_modal");
-        }ImGui::SameLine();
-
-        if (ImGui::Button(ICON_FA_TRASH " Delete")) {
-            ImGui::OpenPopup("delete_object_modal");
-        }
-
-        if (ImGui::BeginPopup("new_component_modal")) {
-
-            ImGui::SeparatorText("Components");
-
-            if (ImGui::Selectable(ICON_FA_CUBE " Mesh")) {
-                auto renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
-                obj->AddComponent(std::move(renderer));
-            }
-
-            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light")) {
-                std::shared_ptr<::Graphics::Primitives::PointLight> light;
-                light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
-                light->SetRadius(1.0f);
-                light->SetFallOff(0.5f);
-
-                light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));   
-                glm::vec3 relativePos = glm::vec3(0.0f, 0.0f, 0.0f);
-                light->SetPosition(relativePos);
-
-                obj->AddComponent(std::move(light));
-
-            }
-
-            if (ImGui::Selectable(ICON_FA_NOTE_STICKY " Decal")) {
-                obj->AddComponent(std::move(std::make_shared<Graphics::Primitives::Decal>(obj)));
-            }
-
-            ImGui::EndPopup();
-        }
-
-        if (ImGui::BeginPopup("delete_object_modal")) {
-
-            ImGui::SeparatorText("Confirm Delete Object");
-
-            if (ImGui::Selectable(ICON_FA_TRASH_ARROW_UP " Delete")) {
-                Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
-                scene.removeObject(obj);
-            }
-
-
-
-            ImGui::EndPopup();
-        }
-
-        selectedObjectTree(); ImGui::Spacing();
-    }
-}
-
-
-
-void Properties::selectedObjectTree() {
-
-    std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
-    std::vector<std::shared_ptr<Core::Component>> comps = obj->GetAllComponents();
-
-    ImGui::BeginChild("ResizableChild", ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 2), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeY);
-
-    std::string displayName = std::format("{} {} (Instance)", ICON_FA_CUBE, obj->GetName());
-
-    bool isRootSelectedObj = (selectedObjIns.GetSelectedComponent() == NULL);
-
-    if (ImGui::Selectable(displayName.c_str(), isRootSelectedObj)) {
-        selectedObjIns.SetSelectedObject(obj);
-        selectedObjIns.SetSelectedComponent(NULL);
-    }
-
-    ImGui::Indent();
-
-    int i = 0;
-    for (auto& comp : comps) {
-        bool isCompSelectedObj = selectedObjIns.GetSelectedComponent() == comp;
-
-        ImGui::PushID(i);
-        // Check if the component is a mesh
-        if (std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> modelComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp)) {
-            if (ImGui::Selectable(ICON_FA_CUBE " Mesh", isCompSelectedObj)) {
-                selectedObjIns.SetSelectedComponent(comp);
-            }
-        }
-        // Check if the component is a light
-        else if (std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(comp)) {
-            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light", isCompSelectedObj)) {
-                selectedObjIns.SetSelectedComponent(comp);
-            }
-        }
-        else if (std::shared_ptr<Core::Particles::FireSystem> fireComp = std::dynamic_pointer_cast<Core::Particles::FireSystem>(comp)) {
-            if (ImGui::Selectable(ICON_FA_FIRE " Fire System", isCompSelectedObj)) {
-				selectedObjIns.SetSelectedComponent(comp);
-			}
-		}
-        else if (Core::RTTI::IsA<Graphics::Primitives::Decal>(comp.get())) {
-            if (ImGui::Selectable(ICON_FA_NOTE_STICKY " Decal", isCompSelectedObj)) {
-                selectedObjIns.SetSelectedComponent(comp);
-            }
-        }
-        else {
-            if (ImGui::Selectable(ICON_FA_QUESTION" tipo de comp raro?", isCompSelectedObj)) {
-                selectedObjIns.SetSelectedComponent(comp);
-            }
-        }
-        ImGui::PopID();
-        i++;
-
-    }
-    ImGui::Unindent();
-    ImGui::EndChildFrame();
-}
-
 
 void colorPickerBtn(static ImVec4& color) {
 
@@ -436,12 +310,135 @@ void CreateSliderRow(const char* rowName, float& sliderValue, float minValue, fl
     ImGui::SliderFloat(SLIDERID.c_str(), &sliderValue, minValue, maxValue, "%.3f");
     ImGui::SameLine();
 
-    auto reloadText = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/lockClosed.jpg")->Get();
+    auto reloadText = resmg.GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/lockClosed.jpg")->Get();
     ImGui::ImageButton((void*)(intptr_t)reloadText->GetTextureHandle(), ImVec2(13, 13));
 
 
 }
 
+
+
+
+void Properties::objectOutliner() {
+    std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
+
+    //TODO : Object y no particle manager
+    if (obj) {
+        ImGui::Text("%s %s", ICON_FA_CUBES, obj->GetName().c_str()); ImGui::SameLine();
+
+        if (ImGui::Button(ICON_FA_PLUS " Add")) {
+            ImGui::OpenPopup("new_component_modal");
+        }ImGui::SameLine();
+
+        if (ImGui::Button(ICON_FA_TRASH " Delete")) {
+            ImGui::OpenPopup("delete_object_modal");
+        }
+
+        if (ImGui::BeginPopup("new_component_modal")) {
+
+            ImGui::SeparatorText("Components");
+
+            if (ImGui::Selectable(ICON_FA_CUBE " Mesh")) {
+                auto renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
+                obj->AddComponent(std::move(renderer));
+            }
+
+            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light")) {
+                std::shared_ptr<::Graphics::Primitives::PointLight> light;
+                light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
+                light->SetRadius(1.0f);
+                light->SetFallOff(0.5f);
+
+                light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));   
+                glm::vec3 relativePos = glm::vec3(0.0f, 0.0f, 0.0f);
+                light->SetPosition(relativePos);
+
+                obj->AddComponent(std::move(light));
+
+            }
+
+            if (ImGui::Selectable(ICON_FA_NOTE_STICKY " Decal")) {
+                obj->AddComponent(std::move(std::make_shared<Graphics::Primitives::Decal>(obj)));
+            }
+
+            ImGui::EndPopup();
+        }
+
+        if (ImGui::BeginPopup("delete_object_modal")) {
+
+            ImGui::SeparatorText("Confirm Delete Object");
+
+            if (ImGui::Selectable(ICON_FA_TRASH_ARROW_UP " Delete")) {
+                Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
+                scene.removeObject(obj);
+            }
+
+
+
+            ImGui::EndPopup();
+        }
+
+        selectedObjectTree(); ImGui::Spacing();
+    }
+}
+
+void Properties::selectedObjectTree() {
+
+    std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
+    std::vector<std::shared_ptr<Core::Component>> comps = obj->GetAllComponents();
+
+    ImGui::BeginChild("ResizableChild", ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 2), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeY);
+
+    std::string displayName = std::format("{} {} (Instance)", ICON_FA_CUBE, obj->GetName());
+
+    bool isRootSelectedObj = (selectedObjIns.GetSelectedComponent() == NULL);
+
+    if (ImGui::Selectable(displayName.c_str(), isRootSelectedObj)) {
+        selectedObjIns.SetSelectedObject(obj);
+        selectedObjIns.SetSelectedComponent(NULL);
+    }
+
+    ImGui::Indent();
+
+    int i = 0;
+    for (auto& comp : comps) {
+        bool isCompSelectedObj = selectedObjIns.GetSelectedComponent() == comp;
+
+        ImGui::PushID(i);
+        // Check if the component is a mesh
+        if (std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> modelComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp)) {
+            if (ImGui::Selectable(ICON_FA_CUBE " Mesh", isCompSelectedObj)) {
+                selectedObjIns.SetSelectedComponent(comp);
+            }
+        }
+        // Check if the component is a light
+        else if (std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(comp)) {
+            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light", isCompSelectedObj)) {
+                selectedObjIns.SetSelectedComponent(comp);
+            }
+        }
+        else if (std::shared_ptr<Core::Particles::FireSystem> fireComp = std::dynamic_pointer_cast<Core::Particles::FireSystem>(comp)) {
+            if (ImGui::Selectable(ICON_FA_FIRE " Fire System", isCompSelectedObj)) {
+				selectedObjIns.SetSelectedComponent(comp);
+			}
+		}
+        else if (Core::RTTI::IsA<Graphics::Primitives::Decal>(comp.get())) {
+            if (ImGui::Selectable(ICON_FA_NOTE_STICKY " Decal", isCompSelectedObj)) {
+                selectedObjIns.SetSelectedComponent(comp);
+            }
+        }
+        else {
+            if (ImGui::Selectable(ICON_FA_QUESTION" tipo de comp raro?", isCompSelectedObj)) {
+                selectedObjIns.SetSelectedComponent(comp);
+            }
+        }
+        ImGui::PopID();
+        i++;
+
+    }
+    ImGui::Unindent();
+    ImGui::EndChildFrame();
+}
 
 void Properties::ParticleTransform() {
     std::shared_ptr<Core::Component> particleComp = selectedObjIns.GetSelectedComponent();
@@ -473,7 +470,6 @@ void Properties::TransformOptions() {
     obj->SetScale(curScale);
 
 }
-
 
 void Properties::TransformGuizmoTypeSelect() {
 
@@ -511,7 +507,6 @@ void Properties::LightTransform() {
 	TransformRow("  Location", curPos[0], curPos[1], curPos[2],axisLock);
 	lightComp->SetPosition(curPos);
 }
-
 
 void Properties::LightingOptions() {
 
@@ -682,7 +677,6 @@ void Properties::LightTypeOptions(){
     ImGui::PopStyleVar();
 }
 
-
 static std::string nombreTexturaTemporal = "Textura def";
 
 void Properties::MaterialsOptions() {
@@ -691,16 +685,17 @@ void Properties::MaterialsOptions() {
     ImGuiDragDropFlags flags = 0 | ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
-
     auto glbModel = meshComp->GetMesh().lock();
-
     if (ImGui::BeginTable("normal_tex", 2, flags1)) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Element 0");
         ImGui::TableSetColumnIndex(1);
-        auto curTex = glbModel->Get()->getMeshes()[0].getNormal()->Get();
-        ImGui::Image((void*)(intptr_t)curTex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+        auto curTex = glbModel->Get()->getMeshes()[0].getNormal();
+        if (!curTex){
+            curTex = resmg.GetResource<Core::Graphics::Texture>("Content/Textures/NoTexture.png");
+        }
+        ImGui::Image((void*)(intptr_t)curTex->Get()->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
         ImGui::SameLine();
         ImGui::BeginGroup();
         ImGui::Text(nombreTexturaTemporal.c_str());
@@ -715,7 +710,7 @@ void Properties::MaterialsOptions() {
             AssetIcon* iconPtr = (AssetIcon*)payload->Data;
             nombreTexturaTemporal = iconPtr->nombre;
             printf("RUTA NORMAL TEX: %s\n", iconPtr->ruta);
-            Core::Assets::Asset<Core::Graphics::Texture> normalTexture = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(iconPtr->ruta);
+            Core::Assets::Asset<Core::Graphics::Texture> normalTexture = resmg.GetResource<Core::Graphics::Texture>(iconPtr->ruta);
             for (auto& mesh : glbModel->Get()->getMeshes()) {
                 mesh.setNormal(normalTexture);
             }
@@ -727,8 +722,11 @@ void Properties::MaterialsOptions() {
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Element 1");
         ImGui::TableSetColumnIndex(1);
-        auto curTex = glbModel->Get()->getMeshes()[0].getDiffuse()->Get();
-        ImGui::Image((void*)(intptr_t)curTex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+        auto curTex = glbModel->Get()->getMeshes()[0].getDiffuse();
+        if (!curTex) {
+            curTex = resmg.GetResource<Core::Graphics::Texture>("Content/Textures/NoTexture.png");
+        }
+        ImGui::Image((void*)(intptr_t)curTex->Get()->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
         ImGui::SameLine();
         ImGui::BeginGroup();
         ImGui::Text(nombreTexturaTemporal.c_str());
@@ -742,7 +740,7 @@ void Properties::MaterialsOptions() {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* iconPtr = (AssetIcon*)payload->Data;
             nombreTexturaTemporal = iconPtr->nombre;
-            Core::Assets::Asset<Core::Graphics::Texture> diffuseTexture = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(iconPtr->ruta);
+            Core::Assets::Asset<Core::Graphics::Texture> diffuseTexture = resmg.GetResource<Core::Graphics::Texture>(iconPtr->ruta);
             for (auto& mesh : glbModel->Get()->getMeshes()) {
                 mesh.setDiffuse(diffuseTexture);
             }
@@ -752,161 +750,85 @@ void Properties::MaterialsOptions() {
     ImGui::PopStyleVar();
 }
 
-
 void Properties::MeshOptions() {
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
     static ImVec2 cell_padding(4.0f, 8.0f);
     ImGuiDragDropFlags flags = 0 | ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
-
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
-
     auto glbModel = meshComp->GetMesh().lock();
-
-    
-    if (glbModel) {
-        //std::string directory = glbModel->Get()->getPath();
-        //printf("Directory: %s\n", directory.c_str());
-    }
-
     if (ImGui::BeginTable("mesh_table", 2, flags1)) {
-
         ImGui::TableNextRow();
-
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Element 0");
         ImGui::TableSetColumnIndex(1);
-
-
-        auto tex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/model.png")->Get();
+        auto tex = resmg.GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/model.png")->Get();
         ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
-
-
         ImGui::SameLine();
         ImGui::BeginGroup();
-
-
-        ImGui::Text(nombreTexturaTemporal.c_str());
-
+        ImGui::Text(glbModel->Get()->getName().c_str());
         ImGui::Button(ICON_FA_ARROW_TURN_UP);
         ImGui::SameLine();
         ImGui::Button(ICON_FA_FOLDER_OPEN);
-
-
         ImGui::EndGroup();
-
-
     }
     ImGui::EndTable();
-
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* asset = (AssetIcon*)payload->Data;
-            printf("RUTA MESH: %s\n", asset->ruta);
             meshComp->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>(asset->ruta));
         }
         ImGui::EndDragDropTarget();
     }
-
-
     ImGui::PopStyleVar();
-
-
 }
 
-void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline)
-{
+void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline){
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
-    static ImVec2 cell_padding(4.0f, 8.0f);
     ImGuiDragDropFlags flags = 0 | ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
+    static ImVec2 cell_padding(4.0f, 8.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
-
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
-
-    
     auto glbModel = meshComp->GetMesh().lock();
-
-    if (glbModel) {
-        //std::string directory = glbModel->Get()->getPath();
-        //printf("Directory: %s\n", directory.c_str());
-    }
-
-
-
+   
     if (ImGui::BeginTable("shader_table", 2, flags1)) {
-
         ImGui::TableNextRow();
-
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Element 0");
         ImGui::TableSetColumnIndex(1);
-
-
         auto tex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/shader.png")->Get();
         ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
-
-
         ImGui::SameLine();
         ImGui::BeginGroup();
-
 
         ImGui::Text(nombreTexturaTemporal.c_str());
 
         ImGui::Button(ICON_FA_ARROW_TURN_UP);
         ImGui::SameLine();
         ImGui::Button(ICON_FA_FOLDER_OPEN);
-
-
         ImGui::EndGroup();
-
-
     }
     ImGui::EndTable();
 
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* asset = (AssetIcon*)payload->Data;
-            printf("RUTA SHADER PROG: %s\n", asset->ruta);
-            //meshComp->SetShaderProgram(resmg.GetResource<Gra>("Content/Shaders/Refractive.shader"));
-
-          
             Core::Assets::Asset<ShaderProgram> newShader = resmg.GetResource<ShaderProgram>(asset->ruta);
             Core::Assets::AssetReference<ShaderProgram> curShaderRef = meshComp->GetShaderProgram();
             Core::Assets::Asset<ShaderProgram> curShader = curShaderRef.lock();;
-            
-            
-            /*
-            if (curShaderRef.lock()) 
+            if (curShaderRef.lock()){
                 curShader = curShaderRef.lock();
             }
             else {
                 printf("No hay shader actual\n");
             }
-            */
-
             pipeline.updateRenderablesGroups(curShader, newShader, meshComp);
-
-            
-            
-            
-
-            meshComp->SetShaderProgram(resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
-            
-
-           
-            //renderer->SetShaderProgram(resmg.GetResource<Core::Graphics::ShaderProgram>(asset->ruta));
-
-
-
-           
+            meshComp->SetShaderProgram(newShader);
         }
         ImGui::EndDragDropTarget();
     }
-
-
     ImGui::PopStyleVar();
 }
-
 
 void Properties::FireSize() {
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
@@ -991,7 +913,6 @@ void Properties::FireSize() {
 
 
 }
-
 
 void Properties::UpdateLightCompsPos(std::shared_ptr<Core::Object> obj)
 {

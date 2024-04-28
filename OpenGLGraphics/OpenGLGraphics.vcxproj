@@ -1074,8 +1074,10 @@
     <Image Include="Content\Textures\decal_skull_n.png" />
     <Image Include="Content\Textures\front.jpg" />
     <Image Include="Content\Textures\left.jpg" />
+    <Image Include="Content\Textures\NoTexture.png" />
     <Image Include="Content\Textures\right.jpg" />
     <Image Include="Content\Textures\top.jpg" />
+    <Image Include="D:\Asier\Descargas\NoTexture.png" />
     <Image Include="D:\Asier\Descargas\realEngineLogo.png" />
   </ItemGroup>
   <ItemGroup>

@@ -15,7 +15,7 @@ namespace Graphics {
         *
         *   Loads a Model from a file
         */ //----------------------------------------------------------------------
-		Model::Model(std::string const& path) : aabb(*new aiAABB()) {
+		Model::Model(std::string const& path) : modelPath(path), aabb(*new aiAABB()) {
 			LoadModel(path);
 		}
 
@@ -27,6 +27,28 @@ namespace Graphics {
 		void Model::Draw() {
             std::for_each(mMeshes.begin(), mMeshes.end(), [](Mesh& mesh) { mesh.Draw(); });
 		}
+
+        std::string Model::getDirectory()
+        {
+            return modelPath.substr(0, modelPath.find_last_of('/'));
+        }
+
+        std::string Model::getPath() {
+            return modelPath;
+        }
+
+        std::string Model::getName() {
+            size_t slashPosition = modelPath.find_last_of('/');
+            if (slashPosition == std::string::npos)
+                slashPosition = modelPath.find_last_of('\\');
+            if (slashPosition != std::string::npos) {
+                return modelPath.substr(slashPosition + 1);
+            }
+            else {
+                return modelPath;
+            }
+        }
+
 
         aiAABB& Model::getAABB()
         {
