@@ -814,6 +814,15 @@
     <None Include="Content\Shaders\GeometryDecal.frag" />
     <None Include="Content\Shaders\GeometryDecal.shader" />
     <None Include="Content\Shaders\GeometryDecal.vert" />
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.shader">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.vert">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.frag">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
     <None Include="Content\Shaders\Renderer.frag" />
     <None Include="Content\Shaders\FireParticle.vert" />
     <None Include="Content\Shaders\Refractive.frag" />

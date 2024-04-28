@@ -34,6 +34,7 @@ namespace Graphics {
 
 				/*  It is a raw pointer to a Singleton */
 				InstancedMeshMap* meshMap;
+				Core::Assets::Asset<Core::Graphics::ShaderProgram> shaderProgram;
 			};
 		}
 	}

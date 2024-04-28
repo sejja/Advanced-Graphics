@@ -2324,6 +2324,9 @@
     <None Include="Content\Shaders\GeometryDecal.shader" />
     <None Include="Content\Shaders\GeometryDecal.vert" />
     <None Include="Content\Maps\Cyberpunk.level" />
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.shader" />
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.vert" />
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.frag" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />

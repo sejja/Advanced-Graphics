@@ -27,6 +27,8 @@ namespace Graphics {
 				bool initiated = false;
 
 			private:
+				Core::Graphics::ShaderProgram* shaderProgram = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/InstancedShaders/InstancedGeometry.shader").get()->Get();
+				GLuint ubo;
 				std::vector<glm::mat4> transforms;
 				std::shared_ptr<Graphics::Primitives::Mesh> asociatedMesh;
 			};
