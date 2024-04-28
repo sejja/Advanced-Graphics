@@ -101,9 +101,9 @@ namespace Graphics {
 				}*/
 
 				shader->Bind();
-				shader->SetShaderUniform("model", &shadowTransforms[0]);
-				shader->SetShaderUniform("lightPos", &lightData->mPosition);
-				shader->SetShaderUniform("far_plane", 2000);
+				shader->SetShaderUniform("uModel", &shadowTransforms[0]);
+				//shader->SetShaderUniform("lightPos", &lightData->mPosition);
+				//shader->SetShaderUniform("farPlane", 2000);
 
 				lightData->depthMapFBO.Bind();
 				lightData->depthMapFBO.Clear(true);
