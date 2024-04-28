@@ -47,8 +47,8 @@ namespace Graphics {
 
 			depthMapFBO.Bind();
 			glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, depthCubemap, 0);
-			glDrawBuffer(GL_NONE);
-			glReadBuffer(GL_NONE);
+			//glDrawBuffer(GL_NONE);
+			//glReadBuffer(GL_NONE);
 			depthMapFBO.Unbind();
 		}
 	}

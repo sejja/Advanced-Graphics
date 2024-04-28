@@ -1,4 +1,4 @@
 {
-	"Vertex" : "Content/Shaders/Shadow.vert",
-	"Fragment" : "Content/Shaders/Shadow.frag"
+	"Vertex" : "Content/Shaders/PointShadow.vert",
+	"Fragment" : "Content/Shaders/PointShadow.frag"
 }

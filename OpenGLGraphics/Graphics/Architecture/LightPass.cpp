@@ -83,11 +83,31 @@ namespace Graphics {
 			glViewport(0, 0, 1024, 1024); //Creo
 			for (auto& x : sPointLightData) {
 				auto lightData = x.second;
+
+				std::vector<glm::mat4> shadowTransforms;
+				shadowTransforms.push_back(glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0))); //falta multiplicar por la proyección
+				shadowTransforms.push_back(glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0)));
+				shadowTransforms.push_back(glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 1, 0), glm::vec3(0, 0, 1))); 
+				shadowTransforms.push_back(glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, -1, 0), glm::vec3(0, 0, -1)));
+				shadowTransforms.push_back(glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 1), glm::vec3(0, -1, 0)));
+				shadowTransforms.push_back(glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, -1), glm::vec3(0, -1, 0)));
+
+				
+				//Configurar shader
+				const auto shader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
+
+				/*for (int i = 0; i < 6; i++) {
+					shader->set
+				}*/
+
+				shader->Bind();
+				shader->SetShaderUniform("model", &shadowTransforms[0]);
+				shader->SetShaderUniform("lightPos", &lightData->mPosition);
+				shader->SetShaderUniform("far_plane", 2000);
+
 				lightData->depthMapFBO.Bind();
 				lightData->depthMapFBO.Clear(true);
-				//Configurar shader
-				//const auto shader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
-				//rend_func(shader); //Renderizar
+				rend_func(shader); //Renderizar
 				lightData->depthMapFBO.Unbind();
 			}
 		}
