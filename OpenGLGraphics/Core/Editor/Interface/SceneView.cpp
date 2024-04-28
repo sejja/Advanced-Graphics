@@ -38,7 +38,7 @@ void SceneView::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	isWHovered = mousePosition.x <= viewportPanelSize.x && mousePosition.y <= viewportPanelSize.y;
 	//picking
 	
-	if (ImGui::IsMouseClicked(0) && isWHovered) {
+	if (ImGui::IsMouseClicked(0) && isWHovered && !ImGuizmo::IsOver()) {
 		mousePicking.performRayCasting(mousePosition, viewportPanelSize.x, viewportPanelSize.y, pipeline.getCamera());
 	}
 	

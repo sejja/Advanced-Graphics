@@ -102,24 +102,36 @@ void Outliner::RenderSceneObjects(){
 			ImGui::SetNextItemAllowOverlap();
 			ImGui::PushID(i);
 
-			
-			if (ImGui::Selectable(displayName.c_str(), isNodeSelected)) {
-				selectedObj.SetSelectedObject(obj);
-				selectedObj.SetSelectedComponent(nullptr);
-
+			if (!isNodeSelected || (!editingName && isNodeSelected)) {
+				if (ImGui::Selectable(displayName.c_str(), isNodeSelected)) {
+					selectedObj.SetSelectedObject(obj);
+					selectedObj.SetSelectedComponent(nullptr);
+				}
+				ImGui::SetItemTooltip("Right-click to open options");
 			}
-			if (ImGui::BeginPopupContextItem()) // <-- use last item id as popup id
-			{
-				selectedObj.SetSelectedObject(obj);
-				selectedObj.SetSelectedComponent(nullptr);
-				ImGui::Text("This a popup for \"%s\"!");
-				if (ImGui::Button("Close"))
-					ImGui::CloseCurrentPopup();
+			else {
+				static char buffer[256];
+				strcpy(buffer, newName.c_str());
+				if (ImGui::InputText("", buffer, IM_ARRAYSIZE(buffer), ImGuiInputTextFlags_EnterReturnsTrue)) {
+					newName = buffer;
+					obj->SetName(newName);
+					editingName = false;
+				}
+			}
+			
+			if (ImGui::BeginPopupContextItem()) {
+				if (ImGui::MenuItem(ICON_FA_PENCIL" Rename")) {
+					selectedObj.SetSelectedObject(obj);
+					selectedObj.SetSelectedComponent(nullptr);
+					newName = obj->GetName();
+					editingName = true;
+				}
+				if (ImGui::MenuItem(ICON_FA_TRASH_CAN" Delete")) {
+				}
 				ImGui::EndPopup();
 			}
-			ImGui::SetItemTooltip("Right-click to open popup");
 
-
+			
 
 			ImGui::PopID();
 			i++;

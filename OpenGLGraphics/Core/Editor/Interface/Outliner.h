@@ -14,6 +14,9 @@ public:
     void RenderSceneObjects();
 
 
+private:
+    std::string newName;
+	bool editingName = false;
 
 };
 

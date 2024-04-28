@@ -54,7 +54,7 @@ namespace Core {
             //SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
             //SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
-            mWindow.reset(SDL_CreateWindow("OpenGL Graphics",
+            mWindow.reset(SDL_CreateWindow("Real Engine",
                 SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
                 mDimensions.x, mDimensions.y,
                 SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI));

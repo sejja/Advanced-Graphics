@@ -84,6 +84,7 @@ void Guizmo::Draw()
 			glm::value_ptr(modelMatrix)
 		);
 
+		
 		if (ImGuizmo::IsUsing()) {
 			Singleton<Editor>::Instance().SetEditorLocked(true);
 
