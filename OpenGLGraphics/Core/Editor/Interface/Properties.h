@@ -36,6 +36,9 @@ private:
     bool focused = false;
 
 
+    bool* axisLockS = new bool(true);
+
+
 
 
 };

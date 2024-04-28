@@ -120,7 +120,7 @@ void Outliner::RenderSceneObjects(){
 			}
 			
 			if (ImGui::BeginPopupContextItem()) {
-				if (ImGui::MenuItem(ICON_FA_PENCIL" Rename")) {
+				if (ImGui::MenuItem(ICON_FA_I_CURSOR" Rename")) {
 					selectedObj.SetSelectedObject(obj);
 					selectedObj.SetSelectedComponent(nullptr);
 					newName = obj->GetName();

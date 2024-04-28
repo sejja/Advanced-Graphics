@@ -171,7 +171,7 @@ void TextPaddingWBg(const char* text, ImVec4 bgColor) {
     ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), text);
 }
 
-void TransformRow(const char* title, float& x_val, float& y_val, float& z_val,bool& axisLock) {
+void TransformRow(const char* title, float& x_val, float& y_val, float& z_val,bool lockable = false, bool* axisLock = nullptr) {
     static char defaultValue[16] = "0";
     const float f32_zero = -1000.f;
     const float f32_one = 1000.f;
@@ -191,16 +191,20 @@ void TransformRow(const char* title, float& x_val, float& y_val, float& z_val,bo
         ImGui::Text(title);
         ImGui::TableSetColumnIndex(1);
 
-        if (axisLock) {
-            if (ImGui::Button(ICON_FA_LOCK)) {
-				axisLock = false;
-			}
-		}
-        else {
-            if (ImGui::Button(ICON_FA_LOCK_OPEN)) {
-				axisLock = true;
-			}
-		}
+        if (lockable) {
+			std::cout << "LOCKED:" << *axisLock << std::endl;
+            if (*axisLock) {
+                if (ImGui::Button(ICON_FA_LOCK)) {
+                    *axisLock = false;
+                }
+            }
+            else {
+                if (ImGui::Button(ICON_FA_LOCK_OPEN)) {
+					*axisLock = true;
+                }
+            }
+        }
+        
         
         ImGui::SameLine();
         ImGui::SetNextItemWidth(remainingWidth * inputSize);
@@ -445,9 +449,8 @@ void Properties::ParticleTransform() {
     std::shared_ptr<Core::Particles::FireSystem> particleSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(particleComp);
 
     glm::vec3 curCenter = particleSystem->GetSystemCenter();
-    bool axisLock;
 
-    TransformRow("Center", curCenter[0], curCenter[1], curCenter[2],axisLock);
+    TransformRow("Center", curCenter[0], curCenter[1], curCenter[2]);
 
     particleSystem->SetSystemCenter(curCenter);
 }
@@ -459,11 +462,9 @@ void Properties::TransformOptions() {
     glm::vec3 curRot = obj->GetRotation();
     glm::vec3 curScale = obj->GetScale();
 
-    bool axisLock;
-
-    TransformRow("  Location", curPos[0], curPos[1], curPos[2], axisLock);
-    TransformRow("  Rotation", curRot[0], curRot[1], curRot[2], axisLock);
-    TransformRow("  Scale", curScale[0], curScale[1], curScale[2], axisLock);
+    TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
+    TransformRow("  Rotation", curRot[0], curRot[1], curRot[2]);
+    TransformRow("  Scale", curScale[0], curScale[1], curScale[2],true, axisLockS);
 
     obj->SetPosition(curPos);
     obj->SetRotation(curRot);
@@ -503,8 +504,7 @@ void Properties::LightTransform() {
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
     std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(selectedObjIns.GetSelectedComponent());
 	glm::vec3 curPos = lightComp->GetPosition();
-    bool axisLock;
-	TransformRow("  Location", curPos[0], curPos[1], curPos[2],axisLock);
+	TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
 	lightComp->SetPosition(curPos);
 }
 
@@ -612,9 +612,8 @@ void Properties::LightTypeOptions(){
             float dirZ = directionalLight->GetDirection().z;
 
             ImGui::EndTable();
-            bool axisLock;
 
-            TransformRow("  Direction", dirX, dirY, dirZ, axisLock);
+            TransformRow("  Direction", dirX, dirY, dirZ);
 
             glm::vec3 normalizedDirection = glm::normalize(glm::vec3(dirX, dirY, dirZ));
             directionalLight->SetDirection(normalizedDirection);
@@ -664,8 +663,7 @@ void Properties::LightTypeOptions(){
 
             ImGui::EndTable();
 
-            bool axisLock;
-            TransformRow("  Direction", dirX, dirY, dirZ,axisLock);
+            TransformRow("  Direction", dirX, dirY, dirZ);
             spotLight->SetRadius(lightRadius);
             spotLight->SetInner(inner);
             spotLight->SetOuter(outer);
@@ -846,8 +844,7 @@ void Properties::FireSize() {
 
 
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
-    bool axisLock;
-    TransformRow("  Radius    ", curRadius[0], curRadius[1], curRadius[2], axisLock);
+    TransformRow("  Radius    ", curRadius[0], curRadius[1], curRadius[2]);
 
     if (ImGui::BeginTable("fire_size_table", 2, flags1)) {
 
