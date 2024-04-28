@@ -35,9 +35,10 @@ void SceneView::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 	Singleton<Editor>::Instance().setSceneFramePosition(screen_pos);
 
+	isWHovered = mousePosition.x <= viewportPanelSize.x && mousePosition.y <= viewportPanelSize.y;
 	//picking
 	
-	if (ImGui::IsMouseClicked(0) && mousePosition.x <= viewportPanelSize.x && mousePosition.y <= viewportPanelSize.y) {
+	if (ImGui::IsMouseClicked(0) && isWHovered) {
 		mousePicking.performRayCasting(mousePosition, viewportPanelSize.x, viewportPanelSize.y, pipeline.getCamera());
 	}
 	
@@ -47,4 +48,9 @@ void SceneView::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	ImGui::End();
 
 
+}
+
+bool SceneView::isHovered()
+{	
+	return isWHovered;
 }

@@ -33,6 +33,9 @@ namespace Core {
 			ed.Subscribe(*this, Core::Input::InputManager::S_Down(), [this](const Events::Event& event) {Position -= Front; UpdateCameraVectors(); });
 			ed.Subscribe(*this, Core::Input::InputManager::MouseMotion(), [this](const Events::Event& event) {
 				if (Singleton<::Editor>::Instance().IsEditorLocked()) { return; }
+				if (!Singleton<::Editor>::Instance().IsSceneHovered()) { return; }
+
+
 				glm::u16vec2 mouseMotion = (static_cast<const Core::Input::InputManager::MouseMotion&>(event)).mMovement;
 
 				if (firstMouse)

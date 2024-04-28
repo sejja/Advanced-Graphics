@@ -20,6 +20,10 @@ bool Editor::IsEditorLocked() {
 	return editorLocked;
 }
 
+bool Editor::IsSceneHovered() {
+	return sceneView.isHovered();
+}
+
 void Editor::SetEditorLocked(bool locked) {
 	editorLocked = locked;
 }

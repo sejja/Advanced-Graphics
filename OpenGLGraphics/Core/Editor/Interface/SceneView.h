@@ -10,9 +10,12 @@
 class SceneView {
 public:
     void Render(Core::Graphics::OpenGLPipeline& pipeline);
+	bool isHovered();
 
 private:
     MousePicking mousePicking;
+
+    bool isWHovered = false;
 };
 
 
