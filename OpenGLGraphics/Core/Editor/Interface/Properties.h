@@ -28,6 +28,7 @@ private:
     void UpdateLightCompsPos(std::shared_ptr<Core::Object> obj);
     void DecalOptions();
     void TransformGuizmoTypeSelect();
+    void applyLockResize(glm::vec3& prevVec, glm::vec3& curVec);
 
 
     void selectedObjectTree();

@@ -455,22 +455,47 @@ void Properties::ParticleTransform() {
     particleSystem->SetSystemCenter(curCenter);
 }
 
+void Properties::applyLockResize(glm::vec3& prevVec, glm::vec3& curVec) {
+    int dimChanged = -1; 
+    for (int i = 0; i < 3; ++i) {
+        if (curVec[i] != prevVec[i]) {
+            dimChanged = i;
+            break;
+        }
+    }
+    if (dimChanged != -1) {
+        float changeScale = curVec[dimChanged] / prevVec[dimChanged];
+        for (int i = 0; i < 3; ++i) {
+            if (i != dimChanged) {
+                curVec[i] *= changeScale;
+            }
+        }
+    }
+}
+
+
 void Properties::TransformOptions() {
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
 
     glm::vec3 curPos = obj->GetPosition();
     glm::vec3 curRot = obj->GetRotation();
     glm::vec3 curScale = obj->GetScale();
+    glm::vec3 prevScale = obj->GetScale();
 
     TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
     TransformRow("  Rotation", curRot[0], curRot[1], curRot[2]);
     TransformRow("  Scale", curScale[0], curScale[1], curScale[2],true, axisLockS);
+
+    if(*axisLockS){
+        applyLockResize(prevScale, curScale);
+    }
 
     obj->SetPosition(curPos);
     obj->SetRotation(curRot);
     obj->SetScale(curScale);
 
 }
+
 
 void Properties::TransformGuizmoTypeSelect() {
 
