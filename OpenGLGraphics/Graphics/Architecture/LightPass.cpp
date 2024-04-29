@@ -106,7 +106,7 @@ namespace Graphics {
 				}*/
 
 				shader->Bind();
-				shader->SetShaderUniform("uLight", &shadowTransforms[0]);
+				//shader->SetShaderUniform("uLight", &shadowTransforms[0]);
 				shader->SetShaderUniform("lightPos", &lightData->mPosition);
 				shader->SetShaderUniform("far_plane", far);
 
