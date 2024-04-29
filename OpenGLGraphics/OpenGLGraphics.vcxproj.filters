@@ -42,13 +42,10 @@
     <ClCompile Include="Core\ECSystem\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\ResourceManager.cpp">
+    <ClCompile Include="Core\Assets\ResourceManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Assets\ModelImporter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Graphics\Primitives\Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Camera.cpp">
@@ -235,6 +232,27 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Primitives\Lights\Shadows\CascadedShadowMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Dependencies\GLEW\Source\glew.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\Utils\GLUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Primitives\Decal.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\GeometryDeform.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\SSAO\Kernel.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\SSAO\SSAONoise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\SSAO\SSAOBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1415,7 +1433,7 @@
     <ClInclude Include="Core\Graphics\Pipeline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Window.h">
+    <ClInclude Include="Core\Window\Window.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Application.h">
@@ -1448,16 +1466,13 @@
     <ClInclude Include="Core\ECSystem\Scene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\ResourceManager.h">
+    <ClInclude Include="Core\Assets\ResourceManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CommonDefines.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Assets\ModelImporter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Graphics\Primitives\Model.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Camera.h">
@@ -1502,7 +1517,7 @@
     <ClInclude Include="Core\Events\EventDispatcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\RTTI.h">
+    <ClInclude Include="Core\RTTI\RTTI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Tools\FrameBuffer.h">
@@ -1770,6 +1785,30 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\SQLite3\sqlite3.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\Utils\GLUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Primitives\Decal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\GeometryDeform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\SSAO\Kernel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Math\Lerp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\SSAO\SSAONoise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\SSAO\SSAOBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2250,9 +2289,16 @@
     <None Include="Content\Shaders\DeferredLighting.frag" />
     <None Include="Content\Shaders\DeferredLighting.shader" />
     <None Include="Content\Maps\Minecraft.level" />
-    <None Include="Content\Shaders\PointShadow.shader" />
-    <None Include="Content\Shaders\PointShadow.frag" />
-    <None Include="Content\Shaders\PointShadow.vert" />
+    <None Include="Content\Maps\Japan.level" />
+    <None Include="Content\Shaders\GeometryDecal.frag" />
+    <None Include="Content\Shaders\GeometryDecal.shader" />
+    <None Include="Content\Shaders\GeometryDecal.vert" />
+    <None Include="Content\Maps\Cyberpunk.level" />
+    <None Include="Content\Shaders\SSAO.frag" />
+    <None Include="Content\Shaders\SSAO.shader" />
+    <None Include="Content\Shaders\SSAO.vert" />
+    <None Include="Content\Shaders\SSAOBlur.frag" />
+    <None Include="Content\Shaders\SSAOBlur.shader" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
@@ -2697,6 +2743,42 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Content\Scenes\textures\white.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_basic_m.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_bullet_d.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_bullet_n.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_crack_d.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_crack_n.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_damagefloor_d.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_damagefloor_n.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_plaster_d.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_plaster_n.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_skull_d.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_skull_m.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\decal_skull_n.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

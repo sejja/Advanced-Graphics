@@ -48,6 +48,12 @@ namespace Core {
             EVENT_DECL(X_Down);
             EVENT_DECL(Y_Down);
             EVENT_DECL(Z_Down);
+
+            struct MouseMotion : public Core::Events::Event {
+                glm::u16vec2 mMovement;
+                MouseMotion();
+				MouseMotion(const glm::u16vec2& movement);
+            };
 #pragma endregion
 
 #pragma region //Functions
@@ -55,18 +61,18 @@ namespace Core {
             DONTDISCARD bool inline IsKeyReleased(const KeyCode key) noexcept;
             DONTDISCARD bool inline IsKeyDown(const KeyCode key) const noexcept;
             DONTDISCARD bool inline IsKeyUp(const KeyCode key) const noexcept;
-            DONTDISCARD glm::vec2 inline GetMouseMovement() const noexcept;
-            DONTDISCARD glm::vec2 inline GetMousePosition() const noexcept;
+            DONTDISCARD glm::u16vec2 inline GetMouseMovement() const noexcept;
+            DONTDISCARD glm::u16vec2 inline GetMousePosition() const noexcept;
             void inline SetMousePosition(const glm::u16vec2& pos) const noexcept;
             void SetMousePosition(const unsigned w, const unsigned h) const noexcept;
             void ProcessInput() noexcept;
         private:
-            glm::u8vec2 GetWindowCoordinatesMousePosition() const noexcept;
+            glm::u16vec2 GetWindowCoordinatesMousePosition() const noexcept;
 #pragma endregion
 
 #pragma region //Members
             std::array<bool, 101> mKeyboardState;
-            glm::u8vec2 mMousePosition;
+            glm::u16vec2 mMousePosition;
 #pragma endregion
         };
 
@@ -100,7 +106,7 @@ namespace Core {
         /*! Get Mouse Position
         *   Name says everything
         */ // ---------------------------------------------------------------------
-        glm::vec2 inline InputManager::GetMousePosition() const noexcept {
+        glm::u16vec2 inline InputManager::GetMousePosition() const noexcept {
             return mMousePosition;
         }
 
@@ -126,7 +132,7 @@ namespace Core {
         /*! Get Mouse Movement
         *   Name says everything
         */ // ---------------------------------------------------------------------
-        glm::vec2 InputManager::GetMouseMovement() const noexcept {
+        glm::u16vec2 InputManager::GetMouseMovement() const noexcept {
             return GetWindowCoordinatesMousePosition() - mMousePosition;
         }
     }

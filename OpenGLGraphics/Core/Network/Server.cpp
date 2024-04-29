@@ -34,28 +34,27 @@ void Server::BroadcastServerPresence() {
     }
     printf("WSA iniciado\n");
 
-    // Crear un socket de broadcast UDP
-    SOCKET broadcastSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+    broadcastSocket = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
     if (broadcastSocket == INVALID_SOCKET) {
         std::cerr << "Broadcast socket creation failed." << WSAGetLastError() << std::endl;
         return;
     }
 
-    // Configurar la direcci?n de escucha
+    // Configurar la dirección de escucha
     sockaddr_in listenAddr;
     memset(&listenAddr, 0, sizeof(listenAddr));
     listenAddr.sin_family = AF_INET;
-    listenAddr.sin_port = htons(50000); // Puerto de broadcast UDP
+    listenAddr.sin_port = htons(50000); // Puerto de broadcast UDP TEMP HARCODEDADO
     listenAddr.sin_addr.s_addr = INADDR_ANY;
 
-    // Enlazar el socket al puerto de escucha
+    // Enlazar el socket 
     if (bind(broadcastSocket, (sockaddr*)&listenAddr, sizeof(listenAddr)) == SOCKET_ERROR) {
         std::cerr << "Broadcast socket bind failed with error: " << WSAGetLastError() << std::endl;
         closesocket(broadcastSocket);
         return;
     }
 
-    // Escuchar mensajes de broadcast
+    // Escuchar mensajes del broadcast
     sockaddr_in clientAddr;
     char recvBuffer[1024];
     int clientAddrLen = sizeof(clientAddr);
@@ -64,7 +63,7 @@ void Server::BroadcastServerPresence() {
         if (bytesReceived > 0) {
             recvBuffer[bytesReceived] = '\0';
             std::cout << "Received broadcast message from client: " << recvBuffer << std::endl;
-            // Responder al cliente que est? disponible
+            // Responder al cliente 
             const char* responseMessage = "Server available";
             if (sendto(broadcastSocket, responseMessage, strlen(responseMessage), 0, (sockaddr*)&clientAddr, sizeof(clientAddr)) == SOCKET_ERROR) {
                 std::cerr << "Broadcast response send failed." << std::endl;
@@ -147,6 +146,7 @@ int Server::StartServer() {
 void Server::KillServer() {
     closesocket(clientSocket);
     closesocket(serverSocket);
+    closesocket(broadcastSocket);
     WSACleanup();
     serverSocket = NULL;
 }

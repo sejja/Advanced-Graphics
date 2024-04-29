@@ -29,6 +29,15 @@ namespace Core {
 			return mObjects;
 		}
 
+		void addObject(const std::shared_ptr<Object>& obj) {
+			//mObjects.push_back(obj);
+			mObjects.emplace_back(std::move(obj));
+		}
+
+		void removeObject(const std::shared_ptr<Object>& obj) {
+			mObjects.erase(std::remove(mObjects.begin(), mObjects.end(), obj), mObjects.end());
+		}
+
 
 #pragma endregion	
 

@@ -8,6 +8,7 @@
 #include "Core/Editor/Interface/AssetIcon.h"
 
 
+
 Editor::Editor() : editorLocked(false) {
 	this->database = new Core::Editor::Database("../AssetLoader/database.db");
 	database->getAssetTypeImages();
@@ -33,7 +34,7 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 	mainMenu.Render(pipeline);
 	assetManager.Render();
-	properties.Render();
+	properties.Render(pipeline);
 	outliner.Render();
 
 

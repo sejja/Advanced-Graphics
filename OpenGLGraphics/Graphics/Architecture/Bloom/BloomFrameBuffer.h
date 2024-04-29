@@ -10,32 +10,74 @@
 #define _BLOOM_FRAME_BUFFER__H_
 
 #include <glm.hpp>
-#include <vector>
+#include <array>
+#include <glew.h>
 #include "CommonDefines.h"
 
 namespace Graphics {
 	namespace Architecture {
 		namespace Bloom {
-            class BloomFBO {
+            class BloomFramebuffer {
+            #pragma region //Declarations 
             public:
                 struct BloomMip {
-                    glm::vec2 size;
-                    glm::ivec2 intSize;
-                    unsigned int texture;
-                };
-                CLASS_EXCEPTION(BloomFBO)
-                BloomFBO();
-                ~BloomFBO();
-                bool Init(unsigned int windowWidth, unsigned int windowHeight, unsigned int mipChainLength);
-                void Destroy();
-                void BindForWriting();
-                std::vector<BloomMip>& MipChain();
+                #pragma region //Constructors
+                    BloomMip(const glm::u16vec2 size);
+                    ~BloomMip();
+                #pragma endregion
 
+                #pragma region //Methods
+                    constexpr glm::u16vec2 inline GetSize() const;
+					GLuint inline GetTexture() const;
+                #pragma endregion
+
+                #pragma region //Members
+                private:
+                    glm::u16vec2 mSize;
+                    GLuint mTexture;
+                #pragma endregion
+                };
+
+                CLASS_EXCEPTION(BloomFramebuffer)
+
+                constexpr static std::size_t cNumMips = 5;
+                using MipChain = std::array< BloomMip, cNumMips>;
+            #pragma endregion
+
+            #pragma region //Constructor & Destructor
+                BloomFramebuffer(const glm::u16vec2 size);
+                ~BloomFramebuffer();
+            #pragma endregion
+
+            #pragma region //Methods
+                void Bind() const;
+                DONTDISCARD const MipChain& GetMipChain() const;
+            #pragma endregion
+
+            #pragma region //Members
             private:
-                bool mInit;
-                unsigned int mFBO;
-                std::vector<BloomMip> mMipChain;
+                GLuint mTexture;
+                MipChain mMipChain;
+            #pragma endregion
             };
+
+            // ------------------------------------------------------------------------
+            /*! Get Size
+            *
+            *   Returns the size of the MIP
+            */ //----------------------------------------------------------------------
+            constexpr glm::u16vec2 BloomFramebuffer::BloomMip::GetSize() const {
+                return mSize;
+            }
+            
+            // ------------------------------------------------------------------------
+            /*! Get Texture
+            *
+            *   Returns the handle of the MIP
+            */ //----------------------------------------------------------------------
+            GLuint BloomFramebuffer::BloomMip::GetTexture() const {
+                return mTexture;
+            }
 		}
 	}
 }

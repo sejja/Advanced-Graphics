@@ -42,4 +42,7 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="load.config" />
+  </ItemGroup>
 </Project>
