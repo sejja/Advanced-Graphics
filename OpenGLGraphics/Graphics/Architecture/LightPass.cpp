@@ -74,7 +74,7 @@ namespace Graphics {
 			glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 1.0f, near, far);
 
 			for (auto& x : sPointLightData) {
-				auto lightData = x.second;
+				auto lightData = x;
 
 				std::vector<glm::mat4> shadowTransforms;
 				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0))); //falta multiplicar por la proyección
@@ -86,7 +86,7 @@ namespace Graphics {
 
 				
 				//Configurar shader
-				auto shader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
+				auto shader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
 
 				/*for (int i = 0; i < 6; i++) {
 					shader->set
