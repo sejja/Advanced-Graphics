@@ -51,6 +51,9 @@ namespace Core {
 		void AddComponent(std::shared_ptr<T>&& component);
 
 		template<typename T>
+		void AddComponentR(const std::shared_ptr<T>& component);
+
+		template<typename T>
 		DONTDISCARD inline std::shared_ptr<T> GetComponent() const;
 
 		DONTDISCARD inline std::vector<std::shared_ptr<Core::Component>> GetAllComponents() const;
@@ -183,6 +186,15 @@ namespace Core {
 	*/ // ---------------------------------------------------------------------
 	template<typename T>
 	void Object::AddComponent(std::shared_ptr<T>&& component) {
+		//We should always add components
+		if (!RTTI::IsChild<T, Component>())
+			throw ObjectException("The given class is not a component");
+
+		mComponents.push_back(component);
+	}
+
+	template<typename T>
+	void Object::AddComponentR(const std::shared_ptr<T>& component) {
 		//We should always add components
 		if (!RTTI::IsChild<T, Component>())
 			throw ObjectException("The given class is not a component");

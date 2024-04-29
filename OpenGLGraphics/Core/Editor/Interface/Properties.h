@@ -32,7 +32,7 @@ private:
 
 
     void selectedObjectTree();
-    void objectOutliner();
+    void objectOutliner(Core::Graphics::OpenGLPipeline& pipeline);
 
     bool focused = false;
 

@@ -96,6 +96,11 @@ void Outliner::RenderSceneObjects(){
 		static std::string selectedNodeChild = "None";
 		int i = 0;
 		for (const auto& obj : sceneObjects) {
+			//Check particle manager
+			if(obj->GetID() == "PARTICLE_MANAGER"){
+				continue;
+			}
+
 			//Check if object is selected
 			boolean isNodeSelected = obj == selectedObj.GetSelectedObject();
 			std::string displayName = formatObjName(obj);

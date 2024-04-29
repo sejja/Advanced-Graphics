@@ -74,8 +74,7 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     std::shared_ptr<Graphics::Primitives::Decal> decal = NULL;
 
     particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(comp);
-    //particleManager = std::dynamic_pointer_cast<Core::Particles::ParticleMangager>(obj);
-
+    
     focused = ImGui::IsWindowFocused();
 
     //bool isParticleManager = obj->GetID().c_str() == "PARTICLE_MANAGER";
@@ -83,8 +82,8 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
 
     ImGui::Begin(ICON_FA_SLIDERS " Properties");
 
-    if (obj && !particleSystem) {
-        objectOutliner(); //La lista de componentes del objeto seleccionado
+    if (obj) {
+        objectOutliner(pipeline); //La lista de componentes del objeto seleccionado
     }
 
     //El comp puede haber cambiado en el objectOutliner
@@ -192,7 +191,6 @@ void TransformRow(const char* title, float& x_val, float& y_val, float& z_val,bo
         ImGui::TableSetColumnIndex(1);
 
         if (lockable) {
-			std::cout << "LOCKED:" << *axisLock << std::endl;
             if (*axisLock) {
                 if (ImGui::Button(ICON_FA_LOCK)) {
                     *axisLock = false;
@@ -204,7 +202,6 @@ void TransformRow(const char* title, float& x_val, float& y_val, float& z_val,bo
                 }
             }
         }
-        
         
         ImGui::SameLine();
         ImGui::SetNextItemWidth(remainingWidth * inputSize);
@@ -323,7 +320,7 @@ void CreateSliderRow(const char* rowName, float& sliderValue, float minValue, fl
 
 
 
-void Properties::objectOutliner() {
+void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
 
     //TODO : Object y no particle manager
@@ -364,6 +361,16 @@ void Properties::objectOutliner() {
             if (ImGui::Selectable(ICON_FA_NOTE_STICKY " Decal")) {
                 obj->AddComponent(std::move(std::make_shared<Graphics::Primitives::Decal>(obj)));
             }
+
+            if (ImGui::Selectable(ICON_FA_FIRE " Fire System")) {
+
+				auto particleManager = pipeline.GetParticleManager();
+                std::shared_ptr<Core::Particles::FireSystem> testParticleSystem = std::make_shared<Core::Particles::FireSystem>(particleManager);
+                obj->AddComponentR(testParticleSystem);
+                particleManager->AddComponent(std::move(testParticleSystem));
+                
+            }
+
 
             ImGui::EndPopup();
         }
