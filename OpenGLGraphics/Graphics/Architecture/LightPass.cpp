@@ -81,29 +81,34 @@ namespace Graphics {
 			}
 
 			glViewport(0, 0, 1024, 1024); //Creo
+
+			float near = 1.0f;
+			float far = 25.0f;
+			glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 1.0f, near, far);
+
 			for (auto& x : sPointLightData) {
 				auto lightData = x.second;
 
 				std::vector<glm::mat4> shadowTransforms;
-				shadowTransforms.push_back(glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0))); //falta multiplicar por la proyección
-				shadowTransforms.push_back(glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0)));
-				shadowTransforms.push_back(glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 1, 0), glm::vec3(0, 0, 1))); 
-				shadowTransforms.push_back(glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, -1, 0), glm::vec3(0, 0, -1)));
-				shadowTransforms.push_back(glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 1), glm::vec3(0, -1, 0)));
-				shadowTransforms.push_back(glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, -1), glm::vec3(0, -1, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0))); //falta multiplicar por la proyección
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 1, 0), glm::vec3(0, 0, 1))); 
+				shadowTransforms.push_back(shadowProj* glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, -1, 0), glm::vec3(0, 0, -1)));
+				shadowTransforms.push_back(shadowProj* glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 1), glm::vec3(0, -1, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, -1), glm::vec3(0, -1, 0)));
 
 				
 				//Configurar shader
-				const auto shader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
+				auto shader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
 
 				/*for (int i = 0; i < 6; i++) {
 					shader->set
 				}*/
 
 				shader->Bind();
-				shader->SetShaderUniform("uModel", &shadowTransforms[0]);
-				//shader->SetShaderUniform("lightPos", &lightData->mPosition);
-				//shader->SetShaderUniform("farPlane", 2000);
+				shader->SetShaderUniform("uLight", &shadowTransforms[0]);
+				shader->SetShaderUniform("lightPos", &lightData->mPosition);
+				shader->SetShaderUniform("far_plane", far);
 
 				lightData->depthMapFBO.Bind();
 				lightData->depthMapFBO.Clear(true);
