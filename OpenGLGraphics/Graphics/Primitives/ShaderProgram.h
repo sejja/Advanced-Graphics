@@ -46,7 +46,7 @@ namespace Core {
 			void inline SetShaderUniform(const std::string_view& name, glm::ivec2* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, glm::vec3* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, glm::vec4* value, const int count = 1);
-			void inline SetShaderUniform(const std::string_view& name, Color* value, const int count = 1);
+			void inline SetShaderUniform(const std::string_view& name, ::Graphics::Primitives::Color* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, float value);
 			void ReloadShader(Core::Assets::Asset<Shader>& vertexShader, Core::Assets::Asset<Shader>& fragmentShader);
 			GLuint GetHandle();
@@ -154,7 +154,7 @@ namespace Core {
 		*
 		*   Sets uniform values in form of a Color
 		*/ // --------------------------------------------------------------------
-		void ShaderProgram::SetShaderUniform(const std::string_view& name, Color* value, const int count) {
+		void ShaderProgram::SetShaderUniform(const std::string_view& name, ::Graphics::Primitives::Color* value, const int count) {
 			glUniform4fv(getUniformLocation(name), count, reinterpret_cast<float*>(value));
 		}
 

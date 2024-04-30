@@ -80,13 +80,13 @@ void main() {
 
     float shadow = 1;
     
-    const vec3 lightDir = normalize(uLight.mPosition - fragPos);
-    const float att = pow(smoothstep(uLight.mRadius, 0, length(uLight.mPosition - fragPos)), uLight.mFallOff);
+    const vec3 lightDir = normalize(vec3(ubView * vec4(uLight.mPosition, 1)) - fragPos);
+    const float att = pow(smoothstep(uLight.mRadius, 0, length(vec3(ubView * vec4(uLight.mPosition, 1)) - fragPos)), uLight.mFallOff);
     float spotlight =1;
     const float aplha = dot(-lightDir, normalize(uLight.mDirection));
 
                  if(uLight.mCastShadows)
-                     shadow = 1 - ShadowCalculation(uShadowMatrix * vec4(fragPos, 1), normal);
+                     shadow = 1 - ShadowCalculation(uShadowMatrix * (inverse(ubView) * vec4(fragPos, 1)), normal);
 
                 //If the outer anngle is larger than the perpendicularity between the incident lightray and the viewers vector
 			    if(aplha < cos(uLight.mOutterAngle))
@@ -107,6 +107,6 @@ void main() {
             //difuse
             * (max(dot(normal, lightDir), 0.0) * uLight.mColor 
             //specular
-            + uLight.mColor * pow(max(dot(normalize(ubCameraPosition - fragPos), 
+            + uLight.mColor * pow(max(dot(normalize(vec3(ubView * vec4(ubCameraPosition, 1)) - fragPos), 
                 reflect(-lightDir, normal)), 0.0), 32)))), 1.0);
 } 

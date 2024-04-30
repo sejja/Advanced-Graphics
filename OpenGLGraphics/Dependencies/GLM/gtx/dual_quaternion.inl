@@ -230,7 +230,7 @@ namespace glm
 	}
 
 	template<typename T, qualifier Q>
-	GLM_FUNC_QUALIFIER tdualquat<T, Q> lerp(tdualquat<T, Q> const& x, tdualquat<T, Q> const& y, T const& a)
+	GLM_FUNC_QUALIFIER tdualquat<T, Q> Lerp(tdualquat<T, Q> const& x, tdualquat<T, Q> const& y, T const& a)
 	{
 		// Dual Quaternion Linear blend aka DLB:
 		// Lerp is only defined in [0, 1]

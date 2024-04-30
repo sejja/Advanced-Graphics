@@ -16,7 +16,7 @@ namespace Core
 		class CubemapFramebuffer
 		{
 		public:
-			CubemapFramebuffer(int width, int height);
+			CubemapFramebuffer(const glm::u16vec2 dim);
 			~CubemapFramebuffer();
 
 			// Function to bind the cubemap
@@ -26,13 +26,9 @@ namespace Core
 			// Function to render to the cubemap
 			void RenderToCubeMap(std::function<void(glm::mat4 projection, glm::mat4 view)> renderFunc);
 
-			// Getters
-			GLuint GetTextureID() const { return m_TextureID; }
-
 		private:
-			GLuint m_FBO; // Framebuffer object
-			GLuint m_TextureID; // Cubemap texture ID
-			int m_Width, m_Height;
+			GLuint mBuffer, mPosition, mNormal, mAlbedoSpecular, mBrightness, mDepth, mDepthTexture;
+			glm::u16vec2 mDimensions;
 		};
 	}
 }

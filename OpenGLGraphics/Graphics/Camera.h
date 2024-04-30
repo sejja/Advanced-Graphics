@@ -41,6 +41,9 @@ namespace Core {
 		#pragma endregion
 
 		#pragma region //Members
+			constexpr static float cnearPlane = 0.1f;
+			constexpr static float cfarPlane = 10000.f;
+
 		private:
 			// camera Attributes
 			glm::vec3 Position;

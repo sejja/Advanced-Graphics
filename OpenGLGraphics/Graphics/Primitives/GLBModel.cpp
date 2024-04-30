@@ -7,94 +7,99 @@
 //
 
 #include "GLBModel.h"
-#include <filesystem>
 
 namespace Graphics {
 	namespace Primitives {
-		GLBModel::GLBModel(std::string const& path) {
-			loadModel(path);
+        // ------------------------------------------------------------------------
+        /*! Default Constructor
+        *
+        *   Loads a Model from a file
+        */ //----------------------------------------------------------------------
+		Model::Model(std::string const& path) {
+			LoadModel(path);
 		}
 
-		void GLBModel::Draw(Core::Graphics::ShaderProgram& shader) {
-            for (unsigned int i = 0; i < meshes.size(); i++)
-				meshes[i].Draw(shader);
+        // ------------------------------------------------------------------------
+        /*! Draw
+        *
+        *   Draws every mesh in the model
+        */ //----------------------------------------------------------------------
+		void Model::Draw() {
+            std::for_each(mMeshes.begin(), mMeshes.end(), [](Mesh& mesh) { mesh.Draw(); });
 		}
 
-        std::string GLBModel::getDirectory()
-        {
-            return modelPath.substr(0, modelPath.find_last_of('/'));
-        }
-
-        std::string GLBModel::getPath() {
-            return modelPath;
-        }
-
-        void GLBModel::loadModel(std::string const& path)
-        {
-            modelPath = path;
-
+        // ------------------------------------------------------------------------
+        /*! Load Model
+        *
+        *   Loads the model from a file, recursively processing each node
+        */ //----------------------------------------------------------------------
+        void Model::LoadModel(std::string const& path) {
             std::string directory;
             const size_t last_slash_idx = path.rfind('\\');
             if (std::string::npos != last_slash_idx)
-            {
                 directory = path.substr(0, last_slash_idx);
-            }
 
             // retrieve the directory path of the filepath
             directory = path.substr(0, path.find_last_of('/'));
 
             // read file via ASSIMP
             Assimp::Importer importer;
-            const aiScene* scene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_FixInfacingNormals );
+            const aiScene* scene = importer.ReadFile(path, aiProcess_CalcTangentSpace | aiProcess_FixInfacingNormals | aiProcess_OptimizeMeshes | aiProcess_OptimizeGraph);
             // check for errors
             if(scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
-            std::cout << "ERROR::ASSIMP:: INCOMPLETE DATA" << std::endl;
-
-            if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE) {
-                std::cout << "ERROR::ASSIMP:: " << importer.GetErrorString() << std::endl;
-                return;
-            }
+                throw ModelException("ERROR::ASSIMP:: INCOMPLETE DATA");
+            
+            // check if the scene is null
+            if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE)
+                throw ModelException(importer.GetErrorString());
 
             aiMatrix4x4t<float> mat;
 
+            mMeshes.reserve(scene->mNumMeshes);
 
+            // process ASSIMP's root node recursively
             if (!scene->mRootNode)
-                for (int i = 0; i < scene->mNumMeshes; i++)
-                    meshes.push_back(processMesh(scene->mMeshes[i], scene, directory, scene->mRootNode->mTransformation));
+                for (unsigned i = 0; i < scene->mNumMeshes; i++)
+                    mMeshes.push_back(ProcessMesh(scene->mMeshes[i], scene, directory, mat));
             else  // process ASSIMP's root node recursively
-                processNode(scene->mRootNode, scene, directory, mat);
+                ProcessNode(scene->mRootNode, scene, directory, mat);
         }
 
-        void GLBModel::processNode(aiNode* node, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform) {
-           
+        // ------------------------------------------------------------------------
+        /*! Process Node
+        *
+        *  Processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
+        */ //----------------------------------------------------------------------
+        void Model::ProcessNode(aiNode* node, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform) {
            transform *= node->mTransformation;
            
+           mMeshes.reserve(scene->mNumMeshes + mMeshes.capacity());
+
            // process each mesh located at the current node
-            for (unsigned int i = 0; i < node->mNumMeshes; i++)
-            {
+            for (unsigned i = 0; i < node->mNumMeshes; i++) {
                 // the node object only contains indices to index the actual objects in the scene. 
                 // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
-                aiMesh* mesh = scene->mMeshes[node->mMeshes[i]];
-                meshes.push_back(processMesh(mesh, scene, dir, transform));
+                mMeshes.push_back(ProcessMesh(scene->mMeshes[node->mMeshes[i]], scene, dir, transform));
             }
             // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
-            for (unsigned int i = 0; i < node->mNumChildren; i++)
-            {
-                processNode(node->mChildren[i], scene, dir, transform);
-            }
+            for (unsigned i = 0; i < node->mNumChildren; i++)
+                ProcessNode(node->mChildren[i], scene, dir, transform);
         }
 
-        Mesh GLBModel::processMesh(aiMesh* mesh, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform)
-        {
+        // ------------------------------------------------------------------------
+        /*! Process Mesh
+        *
+        *  Processes a mesh and returns a Mesh object, calculating tangent and bitangent vectors
+        */ //----------------------------------------------------------------------
+        Mesh Model::ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform) {
             // data to fill
-            std::vector<Vertex> vertices;
-            std::vector<unsigned int> indices;
-            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> textures;
+            std::vector<Mesh::Vertex> vertices;
+            std::vector<GLuint> indices;
+            vertices.reserve(mesh->mNumVertices);
 
             // walk through each of the mesh's vertices
-            for (unsigned int i = 0; i < mesh->mNumVertices; i++)
-            {
-                Vertex vertex;
+            for (unsigned  i = 0; i < mesh->mNumVertices; i++) {
+                Mesh::Vertex vertex;
                 glm::vec3 vector; // we declare a placeholder vector since assimp uses its own vector class that doesn't directly convert to glm's vec3 class so we transfer the data to this placeholder glm::vec3 first.
                 // positions
                 aiVector3D pos = mesh->mVertices[i];
@@ -107,8 +112,7 @@ namespace Graphics {
                 vector.z = pos2.z;
                 vertex.mPosition = vector;
                 // normals
-                if (mesh->HasNormals())
-                {
+                if (mesh->HasNormals()) {
                     vector.x = mesh->mNormals[i].x;
                     vector.y = mesh->mNormals[i].y;
                     vector.z = mesh->mNormals[i].z;
@@ -142,12 +146,14 @@ namespace Graphics {
 
                 vertices.push_back(vertex);
             }
+
+            indices.reserve(mesh->mNumFaces * 3);
+
             // now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
-            for (unsigned int i = 0; i < mesh->mNumFaces; i++)
-            {
+            for (unsigned  i = 0; i < mesh->mNumFaces; i++) {
                 aiFace face = mesh->mFaces[i];
                 // retrieve all indices of the face and store them in the indices vector
-                for (unsigned int j = 0; j < face.mNumIndices; j++)
+                for (unsigned  j = 0; j < face.mNumIndices; j++)
                     indices.push_back(face.mIndices[j]);
             }
             // process materials
@@ -160,45 +166,55 @@ namespace Graphics {
             // normal: texture_normalN
 
             // 1. diffuse maps
-            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, dir);
-            textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-            // 2. specular maps
-            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, dir);
-            textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+            Core::Assets::Asset<Core::Graphics::Texture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, dir);
+
             // 3. normal maps
-            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, dir);
-            textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
-            // 4. height maps
-            std::vector<Core::Assets::Asset<Core::Graphics::Texture>> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, dir);
-            textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+            Core::Assets::Asset<Core::Graphics::Texture> normalMaps = LoadMaterialTextures(material, aiTextureType_NORMALS, dir);
+
+            if(diffuseMaps && normalMaps)
+                // return a mesh object created from the extracted mesh data
+                return Mesh(vertices, indices, diffuseMaps, normalMaps);
+            else if(diffuseMaps)
+                // return a mesh object created from the extracted mesh data
+                return Mesh(vertices, indices, diffuseMaps, nullptr);
 
             // return a mesh object created from the extracted mesh data
-            return Mesh(vertices, indices, textures);
+            return Mesh(vertices, indices, nullptr, nullptr);
         }
 
-        std::vector<Core::Assets::Asset<Core::Graphics::Texture>> GLBModel::loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& dir) {
+        // ------------------------------------------------------------------------
+        /*! Load Material Textures
+        *
+        *  Load all of the textures for a material of a given type
+        */ //----------------------------------------------------------------------
+        Core::Assets::Asset<Core::Graphics::Texture> Model::LoadMaterialTextures(aiMaterial* mat, const aiTextureType type, const std::string& dir) {
             std::vector<Core::Assets::Asset<Core::Graphics::Texture>> textures;
-            for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
-            {
+            for (unsigned  i = 0, count = mat->GetTextureCount(type); i < count; i++)  {
                 aiString str;
                 mat->GetTexture(type, i, &str);
-                // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
-                bool skip = false;
-
-                if (type == aiTextureType_DIFFUSE) {
+                
+                //Swtich depending on the type of texture
+                switch (type) {
+                case aiTextureType_DIFFUSE:
+                {
                     Core::Assets::Asset<Core::Graphics::Texture> texture = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>((dir + "/" + str.C_Str()).c_str());
 
                     texture->Get()->SetTextureType(Core::Graphics::Texture::eDiffuse);
-                    textures.push_back(texture);
+                    return texture;
                 }
-                else if (type == aiTextureType_NORMALS) {
+
+                default:
+                {
                     Core::Assets::Asset<Core::Graphics::Texture> texture = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>((dir + "/" + str.C_Str()).c_str());
 
                     texture->Get()->SetTextureType(Core::Graphics::Texture::eNormal);
-                    textures.push_back(texture);
+                    return texture;
+                }
+                    break;
                 }
             }
-            return textures;
+
+            return nullptr;
         }
 	}
 }

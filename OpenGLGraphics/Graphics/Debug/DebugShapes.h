@@ -1,3 +1,11 @@
+﻿//
+//	DebugShapes.h
+//	OpenGL Graphics
+//
+//	Created by Diego Revilla on 15/04/24
+//	Copyright � 2024 . All Rights reserved
+//
+
 #ifndef __DEBUG_SYSTEM_HPP__
 #define __DEBUG_SYSTEM_HPP__
 
@@ -5,29 +13,35 @@
 #include "Graphics/Camera.h"
 #include "DebugPrimitives.h"
 
-class debug_system {
-private:
-public:
-    debug_system(Core::Primitives::Camera const*);
-    void draw_point(glm::vec3 pt, glm::vec4 color);
-    void draw_segment(glm::vec3 s, glm::vec3 e, glm::vec4 color);
-    void draw_triangle(glm::vec3 a, glm::vec3 b, glm::vec3 c, glm::vec4 color);
-    void draw_aabb(glm::vec3 c, glm::vec3 size, glm::vec4 color);
-    void draw_plane(glm::vec3 pt, glm::vec3 n, float scale, glm::vec4 color);
-    void draw_sphere(glm::vec3 c, float r, glm::vec4 color);
-    void draw_frustum_lines(glm::mat4 const& vp, glm::vec4 color);
+namespace Graphics {
+    namespace Debug {
+        class DebugSystem {
+        #pragma region //Declarations
+            CLASS_EXCEPTION(DebugSystem)
+        #pragma endregion
 
-    void change_camera(Core::Primitives::Camera const*);
+        #pragma region //Constructor
+        public:
+            DebugSystem();
+        #pragma endregion
 
-private:
-    Core::Primitives::Camera const* mCamera;
-    Primitive mPoint;
-    Primitive mSegment;
-    Primitive mTriangle;
-    Primitive mAABB;
-    Primitive mPlane;
-    Primitive mSphere;
-    Primitive mFrustum;
-};
+        #pragma region //Methods
+            void DrawPoint(const glm::vec3& pt, const glm::vec4& color, const Core::Primitives::Camera& cam) const;
+            void DrawSegment(const glm::vec3& s, const glm::vec3& e, const glm::vec4& color, const Core::Primitives::Camera& cam) const;
+            void DrawTriangle(const glm::vec3& a, const glm::vec3& b, const glm::vec3& c, const glm::vec4& color, const Core::Primitives::Camera& cam);
+            void DrawAABB(const glm::vec3& c, const glm::vec3& size, const glm::vec4& color, const Core::Primitives::Camera& cam) const;
+            void DrawPlane(const glm::vec3& pt, const glm::vec3& n, float scale, const glm::vec4& color, const Core::Primitives::Camera& cam) const;
+            void DrawSphere(const glm::vec3& c, const float r, const glm::vec4& color, const Core::Primitives::Camera& cam) const;
+            void DrawFrustum(const glm::mat4& vp, const glm::vec4& color, const Core::Primitives::Camera& cam) const;
+        #pragma endregion
+
+        #pragma region //Members
+        private:
+            Core::Assets::Asset<Core::Graphics::ShaderProgram> mShader;
+            DebugPrimitive mPoint, mSegment, mTriangle, mAABB, mPlane, mSphere, mFrustum;
+        #pragma endregion
+        };
+    }
+}
 
 #endif // __DEBUG_SYSTEM_HPP__

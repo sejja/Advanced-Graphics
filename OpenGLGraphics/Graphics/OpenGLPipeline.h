@@ -20,6 +20,8 @@
 #include "Debug/DebugShapes.h"
 #include "Graphics/Architecture/Bloom/BloomRenderer.h"
 #include "Graphics/Architecture/LightPass.h"
+#include "Graphics/Architecture/GeometryDeform.h"
+#include "Graphics/Architecture/SSAO/SSAOBuffer.h"
 
 using namespace Core::Graphics;
 
@@ -53,7 +55,7 @@ namespace Core {
 			void updateRenderablesGroups(const Core::Assets::Asset<ShaderProgram>& curShader, const Core::Assets::Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable);
 
 		private:
-			void GeometryPass();
+			void GeometryPass(const glm::u16vec2 dim, glm::mat4 view, glm::mat4 projection);
 			void RenderGUI();
 			void FlushObsoletes(std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes);
 			void GroupRender(std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
@@ -66,6 +68,7 @@ namespace Core {
 			void DirectionalLightPass();
 			void BloomPass(GLuint targetbuffer);
 			void RenderReflectionCubemap(const glm::vec3& position);
+			void DecalPass();
 
 			std::unordered_map<Core::Assets::Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;
 
@@ -80,6 +83,7 @@ namespace Core {
 			std::unique_ptr<FrameBuffer> mFrameBuffer;
 			std::unique_ptr<HDRBuffer> mHDRBuffer;
 			std::unique_ptr<SamplingBuffer> mSamplingBuffer;
+			::Graphics::Architecture::GeometryDeform mGeometryDeform;
 			GLuint mUniformBuffer;
 
 			// CubemapReflections
@@ -92,8 +96,9 @@ namespace Core {
 			GLboolean AntiAliasing = false;
 			Core::Assets::Asset<ShaderProgram> RendererShader;
 			float exposure = 1;
-			std::unique_ptr<debug_system> mDebug;
+			std::unique_ptr<::Graphics::Debug::DebugSystem> mDebug;
 			std::unique_ptr<::Graphics::Architecture::Bloom::BloomRenderer> mBloomRenderer;
+			std::unique_ptr<::Graphics::Architecture::SSAO::SSAOBuffer> mSSAOBuffer;
 		};
 
 		// ------------------------------------------------------------------------

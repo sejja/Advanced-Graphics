@@ -28,7 +28,7 @@ layout (std140, binding = 0) uniform UniformBuffer {
 };
 
 layout(binding = 0) uniform sampler2D uDiffuseTex;
-layout(binding = 11) uniform samplerCube uSkyBox;
+layout(binding = 11) uniform samplerCube uCubemapReflection;
 
 void main() {
     // store the fragment position vector in the first gbuffer texture
@@ -38,7 +38,7 @@ void main() {
         mat3(oTangent, oBitangent, oNormal) * 
         (oNormal));
     // and the diffuse per-fragment color
-    gAlbedoSpec.rgba = vec4(texture(uSkyBox, reflect(normalize(oPosition - ubCameraPosition), normalize(oNormal))).rgb, 1.0);
+    gAlbedoSpec.rgba = vec4(texture(uCubemapReflection, reflect(normalize(oPosition - ubCameraPosition), normalize(oNormal))).rgb, 1.0);
     gBrightness = vec4(0.0);
 }
 

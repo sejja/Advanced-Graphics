@@ -13,9 +13,9 @@
 
 namespace Graphics {
 	namespace Architecture {
-		std::unordered_map<std::size_t, std::shared_ptr<::Graphics::Primitives::DirectionalLight::DirectionalLightData>> LightPass::sDirectionalLightData;
-		std::unordered_map<std::size_t, std::shared_ptr<::Graphics::Primitives::SpotLight::SpotLightData>> LightPass::sSpotLightData;
-		std::unordered_map<std::size_t, std::shared_ptr<::Graphics::Primitives::PointLight::PointLightData>> LightPass::sPointLightData;
+		LightPass::lightmap< Graphics::Primitives::Lights::DirectionalLight::DirectionalLightData> LightPass::sDirectionalLightData;
+		LightPass::lightmap < Graphics::Primitives::SpotLight::SpotLightData> LightPass::sSpotLightData;
+		LightPass::lightmap < Graphics::Primitives::PointLight::PointLightData> LightPass::sPointLightData;
 
 		// ------------------------------------------------------------------------
 		/*! Constructor
@@ -24,7 +24,7 @@ namespace Graphics {
 		*/ //----------------------------------------------------------------------
 		LightPass::LightPass() {
 			Core::Assets::ResourceManager& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
-			mLightSphere = resmg.GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj");
+			mLightSphere = resmg.GetResource<::Graphics::Primitives::Model>("Content/Meshes/sphere_20_averaged.obj");
 			mLightSphereShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/ForwardRender.shader");
 			mDirectionalShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredDirectionalLighting.shader");
 			mPointShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredPointLighting.shader");
@@ -42,26 +42,29 @@ namespace Graphics {
 			glViewport(0, 0, dim.x, dim.y);
 
 			//Renders all Shadow maps from directional lighting
-			for (const auto& 
-				x : sDirectionalLightData)
-				x.second->RenderShadowsMap(camview, rend_func);
+			for (const auto& x : sDirectionalLightData)
+				x->RenderShadowsMap(camview, rend_func);
 
 			Core::Graphics::ShaderProgram* shadow = mShadowShader->Get();
 			shadow->Bind();
 
 			//Renders all Shadow maps from spot lighting
 			for (const auto& x : sSpotLightData) {
-				Core::Graphics::FrameBuffer& shmp = x.second->mShadowMap;
-				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 2.f, 2000.f);
-				glm::mat4 lightView = glm::lookAt(x.second->mPosition, x.second->mDirection, glm::vec3(0, 1, 0));
 
-				shmp.Bind();
-				shmp.Clear(true);
-				shadow->SetShaderUniform("uProjection", &lightProjection);
-				shadow->SetShaderUniform("uView", &lightView);
-				rend_func(shadow);
-				shmp.Unbind();
-				x.second->mShadowMatrix = lightProjection * lightView;
+				//If it does cast shadows
+				if (x->mShadowCaster) {
+					Core::Graphics::FrameBuffer& shmp = x->mShadowMap;
+					glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 0.1f, 1000.f);
+					glm::mat4 lightView = glm::lookAt(x->mPosition, x->mDirection, glm::vec3(0, 1, 0));
+
+					shmp.Bind();
+					shmp.Clear(true);
+					shadow->SetShaderUniform("uProjection", &lightProjection);
+					shadow->SetShaderUniform("uView", &lightView);
+					rend_func(shadow);
+					shmp.Unbind();
+					x->mShadowMatrix = lightProjection * lightView;
+				}
 			}
 		}
 
@@ -71,7 +74,7 @@ namespace Graphics {
 		*   Using the buffers created on the geometry pass, we can
 		*		compute the lighting for each pixel
 		*/ //----------------------------------------------------------------------
-		void LightPass::RenderLights(const glm::u16vec2 dim, const GBuffer& gBuffer) const {
+		void LightPass::RenderLights(const glm::u16vec2 dim, const GBuffer& gBuffer, const SSAO::SSAOBuffer& ssao) const {
 			glEnable(GL_BLEND);
 			glBlendEquation(GL_FUNC_ADD);
 			glBlendFunc(GL_ONE, GL_ONE);
@@ -82,6 +85,8 @@ namespace Graphics {
 			glBindTexture(GL_TEXTURE_2D, gBuffer.GetNormalTextureHandle());
 			glActiveTexture(GL_TEXTURE2);
 			glBindTexture(GL_TEXTURE_2D, gBuffer.GetAlbedoTextureHandle());
+			glActiveTexture(GL_TEXTURE3);
+			glBindTexture(GL_TEXTURE_2D, ssao.GetSSAOTexture());
 			glViewport(0, 0, dim.x, dim.y);
 			glEnable(GL_STENCIL_TEST);
 			glEnable(GL_DEPTH_TEST);
@@ -92,12 +97,12 @@ namespace Graphics {
 
 			//For every point light
 			for (const auto& x : sPointLightData) {
-				StencilPass(x.second->mPosition, x.second->CalculateSphereOfInfluence());
+				StencilPass(x->mPosition, x->CalculateSphereOfInfluence());
 				shadptr->Bind();
-				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &x.second->mPosition);
-				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x.second->mColor);
-				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x.second->mRadius);
-				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x.second->mFallOff);
+				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &x->mPosition);
+				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x->mColor);
+				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x->mRadius);
+				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x->mFallOff);
 				glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 				Utils::GLUtils::RenderScreenQuad();
 			}
@@ -106,20 +111,21 @@ namespace Graphics {
 
 			//for every spotlight
 			for (const auto& x : sSpotLightData) {
-				StencilPass(x.second->mPosition, x.second->CalculateSphereOfInfluence());
+				StencilPass(x->mPosition, x->CalculateSphereOfInfluence());
 				shadptr->Bind();
-				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &x.second->mPosition);
-				shadptr->SetShaderUniform((id + ".mDirection").c_str(), &x.second->mDirection);
-				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x.second->mColor);
-				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x.second->mRadius);
-				shadptr->SetShaderUniform((id + ".mInnerAngle").c_str(), &x.second->mInner);
-				shadptr->SetShaderUniform((id + ".mOutterAngle").c_str(), &x.second->mOutter);
-				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x.second->mFallOff);
-				
+				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &x->mPosition);
+				shadptr->SetShaderUniform((id + ".mDirection").c_str(), &x->mDirection);
+				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x->mColor);
+				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x->mRadius);
+				shadptr->SetShaderUniform((id + ".mInnerAngle").c_str(), &x->mInner);
+				shadptr->SetShaderUniform((id + ".mOutterAngle").c_str(), &x->mOutter);
+				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x->mFallOff);
+				shadptr->SetShaderUniform((id + ".mCastShadows").c_str(), &x->mShadowCaster);
+
 				//avoid uploading the shadow texture if it doesn't cast shadows
-				if (x.second->mShadowCaster) {
-					shadptr->SetShaderUniform("uShadowMatrix", &x.second->mShadowMatrix);
-					x.second->mShadowMap.BindTexture(4);
+				if (x->mShadowCaster) {
+					shadptr->SetShaderUniform("uShadowMatrix", &x->mShadowMatrix);
+					x->mShadowMap.BindTexture(4);
 				}
 				glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 				Utils::GLUtils::RenderScreenQuad();
@@ -132,10 +138,10 @@ namespace Graphics {
 
 			//Render directional lights, without stencil
 			for (const auto& x : sDirectionalLightData) {
-				glm::vec3 dir = glm::normalize(x.second->mDirection);
+				glm::vec3 dir = glm::normalize(x->mDirection);
 				shadptr->SetShaderUniform((id + ".mDirection").c_str(), &dir);
-				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x.second->mColor);
-				x.second->SetUniforms(mDirectionalShader);
+				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x->mColor);
+				x->SetUniforms(mDirectionalShader);
 				Utils::GLUtils::RenderScreenQuad();
 			}
 
@@ -149,7 +155,7 @@ namespace Graphics {
 		*	unnafected pixels by light
 		*/ //----------------------------------------------------------------------
 		void LightPass::StencilPass(const glm::vec3& pos, const float sphere) const {
-			/*glClear(GL_STENCIL_BUFFER_BIT);
+			glClear(GL_STENCIL_BUFFER_BIT);
 			glStencilFunc(GL_ALWAYS, 0, 0);
 			glStencilOpSeparate(GL_BACK, GL_KEEP, GL_INCR_WRAP, GL_KEEP);
 			glStencilOpSeparate(GL_FRONT, GL_KEEP, GL_DECR_WRAP, GL_KEEP);
@@ -161,7 +167,7 @@ namespace Graphics {
 			Core::Graphics::ShaderProgram* light = mLightSphereShader->Get();
 			light->Bind();
 			light->SetShaderUniform("uModel", &matrix);
-			mLightSphere->Get()->Draw(*light);*/
+			mLightSphere->Get()->Draw();
 		}
 	}
 }

@@ -21,7 +21,7 @@ namespace Core {
 			static Skybox* sCurrentSky;
 		private:
 			Core::Assets::Asset<ShaderProgram> mShaderProgram;
-			Core::Assets::Asset<::Graphics::Primitives::GLBModel> mModel;
+			Core::Assets::Asset<::Graphics::Primitives::Model> mModel;
 			GLuint mMapHandle;
 		};
 	};

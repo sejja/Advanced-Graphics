@@ -67,10 +67,10 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     std::shared_ptr<Core::Component> comp = selectedObjIns.GetSelectedComponent();
 
     std::shared_ptr<Core::Particles::ParticleSystem> particleSystem = NULL;
-    std::shared_ptr<::Graphics::Primitives::Light> lightComp = NULL;
+    std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = NULL;
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = NULL;
     std::shared_ptr<Core::Particles::FireSystem> fireSystem = NULL;
-    std::shared_ptr<Decal> decal = NULL;
+    std::shared_ptr<Graphics::Primitives::Decal> decal = NULL;
 
     particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(comp);
 
@@ -87,10 +87,10 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     //El comp puede haber cambiado en el objectOutliner
     comp = selectedObjIns.GetSelectedComponent();
     particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(comp);
-    lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(comp);
+    lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(comp);
     meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp);
     fireSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(comp);
-    decal = std::dynamic_pointer_cast<Decal>(comp);
+    decal = std::dynamic_pointer_cast<Graphics::Primitives::Decal>(comp);
 
 
     
@@ -242,23 +242,21 @@ void Properties::objectOutliner() {
             }
 
             if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light")) {
-                std::shared_ptr<::Graphics::Primitives::Light> light;
+                std::shared_ptr<::Graphics::Primitives::PointLight> light;
                 light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
-                ((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mRadius = 1.0f;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mInner = 0.5f;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mOutter = 0.8f;
-				((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mFallOff = 0.5f;
+                light->SetRadius(1.0f);
+                light->SetFallOff(0.5f);
 
                 light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));   
                 glm::vec3 relativePos = glm::vec3(0.0f, 0.0f, 0.0f);
-                light->SetPosition(relativePos,obj->GetPosition());
+                light->SetPosition(relativePos);
 
                 obj->AddComponent(std::move(light));
 
             }
 
             if (ImGui::Selectable(ICON_FA_NOTE_STICKY " Decal")) {
-                obj->AddComponent(std::move(std::make_shared<Decal>(obj)));
+                obj->AddComponent(std::move(std::make_shared<Graphics::Primitives::Decal>(obj)));
             }
 
             ImGui::EndPopup();
@@ -315,7 +313,7 @@ void Properties::selectedObjectTree() {
             }
         }
         // Check if the component is a light
-        else if (std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(comp)) {
+        else if (std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(comp)) {
             if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light", isCompSelectedObj)) {
                 selectedObjIns.SetSelectedComponent(comp);
             }
@@ -325,7 +323,7 @@ void Properties::selectedObjectTree() {
 				selectedObjIns.SetSelectedComponent(comp);
 			}
 		}
-        else if (Core::RTTI::IsA<Decal>(comp.get())) {
+        else if (Core::RTTI::IsA<Graphics::Primitives::Decal>(comp.get())) {
             if (ImGui::Selectable(ICON_FA_NOTE_STICKY " Decal", isCompSelectedObj)) {
                 selectedObjIns.SetSelectedComponent(comp);
             }
@@ -462,10 +460,10 @@ void Properties::TransformOptions() {
 
 void Properties::LightTransform() {
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
-    std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
+    std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(selectedObjIns.GetSelectedComponent());
 	glm::vec3 curPos = lightComp->GetPosition();
 	TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
-	lightComp->SetPosition(curPos, obj->GetPosition());
+	lightComp->SetPosition(curPos);
 }
 
 
@@ -475,7 +473,7 @@ void Properties::LightingOptions() {
     static ImVec2 cell_padding(4.0f, 8.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
 
-    std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
+    std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(selectedObjIns.GetSelectedComponent());
 
     glm::vec3 color = lightComp->GetColor();
     ImVec4 baseColor = ImVec4(color.x, color.y, color.z, 1.0f);
@@ -541,14 +539,12 @@ void Properties::LightTypeOptions(){
     if (ImGui::BeginTable("light_type_table", 2, ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH)) {
 
         // OPCIONES ESPECIFICAS DE CADA TIPO DE LUZ
-        std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(selectedObjIns.GetSelectedComponent());
+        std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(selectedObjIns.GetSelectedComponent());
 
         if (auto pointLight = std::dynamic_pointer_cast<::Graphics::Primitives::PointLight>(lightComp)) {
 
-            float lightRadius = ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mRadius;
-            float inner = ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mInner;
-            float outer = ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mOutter;
-            float fallOff = ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mFallOff;
+            float lightRadius = pointLight->GetRadius();
+            float fallOff = pointLight->GetFallOff();
 
 
             ImGui::TableNextRow();
@@ -559,54 +555,40 @@ void Properties::LightTypeOptions(){
 
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::Text("Inner");
-            ImGui::TableSetColumnIndex(1);
-            ImGui::SliderFloat("##Inner", &inner, 0.0f, 100.0f, "%.2f");
-
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
-            ImGui::Text("Outter");
-            ImGui::TableSetColumnIndex(1);
-            ImGui::SliderFloat("##Outter", &outer, 0.0f, 100.0f, "%.2f");
-
-            ImGui::TableNextRow();
-            ImGui::TableSetColumnIndex(0);
             ImGui::Text("FallOff");
             ImGui::TableSetColumnIndex(1);
             ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f");
 
             ImGui::EndTable();
 
-            ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mRadius = lightRadius;
-            ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mInner = inner;
-            ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mOutter = outer;
-            ((::Graphics::Primitives::PointLight::PointLightData*)pointLight->mData)->mFallOff = fallOff;
+            pointLight->SetRadius(lightRadius);
+            pointLight->SetFallOff(fallOff);
         }
-        else if (auto directionalLight = std::dynamic_pointer_cast<::Graphics::Primitives::DirectionalLight>(lightComp)) {
+        else if (auto directionalLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::DirectionalLight>(lightComp)) {
 
-            float dirX = ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)directionalLight->mData)->mDirection.x;
-            float dirY = ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)directionalLight->mData)->mDirection.y;
-            float dirZ = ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)directionalLight->mData)->mDirection.z;
+            float dirX = directionalLight->GetDirection().x;
+            float dirY = directionalLight->GetDirection().y;
+            float dirZ = directionalLight->GetDirection().z;
 
             ImGui::EndTable();
 
             TransformRow("  Direction", dirX, dirY, dirZ);
 
             glm::vec3 normalizedDirection = glm::normalize(glm::vec3(dirX, dirY, dirZ));
-            ((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)directionalLight->mData)->mDirection = normalizedDirection;
+            directionalLight->SetDirection(normalizedDirection);
 
         }
         else {
             auto spotLight = std::dynamic_pointer_cast<::Graphics::Primitives::SpotLight>(lightComp);
 
-            bool shadowCaster = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mShadowCaster;
-            float lightRadius = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mRadius;
-            float inner = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mInner;
-            float outer = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mOutter;
-            float fallOff = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mFallOff;
-            float dirX = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mDirection.x;
-            float dirY = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mDirection.y;
-            float dirZ = ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mDirection.z;
+            bool shadowCaster = spotLight->GetShadowCasting();
+            float lightRadius = spotLight->GetRadius();
+            float inner = spotLight->GetInner();
+            float outer = spotLight->GetOutter();
+            float fallOff = spotLight ->GetFallOff();
+            float dirX = spotLight ->GetDirection().x;
+            float dirY = spotLight ->GetDirection().y;
+            float dirZ = spotLight ->GetDirection().z;
 
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
@@ -641,13 +623,12 @@ void Properties::LightTypeOptions(){
             ImGui::EndTable();
 
             TransformRow("  Direction", dirX, dirY, dirZ);
-
-            ((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mRadius = lightRadius;
-			((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mInner = inner;
-			((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mOutter = outer;
-			((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mFallOff = fallOff;
-			((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mDirection = glm::normalize(glm::vec3(dirX, dirY, dirZ));
-			((::Graphics::Primitives::SpotLight::SpotLightData*)spotLight->mData)->mShadowCaster = shadowCaster;
+            spotLight->SetRadius(lightRadius);
+            spotLight->SetInner(inner);
+            spotLight->SetOuter(outer);
+            spotLight->SetFallOff(fallOff);
+            spotLight->SetDirection(glm::normalize(glm::vec3(dirX, dirY, dirZ)));
+            spotLight->SetShadowCaster(shadowCaster);
         }
     }
     ImGui::PopStyleVar();
@@ -669,7 +650,7 @@ void Properties::MaterialsOptions() {
     
 
     if (glbModel) {
-        std::string directory = glbModel->Get()->getPath();
+        //std::string directory = glbModel->Get()->getPath();
         //printf("Directory: %s\n", directory.c_str());
     }
     
@@ -732,7 +713,7 @@ void Properties::MeshOptions() {
     auto glbModel = meshComp->GetMesh().lock();
 
     if (glbModel) {
-        std::string directory = glbModel->Get()->getPath();
+        //std::string directory = glbModel->Get()->getPath();
         //printf("Directory: %s\n", directory.c_str());
     }
 
@@ -770,7 +751,7 @@ void Properties::MeshOptions() {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* asset = (AssetIcon*)payload->Data;
             printf("RUTA MESH: %s\n", asset->ruta);
-            meshComp->SetMesh(resmg.GetResource<::Graphics::Primitives::GLBModel>(asset->ruta));
+            meshComp->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>(asset->ruta));
         }
         ImGui::EndDragDropTarget();
     }
@@ -794,7 +775,7 @@ void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline)
     auto glbModel = meshComp->GetMesh().lock();
 
     if (glbModel) {
-        std::string directory = glbModel->Get()->getPath();
+        //std::string directory = glbModel->Get()->getPath();
         //printf("Directory: %s\n", directory.c_str());
     }
 
@@ -969,9 +950,9 @@ void Properties::UpdateLightCompsPos(std::shared_ptr<Core::Object> obj)
 {
     std::vector<std::shared_ptr<Core::Component>> comps = obj->GetAllComponents();
     for (auto& comp : comps) {
-        if (std::shared_ptr<::Graphics::Primitives::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Light>(comp)) {
+        if (std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(comp)) {
 			glm::vec3 relativePos = lightComp->GetPosition();
-			lightComp->SetPosition(relativePos, obj->GetPosition());
+			lightComp->SetPosition(relativePos);
 		}
 	}
 }
@@ -982,7 +963,7 @@ void Properties::DecalOptions() {
     ImGuiDragDropFlags flags = 0 | ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
 
-    std::shared_ptr<Decal> decal = std::dynamic_pointer_cast<Decal>(selectedObjIns.GetSelectedComponent());
+    std::shared_ptr<Graphics::Primitives::Decal> decal = std::dynamic_pointer_cast<Graphics::Primitives::Decal>(selectedObjIns.GetSelectedComponent());
 
     if (ImGui::BeginTable("materials_table", 2, flags1)) {
 
@@ -993,7 +974,7 @@ void Properties::DecalOptions() {
         ImGui::TableSetColumnIndex(1);
 
 
-        auto tex = decal->mDiffuse->Get();
+        auto tex = decal->GetDiffuse().lock()->Get();
         ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
 
 
@@ -1010,7 +991,7 @@ void Properties::DecalOptions() {
 
         ImGui::EndGroup();
 
-        tex = decal->mNormal->Get();
+        tex = decal->GetNormal().lock()->Get();
         ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
 
 

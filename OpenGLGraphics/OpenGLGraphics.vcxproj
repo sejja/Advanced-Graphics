@@ -212,9 +212,13 @@
     <ClCompile Include="Graphics\Architecture\Bloom\BloomRenderer.cpp" />
     <ClCompile Include="Graphics\Architecture\CubemapFramebuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\GBuffer.cpp" />
+    <ClCompile Include="Graphics\Architecture\GeometryDeform.cpp" />
     <ClCompile Include="Graphics\Architecture\HDRBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\SamplingBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\LightPass.cpp" />
+    <ClCompile Include="Graphics\Architecture\SSAO\Kernel.cpp" />
+    <ClCompile Include="Graphics\Architecture\SSAO\SSAOBuffer.cpp" />
+    <ClCompile Include="Graphics\Architecture\SSAO\SSAONoise.cpp" />
     <ClCompile Include="Graphics\Architecture\Utils\GLUtils.cpp" />
     <ClCompile Include="Graphics\Debug\DebugPrimitives.cpp" />
     <ClCompile Include="Graphics\Debug\DebugShapes.cpp" />
@@ -231,7 +235,6 @@
     <ClCompile Include="Graphics\Primitives\Material.cpp" />
     <ClCompile Include="Graphics\Primitives\Shader.cpp" />
     <ClCompile Include="Graphics\Primitives\ShaderProgram.cpp" />
-    <ClCompile Include="Graphics\Primitives\Model.cpp" />
     <ClCompile Include="Graphics\Primitives\Skybox.cpp" />
     <ClCompile Include="Graphics\Primitives\Texture.cpp" />
     <ClCompile Include="Graphics\Primitives\Renderables.cpp" />
@@ -246,6 +249,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
+    <ClInclude Include="Core\Math\Lerp.h" />
     <ClInclude Include="Core\Memory\Allocator.h" />
     <ClInclude Include="CommonDefines.h" />
     <ClInclude Include="Core\AppWrapper.h" />
@@ -337,9 +341,13 @@
     <ClInclude Include="Dependencies\SQLite3\sqlite3.h" />
     <ClInclude Include="Graphics\Architecture\CubemapFramebuffer.h" />
     <ClInclude Include="Graphics\Architecture\GBuffer.h" />
+    <ClInclude Include="Graphics\Architecture\GeometryDeform.h" />
     <ClInclude Include="Graphics\Architecture\HDRBuffer.h" />
     <ClInclude Include="Graphics\Architecture\LightPass.h" />
     <ClInclude Include="Graphics\Architecture\SamplingBuffer.h" />
+    <ClInclude Include="Graphics\Architecture\SSAO\Kernel.h" />
+    <ClInclude Include="Graphics\Architecture\SSAO\SSAOBuffer.h" />
+    <ClInclude Include="Graphics\Architecture\SSAO\SSAONoise.h" />
     <ClInclude Include="Graphics\Architecture\Utils\GLUtils.h" />
     <ClInclude Include="Graphics\Debug\DebugPrimitives.h" />
     <ClInclude Include="Graphics\Debug\DebugShapes.h" />
@@ -360,7 +368,6 @@
     <ClInclude Include="Graphics\Primitives\Material.h" />
     <ClInclude Include="Graphics\Primitives\Shader.h" />
     <ClInclude Include="Graphics\Primitives\ShaderProgram.h" />
-    <ClInclude Include="Graphics\Primitives\Model.h" />
     <ClInclude Include="Graphics\Primitives\Skybox.h" />
     <ClInclude Include="Graphics\Primitives\Texture.h" />
     <ClInclude Include="Graphics\Primitives\Renderables.h" />
@@ -769,6 +776,7 @@
   <ItemGroup>
     <None Include="Content\Maps\Minecraft.level" />
     <None Include="Content\Maps\Japan.level" />
+    <None Include="Content\Maps\Cyberpunk.level" />
     <None Include="Content\Maps\Sponza.level" />
     <None Include="Content\Meshes\backpack.mtl" />
     <None Include="Content\Scenes\README.md" />
@@ -795,6 +803,9 @@
     <None Include="Content\Shaders\FireParticle.shader" />
     <None Include="Content\Shaders\DeferredPointLighting.frag" />
     <None Include="Content\Shaders\DeferredSpotLighting.frag" />
+    <None Include="Content\Shaders\GeometryDecal.frag" />
+    <None Include="Content\Shaders\GeometryDecal.shader" />
+    <None Include="Content\Shaders\GeometryDecal.vert" />
     <None Include="Content\Shaders\Renderer.frag" />
     <None Include="Content\Shaders\FireParticle.vert" />
     <None Include="Content\Shaders\Refractive.frag" />
@@ -817,6 +828,11 @@
     <None Include="Content\Shaders\SkyBox.shader" />
     <None Include="Content\Shaders\Skybox.spv" />
     <None Include="Content\Shaders\SkyBox.vert" />
+    <None Include="Content\Shaders\SSAO.frag" />
+    <None Include="Content\Shaders\SSAO.shader" />
+    <None Include="Content\Shaders\SSAO.vert" />
+    <None Include="Content\Shaders\SSAOBlur.frag" />
+    <None Include="Content\Shaders\SSAOBlur.shader" />
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\Transform.spv" />
     <None Include="Content\Shaders\Transform.vert" />
