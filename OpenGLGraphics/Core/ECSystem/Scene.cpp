@@ -36,7 +36,7 @@ namespace Core {
 	*   Creates a scene from a level file
 	*/ // ---------------------------------------------------------------------
 	void Scene::CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
-		mParser.LoadDataFromFile(file.data());
+		//mParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<ResourceManager>::Instance();
 
 		//std::for_each(std::execution::unseq, mParser.objects.begin(), mParser.objects.end(), [this, &upload, &resmg](const SceneParser::Transform& x) {
@@ -64,7 +64,7 @@ namespace Core {
 
 		/*std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();*/
 
-		std::ifstream f("Content/Maps/Scene.json");
+		std::ifstream f(file.data());
 		json data = json::parse(f);
 
 		json objects = data["objects"];
