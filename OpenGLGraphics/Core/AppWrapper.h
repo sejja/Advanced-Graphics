@@ -5,7 +5,7 @@
 #include "Graphics/OpenGLPipeline.h"
 #include "Core/Application.h"
 
-class AppWrapper : public Core::GraphicApplication<SDLWindow, Core::Graphics::OpenGLPipeline> {
+class AppWrapper : public Core::GraphicApplication<Core::Window::SDLWindow, Core::Graphics::OpenGLPipeline> {
 private:
     Core::Scene mScene;
 

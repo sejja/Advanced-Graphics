@@ -11,37 +11,44 @@
 
 #include <vector>
 #include "GLBMesh.h"
-#include "ShaderProgram.h"
 #include <assimp/Importer.hpp>
 #include <assimp/postprocess.h>
 #include <assimp/scene.h>
-#include <iostream>
 #include <stb_image.h>
 
 namespace Graphics {
 	namespace Primitives {
-        class GLBModel {
+        class Model {
+        #pragma region //Declarations
         public:
-            std::vector<Mesh> meshes;
+            CLASS_EXCEPTION(Model)
+        #pragma endregion
 
+        #pragma region //Constructor
             // constructor, expects a filepath to a 3D model.
-            GLBModel(std::string const& path);
+            Model(std::string const& path);
+        #pragma endregion
 
+        #pragma region //Methods
             // draws the model, and thus all its meshes
-            void Draw(Core::Graphics::ShaderProgram& shader);
+            void Draw();
 
         private:
             // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
-            void loadModel(std::string const& path);
+            void LoadModel(std::string const& path);
 
             // processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
-            void processNode(aiNode* node, const aiScene* scene, const std::string& dir);
-
-            Mesh processMesh(aiMesh* mesh, const aiScene* scene, const std::string& dir);
+            void ProcessNode(aiNode* node, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform);
+            Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene, const std::string& dir, aiMatrix4x4t<float> transform);
 
             // checks all material textures of a given type and loads the textures if they're not loaded yet.
             // the required info is returned as a Texture struct.
-            std::vector<Asset<Core::Graphics::Texture>> loadMaterialTextures(aiMaterial* mat, aiTextureType type, const std::string& dir);
+            Core::Assets::Asset<Core::Graphics::Texture> LoadMaterialTextures(aiMaterial* mat, const aiTextureType type, const std::string& dir);
+         #pragma endregion
+
+         #pragma region //Members
+            std::vector<Mesh> mMeshes;
+         #pragma endregion
         };
 	}
 }

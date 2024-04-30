@@ -30,7 +30,7 @@ namespace Core {
 				resalloc.terminate(p);
 				});
 
-			rawResource->rawData->LoadFromFile(filename.data());
+			rawResource->Get()->LoadFromFile(filename.data());
 
 			return rawResource;
 		}

@@ -74,7 +74,7 @@ namespace Core {
 			std::shared_ptr<TResource<Shader>> rawResource(resalloc.New(1, _shad), [](TResource<Shader>* const p) {
 				const PageAllocator<TResource<Shader>> resalloc_;
 				const PageAllocator<Shader> shadalloc_;
-				shadalloc_.terminate(p->rawData.release());
+				shadalloc_.terminate(p->GetAndRelease());
 				resalloc_.terminate(p);
 				});
 

@@ -4,6 +4,7 @@
 #include "Core/Network/Client.h"
 #include "Core/Network/Server.h"
 #include "Core/AppWrapper.h"
+#include "Core/Editor/Editor.h"
 
 
 static bool show_tool_metrics = false;
@@ -38,10 +39,13 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
         if (ImGui::BeginMenu("Options")) {
             bool antiAlias = pipeline.getAntiAliasing();
 
+            ImGui::SliderFloat("FOV", Singleton<::Editor>::Instance().GetFOV() , 5, 120.0f);
+
             ImGui::SliderFloat("Exposure", &pipeline.getExposure(), 0, 5);
             if (ImGui::Checkbox("Anti-Aliasing", &antiAlias)) {
                 pipeline.setAntiAliasing(antiAlias);
             }
+
             ImGui::EndMenu();
         }
 

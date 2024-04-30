@@ -32,6 +32,11 @@ public:
     TextEditor texteditor;
 
     SelectedObj& GetSelectedObj() { return selectedObj; }
+
+    void setSceneFrameDimensions(const glm::lowp_u16vec2& dim) { sceneFrameDimensions = dim; }
+    float GetAspectRatio() { return static_cast<float>(sceneFrameDimensions.x) / static_cast<float>(sceneFrameDimensions.y); }
+
+    float *GetFOV() { return &fov; }
     
 
 private:
@@ -43,6 +48,10 @@ private:
     
     Outliner outliner;
     SceneView sceneView;
+
+    glm::lowp_u16vec2 sceneFrameDimensions;
+
+    float fov = 45.0f;
 
     
 };
