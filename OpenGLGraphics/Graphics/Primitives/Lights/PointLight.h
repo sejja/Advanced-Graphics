@@ -22,7 +22,7 @@ namespace Graphics {
 				float inline CalculateSphereOfInfluence() const noexcept;
 				void GenerateShadowMap();
 				Core::Graphics::FrameBuffer depthMapFBO;
-				int depthCubemap;
+				GLuint depthCubemap;
 #pragma endregion
 
 #pragma region //Members
