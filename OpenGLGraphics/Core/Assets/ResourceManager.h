@@ -69,6 +69,8 @@ namespace Core {
 			DONTDISCARD std::shared_ptr<IResourceImporter> GetImporterByExtension(raw_text ext) const;
 			void RemoveResource(raw_text name);
 			void Initialize();
+			template<typename T>
+			std::shared_ptr<std::string> GetResourceName(const Asset<T>& asset);
 		#pragma endregion
 
 		#pragma region //Members
@@ -124,6 +126,19 @@ namespace Core {
 		template<typename Ty_>
 		Asset<Ty_> ResourceManager::GetResource(raw_text name) {
 			return std::reinterpret_pointer_cast<TResource<Ty_>>(GetResource(name));
+		}
+
+		template<typename T>
+		std::shared_ptr<std::string> ResourceManager::GetResourceName(const Asset<T>& asset) {
+			for (auto a : mResources) {
+				//std::cout << a.first << std::endl;
+				if (a.second == asset) {
+					//std::cout << "Targed adquired" << std::endl;
+					std::shared_ptr<std::string> string = std::make_shared<std::string>(a.first);
+					return string;
+				}
+			}
+			return NULL;
 		}
 	}
 }

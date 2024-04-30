@@ -73,7 +73,7 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
         std::cout << "Mostrando popup" << std::endl;
         //ImGui::Text("Filename: ");
         //ImGui::SameLine();
-        ImGui::InputTextWithHint("", "Filename", saveFileName, 100);
+        ImGui::InputTextWithHint("inputText ##", "Filename", saveFileName, 100);
         std::cout << "Nombre: " << saveFileName << std::endl;
         int width = ImGui::GetWindowSize().x;
         int buttonHeight = 30;
@@ -205,7 +205,7 @@ void MainMenu::RenderFileMenu() {
             app.getScene().Save("Content/Maps/" + std::string(saveFileName) + ".json");
         }
         if (ImGui::MenuItem("Save As..")) {
-            ImGui::OpenPopup("Save As..");
+            //ImGui::OpenPopup("Save As..");
             savePopup = true;
 		}
         

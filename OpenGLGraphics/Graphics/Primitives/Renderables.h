@@ -54,7 +54,7 @@ namespace Core {
 			inline void SetShaderProgram(const Core::Assets::AssetReference<Graphics::ShaderProgram>& s);
 
 			DONTDISCARD inline Core::Assets::AssetReference<Graphics::ShaderProgram> GetShaderProgram();
-			DONTDISCARD inline Core::Assets::AssetReference<::Graphics::Primitives::Model> GetMesh() const;
+			DONTDISCARD inline Core::Assets::Asset<::Graphics::Primitives::Model> GetModel() const;
 
 			void Render() const noexcept override;
 			inline void SetProcudesShadow(const bool shadow) noexcept;
@@ -98,7 +98,8 @@ namespace Core {
 			return mShaderProgram;
 		}
 
-		AssetReference<::Graphics::Primitives::GLBModel> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetMesh() {
+		Core::Assets::Asset<::Graphics::Primitives::Model> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetModel() const
+		{
 			return mModel;
 		}
 	}

@@ -646,7 +646,7 @@ void Properties::MaterialsOptions() {
 
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
 
-    auto glbModel = meshComp->GetMesh().lock();
+    auto glbModel = meshComp->GetModel();
     
 
     if (glbModel) {
@@ -710,7 +710,7 @@ void Properties::MeshOptions() {
 
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
 
-    auto glbModel = meshComp->GetMesh().lock();
+    auto glbModel = meshComp->GetModel();
 
     if (glbModel) {
         //std::string directory = glbModel->Get()->getPath();
@@ -772,7 +772,7 @@ void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline)
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
 
     
-    auto glbModel = meshComp->GetMesh().lock();
+    auto glbModel = meshComp->GetModel();
 
     if (glbModel) {
         //std::string directory = glbModel->Get()->getPath();
