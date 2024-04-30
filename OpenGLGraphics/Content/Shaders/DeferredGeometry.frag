@@ -11,6 +11,7 @@
 layout (location = 0) out vec3 gPosition;
 layout (location = 1) out vec3 gNormal;
 layout (location = 2) out vec4 gAlbedoSpec;
+layout (location = 3) out vec4 gBrightness;
 
 layout (location = 5) in vec2 oUVs;
 layout (location = 6) in vec3 oNormal;
@@ -39,4 +40,12 @@ void main() {
         (texture(uNormalTex, oUVs).rgb * 2.0f - 1.0f));
     // and the diffuse per-fragment color
     gAlbedoSpec.rgba = texture(uDiffuseTex, oUVs).rgba;
+    gBrightness = vec4(0, 0, 0, 0);
+    if(gAlbedoSpec.a < 0.1) discard;
 }
+
+
+
+
+
+

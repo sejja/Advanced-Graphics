@@ -1769,6 +1769,9 @@
     <ClInclude Include="Graphics\Architecture\SamplingBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\SDL\Include\SDL_config.h.cmake" />
@@ -2183,7 +2186,7 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="Content\Shaders\Transform.vert" />
-    <None Include="Content\Maps\Scene.level" />
+    <None Include="Content\Maps\Sponza.level" />
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\Shadow.frag" />
     <None Include="Content\Shaders\Shadow.shader" />
@@ -2246,8 +2249,7 @@
     <None Include="Content\Shaders\CascadedShadowMap.vert" />
     <None Include="Content\Shaders\DeferredLighting.frag" />
     <None Include="Content\Shaders\DeferredLighting.shader" />
-    <None Include="Content\Maps\Scene.json" />
-    <None Include="Content\Maps\Scene2.json" />
+    <None Include="Content\Maps\Minecraft.level" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
@@ -2694,5 +2696,10 @@
     <Image Include="Content\Scenes\textures\white.png">
       <Filter>Resource Files</Filter>
     </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="OpenGL Graphics.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
   </ItemGroup>
 </Project>

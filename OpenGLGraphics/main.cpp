@@ -13,16 +13,16 @@
 #include "Core/AppWrapper.h"
 #include "Core/Singleton.h"
 
+
 // ------------------------------------------------------------------------
 /*! Main
 *
 *   Program Entry point
 */ //----------------------------------------------------------------------
 int main() {
-
     AppWrapper& app = Singleton<AppWrapper>::Instance();
     
-	app.getScene().CreateScene("Content/Maps/Scene.level", [&app](const std::shared_ptr<Core::Object>& obj) {
+	app.getScene().CreateScene("Content/Maps/Sponza.level", [&app](const std::shared_ptr<Core::Object>& obj) {
         obj->ForEachComponent([&app](const std::shared_ptr<Core::Component>& comp) {
             std::shared_ptr<Core::Graphics::Renderable> renderable = std::dynamic_pointer_cast<Core::Graphics::Renderable>(comp);
             //If the object is a renderable

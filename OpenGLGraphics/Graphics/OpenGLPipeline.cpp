@@ -304,9 +304,9 @@ namespace Core {
 			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
 			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 
-			Skybox::sCurrentSky->Render(cam,*this);
-
 			RenderParticlesSystems();
+
+			Skybox::sCurrentSky->Render(cam, *this);
 
 			if (AntiAliasing) 
 			{
@@ -365,7 +365,6 @@ namespace Core {
 			}
 
 			glDepthMask(GL_FALSE);
-			glDisable(GL_DEPTH_TEST);
 		}
 		
 

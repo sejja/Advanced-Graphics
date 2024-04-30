@@ -50,6 +50,7 @@ void AssetManager::Render() {
 
 	ImGui::BeginGroup();
 	int cont = 0;
+	bool alredyDragDropping = false;
 	for (int i = 0; i < assets.size(); i++) { //TODO intentar centrar elementos
 		//ImGui::Button("Boton", btSize);
 		assets[i].dibujar(false);
@@ -88,7 +89,7 @@ void AssetManager::Render() {
 	ImGui::EndGroup();
 	ImGui::End();
 
-	drawDropWindow();
+	//drawDropWindow();
 
 	
 }
@@ -118,8 +119,9 @@ void drawDropWindow() { //Para eliminar en la verrsion final
 	ImGuiDragDropFlags flags = 0;
 	flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
 	if (ImGui::BeginDragDropTarget()) {
-		printf("Dropping");
+		//printf("Dropping");
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
+			printf("Drop: %p\n", payload->Data);
 			AssetIcon* iconPtr = (AssetIcon*) payload->Data;
 			texto = iconPtr->nombre;
 		}

@@ -9,11 +9,35 @@ camTarget 0 0 50
 camUp 0 1 0
     
 #scene data
-object floor
+object Palace
 translate 0 -10 0
 rotation 0 0 0
 scale 0.2 0.2 0.2
 mesh Content/Scenes/Sponza/Sponza.gltf 
+
+
+#scene data
+object Dragon
+translate 0 -10 0
+rotation 0 0 0
+scale 0.8 0.8 0.8
+mesh Content/Meshes/Dragon/scene.gltf
+
+object backpack_mesh
+translate -25 -0 50
+rotation 0 0 0
+scale 5 5 5
+mesh Content/Meshes/backpack.obj
+sinusoidal 0 3 5
+orbit 0 -15 0
+
+object suzanne_mesh
+translate 0 -0 50
+rotation 40 20 10
+scale 5 5 5
+mesh Content/Meshes/suzanne.obj
+sinusoidal 0 3 5
+orbit 0 -15 0
 
 #light data
 light
@@ -29,16 +53,16 @@ light
 translate -50 0 55
 color 1 0 0
 lightType SPOT	
-attenuation 50 0.1 0.00
+attenuation 50 0.0 0.01
 #sinusoidal 0 1 20
 ambient 0
 direction 1 0 0
 
 light
-translate 10 30 50
-color 0 0 1
+translate 50 30 50
+color 0 1 0
 lightType SPOT	
-attenuation 50 0.0 0.01
+attenuation 15 0.0 0.01
 #sinusoidal 0 1 20
 ambient 0
 direction 0 -1 0
@@ -47,7 +71,7 @@ light
 translate -10 30 50
 color 0 1 0
 lightType SPOT	
-attenuation 30 0.0 0.01
+attenuation 15 0.0 0.01
 #sinusoidal 0 1 20
 ambient 0
 direction 0 -1 0
@@ -315,7 +339,7 @@ direction 0 -1 0
 
 light
 translate 50 0 -10
-color 0 1 0
+color 0 1 1
 lightType POINT	
 attenuation 15 0.0 0.01
 #sinusoidal 0 1 20
@@ -361,7 +385,7 @@ direction 0 -1 0
 
 light
 translate 20 100 -20
-color 0 1 0
+color 1 0 0
 lightType POINT	
 attenuation 60 0.0 0.01
 #sinusoidal 0 1 20
