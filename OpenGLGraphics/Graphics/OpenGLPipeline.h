@@ -50,6 +50,7 @@ namespace Core {
 			GLboolean& getAntiAliasing() { return AntiAliasing; }
 			void setAntiAliasing(GLboolean aa) { AntiAliasing = aa; }
 			GLuint GetBloomTexture() { return mBloomRenderer->BloomTexture(); }
+			void ClearPipeline();
 		
 
 			void updateRenderablesGroups(const Core::Assets::Asset<ShaderProgram>& curShader, const Core::Assets::Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable);
@@ -118,6 +119,8 @@ namespace Core {
 		void OpenGLPipeline::AddRenderable(const std::weak_ptr<Renderable>& renderer) {
 			mGroupedRenderables[(std::dynamic_pointer_cast<GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(renderer.lock()))->GetShaderProgram().lock()].push_back(renderer);
 		}
+
+
 	}
 }
 #endif

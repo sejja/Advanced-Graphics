@@ -9,6 +9,7 @@ enum AssetType
     TEXTURE,
     MATERIAL,
     SHADER,
+    LEVEL,
     OTHER
 };
 

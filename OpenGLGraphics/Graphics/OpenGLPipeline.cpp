@@ -347,6 +347,11 @@ namespace Core {
 		}
 
 
+		void OpenGLPipeline::ClearPipeline()
+		{
+			mGroupedRenderables.clear();
+		}
+
 		void OpenGLPipeline::updateRenderablesGroups(const Core::Assets::Asset<ShaderProgram>& curShader, const Core::Assets::Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable)
 		{
 			auto curShaderIt = mGroupedRenderables.find(curShader);

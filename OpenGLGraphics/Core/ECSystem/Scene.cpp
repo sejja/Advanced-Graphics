@@ -243,4 +243,9 @@ namespace Core {
 		file.close();
 	}
 
+	void Scene::ClearScene()
+	{
+		mObjects.clear();
+	}
+
 }
