@@ -11,27 +11,35 @@
 
 namespace Graphics {
 	namespace Primitives {
-		// ------------------------------------------------------------------------
-		/*! Default Constructor
-		*
-		*  Constructor for the DirectionalLight class
-		*/ //----------------------------------------------------------------------
-		DirectionalLight::DirectionalLight(const std::weak_ptr<Core::Object>& parent) 
-			: Light(parent) {
-			mData = new DirectionalLightData;
-			Graphics::Architecture::LightPass::sDirectionalLightData.insert(std::make_pair(mIndex, (DirectionalLightData*)mData));
-		}
+		namespace Lights {
+			// ------------------------------------------------------------------------
+			/*! Default Constructor
+			*
+			*  Constructor for the DirectionalLight class
+			*/ //----------------------------------------------------------------------
+			DirectionalLight::DirectionalLight(const std::weak_ptr<Core::Object>& parent)
+				: Light(parent) {
+				mData = std::make_shared<DirectionalLightData>();
+				Graphics::Architecture::LightPass::AddDirectionalLight(std::reinterpret_pointer_cast<DirectionalLightData>(mData));
+			}
 
-		float DirectionalLight::DirectionalLightData::CalculateSphereOfInfluence() const {
-			return -1.0f;
-		}
-		void DirectionalLight::DirectionalLightData::RenderShadowsMap(glm::mat4 camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
-			mShadowMap.Render(camview, mPosition, mDirection, rend_func);
-		}
-		void DirectionalLight::DirectionalLightData::SetUniforms(const Asset<Core::Graphics::ShaderProgram>& shader) {
-			mShadowMap.SetUniforms(shader);
-		}
-		void DirectionalLight::DirectionalLightData::GenerateShadowMap() {
+			// ------------------------------------------------------------------------
+			/*! Destructor
+			*
+			*  Removes the Directional Light from the Light Pass
+			*/ //----------------------------------------------------------------------
+			DirectionalLight::~DirectionalLight() {
+				Graphics::Architecture::LightPass::RemoveDirectionalLight(std::reinterpret_pointer_cast<DirectionalLightData>(mData));
+			}
+
+			// ------------------------------------------------------------------------
+			/*! Calculate Sphere Of Influence
+			*
+			*  Calculates the sphere of influence of the light
+			*/ //----------------------------------------------------------------------
+			float DirectionalLight::DirectionalLightData::CalculateSphereOfInfluence() const noexcept {
+				return std::numeric_limits<float>::max();
+			}
 		}
 	}
 }

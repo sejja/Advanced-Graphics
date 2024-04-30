@@ -7,7 +7,7 @@
 //
 
 #include <glew.h>
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
 #include "ShaderProgram.h"
 #include <iostream>
 
@@ -35,7 +35,7 @@ namespace Core {
 		*
 		*   Constructs a Shader Program class given a Vertex and Fragment Shader
 		*/ // ---------------------------------------------------------------------
-		ShaderProgram::ShaderProgram(const AssetReference<Shader>& vertexShader, const AssetReference<Shader>& fragmentShader)
+		ShaderProgram::ShaderProgram(const Core::Assets::AssetReference<Shader>& vertexShader, const Core::Assets::AssetReference<Shader>& fragmentShader)
 			: ShaderProgram() {
 			//If both of the assets contain valid data
 			if (!vertexShader.expired() && !fragmentShader.expired()) {
@@ -45,11 +45,16 @@ namespace Core {
 
 				GLint status;
 				glGetProgramiv(mHandle, GL_LINK_STATUS, &status);
-				
+				GLchar ErrorLog[1024] = { 0 };
+				if (status == GL_FALSE) {
+					glGetProgramInfoLog(mHandle, sizeof(ErrorLog), NULL, ErrorLog);
+					fprintf(stderr, "Error linking shader program: '%s'\n", ErrorLog);
+				}
+
 				if (status == GL_FALSE) throw ShaderProgramException("Shader Program Failed to Link");
 			}
 		}
-		void ShaderProgram::ReloadShader(Asset<Shader>& vertexShader, Asset<Shader>& fragmentShader) {
+		void ShaderProgram::ReloadShader(Core::Assets::Asset<Shader>& vertexShader, Core::Assets::Asset<Shader>& fragmentShader) {
 			if (mHandle) {
 				glDeleteProgram(mHandle);
 			}
@@ -71,7 +76,7 @@ namespace Core {
 		*
 		*   Constructs a Shader Program class given a Vertex, Geometry & Fragment Shader
 		*/ // ---------------------------------------------------------------------
-		ShaderProgram::ShaderProgram(const AssetReference<Shader>& vertexShader, const AssetReference<Shader>& fragmentShader, const AssetReference<Shader>& geometryShader)
+		ShaderProgram::ShaderProgram(const Core::Assets::AssetReference<Shader>& vertexShader, const Core::Assets::AssetReference<Shader>& fragmentShader, const Core::Assets::AssetReference<Shader>& geometryShader)
 			: ShaderProgram() {
 			//If both of the assets contain valid data
 			if (!vertexShader.expired() && !fragmentShader.expired()) {

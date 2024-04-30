@@ -8,6 +8,7 @@
 
 #include "InputManager.h"
 #include "Core/Singleton.h"
+#include <SDL_mouse.h>
 
 namespace Core {
 	namespace Input {
@@ -29,8 +30,9 @@ namespace Core {
 		void InputManager::ProcessInput() noexcept {
 			using Events::EventDispatcher;
 			EventDispatcher& dispatcher = Singleton<EventDispatcher>::Instance();
-
+			
 			for (KeyCode i = 0; i < 101; i++) mKeyboardState[i] = IsKeyDown(i);
+			const glm::u16vec2 previusMousePosition = mMousePosition;
 			mMousePosition = GetWindowCoordinatesMousePosition();
 
 			if (IsKeyDown('A')) dispatcher.TriggerEvent(A_Down());
@@ -59,6 +61,11 @@ namespace Core {
 			if (IsKeyDown('X')) dispatcher.TriggerEvent(X_Down());
 			if (IsKeyDown('Y')) dispatcher.TriggerEvent(Y_Down());
 			if (IsKeyDown('Z')) dispatcher.TriggerEvent(Z_Down());
+
+
+			//If the mouse has moved, trigger the event
+			if(previusMousePosition != mMousePosition)
+				dispatcher.TriggerEvent(MouseMotion(mMousePosition));
 		}
 
 		// ------------------------------------------------------------------------
@@ -66,12 +73,27 @@ namespace Core {
 		*
 		*   Win32 Wrapper
 		*/ // ---------------------------------------------------------------------
-		glm::u8vec2 InputManager::GetWindowCoordinatesMousePosition() const noexcept {
-			POINT p;
-			GetCursorPos(&p);
-			ScreenToClient(GetActiveWindow(), &p);
+		glm::u16vec2 InputManager::GetWindowCoordinatesMousePosition() const noexcept {
+			int x, y;
+			Uint32 buttons = SDL_GetMouseState(&x, &y);
 
-			return  { p.x, p.y };
+			return  { x, y };
 		}
+
+		// ------------------------------------------------------------------------
+		/*! Default Constructor
+		*
+		*   EMPTY FUNCTION
+		*/ // ---------------------------------------------------------------------
+		InputManager::MouseMotion::MouseMotion() :
+			mMovement() {}
+
+		// ------------------------------------------------------------------------
+		/*! Custom Constructor
+		*
+		*   Sets the inner movement vector
+		*/ // ---------------------------------------------------------------------
+		InputManager::MouseMotion::MouseMotion(const glm::u16vec2& movement)
+			: mMovement(movement) {}
 	}
 }

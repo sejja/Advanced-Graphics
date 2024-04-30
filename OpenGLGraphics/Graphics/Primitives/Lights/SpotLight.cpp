@@ -18,17 +18,19 @@ namespace Graphics {
 		*/ //----------------------------------------------------------------------
 		SpotLight::SpotLight(const std::weak_ptr<Core::Object>& parent)
 			: Light(parent) {
-				mData = new SpotLightData();
-				Graphics::Architecture::LightPass::sSpotLightData.insert(std::make_pair(mIndex, (SpotLightData*)mData));
-				((SpotLightData*)mData)->GenerateShadowMap();
+				mData = std::make_shared<SpotLightData>();
+				Graphics::Architecture::LightPass::AddSpotLight(std::reinterpret_pointer_cast<SpotLightData>(mData));
+				std::reinterpret_pointer_cast<SpotLightData>(mData)->GenerateShadowMap();
 		}
 
-		float SpotLight::SpotLightData::CalculateSphereOfInfluence() const {
-			return 2 * mRadius;
-		}
+		// ------------------------------------------------------------------------
+		/*! Generate Shadow Map
+		*
+		*  Generates the Shadow Map for texturing the shadows
+		*/ //----------------------------------------------------------------------
 		void SpotLight::SpotLightData::GenerateShadowMap() {
 			mShadowMap.Create();
-			mShadowMap.CreateRenderTexture({1600, 900});
+			mShadowMap.CreateRenderTexture({1600, 900}, true, false);
 		}
 	}
 }

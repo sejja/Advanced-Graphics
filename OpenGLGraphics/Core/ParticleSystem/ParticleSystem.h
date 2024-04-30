@@ -63,7 +63,7 @@ namespace Core
 
 					//Get camera projection and view
 					glm::mat4 view = camera->GetViewMatrix(); 
-					glm::mat4 uProjection = this->projection;
+					glm::mat4 uProjection = this->camera->GetProjectionMatrix();
 
 					//New instance of systemProperties
 					glm::vec4 color = this->baseColor;
@@ -121,10 +121,11 @@ namespace Core
 				std::string id;
 
 				GLuint VAO, VBO;
-				Asset<Core::Graphics::ShaderProgram> shaderProgram;
+				Core::Assets::Asset<Core::Graphics::ShaderProgram> shaderProgram;
 				std::vector<Particle> particles;
 				Core::Primitives::Camera* camera;
 				glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.0f / 600.0f, 0.1f, 10000.0f);
+				//glm::mat4 projection = camera->GetProjectionMatrix();
 
 				int ParticleFunction(Particle *p_particle);
 				virtual void Init();

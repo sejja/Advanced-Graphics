@@ -15,7 +15,7 @@
 #include "Shader.h"
 #include "Color.h"
 #include "CommonDefines.h"
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
 
 namespace Core {
 	namespace Graphics {
@@ -27,9 +27,9 @@ namespace Core {
 
 		#pragma region //Constructors
 			ShaderProgram() noexcept;
-			ShaderProgram(const AssetReference<Shader>& vertexShader, const AssetReference<Shader>& fragmentShader);
-			ShaderProgram(const AssetReference<Shader>& vertexShader, const AssetReference<Shader>& fragmentShader,
-				const AssetReference<Shader>& geometryShader);
+			ShaderProgram(const Core::Assets::AssetReference<Shader>& vertexShader, const Core::Assets::AssetReference<Shader>& fragmentShader);
+			ShaderProgram(const Core::Assets::AssetReference<Shader>& vertexShader, const Core::Assets::AssetReference<Shader>& fragmentShader,
+				const Core::Assets::AssetReference<Shader>& geometryShader);
 			~ShaderProgram() noexcept;
 		#pragma endregion
 
@@ -43,11 +43,12 @@ namespace Core {
 			void inline SetShaderUniformMatrix4d(const std::string_view& name, glm::mat4* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, glm::mat3* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, glm::vec2* value, const int count = 1);
+			void inline SetShaderUniform(const std::string_view& name, glm::ivec2* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, glm::vec3* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, glm::vec4* value, const int count = 1);
-			void inline SetShaderUniform(const std::string_view& name, Color* value, const int count = 1);
+			void inline SetShaderUniform(const std::string_view& name, ::Graphics::Primitives::Color* value, const int count = 1);
 			void inline SetShaderUniform(const std::string_view& name, float value);
-			void ReloadShader(Asset<Shader>& vertexShader, Asset<Shader>& fragmentShader);
+			void ReloadShader(Core::Assets::Asset<Shader>& vertexShader, Core::Assets::Asset<Shader>& fragmentShader);
 			GLuint GetHandle();
 		private:
 			GLuint getUniformLocation(const std::string_view& id);
@@ -126,6 +127,10 @@ namespace Core {
 			glUniform2fv(getUniformLocation(name), count, reinterpret_cast<float*>(value));
 		}
 
+		void ShaderProgram::SetShaderUniform(const std::string_view& name, glm::ivec2* value, const int count) {
+			glUniform2iv(getUniformLocation(name), count, reinterpret_cast<int*>(value));
+		}
+
 		// ------------------------------------------------------------------------
 		/*! Set Shader Uniform
 		*
@@ -149,7 +154,7 @@ namespace Core {
 		*
 		*   Sets uniform values in form of a Color
 		*/ // --------------------------------------------------------------------
-		void ShaderProgram::SetShaderUniform(const std::string_view& name, Color* value, const int count) {
+		void ShaderProgram::SetShaderUniform(const std::string_view& name, ::Graphics::Primitives::Color* value, const int count) {
 			glUniform4fv(getUniformLocation(name), count, reinterpret_cast<float*>(value));
 		}
 

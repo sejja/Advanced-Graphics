@@ -19,8 +19,8 @@ namespace Core {
 			void UploadSkyboxCubeMap();
 			static Skybox* sCurrentSky;
 		private:
-			Asset<ShaderProgram> mShaderProgram;
-			Asset<::Graphics::Primitives::GLBModel> mModel;
+			Core::Assets::Asset<ShaderProgram> mShaderProgram;
+			Core::Assets::Asset<::Graphics::Primitives::Model> mModel;
 			GLuint mMapHandle;
 		};
 	};
