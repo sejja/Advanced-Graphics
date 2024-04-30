@@ -7,7 +7,12 @@ namespace Graphics {
 		namespace InstancedRendering {
 			InstancedMesh::InstancedMesh()
 			{
+				//this->asociatedMesh = std::make_shared<Graphics::Primitives::Mesh>(asociatedMesh);
 
+				glGenBuffers(1, &ubo);
+
+				GLuint transformBlockIndex = glGetUniformBlockIndex(shaderProgram->GetHandle(), "TransformBlock");
+				glUniformBlockBinding(shaderProgram->GetHandle(), transformBlockIndex, 1);
 			}
 			InstancedMesh::~InstancedMesh()
 			{
@@ -17,6 +22,21 @@ namespace Graphics {
 			void InstancedMesh::drawInstanced(std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> instancedObject) const
 			{
 				std::cout << "UNIMPLEMENTED FUNCTION drawInstanced IN InstancedMesh: " << this << "\n";
+
+				this->asociatedMesh->bindTextures();
+
+				// draw mesh
+				glBindVertexArray(this->asociatedMesh->getVao());
+				glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(this->asociatedMesh->getCount()), GL_UNSIGNED_INT, 0, static_cast<int>(instancedObject->size()));
+
+				glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+				glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4) * transforms.size(), transforms.data());
+
+				// always good practice to set everything back to defaults once configured.
+
+				glBindVertexArray(0);
+				glActiveTexture(GL_TEXTURE0);
+				glBindBuffer(GL_UNIFORM_BUFFER, 0);
 			}
 
 			void InstancedMesh::updateTransforms(std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> instancedObjects)
@@ -32,6 +52,11 @@ namespace Graphics {
 					//std::cout << "Instanced Rendering: " << parent.get() << "\n";
 					this->getTransforms_ptr()->push_back(matrix);
 				});
+			}
+
+			void InstancedMesh::setAssociatedMesh(Graphics::Primitives::Mesh* mesh)
+			{
+				this->asociatedMesh = std::make_shared<Graphics::Primitives::Mesh>(*mesh);
 			}
 
 			std::vector<glm::mat4>* InstancedMesh::getTransforms_ptr()

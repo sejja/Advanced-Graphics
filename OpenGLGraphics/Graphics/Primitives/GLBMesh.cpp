@@ -50,23 +50,38 @@ namespace Graphics {
             mCount = indices.size();
 		}
 
-        void Mesh::Draw() {
-
-            int isInstanced = Singleton<Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().is_Instanced(this);
-            
-            if (isInstanced) {
-                return; //If the mesh ins instanced wo dont draw it again
-            }
-
-            // bind appropriate textures
-            unsigned int diffuseNr = 1;
-            unsigned int specularNr = 1;
-            unsigned int normalNr = 1;
-            unsigned int heightNr = 1;
+        void Mesh::bindTextures()
+        {
             for (unsigned int i = 0; i < textures.size(); i++)
             {
                 textures[i]->Get()->Bind();
             }
+        }
+
+        void Mesh::Draw() {
+
+            //try {
+                //throw CSomeOtherException();
+                //std::cout << this << std::endl;
+
+                int isInstanced = Singleton<Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().is_Instanced(this);
+            
+                if (isInstanced) {
+                    return; //If the mesh ins instanced wo dont draw it again
+                }
+            //}
+            //catch (...) {
+
+
+
+            //}
+            //bind appropriate textures
+            unsigned int diffuseNr = 1;
+            unsigned int specularNr = 1;
+            unsigned int normalNr = 1;
+            unsigned int heightNr = 1;
+            
+            bindTextures();
 
             // draw mesh
             glBindVertexArray(mVao);
@@ -75,6 +90,21 @@ namespace Graphics {
 
             // always good practice to set everything back to defaults once configured.
             glActiveTexture(GL_TEXTURE0);
+        }
+
+        GLuint Mesh::getVao()
+        {
+            return this->mVao;
+        }
+
+        GLuint Mesh::getVbo()
+        {
+            return this->mVbo;
+        }
+
+        GLuint Mesh::getCount()
+        {
+            return this->mCount;
         }
 	}
 }

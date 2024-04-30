@@ -6,6 +6,7 @@ namespace Graphics::Architecture::InstancedRendering
 	InstanceRenderer::InstanceRenderer()
 	{
 		this->meshMap = &Singleton<InstancedMeshMap>::Instance();
+		this->shaderProgram = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/InstancedShaders/InstancedGeometry.shader");
 	}
 
 	InstanceRenderer::~InstanceRenderer()
@@ -30,7 +31,9 @@ namespace Graphics::Architecture::InstancedRendering
 
 		if (fetch) this->meshMap->fetch_Instanced();
 
+		shaderProgram->Get()->Bind();
 		this->meshMap->InstancedRender();
+
 
 	}
 
