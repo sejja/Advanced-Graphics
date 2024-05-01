@@ -66,8 +66,7 @@ namespace Core {
 			renderer->SetMesh(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<::Graphics::Primitives::Model>("Content/Meshes/sphere_20_averaged.obj"));
 			renderer->SetShaderProgram(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
 
-			//TEMPORAL PARA SABER SI ES LUZ HASTA NUEVO LEVEL 
-			obj->SetName(x.type + " Light_light");
+			obj->SetName(x.type + " light");
 			
 
 			//If the light is a point light
@@ -95,7 +94,7 @@ namespace Core {
 				std::reinterpret_pointer_cast<::Graphics::Primitives::SpotLight>(light)->SetDirection(x.dir);
 			}
 
-			light->SetPosition(glm::vec3(0.0f,0.0f,0.0f));
+			light->SetPosition(glm::vec3(0.0f,0.0f,0.0f), x.pos);
 			light->SetColor(x.col);
 
 			std::weak_ptr< Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> weakrend = renderer;
@@ -115,7 +114,7 @@ namespace Core {
 		std::shared_ptr<Core::Graphics::Skybox> skycomp = std::make_shared<Core::Graphics::Skybox>(sky);
 		skycomp->CreateCubeMap();
 		sky->AddComponent(std::move(skycomp));
-		sky->SetName("Sky_bg");
+		sky->SetID("SKYBOX");
 		mObjects.emplace_back(sky);
 
 		/*Test data*/

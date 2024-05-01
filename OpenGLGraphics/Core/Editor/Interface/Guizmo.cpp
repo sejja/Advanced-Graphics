@@ -32,6 +32,8 @@ void Guizmo::Draw()
 
 	glm::mat4 modelMatrix = glm::mat4(1.0f); //init como matriz identidad
 	
+	//ImGuizmo::ViewManipulate(glm::value_ptr(camView), 100, ImVec2(ImGui::GetWindowPos().x + (float)ImGui::GetWindowWidth() , ImGui::GetWindowPos().y), ImVec2(128, 128), 0x10101010);
+
 	if (selectedObjIns.GetSelectedObject() && !fireSystem) {
 
 		// se aplica transformación pos, rot y escala

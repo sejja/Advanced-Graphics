@@ -17,6 +17,7 @@ public:
 private:
     std::string newName;
 	bool editingName = false;
+    char searchField[128] = "";
 
 };
 

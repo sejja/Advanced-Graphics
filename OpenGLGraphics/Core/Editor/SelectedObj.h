@@ -3,6 +3,7 @@
 
 #include <memory> 
 #include "Core/ECSystem/Object.h"
+#include "Graphics/Primitives/GLBModel.h"
 
 
 class SelectedObj {
@@ -10,6 +11,7 @@ class SelectedObj {
 private:
     std::shared_ptr<Core::Object> selectedObject;
     std::shared_ptr<Core::Component> selectedComponent;
+	Graphics::Primitives::Mesh* selectedMesh;
 
 public:
 
@@ -33,6 +35,14 @@ public:
     std::shared_ptr<Core::Component> GetSelectedComponent() const {
 		return selectedComponent;
 	}
+
+	Graphics::Primitives::Mesh* GetSelectedMesh() {
+		return selectedMesh;
+	}
+
+    void SetSelectedMesh(Graphics::Primitives::Mesh* mesh) {
+        selectedMesh = mesh;
+    }
 
 
     // ------------------------------------------------------------------------

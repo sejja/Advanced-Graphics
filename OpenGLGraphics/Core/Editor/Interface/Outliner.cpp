@@ -25,38 +25,26 @@ void Outliner::Render(){
 
 std::string Outliner::formatObjName(const std::shared_ptr<Core::Object>& obj) {
 	std::string displayName = obj->GetName();
-
-	// de momento así por que los objetos de la escena no tienen un tipo
-	// y se va a cambiar la estructura con el scene parser
-
-	//TODO: asignar un tipo a cada objeto de la escena
-	if (obj->GetName().find("_mesh") != std::string::npos) {
-		displayName.erase(displayName.length() - 5);
-		displayName[0] = std::toupper(displayName[0]);
-		displayName = ICON_FA_CUBE " " + displayName;
-
-	}
-	else if (obj->GetName().find("_light") != std::string::npos) {
-		displayName.erase(displayName.length() - 6);
-		displayName[0] = std::toupper(displayName[0]);
+	std::string lower = displayName;
+	std::transform(lower.begin(), lower.end(), lower.begin(),
+		[](unsigned char c) { return std::tolower(c); });
+	
+	if (lower.find("light") != std::string::npos) {
 		displayName = ICON_FA_LIGHTBULB " " + displayName;
-
 	}
-	else if (obj->GetName().find("_bg") != std::string::npos) {
-		displayName.erase(displayName.length() - 3);
-		displayName[0] = std::toupper(displayName[0]);
+	else if (obj->GetName().find("SKYBOX") != std::string::npos) {
 		displayName = ICON_FA_MOUNTAIN_SUN " " + displayName;
 
 	}
 	else {
-		displayName = ICON_FA_OBJECT_GROUP " " + displayName;
+		displayName = ICON_FA_CUBE " " + displayName;
 	}
 	return displayName;
 }
 
 void Outliner::RenderOptions()
 {
-	static char str1[128] = "";
+	
 	ImGui::SameLine();
 	ImGui::Button(ICON_FA_ARROW_UP_WIDE_SHORT);
 
@@ -64,7 +52,7 @@ void Outliner::RenderOptions()
 	float remainingWidth = ImGui::GetContentRegionAvail().x;
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(remainingWidth * 0.50f);
-	ImGui::InputTextWithHint("##SearchItem", ICON_FA_MAGNIFYING_GLASS " Search item", str1, IM_ARRAYSIZE(str1));
+	ImGui::InputTextWithHint("##SearchItem", ICON_FA_MAGNIFYING_GLASS " Search item", searchField, IM_ARRAYSIZE(searchField));
 
 	//NEW OBJECT
 	ImGui::SameLine();
@@ -96,10 +84,21 @@ void Outliner::RenderSceneObjects(){
 		static std::string selectedNodeChild = "None";
 		int i = 0;
 		for (const auto& obj : sceneObjects) {
-			//Check particle manager
-			if(obj->GetID() == "PARTICLE_MANAGER"){
+			if (!obj) { continue; } //Obj could have been deleted in prev frame
+
+			//Particle manager and skybox are not editable
+			if (obj->GetID() == "PARTICLE_MANAGER" || obj->GetID() == "SKYBOX") {
 				continue;
 			}
+
+			std::string lower = obj->GetName();
+			std::transform(lower.begin(), lower.end(), lower.begin(),
+				[](unsigned char c) { return std::tolower(c); });
+			if (searchField != "" && lower.find(searchField) == std::string::npos) {
+				continue;
+			}
+
+
 
 			//Check if object is selected
 			boolean isNodeSelected = obj == selectedObj.GetSelectedObject();
@@ -131,10 +130,18 @@ void Outliner::RenderSceneObjects(){
 					newName = obj->GetName();
 					editingName = true;
 				}
+
+
 				if (ImGui::MenuItem(ICON_FA_TRASH_CAN" Delete")) {
+					Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
+					scene.removeObject(obj);
+					selectedObj.SetSelectedObject(NULL);
+					selectedObj.SetSelectedComponent(NULL);
+					selectedObj.SetSelectedObject(NULL);
 				}
 				ImGui::EndPopup();
 			}
+
 
 			
 
@@ -144,7 +151,7 @@ void Outliner::RenderSceneObjects(){
 		ImGui::TreePop();
 	}
 	ImGui::Spacing();
-	std::string itemNum = std::to_string(sceneObjects.size()) + " items in scene";
+	std::string itemNum = std::to_string(sceneObjects.size()-2) + " items in scene";
 	ImGui::Text(itemNum.c_str());
 	ImGui::Spacing(); 
 }

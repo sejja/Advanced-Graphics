@@ -130,14 +130,20 @@ namespace Core {
 		*/ 
 		void OpenGLPipeline::FlushObsoletes(unordered_multimap<Core::Assets::Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes)
 		{
-			for_each(execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](pair<const Core::Assets::Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> x) {
+			
+			/*bool found = false;
 
+			for_each(execution::par, obsoletes.begin(), obsoletes.end(), [this, &found, &obsoletes](pair<const Core::Assets::Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> x) {
+				if (found) return;
 				vector<weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
-				it.erase(x.second);
+				//it.erase(x.second);
 
 				//If we don't have any other renderables, erase it
 				if (!it.size()) mGroupedRenderables.erase(x.first);
-				});
+				found = true;
+				});*/
+
+			
 		}
 
 		/* GroupRender
@@ -177,7 +183,7 @@ namespace Core {
 			ImGui_ImplSDL2_NewFrame();
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
-			//ImGuizmo::BeginFrame();
+			ImGuizmo::BeginFrame();
 
 
 			// Create the docking environment

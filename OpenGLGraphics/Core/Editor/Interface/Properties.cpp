@@ -65,6 +65,7 @@ void sendToPeer(std::shared_ptr<Core::Particles::FireSystem> particleSys) {
 void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
     std::shared_ptr<Core::Component> comp = selectedObjIns.GetSelectedComponent();
+	Graphics::Primitives::Mesh* mesh = selectedObjIns.GetSelectedMesh();
 
     std::shared_ptr<Core::Particles::ParticleSystem> particleSystem = NULL;
     std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = NULL;
@@ -84,6 +85,11 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
 
     if (obj) {
         objectOutliner(pipeline); //La lista de componentes del objeto seleccionado
+        obj = selectedObjIns.GetSelectedObject();
+        if (obj) {
+            selectedObjectTree();
+            Graphics::Primitives::Mesh* mesh = selectedObjIns.GetSelectedMesh();
+        }
     }
 
     //El comp puede haber cambiado en el objectOutliner
@@ -108,8 +114,11 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
 	}
 
     if (meshComp) {
-        if (ImGui::CollapsingHeader(ICON_FA_BRUSH "  Material", ImGuiTreeNodeFlags_DefaultOpen)) {
-            MaterialsOptions();
+        Graphics::Primitives::Mesh* mesh = selectedObjIns.GetSelectedMesh();
+        if (mesh) {
+            if (ImGui::CollapsingHeader(ICON_FA_BRUSH "  Material", ImGuiTreeNodeFlags_DefaultOpen)) {
+                MaterialsOptions();
+            }
         }
         if (ImGui::CollapsingHeader(ICON_FA_SHAPES "  Static Mesh", ImGuiTreeNodeFlags_DefaultOpen)) {
             MeshOptions();
@@ -352,7 +361,7 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
 
                 light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));   
                 glm::vec3 relativePos = glm::vec3(0.0f, 0.0f, 0.0f);
-                light->SetPosition(relativePos);
+				light->SetPosition(relativePos, obj->GetPosition());
 
                 obj->AddComponent(std::move(light));
 
@@ -382,14 +391,12 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
             if (ImGui::Selectable(ICON_FA_TRASH_ARROW_UP " Delete")) {
                 Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
                 scene.removeObject(obj);
+                selectedObjIns.SetSelectedComponent(NULL);
+				selectedObjIns.SetSelectedObject(NULL);
+
             }
-
-
-
             ImGui::EndPopup();
-        }
-
-        selectedObjectTree(); ImGui::Spacing();
+        }        
     }
 }
 
@@ -397,7 +404,7 @@ void Properties::selectedObjectTree() {
 
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
     std::vector<std::shared_ptr<Core::Component>> comps = obj->GetAllComponents();
-
+    ImGui::Spacing();
     ImGui::BeginChild("ResizableChild", ImVec2(-FLT_MIN, ImGui::GetTextLineHeightWithSpacing() * 2), ImGuiChildFlags_Border | ImGuiChildFlags_ResizeY);
 
     std::string displayName = std::format("{} {} (Instance)", ICON_FA_CUBE, obj->GetName());
@@ -407,6 +414,7 @@ void Properties::selectedObjectTree() {
     if (ImGui::Selectable(displayName.c_str(), isRootSelectedObj)) {
         selectedObjIns.SetSelectedObject(obj);
         selectedObjIns.SetSelectedComponent(NULL);
+		selectedObjIns.SetSelectedMesh(NULL);
     }
 
     ImGui::Indent();
@@ -415,11 +423,28 @@ void Properties::selectedObjectTree() {
     for (auto& comp : comps) {
         bool isCompSelectedObj = selectedObjIns.GetSelectedComponent() == comp;
 
+
         ImGui::PushID(i);
         // Check if the component is a mesh
         if (std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> modelComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp)) {
-            if (ImGui::Selectable(ICON_FA_CUBE " Mesh", isCompSelectedObj)) {
+            if (ImGui::Selectable(ICON_FA_CUBES " Model", isCompSelectedObj)) {
                 selectedObjIns.SetSelectedComponent(comp);
+                selectedObjIns.SetSelectedMesh(NULL);
+            }
+            if (isCompSelectedObj) {
+                auto glbModel = modelComp->GetMesh().lock();
+                int a = 999;
+                for (Graphics::Primitives::Mesh& mesh : glbModel->Get()->getMeshes()) {
+					a++;
+                    bool isMeshSelected = selectedObjIns.GetSelectedMesh() == &mesh;
+                    ImGui::Indent();
+                    ImGui::PushID(a);
+                    if (ImGui::Selectable(ICON_FA_CUBE " Mesh", isMeshSelected)) {
+						selectedObjIns.SetSelectedMesh(&mesh);
+                    }
+					ImGui::PopID();
+                    ImGui::Unindent();
+                }
             }
         }
         // Check if the component is a light
@@ -537,7 +562,7 @@ void Properties::LightTransform() {
     std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(selectedObjIns.GetSelectedComponent());
 	glm::vec3 curPos = lightComp->GetPosition();
 	TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
-	lightComp->SetPosition(curPos);
+	lightComp->SetPosition(curPos, obj->GetPosition());
 }
 
 void Properties::LightingOptions() {
@@ -714,14 +739,13 @@ void Properties::MaterialsOptions() {
     static ImVec2 cell_padding(4.0f, 8.0f);
     ImGuiDragDropFlags flags = 0 | ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
-    std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
-    auto glbModel = meshComp->GetMesh().lock();
+    auto selectedMesh = selectedObjIns.GetSelectedMesh();
     if (ImGui::BeginTable("normal_tex", 2, flags1)) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Element 0");
         ImGui::TableSetColumnIndex(1);
-        auto curTex = glbModel->Get()->getMeshes()[0].getNormal();
+        auto curTex = selectedMesh->getNormal();
         if (!curTex){
             curTex = resmg.GetResource<Core::Graphics::Texture>("Content/Textures/NoTexture.png");
         }
@@ -739,11 +763,9 @@ void Properties::MaterialsOptions() {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* iconPtr = (AssetIcon*)payload->Data;
             nombreTexturaTemporal = iconPtr->nombre;
-            printf("RUTA NORMAL TEX: %s\n", iconPtr->ruta);
             Core::Assets::Asset<Core::Graphics::Texture> normalTexture = resmg.GetResource<Core::Graphics::Texture>(iconPtr->ruta);
-            for (auto& mesh : glbModel->Get()->getMeshes()) {
-                mesh.setNormal(normalTexture);
-            }
+			
+			selectedMesh->setNormal(normalTexture);
         }
         ImGui::EndDragDropTarget();
     }
@@ -752,7 +774,7 @@ void Properties::MaterialsOptions() {
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Element 1");
         ImGui::TableSetColumnIndex(1);
-        auto curTex = glbModel->Get()->getMeshes()[0].getDiffuse();
+        auto curTex = selectedMesh->getDiffuse();
         if (!curTex) {
             curTex = resmg.GetResource<Core::Graphics::Texture>("Content/Textures/NoTexture.png");
         }
@@ -771,9 +793,7 @@ void Properties::MaterialsOptions() {
             AssetIcon* iconPtr = (AssetIcon*)payload->Data;
             nombreTexturaTemporal = iconPtr->nombre;
             Core::Assets::Asset<Core::Graphics::Texture> diffuseTexture = resmg.GetResource<Core::Graphics::Texture>(iconPtr->ruta);
-            for (auto& mesh : glbModel->Get()->getMeshes()) {
-                mesh.setDiffuse(diffuseTexture);
-            }
+			selectedMesh->setDiffuse(diffuseTexture);
         }
         ImGui::EndDragDropTarget();
     }
@@ -806,6 +826,7 @@ void Properties::MeshOptions() {
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* asset = (AssetIcon*)payload->Data;
+            auto selectedMesh = selectedObjIns.GetSelectedMesh();
             meshComp->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>(asset->ruta));
         }
         ImGui::EndDragDropTarget();
@@ -854,6 +875,8 @@ void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline){
             }
             pipeline.updateRenderablesGroups(curShader, newShader, meshComp);
             meshComp->SetShaderProgram(newShader);
+            selectedObjIns.SetSelectedMesh(NULL);
+
         }
         ImGui::EndDragDropTarget();
     }
@@ -949,7 +972,7 @@ void Properties::UpdateLightCompsPos(std::shared_ptr<Core::Object> obj)
     for (auto& comp : comps) {
         if (std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(comp)) {
 			glm::vec3 relativePos = lightComp->GetPosition();
-			lightComp->SetPosition(relativePos);
+			lightComp->SetPosition(relativePos, obj->GetPosition());
 		}
 	}
 }
