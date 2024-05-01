@@ -135,11 +135,11 @@ namespace Core {
 
 
 		/*Test data*/
-		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
+		/*std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
 		std::shared_ptr<Core::Particles::FireSystem> testParticleSystem = std::make_shared<Core::Particles::FireSystem>(particleManager);
 		particleManager->AddComponent(std::move(testParticleSystem));
 		mObjects.emplace_back(particleManager);
-		Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);
+		Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);*/
 	}
 
 	// ------------------------------------------------------------------------
@@ -160,6 +160,9 @@ namespace Core {
 		json data;
 		for (int i = 0; i < mObjects.size(); i++) {
 			json object;
+			if (mObjects[i]->GetName() == "ParticleManager") {
+				continue;
+			}
 			object["name"] = mObjects[i]->GetName();
 			object["_id"] = mObjects[i]->GetID();
 			object["position"] = { mObjects[i]->GetPosition().x, mObjects[i]->GetPosition().y, mObjects[i]->GetPosition().z };

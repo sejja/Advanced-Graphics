@@ -73,7 +73,7 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
         std::cout << "Mostrando popup" << std::endl;
         //ImGui::Text("Filename: ");
         //ImGui::SameLine();
-        ImGui::InputTextWithHint("inputText ##", "Filename", saveFileName, 100);
+        ImGui::InputTextWithHint("##", "Filename", saveFileName, 100);
         std::cout << "Nombre: " << saveFileName << std::endl;
         int width = ImGui::GetWindowSize().x;
         int buttonHeight = 30;
@@ -83,7 +83,7 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
         if (ImGui::Button("Save", ImVec2(buttonWidth, buttonHeight))) {
             AppWrapper& app = Singleton<AppWrapper>::Instance();
             //std::cout << saveFileName << std::endl;
-            app.getScene().Save("Content/Maps/" + std::string(saveFileName) + ".json");
+            app.getScene().Save("Content/Maps/" + std::string(saveFileName) + ".real");
             savePopup = false;
             previouslySaved = true;
             ImGui::CloseCurrentPopup();

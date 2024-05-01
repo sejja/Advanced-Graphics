@@ -320,7 +320,7 @@ namespace Core {
 
 			Skybox::sCurrentSky->Render(cam, *this);
 
-			RenderParticlesSystems();
+			//RenderParticlesSystems();
 
 			if (AntiAliasing) 
 			{
