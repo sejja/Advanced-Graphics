@@ -28,7 +28,7 @@ namespace Core
 				
 				void SetCameraReference(Core::Primitives::Camera* camera);
 				Core::Primitives::Camera* GetCameraReference();
-				void SetSystemCenter(glm::vec3 newCenter);
+				void SetSystemCenter(const glm::vec3 relativePos, const glm::vec3 objPos);
 				glm::vec3 GetSystemCenter();
 
 				float getHeigth();
@@ -101,6 +101,9 @@ namespace Core
 			protected:
 				// (0,0,0) by default
 				glm::vec3 center = glm::vec3(0.0f, 0.0f, 0.0f);
+				// (0,0,0) by default 
+				glm::vec3 relativePos = glm::vec3(0.0f, 0.0f, 0.0f);
+// 
 				//(0,0,0) by default
 				glm::vec3 acceleration = glm::vec3(0.0f, 0.0f, 0.0f);
 				// Red by default

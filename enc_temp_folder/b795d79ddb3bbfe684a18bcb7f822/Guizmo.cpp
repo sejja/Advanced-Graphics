@@ -73,11 +73,8 @@ void Guizmo::Draw()
 
 		std::shared_ptr<Core::Component> particleComp = selectedObjIns.GetSelectedComponent();
 		std::shared_ptr<Core::Particles::FireSystem> particleSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(particleComp);
-		
-		
 
-
-		modelMatrix = glm::translate(modelMatrix, particleSystem->GetSystemCenter()+ selectedObjIns.GetSelectedObject()->GetPosition());
+		modelMatrix = glm::translate(modelMatrix, particleSystem->GetSystemCenter());
 		//no rotation for fire
 		modelMatrix = glm::scale(modelMatrix, particleSystem->GetRadiusVector());
 
@@ -101,7 +98,7 @@ void Guizmo::Draw()
 				glm::length(glm::vec3(modelMatrix[2]))
 			);
 
-			particleSystem->SetSystemCenter(position-selectedObjIns.GetSelectedObject()->GetPosition(), selectedObjIns.GetSelectedObject()->GetPosition());
+			particleSystem->SetSystemCenter(position, selectedObjIns.GetSelectedObject()->GetPosition());
 			fireSystem->ChangeFireSize(scale[0], scale[1], scale[2], fireSystem->GetFireGap(), fireSystem->GetFireHeight());
 		}
 	

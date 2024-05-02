@@ -58,18 +58,12 @@ void Outliner::RenderOptions()
 	ImGui::SameLine();
 	if (ImGui::Button(ICON_FA_CIRCLE_PLUS" New Object")) {
 		Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
-		auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
 		std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
 		obj->SetPosition(glm::vec3(0.0f,0.0f,0.0f));
 		obj->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 		obj->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
 		obj->SetName("New Object");
 		obj->SetID("New Object");
-
-		std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
-		renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>("Content/Meshes/cube_face.obj"));
-		renderer->SetShaderProgram(resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredGeometry.shader"));
-		obj->AddComponent(std::move(renderer));
 		scene.addObject(obj);
 	}
 

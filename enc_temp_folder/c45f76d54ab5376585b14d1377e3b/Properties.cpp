@@ -971,6 +971,16 @@ void Properties::FireSize() {
 
 }
 
+void Properties::UpdateLightCompsPos(std::shared_ptr<Core::Object> obj)
+{
+    std::vector<std::shared_ptr<Core::Component>> comps = obj->GetAllComponents();
+    for (auto& comp : comps) {
+        if (std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(comp)) {
+			glm::vec3 relativePos = lightComp->GetPosition();
+			lightComp->SetPosition(relativePos, obj->GetPosition());
+		}
+	}
+}
 
 void Properties::DecalOptions() {
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
@@ -1039,22 +1049,4 @@ void Properties::DecalOptions() {
     }
 
     ImGui::PopStyleVar();
-}
-
-
-void Properties::UpdateLightCompsPos(std::shared_ptr<Core::Object> obj)
-{
-    std::vector<std::shared_ptr<Core::Component>> comps = obj->GetAllComponents();
-    for (auto& comp : comps) {
-        //Relative Lights
-        if (std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(comp)) {
-			glm::vec3 relativePos = lightComp->GetPosition();
-			lightComp->SetPosition(relativePos, obj->GetPosition());
-		}
-        //Relative Fire Systems
-		if (std::shared_ptr<Core::Particles::FireSystem> fireComp = std::dynamic_pointer_cast<Core::Particles::FireSystem>(comp)) {
-			glm::vec3 relativePos = fireComp->GetSystemCenter();
-			fireComp->SetSystemCenter(relativePos, obj->GetPosition());
-		}
-	}
 }
