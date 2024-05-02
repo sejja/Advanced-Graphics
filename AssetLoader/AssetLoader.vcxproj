@@ -130,7 +130,6 @@
     <ClCompile Include="asset.c" />
     <ClCompile Include="folder.c" />
     <ClCompile Include="main.c" />
-    <ClCompile Include="prueba1.c" />
     <ClCompile Include="sqlite3.c" />
   </ItemGroup>
   <ItemGroup>

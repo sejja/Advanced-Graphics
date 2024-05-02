@@ -47,7 +47,7 @@ void MousePicking::performRayCasting(glm::vec2 mousePos, int viewportWidth, int 
 
         for (const auto& comp : obj->GetAllComponents()) {
             if (std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp)) {
-                auto glbModel = meshComp->GetMesh().lock();
+                auto glbModel = meshComp->GetModel();
                 if (glbModel) {
                     auto boundingBox = glbModel->Get()->getAABB();
 

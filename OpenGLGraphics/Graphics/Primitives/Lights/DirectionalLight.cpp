@@ -20,10 +20,7 @@ namespace Graphics {
 			*/ //----------------------------------------------------------------------
 			DirectionalLight::DirectionalLight(const std::weak_ptr<Core::Object>& parent)
 				: Light(parent) {
-				Core::Memory::PageAllocator<DirectionalLightData> alloc;
-				mData = std::shared_ptr<DirectionalLightData>(alloc.New(), [&alloc](DirectionalLightData* const p) {
-					alloc.deallocate(p);
-					});
+				mData = std::make_shared<DirectionalLightData>();
 				Graphics::Architecture::LightPass::AddDirectionalLight(std::reinterpret_pointer_cast<DirectionalLightData>(mData));
 			}
 

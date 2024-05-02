@@ -169,5 +169,16 @@ namespace Graphics {
 			light->SetShaderUniform("uModel", &matrix);
 			mLightSphere->Get()->Draw();
 		}
+
+		// ------------------------------------------------------------------------
+		/*! Clear
+		*
+		*   Removes all lighting info from the light-pass, preventing from further rendering
+		*/ //----------------------------------------------------------------------
+		void LightPass::Clear()	{
+			sDirectionalLightData.clear();
+			sSpotLightData.clear();
+			sPointLightData.clear();
+		}
 	}
 }

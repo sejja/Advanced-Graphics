@@ -432,7 +432,7 @@ void Properties::selectedObjectTree() {
                 selectedObjIns.SetSelectedMesh(NULL);
             }
             if (isCompSelectedObj) {
-                auto glbModel = modelComp->GetMesh().lock();
+                auto glbModel = modelComp->GetModel();
                 int a = 999;
                 for (Graphics::Primitives::Mesh& mesh : glbModel->Get()->getMeshes()) {
 					a++;
@@ -806,7 +806,7 @@ void Properties::MeshOptions() {
     ImGuiDragDropFlags flags = 0 | ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
-    auto glbModel = meshComp->GetMesh().lock();
+    auto glbModel = meshComp->GetModel();
     if (ImGui::BeginTable("mesh_table", 2, flags1)) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
@@ -840,7 +840,7 @@ void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline){
     static ImVec2 cell_padding(4.0f, 8.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
-    auto glbModel = meshComp->GetMesh().lock();
+    auto glbModel = meshComp->GetModel();
    
     if (ImGui::BeginTable("shader_table", 2, flags1)) {
         ImGui::TableNextRow();

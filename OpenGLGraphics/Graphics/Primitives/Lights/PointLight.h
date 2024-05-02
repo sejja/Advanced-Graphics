@@ -30,6 +30,7 @@ namespace Graphics {
 
 		#pragma region //Constructor
 			PointLight(const std::weak_ptr<Core::Object>& parent);
+			~PointLight();
 		#pragma endregion
 
 		#pragma region //Methods

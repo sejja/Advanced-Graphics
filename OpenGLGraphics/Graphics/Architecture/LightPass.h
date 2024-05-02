@@ -44,6 +44,7 @@ namespace Graphics {
 			static void inline RemovePointLight(const std::shared_ptr<Graphics::Primitives::PointLight::PointLightData>& data);
 			static void inline RemoveSpotLight(const std::shared_ptr<Graphics::Primitives::SpotLight::SpotLightData>& data);
 			static void inline RemoveDirectionalLight(const std::shared_ptr<Graphics::Primitives::Lights::DirectionalLight::DirectionalLightData>& data);
+			void Clear();
 		#pragma endregion
 
 		#pragma region //Members

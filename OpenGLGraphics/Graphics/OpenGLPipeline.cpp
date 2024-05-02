@@ -352,6 +352,11 @@ namespace Core {
 		}
 
 
+		void OpenGLPipeline::ClearPipeline() {
+			mGroupedRenderables.clear();
+			mLightPass->Clear();
+		}
+
 		Primitives::Camera* OpenGLPipeline::getCamera()
 		{
 			return &cam;
@@ -396,7 +401,6 @@ namespace Core {
 			//glEnable(GL_DEPTH_TEST);
 			glCullFace(GL_BACK);
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glEnable(GL_ALPHA_TEST);
 			glAlphaFunc(GL_GREATER, 0.1f);
 
