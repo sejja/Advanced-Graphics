@@ -106,8 +106,8 @@ namespace Core {
 			// CubemapReflections
 			cubeMapDirections[0] = glm::vec3(1.0f, 0.0f, 0.0f);  // +X
 			cubeMapDirections[1] = glm::vec3(-1.0f, 0.0f, 0.0f); // -X
-			cubeMapDirections[2] = glm::vec3(0.0f, 1.0f, 0.0f);  // +Y
-			cubeMapDirections[3] = glm::vec3(0.0f, -1.0f, 0.0f); // -Y
+			cubeMapDirections[3] = glm::vec3(0.0f, 1.0f, 0.0f);  // +Y
+			cubeMapDirections[2] = glm::vec3(0.0f, -1.0f, 0.0f); // -Y
 			cubeMapDirections[4] = glm::vec3(0.0f, 0.0f, 1.0f);  // +Z
 			cubeMapDirections[5] = glm::vec3(0.0f, 0.0f, -1.0f); // -Z
 			mDebug = std::make_unique<::Graphics::Debug::DebugSystem>();
@@ -277,10 +277,10 @@ namespace Core {
 		}
 
 
-		void OpenGLPipeline::RenderShadowMaps() {
+		void OpenGLPipeline::RenderShadowMaps(glm::mat4 view) {
 			std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
-			mLightPass->RenderShadowMaps({1600, 900}, cam.GetViewMatrix(), [&obsoletes, this](ShaderProgram* shader) {
+			mLightPass->RenderShadowMaps({1600, 900}, view, [&obsoletes, this](ShaderProgram* shader) {
 				//Render all objects
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
 				[this, &obsoletes, &shader](const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
@@ -302,7 +302,7 @@ namespace Core {
 
 			
 			
-			RenderShadowMaps();
+			RenderShadowMaps(cam.GetViewMatrix());
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			//if (firstTime) {
 				RenderReflectionCubemap(cam.GetPosition());
@@ -427,13 +427,7 @@ namespace Core {
 		}
 		
 
-		// ------------------------------------------------------------------------
-		/*! Lighting Pass
-		*
-		*   Using the buffers created on the geometry pass, we can 
-		*		compute the lighting for each pixel
-		*/ //----------------------------------------------------------------------
-
+		
 		// ------------------------------------------------------------------------
 		/*! Set Dimension
 		*
@@ -546,34 +540,44 @@ namespace Core {
 		}
 
 	    // Render to each cubemap face
+		glDisable(GL_CULL_FACE);
 	    for (GLuint i = 0; i < 6; ++i)
 	    {
 			glViewport(0, 0, reflectionSize, reflectionSize);
 			//glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
 			
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			
+			//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			glm::mat4 view;
 	        // Set the camera to look in the direction of the cubemap face
-	        glm::mat4 view = glm::lookAt(position, position + cubeMapDirections[i], glm::vec3(0.0f, 1.0f, 0.0f));
+			if(i == 3) {
+				view = glm::lookAt(position, position + cubeMapDirections[i], glm::vec3(1.0f, 0.0f, 0.0f));
+			}
+			else if (i == 2) {
+				view = glm::lookAt(position, position + cubeMapDirections[i], glm::vec3(-1.0f, 0.0f, 0.0f));
+			}
+			else {
+				view = glm::lookAt(position, position + cubeMapDirections[i], glm::vec3(0.0f, 1.0f, 0.0f));
+			}
 			glm::mat4 projectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10000.0f);
 	
 	        // Render scene with this view matrix
 	        // Call your rendering functions here, e.g., GeometryPass(), Skybox::sCurrentSky->Render(cam, *this)
 			UpdateUniformBuffers(view, projectionMatrix);
+			//RenderShadowMaps(view);
 			GeometryPass({ 512, 512 },view,projectionMatrix);
 			//BloomPass(reflectionFramebuffer);
 			glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionCubemap, 0);
-			mLightPass->RenderLights({ 512, 512 }, *mGBuffer, *mSSAOBuffer);
-			//mGBuffer->BlitDepthBuffer(reflectionFramebuffer);
+			mLightPass->RenderLights({ 1600, 900}, *mGBuffer, *mSSAOBuffer);
+			//mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 	
-			//Skybox::sCurrentSky->RenderSpecific(view,projectionMatrix, *this);
+			Skybox::sCurrentSky->RenderSpecific(view,projectionMatrix, *this);
 	        // You may want to read back the rendered data from each face if needed
 			
 			
 			
 	    }
-	
+		glEnable(GL_CULL_FACE);
 	    // Cleanup
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		glDeleteFramebuffers(1, &reflectionFramebuffer);

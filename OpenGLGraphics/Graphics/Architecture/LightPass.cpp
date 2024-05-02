@@ -87,7 +87,7 @@ namespace Graphics {
 			glBindTexture(GL_TEXTURE_2D, gBuffer.GetAlbedoTextureHandle());
 			glActiveTexture(GL_TEXTURE3);
 			glBindTexture(GL_TEXTURE_2D, ssao.GetSSAOTexture());
-			glViewport(0, 0, dim.x, dim.y);
+			glViewport(0, -50, dim.x, dim.y);
 			glEnable(GL_STENCIL_TEST);
 			glEnable(GL_DEPTH_TEST);
 			glDisable(GL_CULL_FACE);
