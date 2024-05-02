@@ -19,7 +19,7 @@ namespace Graphics {
             *   Constructs an unitialized Bloom Renderer
             */ // ---------------------------------------------------------------------
             BloomRenderer::BloomRenderer(const glm::u16vec2 size) :
-                mTexture({1600, 900}), mSrcViewportSize(size) {
+                mTexture(size), mSrcViewportSize(size) {
 
                 auto& resmgr = Singleton<Core::Assets::ResourceManager>::Instance();
                 // Shaders

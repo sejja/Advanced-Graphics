@@ -8,6 +8,7 @@
 
 #include "DirectionalLight.h"
 #include "Graphics/Architecture/LightPass.h"
+#include "Core/Memory/PageAllocator.h"
 
 namespace Graphics {
 	namespace Primitives {
@@ -19,7 +20,10 @@ namespace Graphics {
 			*/ //----------------------------------------------------------------------
 			DirectionalLight::DirectionalLight(const std::weak_ptr<Core::Object>& parent)
 				: Light(parent) {
-				mData = std::make_shared<DirectionalLightData>();
+				Core::Memory::PageAllocator<DirectionalLightData> alloc;
+				mData = std::shared_ptr<DirectionalLightData>(alloc.New(), [&alloc](DirectionalLightData* const p) {
+					alloc.deallocate(p);
+					});
 				Graphics::Architecture::LightPass::AddDirectionalLight(std::reinterpret_pointer_cast<DirectionalLightData>(mData));
 			}
 
