@@ -3,6 +3,7 @@
 #include "Dependencies/SQLite3/sqlite3.h"
 #include "Interface/AssetIcon.h"
 #include <vector>
+#include <unordered_map>
 #include "string.h"
 
 namespace Core {
@@ -36,6 +37,29 @@ namespace Core {
 			sql = "SELECT * FROM ASSET WHERE CARPETA IS NULL;";
 			appendFilesOfStatement(sql, assets, false);
 			return std::move(assets);
+		}
+
+		std::unordered_map<AssetType, std::string> Database::getAssetTypeImages()
+		{
+            std::unordered_map<AssetType, std::string> map;
+			sqlite3_stmt* stmt;
+			std::string sql = "SELECT * FROM TIPO;";
+			sqlite3_prepare_v2(connection, sql.c_str(), -1, &stmt, NULL);
+			while (sqlite3_step(stmt) == SQLITE_ROW) {
+				const char* tipoCharArray = (const char*)sqlite3_column_text(stmt, 0);
+				const char* rutaCharArray = (const char*)sqlite3_column_text(stmt, 1);
+				AssetType tipo = getAssetType(tipoCharArray);
+				if (tipo == AssetType::TEXTURE) {
+					continue;
+				}
+				std::string ruta = std::string(rutaCharArray);
+				map.insert({ tipo, ruta });
+			}
+			for (auto& pair : map) {
+				std::cout << "Tipo: " << (int)pair.first << " Ruta: " << pair.second << std::endl;
+			}
+
+			return std::move(map);
 		}
 
 		void Database::closeConnection() {
@@ -86,6 +110,12 @@ namespace Core {
 			}
 			else if (strcmp(tipo, "SHADER") == 0) {
 				return AssetType::SHADER;
+			}
+			else if (strcmp(tipo, "FOLDER") == 0) {
+				return AssetType::FOLDER;
+			}
+			else if (strcmp(tipo, "LEVEL") == 0) {
+				return AssetType::LEVEL;
 			}
 			else {
 				return AssetType::OTHER;

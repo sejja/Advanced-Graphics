@@ -2,6 +2,7 @@
 #define __ASSET_ICON_H__
 
 #include <string>
+#include <unordered_map>
 
 enum class AssetType {
 	MODEL,
@@ -9,11 +10,13 @@ enum class AssetType {
 	MATERIAL,
 	SHADER,
 	FOLDER,
+	LEVEL,
 	OTHER
 };
 
 class AssetIcon {
 	public:
+		static std::unordered_map<AssetType, std::string> assetTypeImages;
 		AssetType tipo;
 		const char* nombre;
 		const char* ruta;
@@ -25,5 +28,7 @@ class AssetIcon {
 
 		void dibujar(bool dibujarToolTip);
 };
+
+//std::unordered_map<AssetType, std::string> AssetIcon::assetTypeImages = std::unordered_map<AssetType, std::string>();
 
 #endif;

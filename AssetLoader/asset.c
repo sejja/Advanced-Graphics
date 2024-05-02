@@ -55,9 +55,11 @@ Asset* createAsset(char* path) {
     else if (strcmp(extension, "mtl" ) == 0) {
         asset->type = MATERIAL;
     }
-    else if (strcmp(extension, "frag") == 0) {
+    else if (strcmp(extension, "shader") == 0) {
         asset->type = SHADER;
-    }
+    } else if (strcmp(extension, "real") == 0) {
+		asset->type = LEVEL;
+	}
     else {
         asset->type = OTHER;
     }
@@ -91,8 +93,10 @@ int saveAsset(Asset* asset, sqlite3* database, int parentFolder) {
     case (SHADER): {
         type = "SHADER";
         break;
-    }
-    default: {
+    } case (LEVEL): {
+        type = "LEVEL";
+        break;
+    } default: {
         type = "OTHER";
         break;
     }

@@ -14,7 +14,7 @@
 #include <execution>
 #include "Core/Math/Transform.h"
 #include "CommonDefines.h"
-#include "Core/RTTI.h"
+#include "Core/RTTI/RTTI.h"
 
 namespace Core {
 	class Component;

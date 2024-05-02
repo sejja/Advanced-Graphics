@@ -148,8 +148,6 @@ void Common::sendParticleIfChanged(const std::shared_ptr<Core::Particles::FireSy
     }
 }
 
-
-
 void Common::sendObjectIfChanged(const std::shared_ptr<Core::Object>& obj) {
 
     glm::vec3 curPos = obj->GetPosition();

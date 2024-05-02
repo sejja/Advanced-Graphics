@@ -24,7 +24,7 @@
     <ProjectGuid>{f9f07724-0104-491b-b7a5-8ab417e1bb33}</ProjectGuid>
     <RootNamespace>CS300</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
-    <ProjectName>OpenGL Graphics</ProjectName>
+    <ProjectName>OpenGLGraphics</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -137,13 +137,13 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Dependencies\GLEW\Include;$(ProjectDir)Dependencies\SDL\Include;$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\TinyOBJLoader;$(ProjectDir)Dependencies\Assimp\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Dependencies\GLEW\Include;$(ProjectDir)Dependencies\SDL\Include;$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\TinyOBJLoader;$(ProjectDir)Dependencies\Assimp\Include;$(ProjectDir)Dependencies\SDL\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;glew32.lib;opengl32.lib;Ws2_32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;opengl32.lib;Ws2_32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLEW\Lib;$(ProjectDir)Dependencies\SDL\Lib;$(ProjectDir)Dependencies\Assimp\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -155,7 +155,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);_CRT_SECURE_NO_WARNINGS</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Dependencies\GLEW\Include;$(ProjectDir)Dependencies\SDL\Include;$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\TinyOBJLoader;$(ProjectDir)Dependencies\Assimp\Include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)Dependencies\GLEW\Include;$(ProjectDir)Dependencies\SDL\Include;$(ProjectDir)Dependencies\GLM;$(ProjectDir)Dependencies\STB;$(ProjectDir)Dependencies\TinyOBJLoader;$(ProjectDir)Dependencies\Assimp\Include;$(ProjectDir)Dependencies\SDL\Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -163,7 +163,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2.lib;glew32.lib;opengl32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;opengl32.lib;assimp.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)Dependencies\GLEW\Lib;$(ProjectDir)Dependencies\SDL\Lib;$(ProjectDir)Dependencies\Assimp\Lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -198,7 +198,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="Core\ResourceManager.cpp" />
+    <ClCompile Include="Core\Assets\ResourceManager.cpp" />
+    <ClCompile Include="Dependencies\GLEW\Source\glew.c" />
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_demo.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui_draw.cpp" />
@@ -210,11 +211,17 @@
     <ClCompile Include="Graphics\Architecture\Bloom\BloomFrameBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\Bloom\BloomRenderer.cpp" />
     <ClCompile Include="Graphics\Architecture\GBuffer.cpp" />
+    <ClCompile Include="Graphics\Architecture\GeometryDeform.cpp" />
     <ClCompile Include="Graphics\Architecture\HDRBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\SamplingBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\LightPass.cpp" />
+    <ClCompile Include="Graphics\Architecture\SSAO\Kernel.cpp" />
+    <ClCompile Include="Graphics\Architecture\SSAO\SSAOBuffer.cpp" />
+    <ClCompile Include="Graphics\Architecture\SSAO\SSAONoise.cpp" />
+    <ClCompile Include="Graphics\Architecture\Utils\GLUtils.cpp" />
     <ClCompile Include="Graphics\Debug\DebugPrimitives.cpp" />
     <ClCompile Include="Graphics\Debug\DebugShapes.cpp" />
+    <ClCompile Include="Graphics\Primitives\Decal.cpp" />
     <ClCompile Include="Graphics\Primitives\Lights\DirectionalLight.cpp" />
     <ClCompile Include="Graphics\Primitives\GLBMesh.cpp" />
     <ClCompile Include="Graphics\Primitives\GLBModel.cpp" />
@@ -227,7 +234,6 @@
     <ClCompile Include="Graphics\Primitives\Material.cpp" />
     <ClCompile Include="Graphics\Primitives\Shader.cpp" />
     <ClCompile Include="Graphics\Primitives\ShaderProgram.cpp" />
-    <ClCompile Include="Graphics\Primitives\Model.cpp" />
     <ClCompile Include="Graphics\Primitives\Skybox.cpp" />
     <ClCompile Include="Graphics\Primitives\Texture.cpp" />
     <ClCompile Include="Graphics\Primitives\Renderables.cpp" />
@@ -242,6 +248,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
+    <ClInclude Include="Core\Math\Lerp.h" />
     <ClInclude Include="Core\Memory\Allocator.h" />
     <ClInclude Include="CommonDefines.h" />
     <ClInclude Include="Core\AppWrapper.h" />
@@ -271,7 +278,7 @@
     <ClInclude Include="Core\ParticleSystem\FireSystem.h" />
     <ClInclude Include="Core\ParticleSystem\ParticleManager.h" />
     <ClInclude Include="Core\ParticleSystem\ParticleSystem.h" />
-    <ClInclude Include="Core\RTTI.h" />
+    <ClInclude Include="Core\RTTI\RTTI.h" />
     <ClInclude Include="Core\Events\TypeInfo.h" />
     <ClInclude Include="Core\Input\InputManager.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -279,7 +286,7 @@
     </ClInclude>
     <ClInclude Include="Core\Memory\ObjectAllocator.h" />
     <ClInclude Include="Core\Memory\PageAllocator.h" />
-    <ClInclude Include="Core\ResourceManager.h" />
+    <ClInclude Include="Core\Assets\ResourceManager.h" />
     <ClInclude Include="Dependencies\ImGui\imconfig.h" />
     <ClInclude Include="Dependencies\ImGui\imgui.h" />
     <ClInclude Include="Dependencies\ImGui\imgui_impl_opengl3.h" />
@@ -330,12 +337,19 @@
     <ClInclude Include="Dependencies\Json\include\thirdparty\hedley\hedley.hpp" />
     <ClInclude Include="Dependencies\Json\include\thirdparty\hedley\hedley_undef.hpp" />
     <ClInclude Include="Dependencies\Json\single_include\json.hpp" />
+    <ClInclude Include="Dependencies\SQLite3\sqlite3.h" />
     <ClInclude Include="Graphics\Architecture\GBuffer.h" />
+    <ClInclude Include="Graphics\Architecture\GeometryDeform.h" />
     <ClInclude Include="Graphics\Architecture\HDRBuffer.h" />
     <ClInclude Include="Graphics\Architecture\LightPass.h" />
     <ClInclude Include="Graphics\Architecture\SamplingBuffer.h" />
+    <ClInclude Include="Graphics\Architecture\SSAO\Kernel.h" />
+    <ClInclude Include="Graphics\Architecture\SSAO\SSAOBuffer.h" />
+    <ClInclude Include="Graphics\Architecture\SSAO\SSAONoise.h" />
+    <ClInclude Include="Graphics\Architecture\Utils\GLUtils.h" />
     <ClInclude Include="Graphics\Debug\DebugPrimitives.h" />
     <ClInclude Include="Graphics\Debug\DebugShapes.h" />
+    <ClInclude Include="Graphics\Primitives\Decal.h" />
     <ClInclude Include="Graphics\Primitives\Lights\DirectionalLight.h" />
     <ClInclude Include="Graphics\Architecture\Bloom\BloomFrameBuffer.h" />
     <ClInclude Include="Graphics\Architecture\Bloom\BloomRenderer.h" />
@@ -352,7 +366,6 @@
     <ClInclude Include="Graphics\Primitives\Material.h" />
     <ClInclude Include="Graphics\Primitives\Shader.h" />
     <ClInclude Include="Graphics\Primitives\ShaderProgram.h" />
-    <ClInclude Include="Graphics\Primitives\Model.h" />
     <ClInclude Include="Graphics\Primitives\Skybox.h" />
     <ClInclude Include="Graphics\Primitives\Texture.h" />
     <ClInclude Include="Graphics\Primitives\Renderables.h" />
@@ -750,17 +763,19 @@
     <ClInclude Include="Dependencies\STB\stb_voxel_render.h" />
     <ClInclude Include="Dependencies\STB\stretchy_buffer.h" />
     <ClInclude Include="Core\Graphics\Pipeline.h" />
-    <ClInclude Include="Core\Window.h" />
+    <ClInclude Include="Core\Window\Window.h" />
     <ClInclude Include="Graphics\OpenGLPipeline.h" />
     <ClInclude Include="Core\Math\Transform.h" />
     <ClInclude Include="Core\Singleton.h" />
     <ClInclude Include="Graphics\Tools\FrameBuffer.h" />
     <ClInclude Include="Graphics\Tools\OpenGLInfo.h" />
+    <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Content\Maps\Scene.json" />
-    <None Include="Content\Maps\Scene.level" />
-    <None Include="Content\Maps\Scene2.json" />
+    <None Include="Content\Maps\Minecraft.level" />
+    <None Include="Content\Maps\Japan.level" />
+    <None Include="Content\Maps\Cyberpunk.level" />
+    <None Include="Content\Maps\Sponza.level" />
     <None Include="Content\Meshes\backpack.mtl" />
     <None Include="Content\Scenes\README.md" />
     <None Include="Content\Scenes\Sponza.bin" />
@@ -786,6 +801,9 @@
     <None Include="Content\Shaders\FireParticle.shader" />
     <None Include="Content\Shaders\DeferredPointLighting.frag" />
     <None Include="Content\Shaders\DeferredSpotLighting.frag" />
+    <None Include="Content\Shaders\GeometryDecal.frag" />
+    <None Include="Content\Shaders\GeometryDecal.shader" />
+    <None Include="Content\Shaders\GeometryDecal.vert" />
     <None Include="Content\Shaders\Renderer.frag" />
     <None Include="Content\Shaders\FireParticle.vert" />
     <None Include="Content\Shaders\Refractive.frag" />
@@ -808,6 +826,11 @@
     <None Include="Content\Shaders\SkyBox.shader" />
     <None Include="Content\Shaders\Skybox.spv" />
     <None Include="Content\Shaders\SkyBox.vert" />
+    <None Include="Content\Shaders\SSAO.frag" />
+    <None Include="Content\Shaders\SSAO.shader" />
+    <None Include="Content\Shaders\SSAO.vert" />
+    <None Include="Content\Shaders\SSAOBlur.frag" />
+    <None Include="Content\Shaders\SSAOBlur.shader" />
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\Transform.spv" />
     <None Include="Content\Shaders\Transform.vert" />
@@ -1032,11 +1055,26 @@
     <Image Include="Content\Textures\bottom.jpg" />
     <Image Include="Content\Textures\Brick.png" />
     <Image Include="Content\Textures\BrickNormal.png" />
+    <Image Include="Content\Textures\decal_basic_m.png" />
+    <Image Include="Content\Textures\decal_bullet_d.png" />
+    <Image Include="Content\Textures\decal_bullet_n.png" />
+    <Image Include="Content\Textures\decal_crack_d.png" />
+    <Image Include="Content\Textures\decal_crack_n.png" />
+    <Image Include="Content\Textures\decal_damagefloor_d.png" />
+    <Image Include="Content\Textures\decal_damagefloor_n.png" />
+    <Image Include="Content\Textures\decal_plaster_d.png" />
+    <Image Include="Content\Textures\decal_plaster_n.png" />
+    <Image Include="Content\Textures\decal_skull_d.png" />
+    <Image Include="Content\Textures\decal_skull_m.png" />
+    <Image Include="Content\Textures\decal_skull_n.png" />
     <Image Include="Content\Textures\front.jpg" />
     <Image Include="Content\Textures\left.jpg" />
     <Image Include="Content\Textures\right.jpg" />
     <Image Include="Content\Textures\top.jpg" />
     <Image Include="D:\Asier\Descargas\realEngineLogo.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="OpenGL Graphics.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

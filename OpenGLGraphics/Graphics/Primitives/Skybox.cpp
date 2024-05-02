@@ -8,8 +8,8 @@ namespace Core {
 
         Skybox::Skybox(const std::weak_ptr<Object>& parent) :
             Component(parent) {
-            mShaderProgram = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/SkyBox.shader");
-            mModel = Singleton<ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/cube_face.obj");
+            mShaderProgram = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/SkyBox.shader");
+            mModel = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<::Graphics::Primitives::Model>("Content/Meshes/cube_face.obj");
             sCurrentSky = this;
         }
 
@@ -46,7 +46,7 @@ namespace Core {
             //Load 6 images for the map
             for (unsigned int i = 0; i < 6; i++)
             {
-                
+
                 stbi_uc* Surface = stbi_load((mCubeMapPath + Faces[i]).c_str(), &Width, &Height, &Format, 4);
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, Surface);
                 stbi_image_free(Surface);
@@ -63,10 +63,10 @@ namespace Core {
         }
 
         void Skybox::Render(Core::Primitives::Camera& cam, Core::Graphics::OpenGLPipeline& pipeline) {
-            glDepthFunc(GL_LEQUAL);
             //Disable depth mask, enable it later
             glDepthMask(GL_FALSE);
             glDisable(GL_CULL_FACE);
+            glDepthFunc(GL_LEQUAL);
 
             // Bind the program and this object's VAO
             mShaderProgram->Get()->Bind();
@@ -76,11 +76,11 @@ namespace Core {
 
 
             glm::mat4 view = glm::mat4(glm::mat3(cam.GetViewMatrix()));
-            glm::mat4 projection = glm::perspective(glm::radians(45.0f), pipeline.GetAspectRatio(), 0.1f, 10000.0f);
+            glm::mat4 projection = cam.GetProjectionMatrix();
             mShaderProgram->Get()->SetShaderUniform("uTransform", &projection);
             mShaderProgram->Get()->SetShaderUniform("uView", &view);
 
-            mModel->Get()->Draw(*mShaderProgram->Get());
+            mModel->Get()->Draw();
 
             //Enable depth mask & culling again
             glEnable(GL_CULL_FACE);

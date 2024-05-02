@@ -12,8 +12,7 @@
 #include "glm.hpp"
 #include "Core/ECSystem/Component.h"
 #include "Core/Graphics/Pipeline.h"
-#include "Graphics/Primitives/Model.h"
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
 #include "Graphics/Primitives/ShaderProgram.h"
 #include "Graphics/Primitives/GLBModel.h"
 #include <string>
@@ -49,19 +48,24 @@ namespace Core {
 #pragma endregion
 
 #pragma region //Functions
-			inline void SetMesh(const AssetReference<::Graphics::Primitives::GLBModel>& model);
-			inline void SetShaderProgram(const AssetReference<Graphics::ShaderProgram>& s);
-			DONTDISCARD inline AssetReference<Graphics::ShaderProgram> GetShaderProgram();
-			inline AssetReference<::Graphics::Primitives::GLBModel> GetMesh();
+			inline void SetMesh(const Core::Assets::AssetReference<::Graphics::Primitives::Model>& model);
+			
+			
+			inline void SetShaderProgram(const Core::Assets::AssetReference<Graphics::ShaderProgram>& s);
+
+			DONTDISCARD inline Core::Assets::AssetReference<Graphics::ShaderProgram> GetShaderProgram();
+			DONTDISCARD inline Core::Assets::Asset<::Graphics::Primitives::Model> GetModel() const;
+
 			void Render() const noexcept override;
 			inline void SetProcudesShadow(const bool shadow) noexcept;
 			inline bool GetProcudesShadow() const noexcept;
+
 #pragma endregion
 
 #pragma region //Variables
 		private:
-			Asset<::Graphics::Primitives::GLBModel> mModel;
-			Asset<Graphics::ShaderProgram> mShaderProgram;
+			Core::Assets::Asset<::Graphics::Primitives::Model> mModel;
+			Core::Assets::Asset<Graphics::ShaderProgram> mShaderProgram;
 #pragma endregion
 		};
 
@@ -70,16 +74,18 @@ namespace Core {
 		*
 		*   Sets the Mesh associated with this renderer
 		*/ // ---------------------------------------------------------------------
-		void GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::SetMesh(const AssetReference<::Graphics::Primitives::GLBModel>& model) {
+		void GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::SetMesh(const Core::Assets::AssetReference<::Graphics::Primitives::Model>& model) {
 			mModel = model.lock();
 		}
+
+
 
 		// ------------------------------------------------------------------------
 		/*! Set Shader Program
 		*
 		*   Sets the Shader Program associated with this renderer
 		*/ // ---------------------------------------------------------------------
-		void GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::SetShaderProgram(const AssetReference<Graphics::ShaderProgram>& s) {
+		void GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::SetShaderProgram(const Core::Assets::AssetReference<Graphics::ShaderProgram>& s) {
 			mShaderProgram = s.lock();
 		}
 
@@ -88,11 +94,12 @@ namespace Core {
 		*
 		*   Gets the Shader Program associated with this renderer
 		*/ // ---------------------------------------------------------------------
-		AssetReference<Graphics::ShaderProgram> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetShaderProgram() {
+		Core::Assets::AssetReference<Graphics::ShaderProgram> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetShaderProgram() {
 			return mShaderProgram;
 		}
 
-		AssetReference<::Graphics::Primitives::GLBModel> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetMesh() {
+		Core::Assets::Asset<::Graphics::Primitives::Model> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetModel() const
+		{
 			return mModel;
 		}
 	}

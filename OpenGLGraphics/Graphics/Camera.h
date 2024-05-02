@@ -13,6 +13,11 @@
 #include "gtc/matrix_transform.hpp"
 #include "CommonDefines.h"
 #include "Core/Events/EventDispatcher.h"
+#include "Core/Singleton.h"
+
+
+
+
 
 namespace Core {
 	namespace Primitives {
@@ -25,21 +30,34 @@ namespace Core {
 
 		#pragma region //Functions
 			DONTDISCARD inline glm::mat4 GetViewMatrix() const;
-			DONTDISCARD inline glm::mat4 GetProjectionMatrix() const;
+			DONTDISCARD  glm::mat4 GetProjectionMatrix() const;
 			DONTDISCARD glm::vec3 inline GetPosition() const;
 			DONTDISCARD inline glm::vec3& GetPositionRef();
 			
 			DONTDISCARD float GetZNear();
 			DONTDISCARD float GetZFar();
 			DONTDISCARD float GetZFov();
+			void UpdateCameraVectors();
 		#pragma endregion
 
 		#pragma region //Members
+			constexpr static float cnearPlane = 0.1f;
+			constexpr static float cfarPlane = 10000.f;
+
 		private:
-			glm::vec3 mPosition, mTargetPosition;
-			const float zNear = 0.f;
-			const float zfar = 10000.f;
-			const float fov = 45.f;
+			// camera Attributes
+			glm::vec3 Position;
+			glm::vec3 Front;
+			glm::vec3 Up;
+			glm::vec3 Right;
+			glm::vec3 WorldUp;
+			// euler Angles
+			float Yaw;
+			float Pitch;
+			// camera options
+			float MovementSpeed;
+			float MouseSensitivity;
+			float Zoom;
 		#pragma endregion
 		};
 
@@ -49,16 +67,7 @@ namespace Core {
 		*   Returns the Camera's View Matrix
 		*/ //----------------------------------------------------------------------
 		glm::mat4 Camera::GetViewMatrix() const {
-			return std::move(glm::lookAt(mPosition, glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0)));
-		}
-
-		// ------------------------------------------------------------------------
-		/*! Get Projection Matrix
-		*
-		*   Returns the Camera's Projection Matrix
-		*/ //----------------------------------------------------------------------
-		glm::mat4 Camera::GetProjectionMatrix() const {
-			return glm::perspective(glm::radians(45.0f), 500.f / 600.0f, 0.1f, zfar);
+			return std::move(glm::lookAt(Position, Position + Front, Up));
 		}
 
 		// ------------------------------------------------------------------------
@@ -67,7 +76,7 @@ namespace Core {
 		*   Returns the Camera's Position
 		*/ //----------------------------------------------------------------------
 		glm::vec3 inline Camera::GetPosition() const {
-			return mPosition;
+			return Position;
 		}
 
 		// ------------------------------------------------------------------------
@@ -76,7 +85,7 @@ namespace Core {
 		*   Returns the Camera's Position, as a Reference
 		*/ //----------------------------------------------------------------------
 		inline glm::vec3& Camera::GetPositionRef() {
-			return mPosition;
+			return Position;
 		}
 
 		// ------------------------------------------------------------------------
@@ -86,7 +95,7 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		inline DONTDISCARD float Camera::GetZNear()
 		{
-			return zNear;
+			return 0.1f;
 		}
 
 		// ------------------------------------------------------------------------
@@ -96,7 +105,7 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		inline DONTDISCARD float Camera::GetZFar()
 		{
-			return zfar;
+			return 10000.f;
 		}
 
 		// ------------------------------------------------------------------------
@@ -106,7 +115,7 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		inline DONTDISCARD float Camera::GetZFov()
 		{
-			return fov;
+			return 45.f;
 		}
 		
 	}

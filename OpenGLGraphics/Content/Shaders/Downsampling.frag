@@ -9,7 +9,7 @@
 #version 460 core
 
 layout(binding = 0) uniform sampler2D srcTexture;
-uniform vec2 srcResolution;
+uniform ivec2 srcResolution;
 
 in vec2 oUVs;
 layout (location = 0) out vec3 downsample;

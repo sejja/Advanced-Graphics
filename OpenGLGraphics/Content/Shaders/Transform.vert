@@ -37,7 +37,7 @@ void main() {
     const vec4 pos = vec4(aPosition, 1.0);
 	oUVs = aUVs;
 	oNormal = aNormal;
-	oPosition = vec3(uModel * pos);
+	oPosition = vec3(ubView *  vec4(vec3(uModel * pos), 1));
 	oTangent = aTangent;
 	oBitangent = aBitangent;
 	gl_Position = ubProjection * ubView * uModel * pos;

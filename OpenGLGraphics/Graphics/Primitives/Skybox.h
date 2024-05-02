@@ -15,13 +15,21 @@ namespace Core {
 
 			void LoadCubeMap(std::string path);
 			void CreateCubeMap();
+			inline std::string_view GetPath();
 			void Render(Core::Primitives::Camera& cam, Core::Graphics::OpenGLPipeline& pipeline);
 			void UploadSkyboxCubeMap();
 			static Skybox* sCurrentSky;
 		private:
-			Asset<ShaderProgram> mShaderProgram;
-			Asset<::Graphics::Primitives::GLBModel> mModel;
+			Core::Assets::Asset<ShaderProgram> mShaderProgram;
+			Core::Assets::Asset<::Graphics::Primitives::Model> mModel;
 			GLuint mMapHandle;
 		};
+
+		inline std::string_view Skybox::GetPath()
+		{
+			return mCubeMapPath;
+		}
+
+		
 	};
 }

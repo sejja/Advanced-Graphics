@@ -17,6 +17,10 @@ private:
 	void RenderRemoteControlMenu();
 	void ServerStateInfo();
 
+	bool savePopup = false;
+	bool previouslySaved = false;
+	char saveFileName[100] = "";
+
 
 };
 

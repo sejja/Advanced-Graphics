@@ -7,9 +7,6 @@ namespace Core
         /*It does not initiate particles, only the VBO, BAO and ShaderProgram*/
 		ParticleSystem::ParticleSystem(const std::weak_ptr<Object>& parent) : Renderable(parent){
             //initTestParticles(); 
-            std::cout << "ERROR: DEFAULT PARTICLESYSTEM HAS NO PARTICLES \n";
-            this->name = "fuego";
-            this->id = "fuego";
             Init();
 		}
 

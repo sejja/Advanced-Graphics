@@ -148,7 +148,7 @@ namespace glm
 	///
 	/// @see gtc_dual_quaternion
 	template<typename T, qualifier Q>
-	GLM_FUNC_DECL tdualquat<T, Q> lerp(tdualquat<T, Q> const& x, tdualquat<T, Q> const& y, T const& a);
+	GLM_FUNC_DECL tdualquat<T, Q> Lerp(tdualquat<T, Q> const& x, tdualquat<T, Q> const& y, T const& a);
 
 	/// Returns the q inverse.
 	///

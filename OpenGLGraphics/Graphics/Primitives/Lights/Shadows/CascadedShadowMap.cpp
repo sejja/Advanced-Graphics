@@ -8,29 +8,33 @@
 
 #include "CascadedShadowMap.h"
 #include "Graphics/Primitives/Lights/DirectionalLight.h"
-#include <iostream>
+#include "gtc/matrix_transform.hpp"
+#include "Graphics/Camera.h"
 
 namespace Graphics {
 	namespace Primitives {
 		namespace Lights {
 			namespace Shadows {
-                CascadedShadowMap::CascadedShadowMap() {
-                    CreateShadowMapGPUData();
-                    shadowMapShader = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/CascadedShadowMap.shader");
-                }
-                void CascadedShadowMap::CreateShadowMapGPUData() {
-                    shadowCascadeLevels = { 10000.f / 50.0f, 10000.f / 25.0f, 10000.f / 10.0f, 10000.f / 2.0f };
-                    glGenFramebuffers(1, &lightFBO);
+                // ------------------------------------------------------------------------
+                /*! Default Constructor
+                *
+                *   Constructs a Shadow Map, initializing the 3D Lightmaps and the Framebuffer
+                */ //----------------------------------------------------------------------
+                CascadedShadowMap::CascadedShadowMap() :
+                    mCascadedLevels({ 10000.f / 50.0f, 10000.f / 25.0f, 10000.f / 10.0f, 10000.f / 2.0f } ),
+                    mShader(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/CascadedShadowMap.shader")),
+                    mLightMatrices() {
+                    glGenFramebuffers(1, &mLightBuffer);
 
-                    glGenTextures(1, &lightDepthMaps);
-                    glBindTexture(GL_TEXTURE_2D_ARRAY, lightDepthMaps);
+                    glGenTextures(1, &mLightMaps);
+                    glBindTexture(GL_TEXTURE_2D_ARRAY, mLightMaps);
                     glTexImage3D(
                         GL_TEXTURE_2D_ARRAY,
                         0,
                         GL_DEPTH_COMPONENT32F,
-                        depthMapResolution,
-                        depthMapResolution,
-                        int(shadowCascadeLevels.size()) + 1,
+                        c_cascaded_map_res,
+                        c_cascaded_map_res,
+                        GLsizei(mCascadedLevels.size()) + 1,
                         0,
                         GL_DEPTH_COMPONENT,
                         GL_FLOAT,
@@ -41,45 +45,36 @@ namespace Graphics {
                     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
                     glTexParameteri(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
 
-                    constexpr float bordercolor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+                    constexpr float bordercolor[] = { 0.f, 0.f, 0.f, 1.0f };
                     glTexParameterfv(GL_TEXTURE_2D_ARRAY, GL_TEXTURE_BORDER_COLOR, bordercolor);
 
-                    glBindFramebuffer(GL_FRAMEBUFFER, lightFBO);
-                    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, lightDepthMaps, 0);
+                    glBindFramebuffer(GL_FRAMEBUFFER, mLightBuffer);
+                    glFramebufferTexture(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, mLightMaps, NULL);
                     glDrawBuffer(GL_NONE);
                     glReadBuffer(GL_NONE);
 
-
-                    int status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
-                    if (status != GL_FRAMEBUFFER_COMPLETE)
-                    {
-                        std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!";
-                        throw 0;
-                    }
-
-                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-                    glGenBuffers(1, &matricesUBO);
-                    glBindBuffer(GL_UNIFORM_BUFFER, matricesUBO);
-                    glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4x4) * 16, nullptr, GL_STATIC_DRAW);
-                    glBindBufferBase(GL_UNIFORM_BUFFER, 1, matricesUBO);
-                    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+                    // Always check that our framebuffer is ok
+                    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+                        throw CascadedShadowMapException("ERROR::FRAMEBUFFER::Framebuffer is not complete!");
                 }
 
-                glm::mat4 CascadedShadowMap::GetLightSpaceMatrix(glm::mat4 camview, glm::vec3 lightdir, const float nearPlane, const float farPlane)
-                {
-                    const auto proj = glm::perspective(
+                // ------------------------------------------------------------------------
+                /*! Get Light Space Matrix
+                *
+                *   Calculates the light matrix for each of the cascaded LODS
+                */ //----------------------------------------------------------------------
+                glm::mat4 CascadedShadowMap::GetLightSpaceMatrix(const glm::mat4& camview, const glm::vec3& lightdir, const float nearPlane, const float farPlane) const {
+                    const glm::mat4 proj = glm::perspective(
                         glm::radians(45.f), (float)1600 / (float)900, nearPlane,
                         farPlane);
-                    const auto corners = GetFrustrumCornersWorldSpace(proj  * camview);
+                    const std::array<glm::vec4, 8> corners = GetFrustrumCornersWorldSpace(proj  * camview);
 
                     glm::vec3 center = glm::vec3(0, 0, 0);
-                    for (const auto& v : corners)
-                    {
-                        center += glm::vec3(v);
-                    }
+                    std::for_each_n(std::execution::par_unseq, corners.begin(), corners.size(), [&center](const glm::vec4& v) { center += glm::vec3(v); });
+
                     center /= corners.size();
 
-                    const auto lightView = glm::lookAt(center + lightdir, center, glm::vec3(0.0f, 1.0f, 0.0f));
+                    const glm::mat4 lightView = glm::lookAt(center + lightdir, center, glm::vec3(0.0f, 1.0f, 0.0f));
 
                     float minX = std::numeric_limits<float>::max();
                     float maxX = std::numeric_limits<float>::lowest();
@@ -87,117 +82,127 @@ namespace Graphics {
                     float maxY = std::numeric_limits<float>::lowest();
                     float minZ = std::numeric_limits<float>::max();
                     float maxZ = std::numeric_limits<float>::lowest();
-                    for (const auto& v : corners)
-                    {
-                        const auto trf = lightView * v;
-                        minX = std::min(minX, trf.x);
-                        maxX = std::max(maxX, trf.x);
-                        minY = std::min(minY, trf.y);
-                        maxY = std::max(maxY, trf.y);
-                        minZ = std::min(minZ, trf.z);
-                        maxZ = std::max(maxZ, trf.z);
-                    }
+
+                    std::for_each(std::execution::unseq, corners.begin(), corners.end(), [&minX, &maxX, &minY, &maxY, &minZ, &maxZ, &lightView](const glm::vec4& v) {
+						const glm::vec4 trf = lightView * v;
+						minX = std::min(minX, trf.x);
+						maxX = std::max(maxX, trf.x);
+						minY = std::min(minY, trf.y);
+						maxY = std::max(maxY, trf.y);
+						minZ = std::min(minZ, trf.z);
+						maxZ = std::max(maxZ, trf.z);
+					});
 
                     // Tune this parameter according to the scene
                     constexpr float zMult = 10.0f;
                     if (minZ < 0)
-                    {
                         minZ *= zMult;
-                    }
                     else
-                    {
                         minZ /= zMult;
-                    }
                     if (maxZ < 0)
-                    {
                         maxZ /= zMult;
-                    }
                     else
-                    {
                         maxZ *= zMult;
-                    }
 
-                    const glm::mat4 lightProjection = glm::ortho(minX, maxX, minY, maxY, minZ, maxZ);
-                    return lightProjection * lightView;
+                    return glm::ortho(minX, maxX, minY, maxY, minZ, maxZ) * lightView;
                 }
 
-                std::vector<glm::mat4> CascadedShadowMap::GetLightSpaceMatrices(glm::mat4 camview, glm::vec3 lightdir)
-                {
-                    std::vector<glm::mat4> ret;
-                    for (size_t i = 0; i < shadowCascadeLevels.size() + 1; ++i)
-                    {
+                 // ------------------------------------------------------------------------
+                /*! Get Light Space Matrix
+                *
+                *   Calculates the light matrix for each of the cascaded LODS
+                */ //----------------------------------------------------------------------
+                std::array<glm::mat4, 5> CascadedShadowMap::GetLightSpaceMatrices(const glm::mat4& camview, const glm::vec3& lightdir) const {
+                    std::array<glm::mat4, 5> ret{};
+
+                    // Calculate the light space matrices for each of the cascaded LODS
+                    for (size_t i = 0; i < mCascadedLevels.size() + 1; ++i) {
                         if (i == 0)
-                        {
-                            ret.push_back(GetLightSpaceMatrix(camview, lightdir, 0.1f, shadowCascadeLevels[i]));
-                        }
-                        else if (i < shadowCascadeLevels.size())
-                        {
-                            ret.push_back(GetLightSpaceMatrix(camview, lightdir, shadowCascadeLevels[i - 1], shadowCascadeLevels[i]));
-                        }
+                            ret[i] = (GetLightSpaceMatrix(camview, lightdir, Core::Primitives::Camera::cnearPlane, mCascadedLevels[i]));
+                        else if (i < mCascadedLevels.size())
+                            ret[i] = (GetLightSpaceMatrix(camview, lightdir, mCascadedLevels[i - 1], mCascadedLevels[i]));
                         else
-                        {
-                            ret.push_back(GetLightSpaceMatrix(camview, lightdir, shadowCascadeLevels[i - 1], 10000.f));
-                        }
+                            ret[i] = (GetLightSpaceMatrix(camview, lightdir, mCascadedLevels[i - 1], Core::Primitives::Camera::cfarPlane));
                     }
                     return ret;
                 }
 
-                void CascadedShadowMap::Bind() {
+                // ------------------------------------------------------------------------
+               /*! Bind
+               *
+               *   Binds the lightmaps to the shader
+               */ //----------------------------------------------------------------------
+                void CascadedShadowMap::Bind() const {
                     glActiveTexture(GL_TEXTURE4);
-                    glBindTexture(GL_TEXTURE_2D_ARRAY, lightDepthMaps);
+                    glBindTexture(GL_TEXTURE_2D_ARRAY, mLightMaps);
                 }
 
-                void CascadedShadowMap::SetUniforms(const Asset<Core::Graphics::ShaderProgram>& shader) {
+                // ------------------------------------------------------------------------
+                /*! Set Uniforms
+                *
+                *   Sets the uniforms for a given shader
+                */ //----------------------------------------------------------------------
+                void CascadedShadowMap::SetUniforms(const Core::Assets::Asset<Core::Graphics::ShaderProgram>& shader) {
+                    const std::size_t cascadeLevels = mCascadedLevels.size();
+                    Core::Graphics::ShaderProgram* const shd = shader->Get();
+                    constexpr const char* uniformslightSpaces[] = { "lightSpaceMatrices[0]", "lightSpaceMatrices[1]", "lightSpaceMatrices[2]", "lightSpaceMatrices[3]", "lightSpaceMatrices[4]" };
+                    constexpr const char* uniformsCascadeLevels[] = { "cascadePlaneDistances[0]", "cascadePlaneDistances[1]", "cascadePlaneDistances[2]", "cascadePlaneDistances[3]" };
+
                     Bind();
-                    int cascadeLevels = shadowCascadeLevels.size();
 
-                    shader->Get()->SetShaderUniform("cascadeCount", &cascadeLevels);
+                    shd->SetShaderUniform("cascadeCount", &cascadeLevels);
+
+                    // Set the light space matrices
                     for (size_t i = 0; i < mLightMatrices.size(); ++i)
-                        shader->Get()->SetShaderUniform("lightSpaceMatrices[" + std::to_string(i) + "]", &mLightMatrices[i]);
-                    for (size_t i = 0; i < shadowCascadeLevels.size(); ++i)
-                    {
-                        shader->Get()->SetShaderUniform("cascadePlaneDistances[" + std::to_string(i) + "]", &shadowCascadeLevels[i]);
-                    }
+                        shd->SetShaderUniform(uniformslightSpaces[i], &mLightMatrices[i]);
+                    
+                    // Set the cascade levels
+                    for (size_t i = 0; i < mCascadedLevels.size(); ++i)
+                        shd->SetShaderUniform(uniformsCascadeLevels[i], &mCascadedLevels[i]);
                 }
 
+                // ------------------------------------------------------------------------
+                /*! Render
+                *
+                *   Renders the Shadow Depth Maps
+                */ //----------------------------------------------------------------------
                 void CascadedShadowMap::Render(glm::mat4 camview, glm::vec3 pos, glm::vec3 dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
-                  std::vector<glm::mat4> lightMatrices = GetLightSpaceMatrices(camview, dir);
-                    /*glBindBuffer(GL_UNIFORM_BUFFER, matricesUBO);
-                    for (size_t i = 0; i < lightMatrices.size(); ++i)
-                    {
-                        glBufferSubData(GL_UNIFORM_BUFFER, i * sizeof(glm::mat4x4), sizeof(glm::mat4x4), &lightMatrices[i]);
-                    }
-                    glBindBuffer(GL_UNIFORM_BUFFER, 0);*/
-                    mLightMatrices = lightMatrices;
-                    shadowMapShader->Get()->Bind();
-                    for (size_t i = 0; i < lightMatrices.size(); ++i)
-                        shadowMapShader->Get()->SetShaderUniform("lightSpaceMatrices[" + std::to_string(i) + "]", &lightMatrices[i]);
+                    std::array<glm::mat4, 5> lightMatrices = GetLightSpaceMatrices(camview, dir);
+                    constexpr const char* uniformslightSpaces[] = { "lightSpaceMatrices[0]", "lightSpaceMatrices[1]", "lightSpaceMatrices[2]", "lightSpaceMatrices[3]", "lightSpaceMatrices[4]" };
 
-                    glBindFramebuffer(GL_FRAMEBUFFER, lightFBO);
-                    glViewport(0, 0, depthMapResolution, depthMapResolution);
+                    Core::Graphics::ShaderProgram* const shd = mShader->Get();
+                    mLightMatrices = lightMatrices;
+                    shd->Bind();
+
+                    // Set the light space matrices
+                    for (size_t i = 0; i < mLightMatrices.size(); ++i)
+                        shd->SetShaderUniform(uniformslightSpaces[i], &mLightMatrices[i]);
+
+                    glBindFramebuffer(GL_FRAMEBUFFER, mLightBuffer);
+                    glViewport(0, 0, c_cascaded_map_res, c_cascaded_map_res);
                     glClear(GL_DEPTH_BUFFER_BIT);
                     glCullFace(GL_FRONT);  // peter panning
-                    rend_func(shadowMapShader->Get());
+                    rend_func(shd);
                     glCullFace(GL_BACK);
                     glBindFramebuffer(GL_FRAMEBUFFER, 0);
                 }
 
-                std::vector<glm::vec4> CascadedShadowMap::GetFrustrumCornersWorldSpace(glm::mat4 mtx)
-                {
+                // ------------------------------------------------------------------------
+                /*! Get Frustrum Corners World Space
+                *
+                *   Returns the corners of the frustrum in world space
+                */ //----------------------------------------------------------------------
+                std::array<glm::vec4, 8> CascadedShadowMap::GetFrustrumCornersWorldSpace(const glm::mat4& mtx) const  {
                     const auto inv = glm::inverse(mtx);
 
-                    std::vector<glm::vec4> frustumCorners;
-                    for (unsigned int x = 0; x < 2; ++x)
-                    {
-                        for (unsigned int y = 0; y < 2; ++y)
-                        {
-                            for (unsigned int z = 0; z < 2; ++z)
-                            {
+                    std::array<glm::vec4, 8> frustumCorners;
+                    int i = 0;
+                    for (unsigned char x = 0; x < 2; ++x)
+                        for (unsigned char y = 0; y < 2; ++y)
+                            for (unsigned char z = 0; z < 2; ++z) {
                                 const glm::vec4 pt = inv * glm::vec4(2.0f * x - 1.0f, 2.0f * y - 1.0f, 2.0f * z - 1.0f, 1.0f);
-                                frustumCorners.push_back(pt / pt.w);
+                                frustumCorners[i++] = (pt / pt.w);
                             }
-                        }
-                    }
 
                     return frustumCorners;
                 }

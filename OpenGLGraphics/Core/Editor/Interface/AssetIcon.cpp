@@ -1,7 +1,7 @@
 #include "AssetIcon.h"
 #include "Dependencies/ImGui/imgui.h"
 #include "Core/Singleton.h"
-#include "Core/ResourceManager.h"
+#include "Core/Assets/ResourceManager.h"
 #include "Graphics/Primitives/Texture.h"
 
 
@@ -35,104 +35,58 @@ AssetIcon::AssetIcon(AssetType p_tipo, const char* p_nombre, const char* p_ruta)
 void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente no llamar recursivamente a esta función
 	//ImGui::Image()
 	ImGui::BeginGroup();
+	ImGui::PushID(ruta);
 	//clicked = false;
 	//ImGui::Button("Hola", ImVec2(100, 100));
 
-	if (tipo == AssetType::MODEL) {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/model.png")->Get();
+	if (tipo == AssetType::TEXTURE) {
+		auto tex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(ruta)->Get(); //Que cojones es la sintaxis de esta línea???
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 		ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		clicked = ImGui::IsItemClicked();
 		ImGui::PopStyleColor(1);
 		if (dibujarToolTip == false) {
-			if (ImGui::BeginDragDropSource()) {
+			bool dragDrop = ImGui::BeginDragDropSource();
+			//printf("Dragdrop: %d\n", dragDrop);
+			if (dragDrop) {
 				//printf("Dragging");
 				dibujar(true);
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
-	
-	}
-	else if (tipo == AssetType::TEXTURE) {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(ruta)->Get(); //Que cojones es la sintaxis de esta línea???
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-		ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
-		clicked = ImGui::IsItemClicked();
-		ImGui::PopStyleColor(1);
-		if (dibujarToolTip == false) {
-			if (ImGui::BeginDragDropSource()) {
-				//printf("Dragging");
-				dibujar(true);
-				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
-				ImGui::EndDragDropSource();
-			}
-		}
+		//if (dibujarToolTip == false) {
+		//	if (ImGui::BeginDragDropSource()) {
+		//		//printf("Dragging");
+		//		dibujar(true);
+		//		ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+		//		printf("nombre: %s\n", this->nombre);
+		//		ImGui::EndDragDropSource();
+		//	}
+		//}
 	 
 	}
-	else if (tipo == AssetType::MATERIAL) {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/material.png")->Get(); //Que cojones es la sintaxis de esta línea???
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-		ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
-		clicked = ImGui::IsItemClicked();
-		ImGui::PopStyleColor(1);
-		if (dibujarToolTip == false) {
-			if (ImGui::BeginDragDropSource()) {
-				//printf("Dragging");
-				dibujar(true);
-				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
-				ImGui::EndDragDropSource();
-			}
-		}
-	}
-	else if (tipo == AssetType::SHADER) {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/shader.png")->Get(); //Que cojones es la sintaxis de esta línea???
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-		ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
-		clicked = ImGui::IsItemClicked();
-		ImGui::PopStyleColor(1);
-		if (dibujarToolTip == false) {
-			if (ImGui::BeginDragDropSource()) {
-				//printf("Dragging");
-				dibujar(true);
-				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
-				ImGui::EndDragDropSource();
-			}
-		}
-	}
-	else if (tipo == AssetType::FOLDER) {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/folder.png")->Get();
-		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
-		ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
-		clicked = ImGui::IsItemClicked();
-		//printf("%s, %d\n", nombre, clicked);
-
-		ImGui::PopStyleColor(1);
-		if (dibujarToolTip == false) {
-			if (ImGui::BeginDragDropSource()) {
-				//printf("Dragging");
-				dibujar(true);
-				ImGui::SetDragDropPayload("folder", this, sizeof(AssetIcon));
-				ImGui::EndDragDropSource();
-			}
-		}
-		
-	}
 	else {
-		auto tex = Singleton<ResourceManager>::Instance().GetResource<Core::Graphics::Texture>("Core/Editor/Assets/Icons/other.png")->Get(); //Que cojones es la sintaxis de esta línea???
+		auto tex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(assetTypeImages[tipo].c_str())->Get(); //Que cojones es la sintaxis de esta línea???
 		//ImGui::Image((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		//ImGui::Button("Hola", ImVec2(100, 100));
 		ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0, 0, 0, 0));
 		clicked = ImGui::ImageButton((void*)(intptr_t)tex->GetTextureHandle(), ImVec2(100, 100), ImVec2(0, 1), ImVec2(1, 0));
 		ImGui::PopStyleColor(1);
 		if (dibujarToolTip == false) {
-			if (ImGui::BeginDragDropSource()) {
+			bool dragDrop = ImGui::BeginDragDropSource();
+			//printf("Dragdrop: %d\n", dragDrop);
+			if (dragDrop) {
 				//printf("Dragging");
 				dibujar(true);
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
+				printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
+		//Vale, el error de drag and drop tiene algo que ver con las texturas, ya que cuando se hace drag imgui cree que se hace drag en todos
+		// los botones que tienen esa textura
 		
 		
 		
@@ -144,7 +98,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 	}
 
 	//printf("%d\n",clicked);
-
+	ImGui::PopID();
 	int centerOffset = 100 / 2 - ImGui::CalcTextSize(nombre).x / 2;
 	ImGui::SetCursorPosX(ImGui::GetCursorPosX() + centerOffset);
 	//printf("%p\n", nombre);
@@ -153,4 +107,6 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 	ImGui::EndGroup();
 
 }
+
+std::unordered_map<AssetType, std::string> AssetIcon::assetTypeImages;
 

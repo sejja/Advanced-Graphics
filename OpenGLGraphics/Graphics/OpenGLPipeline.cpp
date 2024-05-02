@@ -21,6 +21,8 @@
 #include "Dependencies/ImGui/imgui_impl_sdl2.h"
 #include "Core/Editor/Editor.h"
 #include "Graphics/Tools/OpenGLInfo.h"
+#include "Graphics/Architecture/Utils/GLUtils.h"
+#include "Graphics/Primitives/Decal.h"
 
 
 using namespace Core::Graphics;
@@ -29,7 +31,6 @@ using namespace std;
 namespace Core {
 	namespace Graphics {
 		static Primitives::Camera cam;
-
 		OpenGLPipeline::~OpenGLPipeline() {
 			ImGui_ImplOpenGL3_Shutdown();
 			ImGui_ImplSDL2_Shutdown();
@@ -50,8 +51,8 @@ namespace Core {
 			glDisable(GL_BLEND);
 			glDisable(GL_STENCIL_TEST);
 			glClearColor(0.f, 0.f, 0.f, 0.f);
-			mGBuffer = std::make_unique<GBuffer>();
-			mDirectionalLightShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DirectionalLight.shader");
+			mGBuffer = std::make_unique<::Graphics::Architecture::GBuffer>(mDimensions);
+			mDirectionalLightShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredDirectionalLighting.shader");
 
 
 			mFrameBuffer = std::make_unique<FrameBuffer>();
@@ -61,7 +62,7 @@ namespace Core {
 			mHDRBuffer = std::make_unique<HDRBuffer>();
 			mHDRBuffer->Create();
 			mHDRBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
-			RendererShader = Singleton<ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Renderer.shader");
+			RendererShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Renderer.shader");
 
 			//-------------------------
 			glEnable(GL_MULTISAMPLE);
@@ -96,13 +97,15 @@ namespace Core {
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
 			glBindBufferRange(GL_UNIFORM_BUFFER, 0, mUniformBuffer, 0, 2 * sizeof(glm::mat4) + sizeof(glm::vec3));
-			mBloomRenderer = std::make_unique<::Graphics::Architecture::Bloom::BloomRenderer>();
-			mBloomRenderer->Init(mDimensions.x, mDimensions.y);
+			mBloomRenderer = std::make_unique<::Graphics::Architecture::Bloom::BloomRenderer>(mDimensions);
 			mLightPass = std::make_unique<::Graphics::Architecture::LightPass>();
 			Singleton<::Editor>::Instance().assetManager.init();
+			::Graphics::Architecture::Utils::GLUtils::Init();
+			mDebug = std::make_unique<::Graphics::Debug::DebugSystem>();
+			mSSAOBuffer = std::make_unique<::Graphics::Architecture::SSAO::SSAOBuffer>(mDimensions);
 		}
 
-		GBuffer* OpenGLPipeline::GetGBuffer() {
+		::Graphics::Architecture::GBuffer* OpenGLPipeline::GetGBuffer() {
 			return mGBuffer.get();
 		}
 
@@ -124,9 +127,9 @@ namespace Core {
 		*
 		*   
 		*/ 
-		void OpenGLPipeline::FlushObsoletes(unordered_multimap<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes)
+		void OpenGLPipeline::FlushObsoletes(unordered_multimap<Core::Assets::Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes)
 		{
-			for_each(execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](pair<const Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> x) {
+			for_each(execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](pair<const Core::Assets::Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> x) {
 
 				vector<weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
 				it.erase(x.second);
@@ -140,8 +143,8 @@ namespace Core {
 		*
 		*   Prepare and render the GUI
 		*/ 
-		void OpenGLPipeline::GroupRender(unordered_multimap<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes,
-			const pair<Asset<ShaderProgram>, vector<weak_ptr<Renderable>>>& it,
+		void OpenGLPipeline::GroupRender(unordered_multimap<Core::Assets::Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes,
+			const pair<Core::Assets::Asset<ShaderProgram>, vector<weak_ptr<Renderable>>>& it,
 			ShaderProgram* shader)
 		{
 			for (vector<weak_ptr<Renderable>>::const_iterator it2 = it.second.begin(); it2 != it.second.end(); it2++) {
@@ -266,12 +269,12 @@ namespace Core {
 
 
 		void OpenGLPipeline::RenderShadowMaps() {
-			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
+			std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
-			mLightPass->RenderShadowMaps(cam.GetViewMatrix(), [&obsoletes, this](ShaderProgram* shader) {
+			mLightPass->RenderShadowMaps({1600, 900}, cam.GetViewMatrix(), [&obsoletes, this](ShaderProgram* shader) {
 				//Render all objects
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
-				[this, &obsoletes, &shader](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+				[this, &obsoletes, &shader](const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 						GroupRender(obsoletes, it, shader);
 					});
 
@@ -292,21 +295,32 @@ namespace Core {
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
+			mSSAOBuffer->RenderAO(*mGBuffer);
+			mGeometryDeform.DecalPass(*mGBuffer);
+
+			auto x = Singleton<::Editor>::Instance().GetSelectedObj().GetSelectedComponent();
+			
+			if (RTTI::IsA<::Graphics::Primitives::Decal>(x.get())) {
+				mDebug->DrawAABB(x.get()->GetParent().lock()->GetPosition(),
+					x.get()->GetParent().lock()->GetScale(), glm::vec4(1, 0.6, 0.2, 1), cam);
+			}
 
 			//Bind and Clean
 			if (AntiAliasing) {mSamplingBuffer->Bind();mSamplingBuffer->Clear();}
 			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
-			glEnable(GL_DEPTH_TEST);
+			//glEnable(GL_DEPTH_TEST);
+
+			//RenderParticlesSystems();
 
 			BloomPass(mHDRBuffer->GetHandle());
-			mLightPass->RenderLights(*mGBuffer, *mBloomRenderer);
+			mLightPass->RenderLights({1600, 900}, *mGBuffer, *mSSAOBuffer);
 			
 			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
 			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 
-			Skybox::sCurrentSky->Render(cam,*this);
+			Skybox::sCurrentSky->Render(cam, *this);
 
-			RenderParticlesSystems();
+			//RenderParticlesSystems();
 
 			if (AntiAliasing) 
 			{
@@ -321,7 +335,9 @@ namespace Core {
 			mHDRBuffer->BindTexture();
 			RendererShader->Get()->Bind();
 			RendererShader->Get()->SetShaderUniform("exposure", exposure);
-			mLightPass.get()->RenderScreenQuad();
+			glActiveTexture(GL_TEXTURE1);
+			glBindTexture(GL_TEXTURE_2D, mBloomRenderer->BloomTexture());
+			::Graphics::Architecture::Utils::GLUtils::RenderScreenQuad();
 
 			mFrameBuffer->Unbind();
 
@@ -331,6 +347,40 @@ namespace Core {
 		}
 
 
+		void OpenGLPipeline::ClearPipeline()
+		{
+			mGroupedRenderables.clear();
+			mLightPass->Clear();
+		}
+
+		void OpenGLPipeline::updateRenderablesGroups(const Core::Assets::Asset<ShaderProgram>& curShader, const Core::Assets::Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable)
+		{
+			auto curShaderIt = mGroupedRenderables.find(curShader);
+			auto newShaderIt = mGroupedRenderables.find(newShader);
+
+			// Si se encuentra el curShader en el mapa
+			if (curShaderIt != mGroupedRenderables.end()) {
+				// Busca el renderable que ya estaba en el cursher
+				auto& renderablesVector = curShaderIt->second;
+				auto renderableIt = std::find_if(renderablesVector.begin(), renderablesVector.end(), [&](const std::weak_ptr<Renderable>& weakRenderable) {
+					return !weakRenderable.expired() && weakRenderable.lock() == renderable;
+					});
+
+				// Si se encuentra el renderable, lo traslada al vector del nuevo shader
+				if (renderableIt != renderablesVector.end()) {
+					if (newShaderIt == mGroupedRenderables.end()) {
+						// Si newShader no existe lo mete
+						mGroupedRenderables[newShader] = std::vector<std::weak_ptr<Renderable>>();
+						newShaderIt = mGroupedRenderables.find(newShader);
+					}
+
+					// curShader a --> newShader
+					newShaderIt->second.push_back(*renderableIt);
+					renderablesVector.erase(renderableIt);
+				}
+			}
+		}
+
 		// ------------------------------------------------------------------------
 		/*! Geometry Pass
 		*
@@ -339,14 +389,14 @@ namespace Core {
 		void OpenGLPipeline::GeometryPass() {
 			glDepthMask(GL_TRUE);
 			glDisable(GL_BLEND);
-			glEnable(GL_DEPTH_TEST);
+			//glEnable(GL_DEPTH_TEST);
 			glCullFace(GL_BACK);
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glEnable(GL_ALPHA_TEST);
 			glAlphaFunc(GL_GREATER, 0.1f);
 
-			std::unordered_multimap<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
+			std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
 			{
 				glm::mat4 view = cam.GetViewMatrix();
@@ -356,7 +406,7 @@ namespace Core {
 				mGBuffer->ClearBuffer();
 
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
-					[this, &obsoletes, &projection, &view](const std::pair<Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
+					[this, &obsoletes, &projection, &view](const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 
 						it, it.first->Get()->Bind();
 
@@ -365,7 +415,6 @@ namespace Core {
 			}
 
 			glDepthMask(GL_FALSE);
-			glDisable(GL_DEPTH_TEST);
 		}
 		
 
@@ -412,12 +461,19 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::DirectionalLightPass() {	
 			mDirectionalLightShader->Get()->Bind();
-			mLightPass.get()->RenderScreenQuad();
+			::Graphics::Architecture::Utils::GLUtils::RenderScreenQuad();
 		}
 
 		void OpenGLPipeline::BloomPass(GLuint targetbuffer)
 		{
 			mBloomRenderer->RenderBloomTexture(mGBuffer->GetBrightnessTextureHandle(), 0.005f, targetbuffer);
+		}
+
+		void OpenGLPipeline::DecalPass() {
+			glDepthFunc(GL_GREATER);
+			glDepthMask(GL_FALSE);
+			glCullFace(GL_FRONT);
+
 		}
 
 		void OpenGLPipeline::RenderParticlesSystems()

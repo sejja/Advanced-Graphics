@@ -6,6 +6,7 @@
 #include "../Editor.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 #include "Core/Editor/Interface/TextEditor.h"
+#include "Core/AppWrapper.h"
 
 
 void drawDropWindow();
@@ -50,6 +51,7 @@ void AssetManager::Render() {
 
 	ImGui::BeginGroup();
 	int cont = 0;
+	bool alredyDragDropping = false;
 	for (int i = 0; i < assets.size(); i++) { //TODO intentar centrar elementos
 		//ImGui::Button("Boton", btSize);
 		assets[i].dibujar(false);
@@ -64,6 +66,20 @@ void AssetManager::Render() {
 			case AssetType::SHADER:
 				Singleton<Editor>::Instance().texteditor.ChangeFile(assets[i].ruta);
 				//printf(assets[i].ruta);
+				break;
+			case AssetType::LEVEL: 
+			{
+				auto& app = Singleton<AppWrapper>::Instance();
+				app.GetPipeline().ClearPipeline();
+				app.getScene().ClearScene();
+				app.getScene().CreateScene(assets[i].ruta, [&app](const std::shared_ptr<Core::Object>& obj) {
+					obj->ForEachComponent([&app](const std::shared_ptr<Core::Component>& comp) {
+						std::shared_ptr<Core::Graphics::Renderable> renderable = std::dynamic_pointer_cast<Core::Graphics::Renderable>(comp);
+						//If the object is a renderable
+						if (renderable) app.GetPipeline().AddRenderable(renderable);
+						});
+					});
+			}
 				break;
 			default:
 				
@@ -88,7 +104,7 @@ void AssetManager::Render() {
 	ImGui::EndGroup();
 	ImGui::End();
 
-	drawDropWindow();
+	//drawDropWindow();
 
 	
 }
@@ -118,8 +134,9 @@ void drawDropWindow() { //Para eliminar en la verrsion final
 	ImGuiDragDropFlags flags = 0;
 	flags |= ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
 	if (ImGui::BeginDragDropTarget()) {
-		printf("Dropping");
+		//printf("Dropping");
 		if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
+			printf("Drop: %p\n", payload->Data);
 			AssetIcon* iconPtr = (AssetIcon*) payload->Data;
 			texto = iconPtr->nombre;
 		}

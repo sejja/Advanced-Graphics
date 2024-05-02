@@ -137,6 +137,9 @@
     <ClInclude Include="sqlite3.h" />
     <ClInclude Include="folder.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="load.config" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

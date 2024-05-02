@@ -4,6 +4,7 @@
 #include "Core/Editor/SelectedObj.h"
 #include "Core/Singleton.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
+#include "Core/Editor/Editor.h"
 
 
 void SceneView::Render(Core::Graphics::OpenGLPipeline& pipeline){
@@ -18,8 +19,12 @@ void SceneView::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 	//printf("Viewport size 1: %d, %d\n", dim.x, dim.y);
 
-	pipeline.setSceneFrameDimensions(dim);
+	//pipeline.setSceneFrameDimensions(dim);
 	//pipeline.Render();
+
+	Singleton<Editor>::Instance().setSceneFrameDimensions(dim);
+
+	
 	ImGui::Image(reinterpret_cast<void*>(pipeline.GetRenderTexture()), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 	ImGui::End();
 

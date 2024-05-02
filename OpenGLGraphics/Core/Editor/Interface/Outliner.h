@@ -9,6 +9,11 @@ class Outliner {
 public:
     void Render();
     std::shared_ptr<Core::Object> GetSelectedObj();
+    std::string formatObjName(const std::shared_ptr<Core::Object>& obj);
+    void RenderOptions();
+    void RenderSceneObjects();
+
+
 
 };
 
