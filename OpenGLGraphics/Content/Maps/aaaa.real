@@ -1,18 +1,18 @@
 {
     "objects": [
         {
-            "_id": "1",
+            "_id": "Palace",
             "components": [
                 {
-                    "model": "Content/Meshes/Dragon/scene.gltf",
+                    "model": "Content/Scenes/Sponza/Sponza.gltf",
                     "shader": "Content/Shaders/DeferredGeometry.shader",
                     "type": "Model Renderer"
                 }
             ],
-            "name": "Prueba",
+            "name": "Palace",
             "position": [
                 0.0,
-                0.0,
+                -10.0,
                 0.0
             ],
             "rotation": [
@@ -21,9 +21,35 @@
                 0.0
             ],
             "scale": [
-                1.0,
-                1.0,
-                1.0
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224
+            ]
+        },
+        {
+            "_id": "Dragon",
+            "components": [
+                {
+                    "model": "Content/Meshes/Dragon/scene.gltf",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                }
+            ],
+            "name": "Dragon",
+            "position": [
+                0.0,
+                -10.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                0.4000000059604645,
+                0.4000000059604645,
+                0.4000000059604645
             ]
         },
         {
@@ -40,7 +66,6 @@
                         0.8700000047683716,
                         0.3400000035762787
                     ],
-                    "shadowCaster": 1,
                     "type": "Directional Light"
                 }
             ],
@@ -62,11 +87,25 @@
             ]
         },
         {
-            "_id": "",
+            "_id": "New Object",
             "components": [
-                null
+                {
+                    "model": "Content/Meshes/cube_face.obj",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                },
+                {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "fallOf": 0.5,
+                    "radius": 1.0,
+                    "type": "Point Light"
+                }
             ],
-            "name": "Sky_bg",
+            "name": "New Object",
             "position": [
                 0.0,
                 0.0,
@@ -78,17 +117,20 @@
                 0.0
             ],
             "scale": [
-                0.0,
-                0.0,
-                0.0
+                1.0,
+                1.0,
+                1.0
             ]
         },
         {
-            "_id": "PARTICLE_MANAGER",
+            "_id": "",
             "components": [
-                null
+                {
+                    "path": "adfadfasfa",
+                    "type": "Skybox"
+                }
             ],
-            "name": "ParticleManager",
+            "name": "Sky_bg",
             "position": [
                 0.0,
                 0.0,

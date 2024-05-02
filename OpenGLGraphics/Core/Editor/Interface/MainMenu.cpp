@@ -5,6 +5,7 @@
 #include "Core/Network/Server.h"
 #include "Core/AppWrapper.h"
 #include "Core/Editor/Editor.h"
+#include <stdlib.h>
 
 
 static bool show_tool_metrics = false;
@@ -86,6 +87,12 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
             app.getScene().Save("Content/Maps/" + std::string(saveFileName) + ".real");
             savePopup = false;
             previouslySaved = true;
+#if _DEBUG
+            system("dir");
+            system("..\\x64\\Debug\\AssetLoader.exe");
+#else
+            system(AsssetLoader.exe);
+#endif
             ImGui::CloseCurrentPopup();
         }
         ImGui::SameLine();

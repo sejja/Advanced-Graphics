@@ -121,6 +121,31 @@
                 1.0,
                 1.0
             ]
+        },
+        {
+            "_id": "",
+            "components": [
+                {
+                    "path": "adfadfasfa",
+                    "type": "Skybox"
+                }
+            ],
+            "name": "Sky_bg",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                0.0,
+                0.0,
+                0.0
+            ]
         }
     ]
 }

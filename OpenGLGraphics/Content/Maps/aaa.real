@@ -87,44 +87,6 @@
             ]
         },
         {
-            "_id": "",
-            "name": "Sky_bg",
-            "position": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "_id": "PARTICLE_MANAGER",
-            "name": "ParticleManager",
-            "position": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ],
-            "rotation": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ],
-            "scale": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ]
-        },
-        {
             "_id": "New Object",
             "components": [
                 {
@@ -163,7 +125,10 @@
         {
             "_id": "",
             "components": [
-                null
+                {
+                    "path": "adfadfasfa",
+                    "type": "Skybox"
+                }
             ],
             "name": "Sky_bg",
             "position": [
@@ -180,28 +145,6 @@
                 0.0,
                 0.0,
                 0.0
-            ]
-        },
-        {
-            "_id": "PARTICLE_MANAGER",
-            "components": [
-                null
-            ],
-            "name": "ParticleManager",
-            "position": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ],
-            "rotation": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
-            ],
-            "scale": [
-                -431602080.0,
-                -431602080.0,
-                -431602080.0
             ]
         }
     ]
