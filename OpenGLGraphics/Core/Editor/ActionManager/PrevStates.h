@@ -25,6 +25,13 @@ public:
 	static Core::Assets::Asset<Core::Graphics::Texture> GetPrevNormal() { return prevNormal; }
 	static Core::Assets::Asset<Core::Graphics::Texture> GetPrevDiffuse() { return prevDiffuse; }
 
+    //MODEL 
+
+	static void SetPrevModel(Core::Assets::AssetReference<::Graphics::Primitives::Model> model) { initModel = model; }
+	static void SetPrevShader(Core::Assets::AssetReference<Core::Graphics::ShaderProgram> shader) { initShader = shader; }
+
+	static Core::Assets::AssetReference<::Graphics::Primitives::Model> GetPrevModel() { return initModel; }
+	static Core::Assets::AssetReference<Core::Graphics::ShaderProgram> GetPrevShader() { return initShader; }
 
 
 
@@ -35,6 +42,10 @@ private:
 
     static Core::Assets::Asset<Core::Graphics::Texture> prevNormal;
 	static Core::Assets::Asset<Core::Graphics::Texture> prevDiffuse;
+
+    static Core::Assets::AssetReference<::Graphics::Primitives::Model> initModel;
+    static Core::Assets::AssetReference<Core::Graphics::ShaderProgram> initShader;
+
 
 };
 

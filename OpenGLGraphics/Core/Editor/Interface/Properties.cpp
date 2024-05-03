@@ -32,6 +32,7 @@
 #include "../ActionManager/PrevStates.h"
 #include "../ActionManager/Action.h"
 #include "../ActionManager/Actions/MeshAction.h"
+#include "../ActionManager/Actions/ModelAction.h"
 #include "../ActionManager/Actions/TransformObject.h"
 
 
@@ -630,11 +631,6 @@ void Properties::LightingOptions() {
     lightComp->SetColor(colorVec3);
 
     ImGui::PopStyleVar();
-
-
-
-    
-
 }
 
 void Properties::LightTypeOptions(){
@@ -846,9 +842,19 @@ void Properties::MeshOptions(Core::Graphics::OpenGLPipeline& pipeline) {
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* asset = (AssetIcon*)payload->Data;
+			if (glbModel) {
+				PrevStates::SetPrevModel(glbModel);
+				PrevStates::SetPrevShader(meshComp->GetShaderProgram());
+			}
             meshComp->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>(asset->ruta));
             meshComp->SetShaderProgram(resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredGeometry.shader"));
             pipeline.AddRenderable(meshComp);
+
+			if (glbModel) {
+				auto action = std::make_shared<ModelAction>(meshComp);
+				Singleton<Editor>::Instance().GetActionManager()->AddAction(action);
+			}
+
         }
         ImGui::EndDragDropTarget();
     }
@@ -890,12 +896,20 @@ void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline){
             Core::Assets::Asset<ShaderProgram> curShader = curShaderRef.lock();;
             if (curShaderRef.lock()){
                 curShader = curShaderRef.lock();
+                PrevStates::SetPrevModel(glbModel);
+                PrevStates::SetPrevShader(meshComp->GetShaderProgram());
             }
             else {
                 printf("No hay shader actual\n");
             }
             pipeline.updateRenderablesGroups(curShader, newShader, meshComp);
             meshComp->SetShaderProgram(newShader);
+
+            if (glbModel) {
+                auto action = std::make_shared<ModelAction>(meshComp);
+                Singleton<Editor>::Instance().GetActionManager()->AddAction(action);
+            }
+
             selectedObjIns.SetSelectedMesh(NULL);
 
         }

@@ -170,7 +170,9 @@
   <ItemGroup>
     <ClCompile Include="Core\Editor\ActionManager\Action.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\ActionManager.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\Actions\LightAction.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\Actions\MeshAction.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\Actions\ModelAction.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\Actions\TransformObject.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\PrevStates.cpp" />
     <ClCompile Include="Core\Editor\Guizmo.cpp" />
@@ -258,7 +260,9 @@
     <ClInclude Include="Core\Application.h" />
     <ClInclude Include="Core\Editor\ActionManager\Action.h" />
     <ClInclude Include="Core\Editor\ActionManager\ActionManager.h" />
+    <ClInclude Include="Core\Editor\ActionManager\Actions\LightAction.h" />
     <ClInclude Include="Core\Editor\ActionManager\Actions\MeshAction.h" />
+    <ClInclude Include="Core\Editor\ActionManager\Actions\ModelAction.h" />
     <ClInclude Include="Core\Editor\ActionManager\Actions\TransformObject.h" />
     <ClInclude Include="Core\Editor\ActionManager\ActionType.h" />
     <ClInclude Include="Core\Editor\ActionManager\PrevStates.h" />

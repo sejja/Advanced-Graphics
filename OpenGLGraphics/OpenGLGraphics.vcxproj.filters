@@ -279,6 +279,12 @@
     <ClCompile Include="Core\Editor\ActionManager\Actions\MeshAction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Actions\ModelAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Actions\LightAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -1863,6 +1869,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Editor\ActionManager\Actions\MeshAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Actions\ModelAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Actions\LightAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
