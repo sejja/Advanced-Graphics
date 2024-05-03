@@ -21,9 +21,45 @@
                 0.0
             ],
             "scale": [
-                0.20000000298023224,
-                0.20000000298023224,
-                0.20000000298023224
+                0.2,
+                0.2,
+                0.2
+            ]
+        },
+         {
+            "_id": "Point Light #1",
+            "components": [
+                {
+                    "model": "Content/Meshes/sphere_20_averaged.obj",
+                    "shader": "Content/Shaders/White.shader",
+                    "type": "Model Renderer"
+                },
+                 {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "fallOf": 0.5,
+                    "radius": 15,
+                    "type": "Point Light"
+                }
+            ],
+            "name": "Point Light #1",
+            "position": [
+                0.0,
+                -10.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1,
+                1,
+                1
             ]
         },
         {

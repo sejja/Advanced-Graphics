@@ -13,7 +13,7 @@ object Palace
 translate 0 -10 0
 rotation 0 0 0
 scale 0.2 0.2 0.2
-mesh Content/Scenes/Sponza/Sponza.gltf 
+mesh Content/Scenes/NewSponza/scene.gltf 
 
 
 #scene data

@@ -353,7 +353,7 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
                 obj->AddComponent(std::move(renderer));
             }
 
-            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light")) {
+            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Point Light")) {
                 std::shared_ptr<::Graphics::Primitives::PointLight> light;
                 light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
                 light->SetRadius(1.0f);
@@ -363,6 +363,30 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
                 glm::vec3 relativePos = glm::vec3(0.0f, 0.0f, 0.0f);
 				light->SetPosition(relativePos, obj->GetPosition());
 
+                obj->AddComponent(std::move(light));
+
+            }
+
+            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Spot Light")) {
+                std::shared_ptr<::Graphics::Primitives::SpotLight> light;
+                light = std::move(std::make_shared<::Graphics::Primitives::SpotLight>(obj));
+                light->SetDirection(glm::vec3(0.3400000035762787,
+                    0.8700000047683716,
+                    0.3400000035762787));
+
+                light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
+                obj->AddComponent(std::move(light));
+
+            }
+
+            if (ImGui::Selectable(ICON_FA_SUN " Directional Light")) {
+                std::shared_ptr<::Graphics::Primitives::Lights::DirectionalLight> light;
+                light = std::move(std::make_shared<::Graphics::Primitives::Lights::DirectionalLight>(obj));
+				light->SetDirection(glm::vec3(0.3400000035762787,
+                    0.8700000047683716,
+                    0.3400000035762787));
+
+                light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
                 obj->AddComponent(std::move(light));
 
             }

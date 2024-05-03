@@ -315,7 +315,7 @@ namespace Core {
 			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
 			//glEnable(GL_DEPTH_TEST);
 
-			//RenderParticlesSystems();
+			RenderParticlesSystems();
 
 			BloomPass(mHDRBuffer->GetHandle());
 			mLightPass->RenderLights({1600, 900}, *mGBuffer, *mSSAOBuffer);
