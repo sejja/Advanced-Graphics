@@ -18,11 +18,10 @@ namespace Graphics {
 				~InstancedMesh();
 
 
-				void drawInstanced(std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> instancedObject) const;
+				void drawInstanced(std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> instancedObject);
 				void updateTransforms(std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> instancedObjects);
 				void setAssociatedMesh(Graphics::Primitives::Mesh* mesh);
 				int* range(int n) const;
-				std::vector<glm::mat4>* getTransforms_ptr(); 
 
 				bool initiated = false;
 
@@ -30,7 +29,7 @@ namespace Graphics {
 
 				Core::Graphics::ShaderProgram* shaderProgram = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/InstancedShaders/InstancedGeometry.shader").get()->Get();
 				GLuint ubo;
-				std::vector<glm::mat4> transforms;
+				std::vector<glm::mat4>* transforms;
 				std::shared_ptr<Graphics::Primitives::Mesh> asociatedMesh;
 			};
 		}

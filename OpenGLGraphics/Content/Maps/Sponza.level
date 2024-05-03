@@ -15,12 +15,11 @@ rotation 0 0 0
 scale 0.2 0.2 0.2
 mesh Content/Scenes/Sponza/Sponza.gltf 
 
-
 #scene data
 object Dragon
 translate 0 -10 0
 rotation 0 0 0
-scale 0.4 0.4 0.4
+scale 0.1 0.1 0.1
 mesh Content/Meshes/Dragon/scene.gltf
 
 object Dragon
@@ -32,7 +31,7 @@ mesh Content/Meshes/Dragon/scene.gltf
 object Dragon
 translate 80 -10 0
 rotation 0 0 0
-scale 0.4 0.4 0.4
+scale 0.1 0.1 0.1
 mesh Content/Meshes/Dragon/scene.gltf
 
 object Dragon
@@ -44,7 +43,7 @@ mesh Content/Meshes/Dragon/scene.gltf
 object Dragon
 translate 160 -10 0
 rotation 0 0 0
-scale 0.4 0.4 0.4
+scale 0.2 0.2 0.2
 mesh Content/Meshes/Dragon/scene.gltf
 
 object Dragon
