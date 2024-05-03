@@ -23,6 +23,10 @@ namespace Graphics {
 				std::reinterpret_pointer_cast<SpotLightData>(mData)->GenerateShadowMap();
 		}
 
+		SpotLight::~SpotLight() {
+			Graphics::Architecture::LightPass::RemoveSpotLight(std::reinterpret_pointer_cast<SpotLightData>(mData));
+		}
+
 		// ------------------------------------------------------------------------
 		/*! Generate Shadow Map
 		*

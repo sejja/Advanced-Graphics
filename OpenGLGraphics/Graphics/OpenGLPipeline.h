@@ -53,6 +53,7 @@ namespace Core {
 			void setAntiAliasing(GLboolean aa) { AntiAliasing = aa; }
 			GLuint GetBloomTexture() { return mBloomRenderer->BloomTexture(); }
 
+			void ClearPipeline();
 			Primitives::Camera* getCamera();
 		
 

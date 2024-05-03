@@ -15,6 +15,7 @@
 #include "Core/Assets/ResourceManager.h"
 #include "Graphics/Primitives/ShaderProgram.h"
 #include "Graphics/Primitives/GLBModel.h"
+#include <string>
 
 namespace Core {
 	namespace Graphics {
@@ -53,7 +54,7 @@ namespace Core {
 			inline void SetShaderProgram(const Core::Assets::AssetReference<Graphics::ShaderProgram>& s);
 
 			DONTDISCARD inline Core::Assets::AssetReference<Graphics::ShaderProgram> GetShaderProgram();
-			DONTDISCARD inline Core::Assets::AssetReference<::Graphics::Primitives::Model> GetMesh() const;
+			DONTDISCARD inline Core::Assets::Asset<::Graphics::Primitives::Model> GetModel() const;
 
 			void Render() const noexcept override;
 			inline void SetProcudesShadow(const bool shadow) noexcept;
@@ -97,17 +98,10 @@ namespace Core {
 			return mShaderProgram;
 		}
 
-		// ------------------------------------------------------------------------
-		/*! Get Mesh
-		* 
-		* Gets the Mesh associated with this renderer
-		*/ // ---------------------------------------------------------------------
-
-		Core::Assets::AssetReference<::Graphics::Primitives::Model> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetMesh() const {
+		Core::Assets::Asset<::Graphics::Primitives::Model> GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::GetModel() const
+		{
 			return mModel;
 		}
-
-
 	}
 }
 

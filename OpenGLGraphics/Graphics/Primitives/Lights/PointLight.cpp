@@ -21,5 +21,8 @@ namespace Graphics {
 				mData = std::make_shared<PointLightData>();
 				Graphics::Architecture::LightPass::AddPointLight(std::reinterpret_pointer_cast<PointLightData>(mData));
 		}
+		PointLight::~PointLight() {
+			Graphics::Architecture::LightPass::RemovePointLight(std::reinterpret_pointer_cast<PointLightData>(mData));
+		}
 	}
 }

@@ -21,7 +21,7 @@ namespace Graphics {
                 *   Constructs a Shadow Map, initializing the 3D Lightmaps and the Framebuffer
                 */ //----------------------------------------------------------------------
                 CascadedShadowMap::CascadedShadowMap() :
-                    mCascadedLevels({ 10000.f / 50.0f, 10000.f / 25.0f, 10000.f / 10.0f, 10000.f / 2.0f } ),
+                    mCascadedLevels({ 10000.f / 50.0f, 10000.f / 25.0f, 10000.f / 10.0f, 10000.f / 2.0f } ), mPrevCamView(),
                     mShader(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/CascadedShadowMap.shader")),
                     mLightMatrices() {
                     glGenFramebuffers(1, &mLightBuffer);
@@ -166,7 +166,11 @@ namespace Graphics {
                 *
                 *   Renders the Shadow Depth Maps
                 */ //----------------------------------------------------------------------
-                void CascadedShadowMap::Render(glm::mat4 camview, glm::vec3 pos, glm::vec3 dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
+                void CascadedShadowMap::Render(const glm::mat4& camview, const glm::vec3& dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
+
+					if (mPrevCamView == camview)
+						return;
+
                     std::array<glm::mat4, 5> lightMatrices = GetLightSpaceMatrices(camview, dir);
                     constexpr const char* uniformslightSpaces[] = { "lightSpaceMatrices[0]", "lightSpaceMatrices[1]", "lightSpaceMatrices[2]", "lightSpaceMatrices[3]", "lightSpaceMatrices[4]" };
 
@@ -184,7 +188,7 @@ namespace Graphics {
                     glCullFace(GL_FRONT);  // peter panning
                     rend_func(shd);
                     glCullFace(GL_BACK);
-                    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+					mPrevCamView = camview;
                 }
 
                 // ------------------------------------------------------------------------

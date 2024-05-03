@@ -114,6 +114,9 @@ namespace Core {
 			else if (strcmp(tipo, "FOLDER") == 0) {
 				return AssetType::FOLDER;
 			}
+			else if (strcmp(tipo, "LEVEL") == 0) {
+				return AssetType::LEVEL;
+			}
 			else {
 				return AssetType::OTHER;
 			}

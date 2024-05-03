@@ -3,7 +3,9 @@
 #include <Dependencies/Json/single_include/json.hpp>
 #include "Core/Network/Client.h"
 #include "Core/Network/Server.h"
+#include "Core/AppWrapper.h"
 #include "Core/Editor/Editor.h"
+#include <stdlib.h>
 
 
 static bool show_tool_metrics = false;
@@ -16,6 +18,8 @@ static bool show_deferred_rendering = false;
 
 void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     if (ImGui::BeginMainMenuBar()) {
+
+        RenderFileMenu();
 
         if (ImGui::BeginMenu("Edit")) {
 
@@ -62,7 +66,43 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     if (show_tool_metrics)
         ImGui::ShowMetricsWindow(&show_tool_metrics);
 
+    //ImGui::Text("Hladfa");
 
+    if (savePopup) ImGui::OpenPopup("Save As");
+
+    if (ImGui::BeginPopupModal("Save As", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+        std::cout << "Mostrando popup" << std::endl;
+        //ImGui::Text("Filename: ");
+        //ImGui::SameLine();
+        ImGui::InputTextWithHint("##", "Filename", saveFileName, 100);
+        std::cout << "Nombre: " << saveFileName << std::endl;
+        int width = ImGui::GetWindowSize().x;
+        int buttonHeight = 30;
+        int buttonWidth = 100;
+        ImGui::Dummy(ImVec2(0, 5));
+        ImGui::SetCursorPosX(width / 2 - buttonWidth - 3); //A ojo
+        if (ImGui::Button("Save", ImVec2(buttonWidth, buttonHeight))) {
+            AppWrapper& app = Singleton<AppWrapper>::Instance();
+            //std::cout << saveFileName << std::endl;
+            app.getScene().Save("Content/Maps/" + std::string(saveFileName) + ".real");
+            savePopup = false;
+            previouslySaved = true;
+#if _DEBUG
+            system("dir");
+            system("..\\x64\\Debug\\AssetLoader.exe");
+#else
+            system(AsssetLoader.exe);
+#endif
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(buttonWidth, buttonHeight))) {
+            savePopup = false;
+			ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+    
 }
 
 void MainMenu::RenderRemoteControlMenu() {
@@ -160,6 +200,23 @@ void MainMenu::ServerStateInfo()
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(43.0f / 255.0f, 190.0f / 255.0f, 165.0f / 255.0f, 1.0f));
         ImGui::BeginMenu(ICON_FA_SERVER "  Connected to peer");
         ImGui::PopStyleColor();
+    }
+
+}
+
+void MainMenu::RenderFileMenu() {
+    
+    if (ImGui::BeginMenu("File")) {
+        if (ImGui::MenuItem("Save", "CTRL+S", false, previouslySaved)) {
+            AppWrapper& app = Singleton<AppWrapper>::Instance();
+            app.getScene().Save("Content/Maps/" + std::string(saveFileName) + ".json");
+        }
+        if (ImGui::MenuItem("Save As..")) {
+            //ImGui::OpenPopup("Save As..");
+            savePopup = true;
+		}
+        
+        ImGui::EndMenu();
     }
 
 }

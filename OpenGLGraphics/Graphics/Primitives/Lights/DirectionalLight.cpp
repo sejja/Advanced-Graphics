@@ -8,6 +8,7 @@
 
 #include "DirectionalLight.h"
 #include "Graphics/Architecture/LightPass.h"
+#include "Core/Memory/PageAllocator.h"
 
 namespace Graphics {
 	namespace Primitives {

@@ -46,7 +46,7 @@ namespace Core {
             //Load 6 images for the map
             for (unsigned int i = 0; i < 6; i++)
             {
-                
+
                 stbi_uc* Surface = stbi_load((mCubeMapPath + Faces[i]).c_str(), &Width, &Height, &Format, 4);
                 glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGBA, Width, Height, 0, GL_RGBA, GL_UNSIGNED_BYTE, Surface);
                 stbi_image_free(Surface);

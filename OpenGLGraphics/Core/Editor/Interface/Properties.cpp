@@ -431,7 +431,7 @@ void Properties::selectedObjectTree() {
                 selectedObjIns.SetSelectedComponent(comp);
                 selectedObjIns.SetSelectedMesh(NULL);
             }
-            auto glbModel = modelComp->GetMesh().lock();
+            auto glbModel = modelComp->GetModel();
             if (isCompSelectedObj && glbModel) {
                 int a = 999;
                 for (Graphics::Primitives::Mesh& mesh : glbModel->Get()->getMeshes()) {
@@ -773,7 +773,7 @@ void Properties::MaterialsOptions() {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Element 1");
-        ImGui::TableSetColumnIndex(1);
+        ImGui::TableSetColumnIndex(1);GetMesh().lock();
         auto curTex = selectedMesh->getDiffuse();
         if (!curTex) {
             curTex = resmg.GetResource<Core::Graphics::Texture>("Content/Textures/NoTexture.png");
@@ -806,7 +806,7 @@ void Properties::MeshOptions(Core::Graphics::OpenGLPipeline& pipeline) {
     ImGuiDragDropFlags flags = 0 | ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
-    auto glbModel = meshComp->GetMesh().lock();
+    auto glbModel = meshComp->GetModel();
 	std::string modelName = "No model";
     if (glbModel){
 		modelName = glbModel->Get()->getName();
@@ -845,7 +845,7 @@ void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline){
     static ImVec2 cell_padding(4.0f, 8.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
     std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(selectedObjIns.GetSelectedComponent());
-    auto glbModel = meshComp->GetMesh().lock();
+    auto glbModel = meshComp->GetModel();
    
     if (ImGui::BeginTable("shader_table", 2, flags1)) {
         ImGui::TableNextRow();
