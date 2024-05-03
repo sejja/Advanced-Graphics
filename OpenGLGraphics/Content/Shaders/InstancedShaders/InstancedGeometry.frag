@@ -19,7 +19,7 @@ layout (std140, binding = 0) uniform UniformBuffer {
 };
 
 layout(std140, binding = 1) uniform TransformBlock {
-    mat4 instancedGeometryPos[100]; //instancias maximas
+    mat4 instancedGeometryPos[100]; 
 };
 
 
