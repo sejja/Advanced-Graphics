@@ -492,7 +492,7 @@ namespace Core {
 			}
 			else 
 			{
-				std::cout << "ERROR -> PARTICLEMANAGER WAS DESTROYED \n";
+				//std::cout << "ERROR -> PARTICLEMANAGER WAS DESTROYED \n";
 			}
 
 		}

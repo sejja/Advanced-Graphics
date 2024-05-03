@@ -22,9 +22,23 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
         RenderFileMenu();
 
         if (ImGui::BeginMenu("Edit")) {
+            size_t numActions = Singleton<::Editor>::Instance().GetActionManager()->GetActions().size();
+			int curAction = Singleton<::Editor>::Instance().GetActionManager()->GetCurrentAction();
 
-            if (ImGui::MenuItem("Undo", "CTRL+Z")) {}
-            if (ImGui::MenuItem("Redo", "CTRL+Y", false, false)) {}  // Disabled item
+
+            if (ImGui::MenuItem("Undo", "CTRL+Z")) {
+				std::cout << "Undoing action" << std::endl;
+				Singleton<::Editor>::Instance().GetActionManager()->Undo();
+            }
+
+            
+            if (ImGui::MenuItem("Redo", "CTRL+Y")) {
+				std::cout << "Redoing action" << std::endl;
+				Singleton<::Editor>::Instance().GetActionManager()->Redo();
+            }  
+
+            ImGui::Text((std::to_string(numActions) + " edit actions stored").c_str());
+
 
             ImGui::EndMenu();
         }

@@ -11,11 +11,12 @@
 #include "Interface/AssetManager.h"
 #include "Interface/SceneView.h"
 #include "Interface/MainMenu.h"
-#include "Interface/Guizmo.h"
+#include "Guizmo.h"
 #include "Core/Editor/SelectedObj.h"
 #include "database.h"
 #include "Core/Editor/Interface/TextEditor.h"
 
+#include "Core/Editor/ActionManager/ActionManager.h"
 
 
 class Editor {
@@ -47,6 +48,11 @@ public:
 
     void SetGuizmoMode(ImGuizmo::OPERATION mode) { guizmoMode = mode; }
     ImGuizmo::OPERATION* GetGuizmoMode() { return &guizmoMode; }
+
+	ActionManager* GetActionManager() { return &actionManager; }
+
+	bool getEditComplete() { return editComplete; }
+	void setEditComplete(bool value) { editComplete = value; }
     
 
 private:
@@ -65,8 +71,14 @@ private:
 
     ImDrawList* drawList;
 
+	ActionManager actionManager;
+
+
+
     float fov = 45.0f;
     bool editorLocked;
+
+	bool editComplete = false;
 
 };
 

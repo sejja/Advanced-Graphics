@@ -168,7 +168,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Core\Editor\Interface\Guizmo.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\Action.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\ActionManager.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\Actions\MeshAction.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\Actions\TransformObject.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\PrevStates.cpp" />
+    <ClCompile Include="Core\Editor\Guizmo.cpp" />
     <ClCompile Include="Core\Editor\Interface\TextEditor.cpp" />
     <ClCompile Include="Core\Editor\mouse_picking.cpp" />
     <ClCompile Include="Core\Editor\ShaderCompiler\clientWindows.c" />
@@ -251,7 +256,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
-    <ClInclude Include="Core\Editor\Interface\Guizmo.h" />
+    <ClInclude Include="Core\Editor\ActionManager\Action.h" />
+    <ClInclude Include="Core\Editor\ActionManager\ActionManager.h" />
+    <ClInclude Include="Core\Editor\ActionManager\Actions\MeshAction.h" />
+    <ClInclude Include="Core\Editor\ActionManager\Actions\TransformObject.h" />
+    <ClInclude Include="Core\Editor\ActionManager\ActionType.h" />
+    <ClInclude Include="Core\Editor\ActionManager\PrevStates.h" />
+    <ClInclude Include="Core\Editor\Guizmo.h" />
+    <ClInclude Include="Core\Editor\mouse_picking.h" />
     <ClInclude Include="Core\Math\Lerp.h" />
     <ClInclude Include="Core\Memory\Allocator.h" />
     <ClInclude Include="CommonDefines.h" />

@@ -29,6 +29,13 @@
 #include <Core/AppWrapper.h>
 #include "Graphics/Primitives/Decal.h"
 #include "Core/RTTI/RTTI.h"
+#include "../ActionManager/PrevStates.h"
+#include "../ActionManager/Action.h"
+#include "../ActionManager/Actions/MeshAction.h"
+#include "../ActionManager/Actions/TransformObject.h"
+
+
+
 
 
 SelectedObj& selectedObjIns = Singleton<Editor>::Instance().GetSelectedObj();
@@ -740,19 +747,22 @@ void Properties::MaterialsOptions() {
     ImGuiDragDropFlags flags = 0 | ImGuiDragDropFlags_AcceptNoDrawDefaultRect;
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
     auto selectedMesh = selectedObjIns.GetSelectedMesh();
+    auto curNor = selectedMesh->getNormal();
+    auto curDif = selectedMesh->getDiffuse();
+
     if (ImGui::BeginTable("normal_tex", 2, flags1)) {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Element 0");
         ImGui::TableSetColumnIndex(1);
-        auto curTex = selectedMesh->getNormal();
-        if (!curTex){
-            curTex = resmg.GetResource<Core::Graphics::Texture>("Content/Textures/NoTexture.png");
+        if (!curNor){
+            curNor = resmg.GetResource<Core::Graphics::Texture>("Content/Textures/NoTexture.png");
         }
-        ImGui::Image((void*)(intptr_t)curTex->Get()->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+        auto textureName = resmg.GetResourceName<Core::Graphics::Texture>(curNor);
+        ImGui::Image((void*)(intptr_t)curNor->Get()->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
         ImGui::SameLine();
         ImGui::BeginGroup();
-        ImGui::Text(nombreTexturaTemporal.c_str());
+        ImGui::Text(textureName->c_str());
         ImGui::Button(ICON_FA_ARROW_TURN_UP);
         ImGui::SameLine();
         ImGui::Button(ICON_FA_FOLDER_OPEN);
@@ -762,10 +772,12 @@ void Properties::MaterialsOptions() {
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* iconPtr = (AssetIcon*)payload->Data;
-            nombreTexturaTemporal = iconPtr->nombre;
             Core::Assets::Asset<Core::Graphics::Texture> normalTexture = resmg.GetResource<Core::Graphics::Texture>(iconPtr->ruta);
-			
+            PrevStates::SetPrevNormal(curNor);
+            PrevStates::SetPrevDiffuse(curDif);
 			selectedMesh->setNormal(normalTexture);
+            auto action = std::make_shared<MeshAction>(selectedMesh);
+            Singleton<Editor>::Instance().GetActionManager()->AddAction(action);
         }
         ImGui::EndDragDropTarget();
     }
@@ -773,15 +785,16 @@ void Properties::MaterialsOptions() {
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Element 1");
-        ImGui::TableSetColumnIndex(1);GetMesh().lock();
-        auto curTex = selectedMesh->getDiffuse();
-        if (!curTex) {
-            curTex = resmg.GetResource<Core::Graphics::Texture>("Content/Textures/NoTexture.png");
+        ImGui::TableSetColumnIndex(1);
+        
+        if (!curDif) {
+            curDif = resmg.GetResource<Core::Graphics::Texture>("Content/Textures/NoTexture.png");
         }
-        ImGui::Image((void*)(intptr_t)curTex->Get()->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
+        auto textureName = resmg.GetResourceName<Core::Graphics::Texture>(curDif);
+        ImGui::Image((void*)(intptr_t)curDif->Get()->GetTextureHandle(), ImVec2(50, 50), ImVec2(0, 1), ImVec2(1, 0));
         ImGui::SameLine();
         ImGui::BeginGroup();
-        ImGui::Text(nombreTexturaTemporal.c_str());
+        ImGui::Text(textureName->c_str());
         ImGui::Button(ICON_FA_ARROW_TURN_UP);
         ImGui::SameLine();
         ImGui::Button(ICON_FA_FOLDER_OPEN);
@@ -791,9 +804,12 @@ void Properties::MaterialsOptions() {
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* iconPtr = (AssetIcon*)payload->Data;
-            nombreTexturaTemporal = iconPtr->nombre;
             Core::Assets::Asset<Core::Graphics::Texture> diffuseTexture = resmg.GetResource<Core::Graphics::Texture>(iconPtr->ruta);
+            PrevStates::SetPrevNormal(curNor);
+            PrevStates::SetPrevDiffuse(curDif);
 			selectedMesh->setDiffuse(diffuseTexture);
+            auto action = std::make_shared<MeshAction>(selectedMesh);
+            Singleton<Editor>::Instance().GetActionManager()->AddAction(action);
         }
         ImGui::EndDragDropTarget();
     }
