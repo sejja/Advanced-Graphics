@@ -40,7 +40,7 @@ namespace Graphics {
 				glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * this->transforms->size(), this->transforms->data(), GL_DYNAMIC_DRAW);
 
 				//std::cout << &(this->transforms) << std::endl;
-				glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(this->asociatedMesh->getCount()), GL_UNSIGNED_INT, 0, static_cast<int>(transforms->size())); //Si lo cambias por el this->transforms->size() la cosa cambia, porque? ni idea
+				glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(this->asociatedMesh->getCount()), GL_UNSIGNED_INT, 0, static_cast<int>(transforms->size())); //Si lo cambias por el this->transforms->size() la cosa cambia, porque? ni idea @Diego alguna idea?
 
 				glBindVertexArray(0);
 				glActiveTexture(GL_TEXTURE0);
