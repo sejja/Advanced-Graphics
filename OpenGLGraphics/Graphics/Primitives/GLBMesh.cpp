@@ -60,21 +60,12 @@ namespace Graphics {
 
         void Mesh::Draw() {
 
-            //try {
-                //throw CSomeOtherException();
-                //std::cout << this << std::endl;
-
-                int isInstanced = Singleton<Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().is_Instanced(this);
+            int isInstanced = Singleton<Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().is_Instanced(this);
             
-                if (isInstanced) {
-                    return; //If the mesh ins instanced wo dont draw it again
-                }
-            //}
-            //catch (...) {
+            if (isInstanced) {
+                return; //If the mesh ins instanced wo dont draw it again
+            }
 
-
-
-            //}
             //bind appropriate textures
             unsigned int diffuseNr = 1;
             unsigned int specularNr = 1;
