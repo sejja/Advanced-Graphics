@@ -67,6 +67,7 @@ namespace Core {
 			void DirectionalLightPass();
 			void BloomPass(GLuint targetbuffer);
 			void RenderReflectionCubemap(const glm::vec3& position);
+			glm::mat4 CorrectRollDirection(bool y, float pitch, float yaw, float roll, const glm::vec3& cameraPosition);
 			void DecalPass();
 
 			std::unordered_map<Core::Assets::Asset<ShaderProgram>, std::vector<std::weak_ptr<Renderable>>> mGroupedRenderables;

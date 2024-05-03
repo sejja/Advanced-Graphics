@@ -39,6 +39,7 @@ void main() {
         (oNormal));
     // and the diffuse per-fragment color
     gAlbedoSpec.rgba = vec4(texture(uCubemapReflection, reflect(normalize(oPosition - ubCameraPosition), normalize(oNormal))).rgb, 1.0);
+    gAlbedoSpec = pow(gAlbedoSpec, vec4(2.2));
     gBrightness = vec4(0.0);
 }
 
