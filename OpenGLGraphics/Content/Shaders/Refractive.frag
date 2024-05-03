@@ -37,6 +37,10 @@ void main() {
     gNormal = normalize(inverse(transpose(mat3(ubView * uModel))) * 
         mat3(oTangent, oBitangent, oNormal) * 
         (oNormal));
+
+    vec3 UVW = reflect(normalize(oPosition - ubCameraPosition), normalize(oNormal));
+    UVW.y = 1- UVW.y;
+    UVW.x = 1- UVW.x;
     // and the diffuse per-fragment color
     gAlbedoSpec.rgba = vec4(texture(uCubemapReflection, reflect(normalize(oPosition - ubCameraPosition), normalize(oNormal))).rgb, 1.0);
     gAlbedoSpec = pow(gAlbedoSpec, vec4(2.2));

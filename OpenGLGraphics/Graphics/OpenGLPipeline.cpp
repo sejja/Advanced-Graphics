@@ -32,6 +32,7 @@ using namespace std;
 namespace Core {
 	namespace Graphics {
 		static Primitives::Camera cam;
+		static GLuint reflectionCubemap;
 		OpenGLPipeline::~OpenGLPipeline() {
 			ImGui_ImplOpenGL3_Shutdown();
 			ImGui_ImplSDL2_Shutdown();
@@ -304,11 +305,13 @@ namespace Core {
 			
 			RenderShadowMaps(cam.GetViewMatrix());
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
-			//if (firstTime) {
+			if (firstTime) {
 				RenderReflectionCubemap(glm::vec3(0.0f,0.0f,0.0f));
 				firstTime = false;
-			//}
+			}
 			
+			glActiveTexture(GL_TEXTURE11);
+			glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionCubemap);
 			//RenderReflectionCubemap(cam.GetPosition());
 			UpdateUniformBuffers(cam.GetViewMatrix(),cam.GetProjectionMatrix()); // SI
 			GeometryPass({1600,900},cam.GetViewMatrix(), cam.GetProjectionMatrix()); //si
@@ -500,8 +503,8 @@ namespace Core {
 		{
 		    // Set up framebuffer and cubemap
 		    GLuint reflectionFramebuffer;
-		    GLuint reflectionCubemap;
-		    int reflectionSize = 512;
+		   GLuint reflectionDepth;
+		   int reflectionSize = 512;
 		    
 		    glGenFramebuffers(1, &reflectionFramebuffer);
 			glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
@@ -529,6 +532,10 @@ namespace Core {
 			GLenum drawBuffers[] = { GL_COLOR_ATTACHMENT0, GL_COLOR_ATTACHMENT1, GL_COLOR_ATTACHMENT2, GL_COLOR_ATTACHMENT3 };
 			glDrawBuffers(4, drawBuffers); // Specify the number of color attachments
 
+			glGenRenderbuffers(1, &reflectionDepth);
+			glBindRenderbuffer(GL_RENDERBUFFER, reflectionDepth);
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, reflectionSize, reflectionSize); // use a single renderbuffer object for both a depth AND stencil buffer.
+			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, reflectionDepth); // now actually attach it
 			
 			glActiveTexture(GL_TEXTURE11);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionCubemap);
@@ -573,7 +580,7 @@ namespace Core {
 				
 				
 				mLightPass->RenderLights({ 1600, 900}, *mGBuffer, *mSSAOBuffer);
-				mGBuffer->BlitDepthBuffer(reflectionCubemap);
+				mGBuffer->BlitDepthBuffer(reflectionFramebuffer);
 				Skybox::sCurrentSky->RenderSpecific(view,projectionMatrix, *this);
 		        // You may want to read back the rendered data from each face if needed
 				
