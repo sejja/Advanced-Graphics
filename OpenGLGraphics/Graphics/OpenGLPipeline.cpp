@@ -573,8 +573,7 @@ namespace Core {
 				
 				
 				mLightPass->RenderLights({ 1600, 900}, *mGBuffer, *mSSAOBuffer);
-				//mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
-		
+				mGBuffer->BlitDepthBuffer(reflectionCubemap);
 				Skybox::sCurrentSky->RenderSpecific(view,projectionMatrix, *this);
 		        // You may want to read back the rendered data from each face if needed
 				
