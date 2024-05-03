@@ -10,9 +10,12 @@ namespace Graphics {
 				//this->asociatedMesh = std::make_shared<Graphics::Primitives::Mesh>(asociatedMesh);
 
 				glGenBuffers(1, &ubo);
-
+				glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+				glBindBufferBase(GL_UNIFORM_BUFFER, 1, ubo);
 				GLuint transformBlockIndex = glGetUniformBlockIndex(shaderProgram->GetHandle(), "TransformBlock");
 				glUniformBlockBinding(shaderProgram->GetHandle(), transformBlockIndex, 1);
+
+				glBindBuffer(GL_UNIFORM_BUFFER, 0);
 			}
 			InstancedMesh::~InstancedMesh()
 			{
@@ -21,18 +24,17 @@ namespace Graphics {
 
 			void InstancedMesh::drawInstanced(std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> instancedObject) const
 			{
-				std::cout << "UNIMPLEMENTED FUNCTION drawInstanced IN InstancedMesh: " << this << "\n";
 
+				// Bind all needed textures
 				this->asociatedMesh->bindTextures();
 
-				// draw mesh
+				// Bind the VAO
 				glBindVertexArray(this->asociatedMesh->getVao());
-				glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(this->asociatedMesh->getCount()), GL_UNSIGNED_INT, 0, static_cast<int>(instancedObject->size()));
-
+				//Bind the uniform buffer
 				glBindBuffer(GL_UNIFORM_BUFFER, ubo);
-				glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4) * transforms.size(), transforms.data());
+				glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * transforms.size(), transforms.data(), GL_DYNAMIC_DRAW);
 
-				// always good practice to set everything back to defaults once configured.
+				glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(this->asociatedMesh->getCount()), GL_UNSIGNED_INT, 0, static_cast<int>(instancedObject->size()));
 
 				glBindVertexArray(0);
 				glActiveTexture(GL_TEXTURE0);
@@ -62,6 +64,15 @@ namespace Graphics {
 			std::vector<glm::mat4>* InstancedMesh::getTransforms_ptr()
 			{
 				return &(this->transforms);
+			}
+
+
+			int* InstancedMesh::range(int n) const {
+				int* array = new int[n]; // Allocate memory for an array with n+1 elements
+				for (int i = 0; i < n; i++) {
+					array[i] = i; // Fill the array with numbers from 0 to n
+				}
+				return array;
 			}
 		}
 	}
