@@ -5,6 +5,8 @@
 #include <memory> 
 #include "Core/ECSystem/Object.h"
 #include "Graphics/Primitives/GLBModel.h"
+#include "Graphics/Primitives/Lights/Light.h"
+
 
 class PrevStates {
 public:
@@ -33,7 +35,11 @@ public:
 	static Core::Assets::AssetReference<::Graphics::Primitives::Model> GetPrevModel() { return initModel; }
 	static Core::Assets::AssetReference<Core::Graphics::ShaderProgram> GetPrevShader() { return initShader; }
 
-
+    //LIGHT
+	static void SetPrevLight(std::shared_ptr<::Graphics::Primitives::Lights::Light> light) { 
+		std::make_shared<::Graphics::Primitives::Lights::Light>(*light);
+	}
+	static std::shared_ptr<::Graphics::Primitives::Lights::Light> GetPrevLight() { return initLight; }
 
 private:
     static glm::vec3 prevPos;
@@ -45,6 +51,8 @@ private:
 
     static Core::Assets::AssetReference<::Graphics::Primitives::Model> initModel;
     static Core::Assets::AssetReference<Core::Graphics::ShaderProgram> initShader;
+
+	static std::shared_ptr<::Graphics::Primitives::Lights::Light> initLight;
 
 
 };

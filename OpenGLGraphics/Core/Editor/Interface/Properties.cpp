@@ -3,9 +3,7 @@
 #include <format>
 
 #include "Dependencies/ImGui/imgui.h"
-#include "Dependencies/ImGui/imgui_internal.h"
-#include "Dependencies/ImGui/imgui_impl_opengl3.h"
-#include <Dependencies/ImGui/imgui_impl_sdl2.h>
+
 
 #include "Core/Editor/SelectedObj.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
@@ -34,6 +32,8 @@
 #include "../ActionManager/Actions/MeshAction.h"
 #include "../ActionManager/Actions/ModelAction.h"
 #include "../ActionManager/Actions/TransformObject.h"
+#include "../ActionManager/Actions/LightAction.h"
+
 
 
 
@@ -85,9 +85,6 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
     particleSystem = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(comp);
     
     focused = ImGui::IsWindowFocused();
-
-    //bool isParticleManager = obj->GetID().c_str() == "PARTICLE_MANAGER";
-    
 
     ImGui::Begin(ICON_FA_SLIDERS " Properties");
 
@@ -146,6 +143,16 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
         if (ImGui::CollapsingHeader(ICON_FA_LIGHTBULB " Light Type Options", ImGuiTreeNodeFlags_DefaultOpen)) {
             LightTypeOptions();
         }
+
+		if (Singleton<Editor>::Instance().getIsEditing()) {
+			//Comprobamos si se ha soltado el ratón
+			if (!ImGui::IsMouseDown(0)) {
+				std::cout << "Movimiento acabado" << std::endl;
+				Singleton<Editor>::Instance().setEditing(false);
+				auto lightAction = std::make_shared<LightAction>(lightComp);
+				Singleton<Editor>::Instance().GetActionManager()->AddAction(lightAction);
+			}
+		}
     }
 
     else if (fireSystem) {
@@ -349,7 +356,7 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
         }ImGui::SameLine();
 
         if (ImGui::Button(ICON_FA_TRASH " Delete")) {
-            ImGui::OpenPopup("delete_object_modal");
+            ImGui::OpenPopup("delete_comp_modal");
         }
 
         if (ImGui::BeginPopup("new_component_modal")) {
@@ -361,19 +368,37 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
                 obj->AddComponent(std::move(renderer));
             }
 
-            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Light")) {
+            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Point Light")) {
                 std::shared_ptr<::Graphics::Primitives::PointLight> light;
                 light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
                 light->SetRadius(1.0f);
                 light->SetFallOff(0.5f);
-
                 light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));   
                 glm::vec3 relativePos = glm::vec3(0.0f, 0.0f, 0.0f);
 				light->SetPosition(relativePos, obj->GetPosition());
-
                 obj->AddComponent(std::move(light));
-
             }
+			if (ImGui::Selectable(ICON_FA_LIGHTBULB " Spot Light")) {
+                std::shared_ptr<::Graphics::Primitives::SpotLight> light = std::make_shared<::Graphics::Primitives::SpotLight>(obj);
+				light->SetRadius(1.0f);
+				light->SetFallOff(0.5f);
+				light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
+				light->SetDirection(glm::vec3(0.0f, 0.0f, 0.0f));
+				light->SetInner(0.5f);
+				light->SetOuter(0.5f);
+				light->SetShadowCaster(false);
+				glm::vec3 relativePos = glm::vec3(0.0f, 0.0f, 0.0f);
+				light->SetPosition(relativePos, obj->GetPosition());
+				obj->AddComponent(std::move(light));
+			}
+            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Directional Light")) {
+                std::shared_ptr<::Graphics::Primitives::Lights::DirectionalLight> light = std::make_shared<::Graphics::Primitives::Lights::DirectionalLight>(obj);
+				light->SetDirection(glm::vec3(0.0f, 0.0f, 0.0f));
+				light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
+				obj->AddComponent(std::move(light));
+            }
+
+
 
             if (ImGui::Selectable(ICON_FA_NOTE_STICKY " Decal")) {
                 obj->AddComponent(std::move(std::make_shared<Graphics::Primitives::Decal>(obj)));
@@ -392,16 +417,14 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
             ImGui::EndPopup();
         }
 
-        if (ImGui::BeginPopup("delete_object_modal")) {
+        if (ImGui::BeginPopup("delete_comp_modal")) {
 
             ImGui::SeparatorText("Confirm Delete Object");
 
             if (ImGui::Selectable(ICON_FA_TRASH_ARROW_UP " Delete")) {
-                Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
-                scene.removeObject(obj);
+				obj->RemoveComponent(selectedObjIns.GetSelectedComponent());
                 selectedObjIns.SetSelectedComponent(NULL);
-				selectedObjIns.SetSelectedObject(NULL);
-
+                selectedObjIns.SetSelectedMesh(NULL);
             }
             ImGui::EndPopup();
         }        
@@ -647,18 +670,30 @@ void Properties::LightTypeOptions(){
             float lightRadius = pointLight->GetRadius();
             float fallOff = pointLight->GetFallOff();
 
-
+          
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("Radius");
             ImGui::TableSetColumnIndex(1);
-            ImGui::SliderFloat("##LightRadius", &lightRadius, 0.0f, 100.0f, "%.2f");
+            if (ImGui::SliderFloat("##LightRadius", &lightRadius, 0.0f, 100.0f, "%.2f")) {
+                if (!Singleton<Editor>::Instance().getIsEditing()) {
+					std::cout << "Guardando estado" << std::endl;
+					PrevStates::SetPrevLight(lightComp);
+                }
+                Singleton<Editor>::Instance().setEditing(true);
+            }
 
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("FallOff");
             ImGui::TableSetColumnIndex(1);
-            ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f");
+            if (ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f")) {
+                if (!Singleton<Editor>::Instance().getIsEditing()) {
+                    std::cout << "Guardando estado" << std::endl;
+                    PrevStates::SetPrevLight(lightComp);
+                }
+                Singleton<Editor>::Instance().setEditing(true);
+            }
 
             ImGui::EndTable();
 

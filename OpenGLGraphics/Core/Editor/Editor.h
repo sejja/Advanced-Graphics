@@ -51,8 +51,8 @@ public:
 
 	ActionManager* GetActionManager() { return &actionManager; }
 
-	bool getEditComplete() { return editComplete; }
-	void setEditComplete(bool value) { editComplete = value; }
+	bool getIsEditing() { return editComplete; }
+	void setEditing(bool value) { editComplete = value; }
     
 
 private:

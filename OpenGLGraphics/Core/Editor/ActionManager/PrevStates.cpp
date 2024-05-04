@@ -12,3 +12,5 @@ Core::Assets::Asset<Core::Graphics::Texture> PrevStates::prevDiffuse;
 Core::Assets::AssetReference<::Graphics::Primitives::Model> PrevStates::initModel;
 Core::Assets::AssetReference<Core::Graphics::ShaderProgram> PrevStates::initShader;
 
+
+std::shared_ptr<::Graphics::Primitives::Lights::Light> PrevStates::initLight;

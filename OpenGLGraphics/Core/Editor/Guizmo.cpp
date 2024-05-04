@@ -53,13 +53,12 @@ void Guizmo::Draw()
 
 
 		if (ImGuizmo::IsUsing()) {
-			bool isEditing = Singleton<Editor>::Instance().getEditComplete();
-			if (!isEditing) {
+			if (!isUsing) {
 				PrevStates::SetPrevPos(selectedObjIns.GetSelectedObject()->GetPosition());
 				PrevStates::SetPrevRot(selectedObjIns.GetSelectedObject()->GetRotation());
 				PrevStates::SetPrevScale(selectedObjIns.GetSelectedObject()->GetScale());
 			}
-			Singleton<Editor>::Instance().setEditComplete(true);
+			isUsing = true;
 			Singleton<Editor>::Instance().SetEditorLocked(true);
 
 			glm::vec3 position = glm::vec3(modelMatrix[3]);
@@ -75,9 +74,8 @@ void Guizmo::Draw()
 			selectedObjIns.GetSelectedObject()->SetScale(scale);
 		}
 		else {
-			bool isEditing = Singleton<Editor>::Instance().getEditComplete();
-			if (isEditing) {
-				Singleton<Editor>::Instance().setEditComplete(false);
+			if (isUsing) {
+				isUsing = false;
 
 				auto action = std::make_shared<TransformObjectAction>(selectedObjIns.GetSelectedObject());
 				Singleton<Editor>::Instance().GetActionManager()->AddAction(action);

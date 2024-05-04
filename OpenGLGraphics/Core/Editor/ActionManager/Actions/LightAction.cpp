@@ -1,7 +1,8 @@
 #include "LightAction.h"
 
-LightAction::LightAction(std::shared_ptr<::Graphics::Primitives::Lights::Light> light)
-	: mLight(light), mLightCp(std::make_shared<::Graphics::Primitives::Lights::Light>(*light)) {
+LightAction::LightAction(std::shared_ptr<::Graphics::Primitives::Lights::Light> light){
+	this->mLight = light;
+	this->mLightCp = PrevStates::GetPrevLight();
 }
 
 
@@ -25,7 +26,11 @@ void LightAction::Undo() {
 		directionalLight->SetDirection(directionalLightCP->GetDirection());
 
 	}
-	mLight->SetColor(mLightCp->GetColor());
+	else {
+		std::cout << "Error en LightAction::Undo()" << std::endl;
+	}
+
+	//mLight->SetColor(mLightCp->GetColor()); ?? SE ROMPE ???
 
 
 

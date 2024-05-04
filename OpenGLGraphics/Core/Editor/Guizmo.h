@@ -16,6 +16,8 @@ private:
 
 	Core::Primitives::Camera* cam;
 
+	bool isUsing = false;
+
 };
 
 

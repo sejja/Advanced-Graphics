@@ -76,7 +76,7 @@
           ],
           "fallOf": 0.5,
           "radius": 1.0,
-          "type": "Point Light"
+          "type": "Spot Light"
         }
       ],
       "name": "New Object",
@@ -104,7 +104,7 @@
           "type": "Skybox"
         }
       ],
-      "name": "Sky_bg",
+      "name": "SKYBOX",
       "position": [
         0.0,
         0.0,
