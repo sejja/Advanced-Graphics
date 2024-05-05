@@ -12,6 +12,7 @@ public:
     std::string formatObjName(const std::shared_ptr<Core::Object>& obj);
     void RenderOptions();
     void RenderSceneObjects();
+    std::string generateID();
 
 
 private:

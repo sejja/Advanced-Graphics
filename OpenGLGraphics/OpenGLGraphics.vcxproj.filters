@@ -285,6 +285,9 @@
     <ClCompile Include="Core\Editor\ActionManager\Actions\LightAction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Actions\ComponentAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -1877,6 +1880,9 @@
     <ClInclude Include="Core\Editor\ActionManager\Actions\LightAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Actions\ComponentAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\SDL\Include\SDL_config.h.cmake" />
@@ -2367,6 +2373,8 @@
     <None Include="Content\Shaders\SSAOBlur.shader" />
     <None Include="Content\Maps\patata.real" />
     <None Include="Content\Maps\Scene2.real" />
+    <None Include="Content\Maps\mi_dragoncito.real" />
+    <None Include="Content\Maps\dafad.real" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />

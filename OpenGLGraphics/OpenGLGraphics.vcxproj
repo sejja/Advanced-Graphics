@@ -170,6 +170,7 @@
   <ItemGroup>
     <ClCompile Include="Core\Editor\ActionManager\Action.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\ActionManager.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\Actions\ComponentAction.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\Actions\LightAction.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\Actions\MeshAction.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\Actions\ModelAction.cpp" />
@@ -260,6 +261,7 @@
     <ClInclude Include="Core\Application.h" />
     <ClInclude Include="Core\Editor\ActionManager\Action.h" />
     <ClInclude Include="Core\Editor\ActionManager\ActionManager.h" />
+    <ClInclude Include="Core\Editor\ActionManager\Actions\ComponentAction.h" />
     <ClInclude Include="Core\Editor\ActionManager\Actions\LightAction.h" />
     <ClInclude Include="Core\Editor\ActionManager\Actions\MeshAction.h" />
     <ClInclude Include="Core\Editor\ActionManager\Actions\ModelAction.h" />
@@ -794,9 +796,11 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Content\Maps\dafad.real" />
     <None Include="Content\Maps\Minecraft.level" />
     <None Include="Content\Maps\Japan.level" />
     <None Include="Content\Maps\Cyberpunk.level" />
+    <None Include="Content\Maps\mi_dragoncito.real" />
     <None Include="Content\Maps\patata.real" />
     <None Include="Content\Maps\Scene2.real" />
     <None Include="Content\Maps\Sponza.level" />

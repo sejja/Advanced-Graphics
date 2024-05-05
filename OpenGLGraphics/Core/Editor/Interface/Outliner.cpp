@@ -6,6 +6,7 @@
 #include "Core/Editor/SelectedObj.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 #include "Core/Editor/Editor.h"
+#include <random>
 
 
 SelectedObj& selectedObj = Singleton<Editor>::Instance().GetSelectedObj();
@@ -63,7 +64,7 @@ void Outliner::RenderOptions()
 		obj->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 		obj->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
 		obj->SetName("New Object");
-		obj->SetID("New Object");
+		obj->SetID(generateID());
 		scene.addObject(obj);
 	}
 
@@ -150,7 +151,16 @@ void Outliner::RenderSceneObjects(){
 	ImGui::Spacing(); 
 }
 
-
+std::string Outliner::generateID() {
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	int min = 10000;
+	int max = 99999;
+	std::uniform_int_distribution<> dis(min, max);
+	int random_number = dis(gen);
+	std::string id = std::to_string(random_number);
+	return id;
+}
 
 			
 		

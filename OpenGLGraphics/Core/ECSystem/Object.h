@@ -56,6 +56,9 @@ namespace Core {
 		template<typename T>
 		void RemoveComponent(std::shared_ptr<T>&& component);
 
+		template<typename T>
+		void RemoveComponentR(std::shared_ptr<T>& component);
+
 
 		template<typename T>
 		DONTDISCARD inline std::shared_ptr<T> GetComponent() const;
@@ -223,6 +226,21 @@ namespace Core {
 			throw ObjectException("No such component");
 		}
 	}
+	template<typename T>
+	void Object::RemoveComponentR(std::shared_ptr<T>& component) {
+		if (!RTTI::IsChild<T, Component>())
+			throw ObjectException("The given class is not a component");
+
+		auto it = std::find(mComponents.begin(), mComponents.end(), component);
+
+		if (it != mComponents.end()) {
+			mComponents.erase(it);
+		}
+		else {
+			throw ObjectException("No such component");
+		}
+	}
+
 
 
 
