@@ -1,15 +1,15 @@
 {
   "objects": [
     {
-      "_id": "Dragon",
+      "_id": "Vokselia",
       "components": [
         {
-          "model": "Content/Meshes/Dragon/scene.gltf",
+          "model": "Content/Scenes/Japan/scene.gltf",
           "shader": "Content/Shaders/DeferredGeometry.shader",
           "type": "Model Renderer"
         }
       ],
-      "name": "Dragon",
+      "name": "Palace",
       "position": [
         0.0,
         -10.0,
@@ -17,13 +17,13 @@
       ],
       "rotation": [
         0.0,
-        0.0,
+        -0.0,
         0.0
       ],
       "scale": [
-        0.4000000059604645,
-        0.4000000059604645,
-        0.4000000059604645
+        0.2,
+        0.2,
+        0.2
       ]
     },
     {
@@ -48,42 +48,6 @@
         1.0,
         1.0,
         1.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "scale": [
-        1.0,
-        1.0,
-        1.0
-      ]
-    },
-    {
-      "_id": "New Object",
-      "components": [
-        {
-          "model": "Content/Meshes/cube_face.obj",
-          "shader": "Content/Shaders/DeferredGeometry.shader",
-          "type": "Model Renderer"
-        },
-        {
-          "color": [
-            1.0,
-            1.0,
-            1.0
-          ],
-          "fallOf": 0.5,
-          "radius": 1.0,
-          "type": "Point Light"
-        }
-      ],
-      "name": "New Object",
-      "position": [
-        0.0,
-        0.0,
-        0.0
       ],
       "rotation": [
         0.0,

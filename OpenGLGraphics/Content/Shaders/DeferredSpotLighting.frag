@@ -83,7 +83,7 @@ void main() {
     const vec3 lightDir = normalize(vec3(ubView * vec4(uLight.mPosition, 1)) - fragPos);
     const float att = pow(smoothstep(uLight.mRadius, 0, length(vec3(ubView * vec4(uLight.mPosition, 1)) - fragPos)), uLight.mFallOff);
     float spotlight =1;
-    const float aplha = dot(-lightDir, normalize(vec3(ubView * vec4(uLight.mDirection, 1))));
+    const float aplha = dot(-lightDir, normalize(uLight.mDirection));
 
                  if(uLight.mCastShadows)
                      shadow = 1 - ShadowCalculation(uShadowMatrix * (inverse(ubView) * vec4(fragPos, 1)), normal);

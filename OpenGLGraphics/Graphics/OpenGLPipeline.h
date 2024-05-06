@@ -55,7 +55,7 @@ namespace Core {
 
 			void ClearPipeline();
 			Primitives::Camera* getCamera();
-		
+
 
 			void updateRenderablesGroups(const Core::Assets::Asset<ShaderProgram>& curShader, const Core::Assets::Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable);
 
@@ -114,14 +114,16 @@ namespace Core {
 		*   EMPTY FUNCTION
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::Shutdown() {}
-		
+
 		// ------------------------------------------------------------------------
 		/*! Add Renderable
 		*
 		*   Adds a Renderable into the pipeline
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::AddRenderable(const std::weak_ptr<Renderable>& renderer) {
-			mGroupedRenderables[(std::dynamic_pointer_cast<GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(renderer.lock()))->GetShaderProgram().lock()].push_back(renderer);
+			if (std::dynamic_pointer_cast<GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(renderer.lock())) {
+				mGroupedRenderables[(std::dynamic_pointer_cast<GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(renderer.lock()))->GetShaderProgram().lock()].push_back(renderer);
+			}
 		}
 	}
 }

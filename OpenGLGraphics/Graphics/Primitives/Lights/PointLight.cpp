@@ -24,6 +24,7 @@ namespace Graphics {
 
 				mData = std::shared_ptr<PointLightData>(sAlloc.New(), [](PointLightData* x) {sAlloc.deallocate(x);});
 				Graphics::Architecture::LightPass::AddPointLight(std::reinterpret_pointer_cast<PointLightData>(mData));
+				mData->mPosition = parent.lock()->GetPosition();
 			}
 			
 			// ------------------------------------------------------------------------

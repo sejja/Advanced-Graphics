@@ -297,7 +297,8 @@ namespace Core {
 			RenderGUI();
 			
 			RenderShadowMaps();
-			Skybox::sCurrentSky->UploadSkyboxCubeMap();
+			if(Skybox::sCurrentSky)
+				Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
 			mGeometryDeform.DecalPass(*mGBuffer);
@@ -324,7 +325,8 @@ namespace Core {
 			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
 			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 
-			Skybox::sCurrentSky->Render(cam, *this);
+			if (Skybox::sCurrentSky)
+				Skybox::sCurrentSky->Render(cam, *this);
 
 			RenderParticlesSystems();
 

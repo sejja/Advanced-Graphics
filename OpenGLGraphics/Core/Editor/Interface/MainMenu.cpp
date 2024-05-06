@@ -90,7 +90,7 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
 #if _DEBUG
             //Hacer algo
 #else
-            system(AsssetLoader.exe);
+            system("AsssetLoader.exe");
 #endif
             ImGui::CloseCurrentPopup();
         }

@@ -30,6 +30,8 @@ namespace Graphics {
 			void Render(Core::Graphics::ShaderProgram& prog) const;
 			DONTDISCARD Core::Assets::AssetReference<Core::Graphics::Texture> inline GetDiffuse() const noexcept;
 			DONTDISCARD Core::Assets::AssetReference<Core::Graphics::Texture> inline GetNormal() const noexcept;
+			void inline SetDiffuse(const Core::Assets::Asset<Core::Graphics::Texture>& tex);
+			void inline SetNormal(const Core::Assets::Asset<Core::Graphics::Texture>& tex);
 		#pragma endregion
 
 		#pragma region //Members
@@ -55,6 +57,24 @@ namespace Graphics {
 		*/ //----------------------------------------------------------------------
 		Core::Assets::AssetReference<Core::Graphics::Texture> Decal::GetNormal() const noexcept {
 			return mNormal;
+		}
+		
+		// ------------------------------------------------------------------------
+		/*! Set Diffuse
+		*
+		* Sets the Diffuse Texture of the Decal
+		*/ //----------------------------------------------------------------------
+		void Decal::SetDiffuse(const Core::Assets::Asset<Core::Graphics::Texture>& tex) {
+			mDiffuse = tex;
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Set Normal
+		*
+		* Sets the Normal Texture of the Decal
+		*/ //----------------------------------------------------------------------
+		void Decal::SetNormal(const Core::Assets::Asset<Core::Graphics::Texture>& tex) {
+			mNormal = tex;
 		}
 	}
 }

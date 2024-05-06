@@ -25,6 +25,7 @@ namespace Graphics {
 				mData = std::shared_ptr<SpotLightData>(sAlloc.New(), [](SpotLightData* x) {sAlloc.deallocate(x); });
 				Graphics::Architecture::LightPass::AddSpotLight(std::reinterpret_pointer_cast<SpotLightData>(mData));
 				std::reinterpret_pointer_cast<SpotLightData>(mData)->GenerateShadowMap();
+				mData->mPosition = parent.lock()->GetPosition();
 			}
 
 			// ------------------------------------------------------------------------
