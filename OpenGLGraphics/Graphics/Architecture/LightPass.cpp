@@ -84,22 +84,19 @@ namespace Graphics {
 				shadowTransforms.push_back(shadowProj* glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 1), glm::vec3(0, -1, 0)));
 				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, -1), glm::vec3(0, -1, 0)));
 
-				
+				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.0f, 0.1f, 1000.f);
+
 				//Configurar shader
 				auto shader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
 
-				/*for (int i = 0; i < 6; i++) {
-					shader->set
-				}*/
-
 				shader->Bind();
-				//shader->SetShaderUniform("uLight", &shadowTransforms[0]);
-				shader->SetShaderUniform("lightPos", &lightData->mPosition);
-				shader->SetShaderUniform("far_plane", far);
+				
+				shader->SetShaderUniform("uView", &shadowTransforms[0]);
+				shader->SetShaderUniform("uProj", &lightProjection);
 
 				lightData->depthMapFBO.Bind();
 				lightData->depthMapFBO.Clear(true);
-				rend_func(shader); //Renderizar
+				rend_func(shader);
 				lightData->depthMapFBO.Unbind();
 			}
 		}
