@@ -22,13 +22,11 @@ namespace Core {
 			using ::Graphics::Primitives::Model;
 			using ::Core::Memory::PageAllocator;
 
-			const PageAllocator<TResource<Model>> resalloc;
-			const PageAllocator<Model> modealloc;
+			static PageAllocator<TResource<Model>> resalloc;
+			static PageAllocator<Model> modealloc;
 
 			Asset<Model> rawResource(resalloc.New(1, 
-				modealloc.New(1, std::string(filename))), [resalloc, modealloc](TResource<Model>* const p) {
-					const PageAllocator<TResource<Model>> resalloc;
-					const PageAllocator<Model> modealloc;
+				modealloc.New(1, std::string(filename))), [](TResource<Model>* const p) {
 					modealloc.terminate(p->Get());
 					resalloc.deallocate(p);
 				});

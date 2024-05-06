@@ -82,7 +82,7 @@ namespace Core {
 					}
 					else if (components[j]["type"] == "Point Light") { //Qué hago con inner, outter y fallOff?
 						printf("\tCreating light\n");
-						std::shared_ptr<::Graphics::Primitives::PointLight> light = std::make_shared<::Graphics::Primitives::PointLight>(obj);
+						std::shared_ptr<::Graphics::Primitives::Lights::PointLight> light = std::make_shared<::Graphics::Primitives::Lights::PointLight>(obj);
 						light->SetColor(glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]));
 						//light->mData->mShadowCaster = components[j]["shadowCaster"];
 						/*((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mRadius = components[j]["radius"];
@@ -93,7 +93,7 @@ namespace Core {
 						obj->AddComponent(std::move(light));
 					}
 					else if (components[j]["type"] == "Spot Light") { //Fallof??
-						std::shared_ptr<::Graphics::Primitives::SpotLight> light = std::make_shared<::Graphics::Primitives::SpotLight>(obj);
+						std::shared_ptr<::Graphics::Primitives::Lights::SpotLight> light = std::make_shared<::Graphics::Primitives::Lights::SpotLight>(obj);
 						light->SetColor(glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]));
 						//light->mData->mShadowCaster = components[j]["shadowCaster"];
 						light->SetDirection(glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]));
@@ -199,10 +199,10 @@ namespace Core {
 					component["direction"][1] = light->GetDirection().y;
 					component["direction"][2] = light->GetDirection().z;
 				}
-				else if (typeid(*comp) == typeid(::Graphics::Primitives::PointLight)) {
+				else if (typeid(*comp) == typeid(::Graphics::Primitives::Lights::PointLight)) {
 					printf("Se hizo la luz\n");
 					component["type"] = "Point Light";
-					std::shared_ptr<::Graphics::Primitives::PointLight> light = std::static_pointer_cast<::Graphics::Primitives::PointLight>(comp);
+					std::shared_ptr<::Graphics::Primitives::Lights::PointLight> light = std::static_pointer_cast<::Graphics::Primitives::Lights::PointLight>(comp);
 					component["color"][0] = light->GetColor().r;
 					component["color"][1] = light->GetColor().g;
 					component["color"][2] = light->GetColor().b;
@@ -213,10 +213,10 @@ namespace Core {
 					//component["innerAngle"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mInner;
 					//component["outterAngle"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mOutter;
 				}
-				else if (typeid(*comp) == typeid(::Graphics::Primitives::SpotLight)) {
+				else if (typeid(*comp) == typeid(::Graphics::Primitives::Lights::SpotLight)) {
 					printf("Se hizo la luz\n");
 					component["type"] = "Spot Light";
-					std::shared_ptr<::Graphics::Primitives::SpotLight> light = std::static_pointer_cast<::Graphics::Primitives::SpotLight>(comp);
+					std::shared_ptr<::Graphics::Primitives::Lights::SpotLight> light = std::static_pointer_cast<::Graphics::Primitives::Lights::SpotLight>(comp);
 					component["color"][0] = light->GetColor().r;
 					component["color"][1] = light->GetColor().g;
 					component["shadowCaster"] = light->GetShadowCasting();

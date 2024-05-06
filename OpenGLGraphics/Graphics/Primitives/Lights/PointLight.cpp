@@ -8,21 +8,32 @@
 
 #include "PointLight.h"
 #include "Graphics/Architecture/LightPass.h"
+#include "Core/Memory/PageAllocator.h"
 
 namespace Graphics {
 	namespace Primitives {
-		// ------------------------------------------------------------------------
-		/*! Default Constructor
-		*
-		*  Constructor for the PointLight class
-		*/ //----------------------------------------------------------------------
-		PointLight::PointLight(const std::weak_ptr<Core::Object>& parent)
-			: Light(parent) {
-				mData = std::make_shared<PointLightData>();
+		namespace Lights {
+			// ------------------------------------------------------------------------
+			/*! Default Constructor
+			*
+			*  Constructor for the PointLight class
+			*/ //----------------------------------------------------------------------
+			PointLight::PointLight(const std::weak_ptr<Core::Object>& parent)
+				: Light(parent) {
+				static Core::Memory::PageAllocator<PointLightData> sAlloc;
+
+				mData = std::shared_ptr<PointLightData>(sAlloc.New(), [](PointLightData* x) {sAlloc.deallocate(x);});
 				Graphics::Architecture::LightPass::AddPointLight(std::reinterpret_pointer_cast<PointLightData>(mData));
-		}
-		PointLight::~PointLight() {
-			Graphics::Architecture::LightPass::RemovePointLight(std::reinterpret_pointer_cast<PointLightData>(mData));
+			}
+			
+			// ------------------------------------------------------------------------
+			/*! Destructor
+			*
+			*  Remvoes the class from Point Light from the Light Pass
+			*/ //----------------------------------------------------------------------
+			PointLight::~PointLight() {
+				Graphics::Architecture::LightPass::RemovePointLight(std::reinterpret_pointer_cast<PointLightData>(mData));
+			}
 		}
 	}
 }

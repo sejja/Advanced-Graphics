@@ -45,7 +45,6 @@ namespace Graphics {
 
 				#pragma region //Members
 					GLuint mLightBuffer, mLightMaps;
-					glm::mat4 mPrevCamView;
 					std::array<float, 4> mCascadedLevels;
 					std::array<glm::mat4, 5> mLightMatrices;
 					Core::Assets::Asset<Core::Graphics::ShaderProgram> mShader;

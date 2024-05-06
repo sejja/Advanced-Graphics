@@ -38,11 +38,11 @@ namespace Graphics {
 			void RenderShadowMaps(const glm::u16vec2 dim, const glm::mat4& camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) const;
 			void RenderLights(const glm::u16vec2 dim, const GBuffer& gBuffer, const SSAO::SSAOBuffer& ssao) const;
 			void StencilPass(const glm::vec3& pos, const float sphere) const;
-			static void inline AddPointLight(const std::shared_ptr<Graphics::Primitives::PointLight::PointLightData>& data);
-			static void inline AddSpotLight(const std::shared_ptr<Graphics::Primitives::SpotLight::SpotLightData>& data);
+			static void inline AddPointLight(const std::shared_ptr<Graphics::Primitives::Lights::PointLight::PointLightData>& data);
+			static void inline AddSpotLight(const std::shared_ptr<Graphics::Primitives::Lights::SpotLight::SpotLightData>& data);
 			static void inline AddDirectionalLight( const std::shared_ptr<Graphics::Primitives::Lights::DirectionalLight::DirectionalLightData>& data);
-			static void inline RemovePointLight(const std::shared_ptr<Graphics::Primitives::PointLight::PointLightData>& data);
-			static void inline RemoveSpotLight(const std::shared_ptr<Graphics::Primitives::SpotLight::SpotLightData>& data);
+			static void inline RemovePointLight(const std::shared_ptr<Graphics::Primitives::Lights::PointLight::PointLightData>& data);
+			static void inline RemoveSpotLight(const std::shared_ptr<Graphics::Primitives::Lights::SpotLight::SpotLightData>& data);
 			static void inline RemoveDirectionalLight(const std::shared_ptr<Graphics::Primitives::Lights::DirectionalLight::DirectionalLightData>& data);
 			void Clear();
 		#pragma endregion
@@ -56,8 +56,8 @@ namespace Graphics {
 			Core::Assets::Asset<Core::Graphics::ShaderProgram> mSpotShader;
 			Core::Assets::Asset<Core::Graphics::ShaderProgram> mShadowShader;
 			static lightmap< Graphics::Primitives::Lights::DirectionalLight::DirectionalLightData> sDirectionalLightData;
-			static lightmap< Graphics::Primitives::SpotLight::SpotLightData> sSpotLightData;
-			static lightmap< Graphics::Primitives::PointLight::PointLightData> sPointLightData;
+			static lightmap< Graphics::Primitives::Lights::SpotLight::SpotLightData> sSpotLightData;
+			static lightmap< Graphics::Primitives::Lights::PointLight::PointLightData> sPointLightData;
 		#pragma endregion
 		};
 
@@ -66,7 +66,7 @@ namespace Graphics {
 		*
 		*   Adds a Point light data to the light pass pipeline
 		*/ //----------------------------------------------------------------------
-		void LightPass::AddPointLight(const std::shared_ptr<Graphics::Primitives::PointLight::PointLightData>& data) {
+		void LightPass::AddPointLight(const std::shared_ptr<Graphics::Primitives::Lights::PointLight::PointLightData>& data) {
 			sPointLightData.insert(data);
 		}
 
@@ -75,7 +75,7 @@ namespace Graphics {
 		*
 		*   Adds a Spot light data to the light pass pipeline
 		*/ //----------------------------------------------------------------------
-		void LightPass::AddSpotLight(const std::shared_ptr<Graphics::Primitives::SpotLight::SpotLightData>& data) {
+		void LightPass::AddSpotLight(const std::shared_ptr<Graphics::Primitives::Lights::SpotLight::SpotLightData>& data) {
 			sSpotLightData.insert(data);
 		}
 
@@ -93,7 +93,7 @@ namespace Graphics {
 		*
 		*   Remove Point light data from the light pass pipeline referenced by index
 		*/ //----------------------------------------------------------------------
-		void LightPass::RemovePointLight(const std::shared_ptr<Graphics::Primitives::PointLight::PointLightData>& data) {
+		void LightPass::RemovePointLight(const std::shared_ptr<Graphics::Primitives::Lights::PointLight::PointLightData>& data) {
 			sPointLightData.erase(data);
 		}
 
@@ -102,7 +102,7 @@ namespace Graphics {
 		*
 		*   Remove Spot light data from the light pass pipeline referenced by index
 		*/ //----------------------------------------------------------------------
-		void LightPass::RemoveSpotLight(const std::shared_ptr<Graphics::Primitives::SpotLight::SpotLightData>& data) {
+		void LightPass::RemoveSpotLight(const std::shared_ptr<Graphics::Primitives::Lights::SpotLight::SpotLightData>& data) {
 			sSpotLightData.erase(data);
 		}
 

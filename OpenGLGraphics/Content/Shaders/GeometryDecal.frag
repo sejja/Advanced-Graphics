@@ -1,7 +1,7 @@
 #version 460 core
 
-layout (location = 0) out vec3 gNormal;
-layout (location = 1) out vec3 gAlbedoSpec;
+layout (location = 1) out vec3 gNormal;
+layout (location = 2) out vec3 gAlbedoSpec;
 
 layout(location = 0) uniform mat4 g_world;
 

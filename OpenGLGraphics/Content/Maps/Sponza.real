@@ -1,0 +1,192 @@
+{
+    "objects": [
+        {
+            "_id": "Palace",
+            "components": [
+                {
+                    "model": "Content/Scenes/Sponza/Sponza.gltf",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                }
+            ],
+            "name": "Palace",
+            "position": [
+                0.0,
+                -10.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224
+            ]
+        },
+        {
+            "_id": "Point Light #1",
+            "components": [
+                {
+                    "model": "Content/Meshes/sphere_20_averaged.obj",
+                    "shader": "Content/Shaders/White.shader",
+                    "type": "Model Renderer"
+                },
+                {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "fallOf": 1.0,
+                    "radius": 21.739999771118164,
+                    "type": "Point Light"
+                }
+            ],
+            "name": "Point Light #1",
+            "position": [
+                -76.09949493408203,
+                -3.727081775665283,
+                4.206696033477783
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "Dragon",
+            "components": [
+                {
+                    "model": "Content/Meshes/Dragon/scene.gltf",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                }
+            ],
+            "name": "Dragon",
+            "position": [
+                0.0,
+                -10.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                0.4000000059604645,
+                0.4000000059604645,
+                0.4000000059604645
+            ]
+        },
+        {
+            "_id": "2",
+            "components": [
+                {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "direction": [
+                        0.3400000035762787,
+                        0.8700000047683716,
+                        0.3400000035762787
+                    ],
+                    "type": "Directional Light"
+                }
+            ],
+            "name": "Prueba2",
+            "position": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "",
+            "components": [
+                {
+                    "path": "adfadfasfa",
+                    "type": "Skybox"
+                }
+            ],
+            "name": "Sky_bg",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "_id": "New Object",
+            "components": [
+                {
+                    "model": "Content/Meshes/cube_face.obj",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                },
+                {
+                    "color": [
+                        0.8817734122276306,
+                        0.06515568494796753
+                    ],
+                    "direction": [
+                        -1,
+                        0,
+                        0
+                    ],
+                    "innerAngle": 0.0,
+                    "outterAngle": 0.1,
+                    "shadowCaster": true,
+                    "type": "Spot Light"
+                }
+            ],
+            "name": "Light #2",
+            "position": [
+                -82.08988952636719,
+                -3.5684866905212402,
+                22.749046325683594
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        }
+    ]
+}
