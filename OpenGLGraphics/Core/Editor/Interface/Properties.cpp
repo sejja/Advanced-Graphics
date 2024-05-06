@@ -148,8 +148,8 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
 			//Comprobamos si se ha soltado el ratón
 			if (!ImGui::IsMouseDown(0)) {
 				std::cout << "Movimiento acabado" << std::endl;
-				Singleton<Editor>::Instance().setEditing(false);
-				auto lightAction = std::make_shared<LightAction>(lightComp);
+                Singleton<Editor>::Instance().setEditing(false);
+                auto lightAction = std::make_shared<LightAction>(lightComp);
 				Singleton<Editor>::Instance().GetActionManager()->AddAction(lightAction);
 			}
 		}
@@ -678,7 +678,7 @@ void Properties::LightTypeOptions(){
             if (ImGui::SliderFloat("##LightRadius", &lightRadius, 0.0f, 100.0f, "%.2f")) {
                 if (!Singleton<Editor>::Instance().getIsEditing()) {
 					std::cout << "Guardando estado" << std::endl;
-					//PrevStates::SetPrevLight(lightComp);
+					PrevStates::SetPrevLight(lightComp);
                 }
                 Singleton<Editor>::Instance().setEditing(true);
             }
@@ -690,7 +690,7 @@ void Properties::LightTypeOptions(){
             if (ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f")) {
                 if (!Singleton<Editor>::Instance().getIsEditing()) {
                     std::cout << "Guardando estado" << std::endl;
-                    //PrevStates::SetPrevLight(lightComp);
+                    PrevStates::SetPrevLight(lightComp);
                 }
                 Singleton<Editor>::Instance().setEditing(true);
             }

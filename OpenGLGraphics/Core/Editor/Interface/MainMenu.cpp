@@ -66,6 +66,7 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
 
 
         RenderRemoteControlMenu();
+        RenderActionButtons();
         ServerStateInfo();
 
         ImGui::EndMainMenuBar();
@@ -120,12 +121,9 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
 }
 
 void MainMenu::RenderRemoteControlMenu() {
-
     if (ImGui::BeginMenu("Remote")) {
-
         Server& server = Singleton<Server>::Instance();
         Client& client = Singleton<Client>::Instance();
-
         if (!server.isRunning() && !client.isConnected()) {
 
             if (ImGui::MenuItem("Host Server", NULL)) {
@@ -133,16 +131,13 @@ void MainMenu::RenderRemoteControlMenu() {
             }
 
             if (ImGui::BeginMenu("Connect to server")) {
-
                 //mandar mensaje de broadcast --> actualiza getServers()
                 if (!client.getIsBroadcastBinded()) {
                     std::thread thread(&Client::findServers, &client, 5555);
                     thread.join();
                 }
-
                 //lista de IPs disponibles en la red
                 std::vector<std::string> servers = client.getServers();
-
 
                 ImGui::BeginChild("child", ImVec2(0, 100), ImGuiChildFlags_Border);
                 for (const std::string server : servers) {
@@ -155,7 +150,6 @@ void MainMenu::RenderRemoteControlMenu() {
                 }
                 ImGui::EndChild();
 
-
                 //Input Manual de IP
                 static char str1[16] = "";
                 ImGui::InputTextWithHint("##IPINPUT", "127.0.0.1", str1, IM_ARRAYSIZE(str1));
@@ -163,18 +157,14 @@ void MainMenu::RenderRemoteControlMenu() {
                 if (ImGui::Button("Connect")) {
                     client.connectToServer("127.0.0.1", 5555);
                 }
-
                 ImGui::EndMenu();
             }
             else {
-
                 if (client.getIsBroadcastBinded()) {
                     printf("Cerrando escucha de servers...\n");
                     client.closeBroadcastSocket();
                 }
-
             }
-
         }
         else if (server.isRunning()) {
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -191,18 +181,13 @@ void MainMenu::RenderRemoteControlMenu() {
             }
             ImGui::PopStyleColor();
         }
-
         ImGui::EndMenu();
     }
-
-
 }
 
-void MainMenu::ServerStateInfo()
-{
+void MainMenu::ServerStateInfo(){
     Server& server = Singleton<Server>::Instance();
     Client& client = Singleton<Client>::Instance();
-
     if (server.isRunning()) {
         ImGui::SameLine(ImGui::GetWindowWidth() - 150);
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(43.0f / 255.0f, 190.0f / 255.0f, 165.0f / 255.0f, 1.0f));
@@ -215,11 +200,21 @@ void MainMenu::ServerStateInfo()
         ImGui::BeginMenu(ICON_FA_SERVER "  Connected to peer");
         ImGui::PopStyleColor();
     }
-
 }
 
+void MainMenu::RenderActionButtons(){
+    if(ImGui::Button(ICON_FA_REPLY"", ImVec2(30, 20))){
+        Singleton<::Editor>::Instance().GetActionManager()->Undo();
+    }
+	ImGui::SameLine();
+	if (ImGui::Button(ICON_FA_SHARE"", ImVec2(30, 20))) {
+        Singleton<::Editor>::Instance().GetActionManager()->Redo();
+	}
+}
+
+
+
 void MainMenu::RenderFileMenu() {
-    
     if (ImGui::BeginMenu("File")) {
         if (ImGui::MenuItem("Save", "CTRL+S", false, previouslySaved)) {
             AppWrapper& app = Singleton<AppWrapper>::Instance();
@@ -229,8 +224,6 @@ void MainMenu::RenderFileMenu() {
             //ImGui::OpenPopup("Save As..");
             savePopup = true;
 		}
-        
         ImGui::EndMenu();
     }
-
 }

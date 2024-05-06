@@ -13,4 +13,12 @@ Core::Assets::AssetReference<::Graphics::Primitives::Model> PrevStates::initMode
 Core::Assets::AssetReference<Core::Graphics::ShaderProgram> PrevStates::initShader;
 
 
-std::shared_ptr<::Graphics::Primitives::Lights::Light> PrevStates::initLight;
+glm::vec3 PrevStates::prevLightPos;
+glm::vec3 PrevStates::prevLightColor;
+float PrevStates::prevLightRadius;
+float PrevStates::prevLightFallOff;
+glm::vec3 PrevStates::prevLightDirection;
+float PrevStates::prevLightOuter;
+float PrevStates::prevLightInner;
+bool PrevStates::prevLightShadowCaster;
+

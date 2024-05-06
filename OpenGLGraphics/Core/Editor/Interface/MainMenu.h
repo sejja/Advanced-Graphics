@@ -16,6 +16,7 @@ private:
 	void RenderFileMenu();
 	void RenderRemoteControlMenu();
 	void ServerStateInfo();
+	void RenderActionButtons();
 
 	bool savePopup = false;
 	bool previouslySaved = false;

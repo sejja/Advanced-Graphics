@@ -17,7 +17,19 @@ public:
 
 private:
     std::shared_ptr<::Graphics::Primitives::Lights::Light> mLight;
-    std::shared_ptr<::Graphics::Primitives::Lights::Light> mLightCp;
+
+	glm::vec3 prevLightPos;
+	glm::vec3 prevLightColor;
+	float prevLightRadius;
+	float prevLightFallOff;
+	glm::vec3 prevLightDirection;
+	float prevLightOuter;
+	float prevLightInner;
+	bool prevLightShadowCaster;
+
+    
+
+
 };
 
 #endif
