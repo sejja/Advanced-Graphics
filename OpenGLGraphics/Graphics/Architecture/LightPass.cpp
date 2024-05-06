@@ -86,17 +86,24 @@ namespace Graphics {
 
 				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.0f, 0.1f, 1000.f);
 
-				//Configurar shader
-				auto shader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
-
-				shader->Bind();
-				
-				shader->SetShaderUniform("uView", &shadowTransforms[0]);
-				shader->SetShaderUniform("uProj", &lightProjection);
+				glBindTexture(GL_TEXTURE_CUBE_MAP, lightData->depthCubemap);
+				//Borrar textura igual
 
 				lightData->depthMapFBO.Bind();
-				lightData->depthMapFBO.Clear(true);
-				rend_func(shader);
+				for (int i = 0; i<6; i++) { 
+					
+					glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
+					auto shader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
+					shader->Bind();
+
+					shader->SetShaderUniform("uView", &shadowTransforms[i]);
+					shader->SetShaderUniform("uProj", &lightProjection);
+
+					lightData->depthMapFBO.Clear(true);
+					rend_func(shader);
+				}
+				
 				lightData->depthMapFBO.Unbind();
 			}
 		}

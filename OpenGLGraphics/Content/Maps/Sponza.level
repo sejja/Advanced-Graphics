@@ -15,14 +15,6 @@ rotation 0 0 0
 scale 0.2 0.2 0.2
 mesh Content/Scenes/Sponza/Sponza.gltf 
 
-
-#scene data
-object Dragon
-translate 0 -10 0
-rotation 0 0 0
-scale 0.4 0.4 0.4
-mesh Content/Meshes/Dragon/scene.gltf
-
 #light data
 light
 translate 50 20 55
