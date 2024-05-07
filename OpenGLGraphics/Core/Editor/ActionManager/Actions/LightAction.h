@@ -27,9 +27,15 @@ private:
 	float prevLightInner;
 	bool prevLightShadowCaster;
 
-    
 
-
+	glm::vec3 curLightPos;
+	glm::vec3 curLightColor;
+	float curLightRadius;
+	float curLightFallOff;
+	glm::vec3 curLightDirection;
+	float curLightOuter;
+	float curLightInner;
+	bool curLightShadowCaster;
 };
 
 #endif

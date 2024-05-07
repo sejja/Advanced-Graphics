@@ -14,6 +14,9 @@ public:
 	void Undo();
 	void Redo();
 
+	bool canUndo() { return currentAction > 0; }
+	bool canRedo() { return currentAction < actions.size() - 1; }
+
 	std::vector <std::shared_ptr<Action>> GetActions() { return actions; }
 	int GetCurrentAction() { return currentAction; }
 

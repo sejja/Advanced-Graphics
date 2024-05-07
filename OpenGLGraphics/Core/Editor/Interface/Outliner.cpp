@@ -33,10 +33,6 @@ std::string Outliner::formatObjName(const std::shared_ptr<Core::Object>& obj) {
 	if (lower.find("light") != std::string::npos) {
 		displayName = ICON_FA_LIGHTBULB " " + displayName;
 	}
-	else if (obj->GetName().find("SKYBOX") != std::string::npos) {
-		displayName = ICON_FA_MOUNTAIN_SUN " " + displayName;
-
-	}
 	else {
 		displayName = ICON_FA_CUBE " " + displayName;
 	}
@@ -70,9 +66,9 @@ void Outliner::RenderOptions()
 
 }
 
+//Tree with list of selectable items in scene
 void Outliner::RenderSceneObjects(){
 	Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
-	//Tree with list of selectable items in scene
 	ImGui::SetNextItemOpen(true, ImGuiCond_Once);
 	const std::vector<std::shared_ptr<Core::Object>>& sceneObjects = scene.GetObjects();
 	if (ImGui::TreeNode(ICON_FA_HOUSE " Main (Editor)")) {
@@ -92,8 +88,6 @@ void Outliner::RenderSceneObjects(){
 			if (searchField != "" && lower.find(searchField) == std::string::npos) {
 				continue;
 			}
-
-
 
 			//Check if object is selected
 			boolean isNodeSelected = obj == selectedObj.GetSelectedObject();
@@ -117,7 +111,6 @@ void Outliner::RenderSceneObjects(){
 					editingName = false;
 				}
 			}
-			
 			if (ImGui::BeginPopupContextItem()) {
 				if (ImGui::MenuItem(ICON_FA_I_CURSOR" Rename")) {
 					selectedObj.SetSelectedObject(obj);
@@ -136,9 +129,6 @@ void Outliner::RenderSceneObjects(){
 				}
 				ImGui::EndPopup();
 			}
-
-
-			
 
 			ImGui::PopID();
 			i++;

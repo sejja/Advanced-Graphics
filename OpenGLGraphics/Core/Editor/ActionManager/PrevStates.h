@@ -41,13 +41,13 @@ public:
 
 	
 	static void SetPrevLight(std::shared_ptr<::Graphics::Primitives::Lights::Light> light) {
-		if (auto pointLight = std::dynamic_pointer_cast<::Graphics::Primitives::PointLight>(light)) {
+		if (auto pointLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::PointLight>(light)) {
 			prevLightPos = pointLight->GetPosition();
 			prevLightColor = pointLight->GetColor();
 			prevLightRadius = pointLight->GetRadius();
 			prevLightFallOff = pointLight->GetFallOff();
 		}
-		else if (auto spotLight = std::dynamic_pointer_cast<::Graphics::Primitives::SpotLight>(light)) {
+		else if (auto spotLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::SpotLight>(light)) {
 			prevLightPos = spotLight->GetPosition();
 			prevLightColor = spotLight->GetColor();
 			prevLightRadius = spotLight->GetRadius();

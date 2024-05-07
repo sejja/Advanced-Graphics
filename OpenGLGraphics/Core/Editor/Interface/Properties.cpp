@@ -144,14 +144,11 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
             LightTypeOptions();
         }
 
-		if (Singleton<Editor>::Instance().getIsEditing()) {
-			//Comprobamos si se ha soltado el ratón
-			if (!ImGui::IsMouseDown(0)) {
-				std::cout << "Movimiento acabado" << std::endl;
-                Singleton<Editor>::Instance().setEditing(false);
-                auto lightAction = std::make_shared<LightAction>(lightComp);
-				Singleton<Editor>::Instance().GetActionManager()->AddAction(lightAction);
-			}
+		if (Singleton<Editor>::Instance().getIsEditing() && !ImGui::IsMouseDown(0)) {
+			std::cout << "Movimiento acabado" << std::endl;
+            Singleton<Editor>::Instance().setEditing(false);
+            auto lightAction = std::make_shared<LightAction>(lightComp);
+			Singleton<Editor>::Instance().GetActionManager()->AddAction(lightAction);
 		}
     }
 
@@ -194,13 +191,17 @@ void TextPaddingWBg(const char* text, ImVec4 bgColor) {
     ImGui::TextColored(ImVec4(1.0f, 1.0f, 1.0f, 1.0f), text);
 }
 
-void TransformRow(const char* title, float& x_val, float& y_val, float& z_val,bool lockable = false, bool* axisLock = nullptr) {
+void TransformRow(const char* title, float& x_val, float& y_val, float& z_val, bool* isUsing = nullptr, bool lockable = false, bool* axisLock = nullptr) {
     static char defaultValue[16] = "0";
     const float f32_zero = -1000.f;
     const float f32_one = 1000.f;
     const float dragJump = 0.5f;
     const float inputSize = 0.12f;
     float remainingWidth = ImGui::GetContentRegionAvail().x;
+
+    if (isUsing!= nullptr) {
+		*isUsing = false;
+	}
 
     if (ImGui::BeginTable(title, 2)) {
         ImGui::TableSetupColumn("Columna 1", ImGuiTableColumnFlags_WidthFixed, 100.0f);
@@ -229,17 +230,23 @@ void TransformRow(const char* title, float& x_val, float& y_val, float& z_val,bo
         
         ImGui::SameLine();
         ImGui::SetNextItemWidth(remainingWidth * inputSize);
-        ImGui::DragScalar("##X", ImGuiDataType_Float, &x_val, dragJump, &f32_zero, &f32_one, "%.2f");
+		if (ImGui::DragScalar("##X", ImGuiDataType_Float, &x_val, dragJump, &f32_zero, &f32_one, "%.2f")) {
+            if (isUsing != nullptr) { *isUsing = true; }    
+		}
         ImGui::SameLine();
         TextPaddingWBg("X", ImVec4(1.0f, 0.5f, 0.5f, 0.7f));
         ImGui::SameLine();
         ImGui::SetNextItemWidth(remainingWidth * inputSize);
-        ImGui::DragScalar("##Y", ImGuiDataType_Float, &y_val, dragJump, &f32_zero, &f32_one, "%.2f");
+        if (ImGui::DragScalar("##Y", ImGuiDataType_Float, &y_val, dragJump, &f32_zero, &f32_one, "%.2f")) {
+            if (isUsing != nullptr) { *isUsing = true; }
+        }
         ImGui::SameLine();
         TextPaddingWBg("Y", ImVec4(0.5f, 1.0f, 0.5f, 0.7f));
         ImGui::SameLine();
         ImGui::SetNextItemWidth(remainingWidth * inputSize);
-        ImGui::DragScalar("##Z", ImGuiDataType_Float, &z_val, dragJump, &f32_zero, &f32_one, "%.2f");
+        if (ImGui::DragScalar("##Z", ImGuiDataType_Float, &z_val, dragJump, &f32_zero, &f32_one, "%.2f")) {
+            if (isUsing != nullptr) { *isUsing = true; }
+        }
         ImGui::SameLine();
         TextPaddingWBg("Z", ImVec4(0.5f, 0.5f, 1.0f, 0.7f));
 
@@ -257,15 +264,11 @@ void TransformRow(const char* title, float& x_val, float& y_val, float& z_val,bo
 }
 
 void colorPickerBtn(static ImVec4& color) {
-
-    ImGuiColorEditFlags misc_flags = ImGuiColorEditFlags_HDR | ImGuiColorEditFlags_AlphaPreview | ImGuiColorEditFlags_NoBorder | ImGuiColorEditFlags_AlphaPreviewHalf;
-
+    ImGuiColorEditFlags misc_flags = ImGuiColorEditFlags_HDR  | ImGuiColorEditFlags_NoBorder ;
     static ImVec4 backup_color;
-
     static bool saved_palette_init = true;
     static ImVec4 saved_palette[32] = {};
-    if (saved_palette_init)
-    {
+    if (saved_palette_init){
         for (int n = 0; n < IM_ARRAYSIZE(saved_palette); n++)
         {
             ImGui::ColorConvertHSVtoRGB(n / 31.0f, 0.8f, 0.8f,
@@ -274,25 +277,36 @@ void colorPickerBtn(static ImVec4& color) {
         }
         saved_palette_init = false;
     }
-
-
     if (ImGui::ColorButton("Light Color ##3c", *(ImVec4*)&color, misc_flags, ImVec2(80, 40))) {
         ImGui::OpenPopup("colorPicker");
         backup_color = color;
     }
-
-
-
     if (ImGui::BeginPopup("colorPicker")) {
         ImGui::Separator();
-        ImGui::ColorPicker4("##picker", (float*)&color, misc_flags | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_AlphaBar | ImGuiColorEditFlags_NoSmallPreview);
+        if(ImGui::ColorPicker4("##picker", (float*)&color, misc_flags | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoSmallPreview)){
+            if (!Singleton<Editor>::Instance().getIsEditing()) {
+                std::cout << "Guardando estado" << std::endl;
+                auto lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(selectedObjIns.GetSelectedComponent());
+                PrevStates::SetPrevLight(lightComp);
+                Singleton<Editor>::Instance().setEditing(true);
+            }
+        }
+        else {
+            bool isClicked = Singleton<Core::Input::InputManager>::Instance().IsKeyDown(VK_LBUTTON);
+            if (Singleton<Editor>::Instance().getIsEditing() && !isClicked) {
+                Singleton<Editor>::Instance().setEditing(false);
+                std::cout << "Movimiento acabado" << std::endl;
+                auto lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(selectedObjIns.GetSelectedComponent());
+				auto lightAction = std::make_shared<LightAction>(lightComp);
+				Singleton<Editor>::Instance().GetActionManager()->AddAction(lightAction);
+            }
+        }
         ImGui::SameLine();
-
         ImGui::BeginGroup(); // Lock X position
         ImGui::Text("Current");
-        ImGui::ColorButton("##current", color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40));
+        ImGui::ColorButton("##current", color, ImGuiColorEditFlags_NoPicker , ImVec2(60, 40));
         ImGui::Text("Previous");
-        if (ImGui::ColorButton("##previous", backup_color, ImGuiColorEditFlags_NoPicker | ImGuiColorEditFlags_AlphaPreviewHalf, ImVec2(60, 40)))
+        if (ImGui::ColorButton("##previous", backup_color, ImGuiColorEditFlags_NoPicker , ImVec2(60, 40)))
             color = backup_color;
         ImGui::Separator();
         ImGui::Text("Palette");
@@ -306,8 +320,6 @@ void colorPickerBtn(static ImVec4& color) {
             if (ImGui::ColorButton("##palette", saved_palette[n], palette_button_flags, ImVec2(20, 20)))
                 color = ImVec4(saved_palette[n].x, saved_palette[n].y, saved_palette[n].z, color.w); // Preserve alpha!
 
-            // Allow user to drop colors into each palette entry. Note that ColorButton() is already a
-            // drag source by default, unless specifying the ImGuiColorEditFlags_NoDragDrop flag.
             if (ImGui::BeginDragDropTarget())
             {
                 if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload(IMGUI_PAYLOAD_TYPE_COLOR_3F))
@@ -316,13 +328,11 @@ void colorPickerBtn(static ImVec4& color) {
                     memcpy((float*)&saved_palette[n], payload->Data, sizeof(float) * 4);
                 ImGui::EndDragDropTarget();
             }
-
             ImGui::PopID();
         }
         ImGui::EndGroup();
         ImGui::EndPopup();
     }
-
 }
 
 void CreateSliderRow(const char* rowName, float& sliderValue, float minValue, float maxValue) {
@@ -381,18 +391,8 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
 
             }
 
-            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Spot Light")) {
-                std::shared_ptr<::Graphics::Primitives::Lights::SpotLight> light;
-                light = std::move(std::make_shared<::Graphics::Primitives::Lights::SpotLight>(obj));
-                light->SetDirection(glm::vec3(0.3400000035762787,
-                    0.8700000047683716,
-                    0.3400000035762787));
-
-                light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
-                obj->AddComponent(std::move(light));
-            }
 			if (ImGui::Selectable(ICON_FA_LIGHTBULB " Spot Light")) {
-                std::shared_ptr<::Graphics::Primitives::SpotLight> light = std::make_shared<::Graphics::Primitives::SpotLight>(obj);
+                std::shared_ptr<::Graphics::Primitives::Lights::SpotLight> light = std::make_shared<::Graphics::Primitives::Lights::SpotLight>(obj);
 				light->SetRadius(1.0f);
 				light->SetFallOff(0.5f);
 				light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
@@ -404,19 +404,12 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
 				light->SetPosition(relativePos, obj->GetPosition());
 				obj->AddComponent(std::move(light));
 			}
-            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Directional Light")) {
-                std::shared_ptr<::Graphics::Primitives::Lights::DirectionalLight> light = std::make_shared<::Graphics::Primitives::Lights::DirectionalLight>(obj);
-				light->SetDirection(glm::vec3(0.0f, 0.0f, 0.0f));
-				light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
-				obj->AddComponent(std::move(light));
-            }
+
 
             if (ImGui::Selectable(ICON_FA_SUN " Directional Light")) {
                 std::shared_ptr<::Graphics::Primitives::Lights::DirectionalLight> light;
                 light = std::move(std::make_shared<::Graphics::Primitives::Lights::DirectionalLight>(obj));
-				light->SetDirection(glm::vec3(0.3400000035762787,
-                    0.8700000047683716,
-                    0.3400000035762787));
+				light->SetDirection(glm::vec3(0.3400000035762787, 0.8700000047683716, 0.3400000035762787));
 
                 light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
                 obj->AddComponent(std::move(light));
@@ -442,7 +435,7 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
 
         if (ImGui::BeginPopup("delete_comp_modal")) {
 
-            ImGui::SeparatorText("Confirm Delete Object");
+            ImGui::SeparatorText("Confirm Delete Component");
 
             if (ImGui::Selectable(ICON_FA_TRASH_ARROW_UP " Delete")) {
 				obj->RemoveComponent(selectedObjIns.GetSelectedComponent());
@@ -568,12 +561,33 @@ void Properties::TransformOptions() {
     glm::vec3 curScale = obj->GetScale();
     glm::vec3 prevScale = obj->GetScale();
 
-    TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
-    TransformRow("  Rotation", curRot[0], curRot[1], curRot[2]);
-    TransformRow("  Scale", curScale[0], curScale[1], curScale[2],true, axisLockS);
+    bool iu1, iu2, iu3  = false;
+
+    TransformRow("  Location", curPos[0], curPos[1], curPos[2], &iu1);
+    TransformRow("  Rotation", curRot[0], curRot[1], curRot[2], &iu2);
+    TransformRow("  Scale", curScale[0], curScale[1], curScale[2], &iu3,true, axisLockS);
 
     if(*axisLockS){
         applyLockResize(prevScale, curScale);
+    }
+
+    if (iu1||iu2||iu3) {
+        if (!Singleton<Editor>::Instance().getIsEditing()) {
+            std::cout << "Guardando estado OBJETO" << std::endl;
+            Singleton<Editor>::Instance().setEditing(true);
+			PrevStates::SetPrevPos(curPos);
+			PrevStates::SetPrevRot(curRot);
+			PrevStates::SetPrevScale(curScale);
+        }
+    }
+    else {
+        bool isClicked = Singleton<Core::Input::InputManager>::Instance().IsKeyDown(VK_LBUTTON);
+        if (Singleton<Editor>::Instance().getIsEditing() && !isClicked){
+            Singleton<Editor>::Instance().setEditing(false);
+			std::cout << "Movimiento acabado" << std::endl;
+			auto action = std::make_shared<TransformObjectAction>(obj);
+			Singleton<Editor>::Instance().GetActionManager()->AddAction(action);
+        }
     }
 
     obj->SetPosition(curPos);
@@ -581,7 +595,6 @@ void Properties::TransformOptions() {
     obj->SetScale(curScale);
 
 }
-
 
 void Properties::TransformGuizmoTypeSelect() {
 
@@ -615,12 +628,32 @@ void Properties::LightTransform() {
     std::shared_ptr<Core::Object> obj = selectedObjIns.GetSelectedObject();
     std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(selectedObjIns.GetSelectedComponent());
 	glm::vec3 curPos = lightComp->GetPosition();
-	TransformRow("  Location", curPos[0], curPos[1], curPos[2]);
+
+    bool isUsing = false;
+
+	TransformRow("  Location", curPos[0], curPos[1], curPos[2],&isUsing);
 	lightComp->SetPosition(curPos, obj->GetPosition());
+
+	if (isUsing) {
+		if (!Singleton<Editor>::Instance().getIsEditing()) {
+			std::cout << "Guardando estado" << std::endl;
+			PrevStates::SetPrevLight(lightComp);
+			Singleton<Editor>::Instance().setEditing(true);
+		}
+	}
+	else {
+		bool isClicked = Singleton<Core::Input::InputManager>::Instance().IsKeyDown(VK_LBUTTON);
+		if (Singleton<Editor>::Instance().getIsEditing() && !isClicked) {
+			Singleton<Editor>::Instance().setEditing(false);
+			std::cout << "Movimiento acabado" << std::endl;
+			auto lightAction = std::make_shared<LightAction>(lightComp);
+			Singleton<Editor>::Instance().GetActionManager()->AddAction(lightAction);
+		}
+	}
+
 }
 
 void Properties::LightingOptions() {
-
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
     static ImVec2 cell_padding(4.0f, 8.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
@@ -632,42 +665,12 @@ void Properties::LightingOptions() {
 
     if (ImGui::BeginTable("light_table", 2, flags1)) {
 
-        //Light TYPE
-        /*
-        const char* lightTypes[] = { "SPOT", "POINT", "CCCC" };
-        static int item_current_idx = 0;
-        const char* initVal = lightTypes[item_current_idx];
-        
-
-        ImGui::TableNextRow();
-        ImGui::TableSetColumnIndex(0);
-        ImGui::Text("Light type");
-        ImGui::TableSetColumnIndex(1);
-
-
-        if (ImGui::BeginCombo("", initVal)) {
-
-            for (int n = 0; n < IM_ARRAYSIZE(lightTypes); n++)
-            {
-                const bool is_selected = (item_current_idx == n);
-                if (ImGui::Selectable(lightTypes[n], is_selected))
-                    item_current_idx = n;
-
-                if (is_selected)
-                    ImGui::SetItemDefaultFocus();
-            }
-            ImGui::EndCombo();
-        }
-
-        */
-
-        //COLOR DE LA LUZ
+        //LIGHT COLOR
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Light Color");
         ImGui::TableSetColumnIndex(1);
-        colorPickerBtn(baseColor);
-
+        colorPickerBtn(baseColor); //color picker ahora solo se puede usar para luces !
 
         ImGui::EndTable();
     }
@@ -679,9 +682,18 @@ void Properties::LightingOptions() {
     ImGui::PopStyleVar();
 }
 
+
+void saveLight(std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp) {
+    if (!Singleton<Editor>::Instance().getIsEditing()) {
+        std::cout << "Guardando estado" << std::endl;
+        PrevStates::SetPrevLight(lightComp);
+        Singleton<Editor>::Instance().setEditing(true);
+    }
+}
 void Properties::LightTypeOptions(){
     static ImVec2 cell_padding(4.0f, 8.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
+    bool isUsing = false;
 
     if (ImGui::BeginTable("light_type_table", 2, ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH)) {
 
@@ -693,17 +705,12 @@ void Properties::LightTypeOptions(){
             float lightRadius = pointLight->GetRadius();
             float fallOff = pointLight->GetFallOff();
 
-          
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("Radius");
             ImGui::TableSetColumnIndex(1);
             if (ImGui::SliderFloat("##LightRadius", &lightRadius, 0.0f, 100.0f, "%.2f")) {
-                if (!Singleton<Editor>::Instance().getIsEditing()) {
-					std::cout << "Guardando estado" << std::endl;
-					PrevStates::SetPrevLight(lightComp);
-                }
-                Singleton<Editor>::Instance().setEditing(true);
+                saveLight(lightComp);
             }
 
             ImGui::TableNextRow();
@@ -711,11 +718,7 @@ void Properties::LightTypeOptions(){
             ImGui::Text("FallOff");
             ImGui::TableSetColumnIndex(1);
             if (ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f")) {
-                if (!Singleton<Editor>::Instance().getIsEditing()) {
-                    std::cout << "Guardando estado" << std::endl;
-                    PrevStates::SetPrevLight(lightComp);
-                }
-                Singleton<Editor>::Instance().setEditing(true);
+				saveLight(lightComp);
             }
 
             ImGui::EndTable();
@@ -730,8 +733,8 @@ void Properties::LightTypeOptions(){
             float dirZ = directionalLight->GetDirection().z;
 
             ImGui::EndTable();
-
-            TransformRow("  Direction", dirX, dirY, dirZ);
+            
+            TransformRow("  Direction", dirX, dirY, dirZ,&isUsing);
 
             glm::vec3 normalizedDirection = glm::normalize(glm::vec3(dirX, dirY, dirZ));
             directionalLight->SetDirection(normalizedDirection);
@@ -753,35 +756,42 @@ void Properties::LightTypeOptions(){
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("Shadow Caster");
             ImGui::TableSetColumnIndex(1);
-            ImGui::Checkbox("##ShadowCaster", &shadowCaster);
+            if (ImGui::Checkbox("##ShadowCaster", &shadowCaster)) {
+                saveLight(lightComp);
+
+            }
 
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("Radius");
             ImGui::TableSetColumnIndex(1);
-            ImGui::SliderFloat("##LightRadius", &lightRadius, 0.0f, 100.0f, "%.2f");
+            if (ImGui::SliderFloat("##LightRadius", &lightRadius, 0.0f, 100.0f, "%.2f")) {
+                saveLight(lightComp);
+            }
 
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("Inner");
             ImGui::TableSetColumnIndex(1);
-            ImGui::SliderFloat("##Inner", &inner, 0.0f, 100.0f, "%.2f");
+			if (ImGui::SliderFloat("##Inner", &inner, 0.0f, 100.0f, "%.2f")) {
+				saveLight(lightComp);
+			}
 
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("Outter");
             ImGui::TableSetColumnIndex(1);
-            ImGui::SliderFloat("##Outter", &outer, 0.0f, 100.0f, "%.2f");
+            if (ImGui::SliderFloat("##Outter", &outer, 0.0f, 100.0f, "%.2f")) { saveLight(lightComp); }
 
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
             ImGui::Text("FallOff");
             ImGui::TableSetColumnIndex(1);
-            ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f");
+            if(ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f")) { saveLight(lightComp); }
 
             ImGui::EndTable();
 
-            TransformRow("  Direction", dirX, dirY, dirZ);
+            TransformRow("  Direction", dirX, dirY, dirZ,&isUsing);
             spotLight->SetRadius(lightRadius);
             spotLight->SetInner(inner);
             spotLight->SetOuter(outer);
@@ -789,11 +799,30 @@ void Properties::LightTypeOptions(){
             spotLight->SetDirection(glm::normalize(glm::vec3(dirX, dirY, dirZ)));
             spotLight->SetShadowCaster(shadowCaster);
         }
+
+
+        if (isUsing) {
+            if (!Singleton<Editor>::Instance().getIsEditing()) {
+                std::cout << "Guardando estado" << std::endl;
+                PrevStates::SetPrevLight(lightComp);
+                Singleton<Editor>::Instance().setEditing(true);
+            }
+        }
+        else {
+            bool isClicked = Singleton<Core::Input::InputManager>::Instance().IsKeyDown(VK_LBUTTON);
+            if (Singleton<Editor>::Instance().getIsEditing() && !isClicked) {
+                Singleton<Editor>::Instance().setEditing(false);
+                std::cout << "Movimiento acabado" << std::endl;
+                auto lightAction = std::make_shared<LightAction>(lightComp);
+                Singleton<Editor>::Instance().GetActionManager()->AddAction(lightAction);
+            }
+        }
+
+
     }
     ImGui::PopStyleVar();
 }
 
-static std::string nombreTexturaTemporal = "Textura def";
 
 void Properties::MaterialsOptions() {
     static ImGuiTableFlags flags1 = ImGuiTableFlags_BordersInner | ImGuiTableFlags_BordersH;
@@ -937,7 +966,7 @@ void Properties::ShaderOptions(Core::Graphics::OpenGLPipeline& pipeline){
         ImGui::SameLine();
         ImGui::BeginGroup();
 
-        ImGui::Text(nombreTexturaTemporal.c_str());
+        ImGui::Text("shadername");
 
         ImGui::Button(ICON_FA_ARROW_TURN_UP);
         ImGui::SameLine();
@@ -1084,8 +1113,8 @@ void Properties::DecalOptions() {
         ImGui::SameLine();
         ImGui::BeginGroup();
 
-
-        ImGui::Text(nombreTexturaTemporal.c_str());
+        auto name1 = resmg.GetResourceName<Core::Graphics::Texture>(decal->GetNormal().lock());
+        ImGui::Text(name1->c_str());
 
         ImGui::Button(ICON_FA_ARROW_TURN_UP);
         ImGui::SameLine();
@@ -1102,7 +1131,8 @@ void Properties::DecalOptions() {
         ImGui::BeginGroup();
 
 
-        ImGui::Text(nombreTexturaTemporal.c_str());
+        auto name2 = resmg.GetResourceName<Core::Graphics::Texture>(decal->GetDiffuse().lock());
+        ImGui::Text(name2->c_str());
 
         ImGui::Button(ICON_FA_ARROW_TURN_UP);
         ImGui::SameLine();
@@ -1117,11 +1147,7 @@ void Properties::DecalOptions() {
     if (ImGui::BeginDragDropTarget()) {
         if (const ImGuiPayload* payload = ImGui::AcceptDragDropPayload("other", flags)) {
             AssetIcon* iconPtr = (AssetIcon*)payload->Data;
-            nombreTexturaTemporal = iconPtr->nombre;
-            printf("RUTA: %s\n", iconPtr->ruta);
             auto nuevaTex = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Texture>(iconPtr->ruta)->Get();
-
-
         }
         ImGui::EndDragDropTarget();
     }

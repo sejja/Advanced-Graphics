@@ -797,9 +797,13 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\Maps\dafad.real" />
+    <None Include="Content\Maps\GreatCyberpunk.real" />
+    <None Include="Content\Maps\GreatSponza.real" />
+    <None Include="Content\Maps\Japan.real" />
     <None Include="Content\Maps\Minecraft.level" />
     <None Include="Content\Maps\Japan.level" />
     <None Include="Content\Maps\Cyberpunk.level" />
+    <None Include="Content\Maps\Minecraft.real" />
     <None Include="Content\Maps\mi_dragoncito.real" />
     <None Include="Content\Maps\patata.real" />
     <None Include="Content\Maps\Scene2.real" />

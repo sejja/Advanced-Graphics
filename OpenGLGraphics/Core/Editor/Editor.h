@@ -51,6 +51,7 @@ public:
 
 	ActionManager* GetActionManager() { return &actionManager; }
 
+
 	bool getIsEditing() { return editComplete; }
 	void setEditing(bool value) { editComplete = value; }
     

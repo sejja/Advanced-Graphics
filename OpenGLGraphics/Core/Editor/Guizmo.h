@@ -11,6 +11,7 @@
 class Guizmo {
 public:
 	void Render(Core::Primitives::Camera* cam);
+
 private:
 	void Draw();
 
