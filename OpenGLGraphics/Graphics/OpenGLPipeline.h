@@ -88,7 +88,7 @@ namespace Core {
 
 			// CubemapReflections
 			glm::vec3 cubeMapDirections[6];
-			bool firstTime = true;
+			int firstTime = 10;
 
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 
