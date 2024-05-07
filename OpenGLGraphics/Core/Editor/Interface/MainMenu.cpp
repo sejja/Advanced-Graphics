@@ -103,10 +103,9 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
             savePopup = false;
             previouslySaved = true;
 #if _DEBUG
-            system("dir");
-            system("..\\x64\\Debug\\AssetLoader.exe");
+            //Hacer algo
 #else
-            system(AsssetLoader.exe);
+            system("AsssetLoader.exe");
 #endif
             ImGui::CloseCurrentPopup();
         }

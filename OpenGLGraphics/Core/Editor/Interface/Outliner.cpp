@@ -146,7 +146,7 @@ void Outliner::RenderSceneObjects(){
 		ImGui::TreePop();
 	}
 	ImGui::Spacing();
-	std::string itemNum = std::to_string(sceneObjects.size()-2) + " items in scene";
+	std::string itemNum = std::to_string(sceneObjects.size()) + " items in scene";
 	ImGui::Text(itemNum.c_str());
 	ImGui::Spacing(); 
 }

@@ -14,8 +14,8 @@
 namespace Graphics {
 	namespace Architecture {
 		LightPass::lightmap< Graphics::Primitives::Lights::DirectionalLight::DirectionalLightData> LightPass::sDirectionalLightData;
-		LightPass::lightmap < Graphics::Primitives::SpotLight::SpotLightData> LightPass::sSpotLightData;
-		LightPass::lightmap < Graphics::Primitives::PointLight::PointLightData> LightPass::sPointLightData;
+		LightPass::lightmap < Graphics::Primitives::Lights::SpotLight::SpotLightData> LightPass::sSpotLightData;
+		LightPass::lightmap < Graphics::Primitives::Lights::PointLight::PointLightData> LightPass::sPointLightData;
 
 		// ------------------------------------------------------------------------
 		/*! Constructor

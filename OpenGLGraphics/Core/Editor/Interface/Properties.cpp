@@ -369,13 +369,26 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
             }
 
             if (ImGui::Selectable(ICON_FA_LIGHTBULB " Point Light")) {
-                std::shared_ptr<::Graphics::Primitives::PointLight> light;
-                light = std::move(std::make_shared<::Graphics::Primitives::PointLight>(obj));
+                std::shared_ptr<::Graphics::Primitives::Lights::PointLight> light;
+                light = std::move(std::make_shared<::Graphics::Primitives::Lights::PointLight>(obj));
                 light->SetRadius(1.0f);
                 light->SetFallOff(0.5f);
                 light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));   
                 glm::vec3 relativePos = glm::vec3(0.0f, 0.0f, 0.0f);
 				light->SetPosition(relativePos, obj->GetPosition());
+
+                obj->AddComponent(std::move(light));
+
+            }
+
+            if (ImGui::Selectable(ICON_FA_LIGHTBULB " Spot Light")) {
+                std::shared_ptr<::Graphics::Primitives::Lights::SpotLight> light;
+                light = std::move(std::make_shared<::Graphics::Primitives::Lights::SpotLight>(obj));
+                light->SetDirection(glm::vec3(0.3400000035762787,
+                    0.8700000047683716,
+                    0.3400000035762787));
+
+                light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
                 obj->AddComponent(std::move(light));
             }
 			if (ImGui::Selectable(ICON_FA_LIGHTBULB " Spot Light")) {
@@ -398,7 +411,17 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
 				obj->AddComponent(std::move(light));
             }
 
+            if (ImGui::Selectable(ICON_FA_SUN " Directional Light")) {
+                std::shared_ptr<::Graphics::Primitives::Lights::DirectionalLight> light;
+                light = std::move(std::make_shared<::Graphics::Primitives::Lights::DirectionalLight>(obj));
+				light->SetDirection(glm::vec3(0.3400000035762787,
+                    0.8700000047683716,
+                    0.3400000035762787));
 
+                light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
+                obj->AddComponent(std::move(light));
+
+            }
 
             if (ImGui::Selectable(ICON_FA_NOTE_STICKY " Decal")) {
                 obj->AddComponent(std::move(std::make_shared<Graphics::Primitives::Decal>(obj)));
@@ -665,7 +688,7 @@ void Properties::LightTypeOptions(){
         // OPCIONES ESPECIFICAS DE CADA TIPO DE LUZ
         std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(selectedObjIns.GetSelectedComponent());
 
-        if (auto pointLight = std::dynamic_pointer_cast<::Graphics::Primitives::PointLight>(lightComp)) {
+        if (auto pointLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::PointLight>(lightComp)) {
 
             float lightRadius = pointLight->GetRadius();
             float fallOff = pointLight->GetFallOff();
@@ -715,7 +738,7 @@ void Properties::LightTypeOptions(){
 
         }
         else {
-            auto spotLight = std::dynamic_pointer_cast<::Graphics::Primitives::SpotLight>(lightComp);
+            auto spotLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::SpotLight>(lightComp);
 
             bool shadowCaster = spotLight->GetShadowCasting();
             float lightRadius = spotLight->GetRadius();

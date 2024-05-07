@@ -34,7 +34,7 @@ namespace Core
 				{
 					std::shared_ptr<Core::Particles::ParticleSystem> system = std::dynamic_pointer_cast<Core::Particles::ParticleSystem>(component);
 					system.get()->SetCameraReference(camera);
-					system->Render();
+					//system->Render();
 				}
 			);
 		}

@@ -296,25 +296,27 @@ namespace Core {
 			RenderGUI();
 			
 			RenderShadowMaps();
-			Skybox::sCurrentSky->UploadSkyboxCubeMap();
+			if(Skybox::sCurrentSky)
+				Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
 			GeometryPass();
-			mSSAOBuffer->RenderAO(*mGBuffer);
 			mGeometryDeform.DecalPass(*mGBuffer);
 
 			auto x = Singleton<::Editor>::Instance().GetSelectedObj().GetSelectedComponent();
-			
+
 			if (RTTI::IsA<::Graphics::Primitives::Decal>(x.get())) {
 				mDebug->DrawAABB(x.get()->GetParent().lock()->GetPosition(),
 					x.get()->GetParent().lock()->GetScale(), glm::vec4(1, 0.6, 0.2, 1), cam);
 			}
+
+			mSSAOBuffer->RenderAO(*mGBuffer);
 
 			//Bind and Clean
 			if (AntiAliasing) {mSamplingBuffer->Bind();mSamplingBuffer->Clear();}
 			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
 			//glEnable(GL_DEPTH_TEST);
 
-			//RenderParticlesSystems();
+			RenderParticlesSystems();
 
 			BloomPass(mHDRBuffer->GetHandle());
 			mLightPass->RenderLights({1600, 900}, *mGBuffer, *mSSAOBuffer);
@@ -322,7 +324,8 @@ namespace Core {
 			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
 			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 
-			Skybox::sCurrentSky->Render(cam, *this);
+			if (Skybox::sCurrentSky)
+				Skybox::sCurrentSky->Render(cam, *this);
 
 			RenderParticlesSystems();
 

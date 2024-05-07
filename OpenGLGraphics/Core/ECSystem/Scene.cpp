@@ -38,7 +38,7 @@ namespace Core {
 	void Scene::CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
 		//mParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
-
+		
 		bool hasSkybox = false;
 
 		std::ifstream f(file.data());
@@ -52,7 +52,7 @@ namespace Core {
 				obj->SetName(objects[i]["name"]);
 				obj->SetID(objects[i]["_id"]);
 				obj->SetPosition(glm::vec3(objects[i]["position"][0], objects[i]["position"][1], objects[i]["position"][2]));
-				obj->SetRotation(glm::vec3(objects[i]["rotation"][0], objects[i]["rotation"][1], objects[i]["rotation"][1]));
+				obj->SetRotation(glm::vec3(objects[i]["rotation"][0], objects[i]["rotation"][1], objects[i]["rotation"][2]));
 				obj->SetScale(glm::vec3(objects[i]["scale"][0], objects[i]["scale"][1], objects[i]["scale"][1]));
 
 				json components = objects[i]["components"];
@@ -82,7 +82,7 @@ namespace Core {
 					}
 					else if (components[j]["type"] == "Point Light") { //Qué hago con inner, outter y fallOff?
 						printf("\tCreating light\n");
-						std::shared_ptr<::Graphics::Primitives::PointLight> light = std::make_shared<::Graphics::Primitives::PointLight>(obj);
+						std::shared_ptr<::Graphics::Primitives::Lights::PointLight> light = std::make_shared<::Graphics::Primitives::Lights::PointLight>(obj);
 						light->SetColor(glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]));
 						//light->mData->mShadowCaster = components[j]["shadowCaster"];
 						/*((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mRadius = components[j]["radius"];
@@ -93,13 +93,13 @@ namespace Core {
 						obj->AddComponent(std::move(light));
 					}
 					else if (components[j]["type"] == "Spot Light") { //Fallof??
-						std::shared_ptr<::Graphics::Primitives::SpotLight> light = std::make_shared<::Graphics::Primitives::SpotLight>(obj);
+						std::shared_ptr<::Graphics::Primitives::Lights::SpotLight> light = std::make_shared<::Graphics::Primitives::Lights::SpotLight>(obj);
 						light->SetColor(glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]));
 						//light->mData->mShadowCaster = components[j]["shadowCaster"];
 						light->SetDirection(glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]));
 						light->SetInner(components[j]["innerAngle"]);
 						light->SetOuter(components[j]["outterAngle"]);
-						light->SetFallOff(components[j]["fallOf"]);
+						light->SetFallOff(components[j]["fallOff"]);
 						light->SetRadius(components[j]["radius"]);
 						light->SetShadowCaster(components[j]["shadowCaster"]);
 						obj->AddComponent(std::move(light));
@@ -110,7 +110,13 @@ namespace Core {
 						skybox->CreateCubeMap();
 						skybox->LoadCubeMap(components[j]["path"]);
 						obj->AddComponent(std::move(skybox));
-						std::cout << "Cargando escaivox" << std::endl;
+					}
+					else if (components[j]["type"] == "Decal") {
+						hasSkybox = true;
+						std::shared_ptr<::Graphics::Primitives::Decal> decal = std::make_shared<::Graphics::Primitives::Decal>(obj);
+						decal->SetDiffuse(resmg.GetResource<Core::Graphics::Texture>(std::string(components[j]["Diffuse"]).c_str()));
+						decal->SetNormal(resmg.GetResource<Core::Graphics::Texture>(std::string(components[j]["Normal"]).c_str()));
+						obj->AddComponent(std::move(decal));
 					}
 				}
 
@@ -135,11 +141,11 @@ namespace Core {
 
 
 		/*Test data*/
-		/*std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
+		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
 		std::shared_ptr<Core::Particles::FireSystem> testParticleSystem = std::make_shared<Core::Particles::FireSystem>(particleManager);
 		particleManager->AddComponent(std::move(testParticleSystem));
 		mObjects.emplace_back(particleManager);
-		Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);*/
+		Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);
 	}
 
 	// ------------------------------------------------------------------------
@@ -199,10 +205,10 @@ namespace Core {
 					component["direction"][1] = light->GetDirection().y;
 					component["direction"][2] = light->GetDirection().z;
 				}
-				else if (typeid(*comp) == typeid(::Graphics::Primitives::PointLight)) {
+				else if (typeid(*comp) == typeid(::Graphics::Primitives::Lights::PointLight)) {
 					printf("Se hizo la luz\n");
 					component["type"] = "Point Light";
-					std::shared_ptr<::Graphics::Primitives::PointLight> light = std::static_pointer_cast<::Graphics::Primitives::PointLight>(comp);
+					std::shared_ptr<::Graphics::Primitives::Lights::PointLight> light = std::static_pointer_cast<::Graphics::Primitives::Lights::PointLight>(comp);
 					component["color"][0] = light->GetColor().r;
 					component["color"][1] = light->GetColor().g;
 					component["color"][2] = light->GetColor().b;
@@ -213,24 +219,31 @@ namespace Core {
 					//component["innerAngle"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mInner;
 					//component["outterAngle"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mOutter;
 				}
-				else if (typeid(*comp) == typeid(::Graphics::Primitives::SpotLight)) {
+				else if (typeid(*comp) == typeid(::Graphics::Primitives::Lights::SpotLight)) {
 					printf("Se hizo la luz\n");
 					component["type"] = "Spot Light";
-					std::shared_ptr<::Graphics::Primitives::SpotLight> light = std::static_pointer_cast<::Graphics::Primitives::SpotLight>(comp);
+					std::shared_ptr<::Graphics::Primitives::Lights::SpotLight> light = std::static_pointer_cast<::Graphics::Primitives::Lights::SpotLight>(comp);
 					component["color"][0] = light->GetColor().r;
 					component["color"][1] = light->GetColor().g;
+					component["color"][2] = light->GetColor().b;
 					component["shadowCaster"] = light->GetShadowCasting();
 					component["direction"][0] = light->GetDirection().x;
 					component["direction"][1] = light->GetDirection().y;
 					component["direction"][2] = light->GetDirection().z;
 					component["innerAngle"] = light->GetInner();
 					component["outterAngle"] = light->GetOutter();
+					component["fallOff"] = light->GetFallOff();
+					component["radius"] = light->GetRadius();
 				}
 				else if (typeid(*comp) == typeid(Core::Graphics::Skybox)) {
 					component["type"] = "Skybox";
 					component["path"] = std::static_pointer_cast<Core::Graphics::Skybox>(comp)->GetPath();
 				}
-				else if (typeid(*comp) == typeid(Core::Particles::FireSystem)) {
+				else if (typeid(*comp) == typeid(::Graphics::Primitives::Decal)) {
+					component["type"] = "Decal";
+					component["Diffuse"] = *resmg.GetResourceName<Core::Graphics::Texture>(std::static_pointer_cast<::Graphics::Primitives::Decal>(comp)->GetDiffuse().lock());
+					component["Normal"] = *resmg.GetResourceName<Core::Graphics::Texture>(std::static_pointer_cast<::Graphics::Primitives::Decal>(comp)->GetNormal().lock());
+				} else if (typeid(*comp) == typeid(Core::Particles::FireSystem)) {
 					
 				}
 				

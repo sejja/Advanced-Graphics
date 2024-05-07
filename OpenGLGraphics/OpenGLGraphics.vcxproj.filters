@@ -2297,7 +2297,6 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="Content\Shaders\Transform.vert" />
-    <None Include="Content\Maps\Sponza.level" />
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\Shadow.frag" />
     <None Include="Content\Shaders\Shadow.shader" />
@@ -2360,12 +2359,9 @@
     <None Include="Content\Shaders\CascadedShadowMap.vert" />
     <None Include="Content\Shaders\DeferredLighting.frag" />
     <None Include="Content\Shaders\DeferredLighting.shader" />
-    <None Include="Content\Maps\Minecraft.level" />
-    <None Include="Content\Maps\Japan.level" />
     <None Include="Content\Shaders\GeometryDecal.frag" />
     <None Include="Content\Shaders\GeometryDecal.shader" />
     <None Include="Content\Shaders\GeometryDecal.vert" />
-    <None Include="Content\Maps\Cyberpunk.level" />
     <None Include="Content\Shaders\SSAO.frag" />
     <None Include="Content\Shaders\SSAO.shader" />
     <None Include="Content\Shaders\SSAO.vert" />

@@ -65,17 +65,15 @@ namespace Core {
 			using Graphics::Shader;
 			using Core::Memory::PageAllocator;
 
-			const PageAllocator<TResource<Shader>> resalloc;
-			const PageAllocator<Shader> shadalloc;
+			static PageAllocator<TResource<Shader>> resalloc;
+			static PageAllocator<Shader> shadalloc;
 
 			Shader* const _shad = shadalloc.allocate();
 			shadalloc.construct(_shad, filename.data(), type);
 
 			std::shared_ptr<TResource<Shader>> rawResource(resalloc.New(1, _shad), [](TResource<Shader>* const p) {
-				const PageAllocator<TResource<Shader>> resalloc_;
-				const PageAllocator<Shader> shadalloc_;
-				shadalloc_.terminate(p->GetAndRelease());
-				resalloc_.terminate(p);
+				shadalloc.terminate(p->Get());
+				resalloc.terminate(p);
 				});
 
 			return std::move(rawResource);
