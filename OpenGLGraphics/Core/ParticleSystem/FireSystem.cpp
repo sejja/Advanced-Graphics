@@ -44,7 +44,7 @@ namespace Core {
 		{
             glDeleteVertexArrays(1, &VAO);
             glDeleteBuffers(1, &VBO);
-            shaderProgram->Get()->~ShaderProgram();
+            glDeleteShader(shaderProgram->Get()->GetHandle());
 		}
 
         void FireSystem::ChangeFireSize(float radiusA, float radiusB, float radiusC, float gap, float height)

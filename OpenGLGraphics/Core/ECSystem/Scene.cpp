@@ -38,7 +38,7 @@ namespace Core {
 	void Scene::CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
 		//mParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
-
+		
 		bool hasSkybox = false;
 
 		std::ifstream f(file.data());
@@ -141,11 +141,11 @@ namespace Core {
 
 
 		/*Test data*/
-		/*std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
+		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
 		std::shared_ptr<Core::Particles::FireSystem> testParticleSystem = std::make_shared<Core::Particles::FireSystem>(particleManager);
 		particleManager->AddComponent(std::move(testParticleSystem));
 		mObjects.emplace_back(particleManager);
-		Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);*/
+		Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);
 	}
 
 	// ------------------------------------------------------------------------
