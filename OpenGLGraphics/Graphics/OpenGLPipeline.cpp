@@ -305,15 +305,10 @@ namespace Core {
 			
 			RenderShadowMaps(cam.GetViewMatrix());
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
-<<<<<<< HEAD
-			if (firstTime) {
-				RenderReflectionCubemap(glm::vec3(0.0f,0.0f,0.0f));
-				firstTime = false;
-=======
+
 			if (firstTime > 0) {
 				RenderReflectionCubemap(glm::vec3(0.0f,0.0f,0.0f));
 				firstTime--;
->>>>>>> fix
 			}
 			
 			glActiveTexture(GL_TEXTURE11);
@@ -572,7 +567,7 @@ namespace Core {
 				}
 				else {
 					view = glm::lookAt(position, position + cubeMapDirections[i], glm::vec3(0.0f, 1.0f, 0.0f));
-				}
+				}23*
 				glm::mat4 projectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10000.0f);
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionCubemap, 0);
 		        // Render scene with this view matrix
@@ -585,13 +580,8 @@ namespace Core {
 				
 				
 				mLightPass->RenderLights({ 1600, 900}, *mGBuffer, *mSSAOBuffer);
-<<<<<<< HEAD
-				mGBuffer->BlitDepthBuffer(reflectionFramebuffer);
-				Skybox::sCurrentSky->RenderSpecific(view,projectionMatrix, *this);
-=======
 				//mGBuffer->BlitDepthBuffer(reflectionCubemap);
 				//Skybox::sCurrentSky->RenderSpecific(view,projectionMatrix, *this);
->>>>>>> fix
 		        // You may want to read back the rendered data from each face if needed
 				
 				
@@ -605,7 +595,7 @@ namespace Core {
 		}
 
 		glm::mat4 OpenGLPipeline::CorrectRollDirection(bool y, float pitch, float yaw, float roll, const glm::vec3& cameraPosition) {
-			glm::vec3 front;
+			glm::vec/3 front;
 			front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
 			front.y = sin(glm::radians(pitch));
 			front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
