@@ -67,7 +67,7 @@ namespace Graphics {
 				}
 			}
 
-			glViewport(0, 0, 1024, 1024); //Creo
+			
 
 			float near = 1.0f;
 			float far = 25.0f;
@@ -91,12 +91,12 @@ namespace Graphics {
 
 				lightData->depthMapFBO.Bind();
 				for (int i = 0; i<6; i++) { 
-					
-					glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+					//glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, lightData->depthCubemap, 0);
 
 					auto shader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
 					shader->Bind();
-
+					//shader->
 					shader->SetShaderUniform("uView", &shadowTransforms[i]);
 					shader->SetShaderUniform("uProj", &lightProjection);
 
