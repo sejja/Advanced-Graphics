@@ -81,7 +81,7 @@ void Guizmo::Draw()
 			
 
 			selectedObjIns.GetSelectedObject()->SetPosition(position);
-			selectedObjIns.GetSelectedObject()->SetRotation(rotation + selectedObjIns.GetSelectedObject()->GetRotation());
+			selectedObjIns.GetSelectedObject()->SetRotation(rotation );
 			selectedObjIns.GetSelectedObject()->SetScale(scale);
 		}
 		else {

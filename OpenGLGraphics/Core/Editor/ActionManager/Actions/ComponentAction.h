@@ -4,8 +4,7 @@
 #include "../Action.h"
 
 enum class CompActionType {
-	DELETE,
-	ADD
+	ADD,REMOVE	
 };
 
 class ComponentAction : public Action {

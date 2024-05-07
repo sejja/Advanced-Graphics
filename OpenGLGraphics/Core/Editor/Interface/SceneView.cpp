@@ -35,7 +35,7 @@ void SceneView::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 	Singleton<Editor>::Instance().setSceneFramePosition(screen_pos);
 
-	isWHovered = mousePosition.x <= viewportPanelSize.x && mousePosition.y <= viewportPanelSize.y;
+	isWHovered = (mousePosition.x <= viewportPanelSize.x + screen_pos.x && mousePosition.x >= screen_pos.x) && (mousePosition.y <= viewportPanelSize.y + screen_pos.y && mousePosition.y >= screen_pos.y);
 	//picking
 	
 	if (ImGui::IsMouseClicked(0) && isWHovered && !ImGuizmo::IsOver()) {

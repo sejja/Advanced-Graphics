@@ -12,7 +12,7 @@ void ComponentAction::Undo(){
 	if (actionType == CompActionType::ADD) {
 		mComponent->GetParent().lock()->RemoveComponentR(mComponent);
 	}
-	else if (actionType == CompActionType::DELETE) {
+	else if (actionType == CompActionType::REMOVE) {
 		mComponent->GetParent().lock()->AddComponentR(mComponent);
 	}
 	
@@ -22,7 +22,7 @@ void ComponentAction::Redo(){
 	if (actionType == CompActionType::ADD) {
 		mComponent->GetParent().lock()->AddComponentR(mComponent);
 	}
-	else if (actionType == CompActionType::DELETE) {
+	else if (actionType == CompActionType::REMOVE) {
 		mComponent->GetParent().lock()->RemoveComponentR(mComponent);
 	}	
 }

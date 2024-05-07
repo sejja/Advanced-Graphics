@@ -33,6 +33,9 @@
 #include "../ActionManager/Actions/ModelAction.h"
 #include "../ActionManager/Actions/TransformObject.h"
 #include "../ActionManager/Actions/LightAction.h"
+#include "../ActionManager/Actions/ComponentAction.h"
+
+
 
 
 
@@ -376,6 +379,10 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
             if (ImGui::Selectable(ICON_FA_CUBE " Mesh")) {
                 auto renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
                 obj->AddComponent(std::move(renderer));
+
+                auto action = std::make_shared<ComponentAction>(renderer, CompActionType::ADD);
+                Singleton<Editor>::Instance().GetActionManager()->AddAction(action);
+                
             }
 
             if (ImGui::Selectable(ICON_FA_LIGHTBULB " Point Light")) {
@@ -386,8 +393,10 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
                 light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));   
                 glm::vec3 relativePos = glm::vec3(0.0f, 0.0f, 0.0f);
 				light->SetPosition(relativePos, obj->GetPosition());
-
                 obj->AddComponent(std::move(light));
+
+                auto action = std::make_shared<ComponentAction>(light, CompActionType::ADD);
+                Singleton<Editor>::Instance().GetActionManager()->AddAction(action);
 
             }
 
@@ -396,13 +405,16 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
 				light->SetRadius(1.0f);
 				light->SetFallOff(0.5f);
 				light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
-				light->SetDirection(glm::vec3(0.0f, 0.0f, 0.0f));
+                light->SetDirection(glm::vec3(0.3400000035762787, 0.8700000047683716, 0.3400000035762787));
 				light->SetInner(0.5f);
 				light->SetOuter(0.5f);
 				light->SetShadowCaster(false);
 				glm::vec3 relativePos = glm::vec3(0.0f, 0.0f, 0.0f);
 				light->SetPosition(relativePos, obj->GetPosition());
 				obj->AddComponent(std::move(light));
+
+                auto action = std::make_shared<ComponentAction>(light, CompActionType::ADD);
+                Singleton<Editor>::Instance().GetActionManager()->AddAction(action);
 			}
 
 
@@ -414,19 +426,26 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
                 light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
                 obj->AddComponent(std::move(light));
 
+                auto action = std::make_shared<ComponentAction>(light, CompActionType::ADD);
+                Singleton<Editor>::Instance().GetActionManager()->AddAction(action);
+
             }
 
             if (ImGui::Selectable(ICON_FA_NOTE_STICKY " Decal")) {
-                obj->AddComponent(std::move(std::make_shared<Graphics::Primitives::Decal>(obj)));
+                auto decal = std::make_shared<Graphics::Primitives::Decal>(obj);
+                obj->AddComponent(std::move(decal));
+                auto action = std::make_shared<ComponentAction>(decal, CompActionType::ADD);
+                Singleton<Editor>::Instance().GetActionManager()->AddAction(action);
             }
 
             if (ImGui::Selectable(ICON_FA_FIRE " Fire System")) {
 
 				auto particleManager = pipeline.GetParticleManager();
-                std::shared_ptr<Core::Particles::FireSystem> testParticleSystem = std::make_shared<Core::Particles::FireSystem>(particleManager);
-                obj->AddComponentR(testParticleSystem);
-                particleManager->AddComponent(std::move(testParticleSystem));
-                
+                std::shared_ptr<Core::Particles::FireSystem> fireSystem = std::make_shared<Core::Particles::FireSystem>(particleManager);
+                obj->AddComponentR(fireSystem);
+                particleManager->AddComponent(std::move(fireSystem));
+                auto action = std::make_shared<ComponentAction>(fireSystem, CompActionType::ADD);
+                Singleton<Editor>::Instance().GetActionManager()->AddAction(action); 
             }
 
 
@@ -439,6 +458,8 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
 
             if (ImGui::Selectable(ICON_FA_TRASH_ARROW_UP " Delete")) {
 				obj->RemoveComponent(selectedObjIns.GetSelectedComponent());
+				auto action = std::make_shared<ComponentAction>(selectedObjIns.GetSelectedComponent(), CompActionType::REMOVE);
+				Singleton<Editor>::Instance().GetActionManager()->AddAction(action);
                 selectedObjIns.SetSelectedComponent(NULL);
                 selectedObjIns.SetSelectedMesh(NULL);
             }
