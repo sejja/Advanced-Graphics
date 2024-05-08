@@ -5,7 +5,7 @@
 //	Created by Diego Revilla on 03/03/24
 //	Copyright © 2024. All Rights reserved
 //
-
+#include <iostream>
 #include "Scene.h"
 #include "Core/Graphics/Pipeline.h"
 #include "Graphics/Primitives/Lights/DirectionalLight.h"
@@ -24,6 +24,8 @@
 #include "Dependencies/Json/single_include/json.hpp"
 #include <fstream>
 #include <string>
+
+#include "Graphics/Architecture/InstancedRendering/InstancedRendering.h"
 
 #include "Core/Assets/ResourceManager.h"
 
@@ -139,6 +141,8 @@ namespace Core {
 			std::cout << "Creando skybox de 0" << std::endl;
 		}
 
+
+		instanceRenderer.fetch();
 
 		/*Test data*/
 		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());

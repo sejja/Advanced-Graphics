@@ -5,8 +5,9 @@
 //	Created by Diego Revilla on 20/02/23
 //	Copyright � 2023. All Rights reserved
 //
-
+#include <iostream>
 #include "GLBMesh.h"
+#include "Graphics/Architecture/InstancedRendering/InstancedRendering.h"
 
 namespace Graphics {
 	namespace Primitives {
@@ -60,6 +61,11 @@ namespace Graphics {
         *   Constructs meshes from a bunch of vertices, indices, a diffuse texture and a normal texture
         */ //----------------------------------------------------------------------
         void Mesh::Draw() const {
+            int isInstanced = Singleton<Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().is_Instanced(this);
+
+            if (isInstanced) {
+                return; //If the mesh ins instanced wo dont draw it again
+            }
             // bind appropriate textures
             if(mDiffuse) mDiffuse->Get()->Bind();
             // bind normal map
@@ -68,6 +74,21 @@ namespace Graphics {
             // draw mesh
             glBindVertexArray(mVao);
             glDrawElements(GL_TRIANGLES, static_cast<unsigned int>(mCount), GL_UNSIGNED_INT, 0);
+        }
+
+        GLuint Mesh::getVao()
+        {
+            return this->mVao;
+        }
+
+        GLuint Mesh::getVbo()
+        {
+            return this->mVbo;
+        }
+
+        GLuint Mesh::getCount()
+        {
+            return this->mCount;
         }
 	}
 }

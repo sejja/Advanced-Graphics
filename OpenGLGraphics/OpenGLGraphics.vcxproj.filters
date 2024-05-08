@@ -264,6 +264,24 @@
     <ClCompile Include="Graphics\Architecture\SSAO\SSAOBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\ParticleSystem\SmokeSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMesh.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMeshMap.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMeshMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedRendering.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Core\Editor\ActionManager\Action.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2374,6 +2392,9 @@
     <None Include="Content\Maps\Minecraft.level" />
     <None Include="Content\Maps\Japan.level" />
     <None Include="Content\Maps\Cyberpunk.level" />
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.shader" />
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.vert" />
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.frag" />
     <None Include="Content\Maps\Sponza.level" />
     <None Include="Content\Maps\GreatSponza.real" />
     <None Include="Content\Maps\GreatCyberpunk.real" />

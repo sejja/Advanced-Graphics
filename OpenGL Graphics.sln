@@ -3,13 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.8.34525.116
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGL Graphics", "OpenGLGraphics\OpenGLGraphics.vcxproj", "{F9F07724-0104-491B-B7A5-8AB417E1BB33}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "OpenGLGraphics", "OpenGLGraphics\OpenGLGraphics.vcxproj", "{F9F07724-0104-491B-B7A5-8AB417E1BB33}"
+	ProjectSection(ProjectDependencies) = postProject
+		{05EEC60F-286E-45F6-A5E6-45D54FC6B4C9} = {05EEC60F-286E-45F6-A5E6-45D54FC6B4C9}
+		{3ACA9827-1131-4669-9F91-CB5D691A5557} = {3ACA9827-1131-4669-9F91-CB5D691A5557}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AssetLoader", "AssetLoader\AssetLoader.vcxproj", "{05EEC60F-286E-45F6-A5E6-45D54FC6B4C9}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ShaderCompilerServer", "ShaderCompilerServer\ShaderCompilerServer.vcxproj", "{3ACA9827-1131-4669-9F91-CB5D691A5557}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RealEngineMenu", "RealEngineMenu\RealEngineMenu.vcxproj", "{9F6624A3-059B-4D2C-8165-C9672A2F89B9}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Main", "RealEngineMenu\RealEngineMenu.vcxproj", "{9F6624A3-059B-4D2C-8165-C9672A2F89B9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

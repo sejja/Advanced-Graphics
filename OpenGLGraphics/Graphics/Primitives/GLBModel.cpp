@@ -252,5 +252,10 @@ namespace Graphics {
 
             return nullptr;
         }
+
+        std::vector<Mesh>* GLBModel::getMeshes()
+        {
+            return &(this->meshes);
+        }
 	}
 }

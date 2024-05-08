@@ -23,8 +23,8 @@
 #include "Graphics/Tools/OpenGLInfo.h"
 #include "Graphics/Architecture/Utils/GLUtils.h"
 #include "Graphics/Primitives/Decal.h"
+#include "Graphics/Architecture/InstancedRendering/InstancedRendering.h"
 #include "Dependencies/ImGuizmo/ImGuizmo.h"
-
 
 using namespace Core::Graphics;
 using namespace std;
@@ -299,6 +299,7 @@ namespace Core {
 			if(Skybox::sCurrentSky)
 				Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
+
 			GeometryPass();
 			mGeometryDeform.DecalPass(*mGBuffer);
 
@@ -317,6 +318,8 @@ namespace Core {
 			//glEnable(GL_DEPTH_TEST);
 
 			RenderParticlesSystems();
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			BloomPass(mHDRBuffer->GetHandle());
 			mLightPass->RenderLights({1600, 900}, *mGBuffer, *mSSAOBuffer);
@@ -414,6 +417,8 @@ namespace Core {
 
 				mGBuffer->Bind();
 				mGBuffer->ClearBuffer();
+
+				Singleton<::Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().render();
 
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
 					[this, &obsoletes, &projection, &view](const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {

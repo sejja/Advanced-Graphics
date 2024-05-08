@@ -23,6 +23,11 @@ namespace Core {
 			mModel->Get()->Draw();
 		}
 
+		::Graphics::Primitives::GLBModel* GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::getModel()
+		{
+			return mModel.get()->Get();
+		}
+
 		// ------------------------------------------------------------------------
 		/*! Constructor
 		*

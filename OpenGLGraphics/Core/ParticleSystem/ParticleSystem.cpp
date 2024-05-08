@@ -120,6 +120,5 @@ namespace Core
             float alpha = (A / 255.0f);
             return glm::vec4( red, green, blue, alpha);
         }
-
 	}
 }

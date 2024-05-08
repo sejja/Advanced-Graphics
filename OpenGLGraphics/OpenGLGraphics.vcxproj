@@ -209,6 +209,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Core\Assets\ResourceManager.cpp" />
+    <ClCompile Include="Core\ParticleSystem\SmokeSystem.cpp" />
     <ClCompile Include="Dependencies\GLEW\Source\glew.c" />
     <ClCompile Include="Dependencies\ImGuizmo\ImGuizmo.cpp" />
     <ClCompile Include="Dependencies\ImGui\imgui.cpp" />
@@ -224,6 +225,11 @@
     <ClCompile Include="Graphics\Architecture\GBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\GeometryDeform.cpp" />
     <ClCompile Include="Graphics\Architecture\HDRBuffer.cpp" />
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMesh.cpp" />
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMesh.h" />
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMeshMap.cpp" />
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMeshMap.h" />
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedRendering.cpp" />
     <ClCompile Include="Graphics\Architecture\SamplingBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\LightPass.cpp" />
     <ClCompile Include="Graphics\Architecture\SSAO\Kernel.cpp" />
@@ -300,6 +306,7 @@
     <ClInclude Include="Core\ParticleSystem\FireSystem.h" />
     <ClInclude Include="Core\ParticleSystem\ParticleManager.h" />
     <ClInclude Include="Core\ParticleSystem\ParticleSystem.h" />
+    <ClInclude Include="Core\ParticleSystem\SmokeSystem.h" />
     <ClInclude Include="Core\RTTI\RTTI.h" />
     <ClInclude Include="Core\Events\TypeInfo.h" />
     <ClInclude Include="Core\Input\InputManager.h">
@@ -365,6 +372,7 @@
     <ClInclude Include="Graphics\Architecture\GBuffer.h" />
     <ClInclude Include="Graphics\Architecture\GeometryDeform.h" />
     <ClInclude Include="Graphics\Architecture\HDRBuffer.h" />
+    <ClInclude Include="Graphics\Architecture\InstancedRendering\InstancedRendering.h" />
     <ClInclude Include="Graphics\Architecture\LightPass.h" />
     <ClInclude Include="Graphics\Architecture\SamplingBuffer.h" />
     <ClInclude Include="Graphics\Architecture\SSAO\Kernel.h" />
@@ -836,6 +844,15 @@
     <None Include="Content\Shaders\GeometryDecal.frag" />
     <None Include="Content\Shaders\GeometryDecal.shader" />
     <None Include="Content\Shaders\GeometryDecal.vert" />
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.shader">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.vert">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.frag">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
     <None Include="Content\Shaders\Renderer.frag" />
     <None Include="Content\Shaders\FireParticle.vert" />
     <None Include="Content\Shaders\Refractive.frag" />
