@@ -108,6 +108,17 @@ namespace Graphics {
 			glBlitFramebuffer( 0, 0, mDimensions.x, mDimensions.y, 0, 0, mDimensions.x, mDimensions.y, GL_DEPTH_BUFFER_BIT, GL_NEAREST );
 			glBindFramebuffer(GL_FRAMEBUFFER, tobuff);
 		}
+		// ------------------------------------------------------------------------
+		/*! Blit Depth Buffer
+		*
+		*   Copies the Depth Values, so we can Forward Render after Deferred
+		*/ //----------------------------------------------------------------------
+		void GBuffer::BlitDepthBufferReflections(const GLuint tobuff) const {
+			glBindFramebuffer(GL_READ_FRAMEBUFFER, mBuffer);
+			glBindFramebuffer(GL_DRAW_FRAMEBUFFER, tobuff); // write to default framebuffer
+			glBlitFramebuffer(0, 0, 512, 512, 0, 0, 512, 512, GL_DEPTH_BUFFER_BIT, GL_NEAREST);
+			glBindFramebuffer(GL_FRAMEBUFFER, tobuff);
+		}
 
 		// ------------------------------------------------------------------------
 		/*! Clear Buffer

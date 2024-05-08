@@ -31,6 +31,7 @@ namespace Graphics {
 		#pragma region //Methods
 			void Bind() const;
 			void BlitDepthBuffer(const GLuint buff) const;
+			void BlitDepthBufferReflections(const GLuint tobuff) const;
 			DONTDISCARD GLuint inline GetPositionTextureHandle() const;
 			DONTDISCARD GLuint inline GetNormalTextureHandle() const;
 			DONTDISCARD GLuint inline GetAlbedoTextureHandle() const;
