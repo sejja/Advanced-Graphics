@@ -184,8 +184,7 @@ namespace Core {
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
 			ImGuizmo::BeginFrame();
-
-
+			
 			// Create the docking environment
 			ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar |
 				ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
@@ -495,7 +494,7 @@ namespace Core {
 			}
 			else 
 			{
-				std::cout << "ERROR -> PARTICLEMANAGER WAS DESTROYED \n";
+				//std::cout << "ERROR -> PARTICLEMANAGER WAS DESTROYED \n";
 			}
 
 		}

@@ -134,7 +134,7 @@ namespace Core {
 			std::shared_ptr<Core::Graphics::Skybox> skycomp = std::make_shared<Core::Graphics::Skybox>(sky);
 			skycomp->CreateCubeMap();
 			sky->AddComponent(std::move(skycomp));
-			sky->SetName("Sky_bg");
+			sky->SetName("SKYBOX");
 			mObjects.emplace_back(sky);
 			std::cout << "Creando skybox de 0" << std::endl;
 		}
@@ -142,8 +142,8 @@ namespace Core {
 
 		/*Test data*/
 		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
-		std::shared_ptr<Core::Particles::FireSystem> testParticleSystem = std::make_shared<Core::Particles::FireSystem>(particleManager);
-		particleManager->AddComponent(std::move(testParticleSystem));
+		//std::shared_ptr<Core::Particles::FireSystem> testParticleSystem = std::make_shared<Core::Particles::FireSystem>(particleManager);
+		//particleManager->AddComponent(std::move(testParticleSystem));
 		mObjects.emplace_back(particleManager);
 		Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);
 	}

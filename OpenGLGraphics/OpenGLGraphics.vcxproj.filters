@@ -249,7 +249,7 @@
     <ClCompile Include="Dependencies\ImGuizmo\ImGuizmo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Editor\Interface\Guizmo.cpp">
+    <ClCompile Include="Core\Editor\Guizmo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Editor\mouse_picking.cpp">
@@ -262,6 +262,30 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Architecture\SSAO\SSAOBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Action.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\ActionManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Actions\TransformObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\PrevStates.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Actions\MeshAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Actions\ModelAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Actions\LightAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Actions\ComponentAction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1826,7 +1850,37 @@
     <ClInclude Include="Dependencies\ImGuizmo\ImGuizmo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Editor\Interface\Guizmo.h">
+    <ClInclude Include="Core\Editor\Guizmo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Action.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\ActionManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Actions\TransformObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\ActionType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\mouse_picking.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\PrevStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Actions\MeshAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Actions\ModelAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Actions\LightAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Actions\ComponentAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -2313,6 +2367,18 @@
     <None Include="Content\Shaders\SSAO.vert" />
     <None Include="Content\Shaders\SSAOBlur.frag" />
     <None Include="Content\Shaders\SSAOBlur.shader" />
+    <None Include="Content\Maps\patata.real" />
+    <None Include="Content\Maps\Scene2.real" />
+    <None Include="Content\Maps\mi_dragoncito.real" />
+    <None Include="Content\Maps\dafad.real" />
+    <None Include="Content\Maps\Minecraft.level" />
+    <None Include="Content\Maps\Japan.level" />
+    <None Include="Content\Maps\Cyberpunk.level" />
+    <None Include="Content\Maps\Sponza.level" />
+    <None Include="Content\Maps\GreatSponza.real" />
+    <None Include="Content\Maps\GreatCyberpunk.real" />
+    <None Include="Content\Maps\Japan.real" />
+    <None Include="Content\Maps\Minecraft.real" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />

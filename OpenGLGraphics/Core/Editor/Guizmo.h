@@ -11,10 +11,13 @@
 class Guizmo {
 public:
 	void Render(Core::Primitives::Camera* cam);
+
 private:
 	void Draw();
 
 	Core::Primitives::Camera* cam;
+
+	bool isUsing = false;
 
 };
 

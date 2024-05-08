@@ -168,7 +168,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Core\Editor\Interface\Guizmo.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\Action.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\ActionManager.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\Actions\ComponentAction.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\Actions\LightAction.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\Actions\MeshAction.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\Actions\ModelAction.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\Actions\TransformObject.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\PrevStates.cpp" />
+    <ClCompile Include="Core\Editor\Guizmo.cpp" />
     <ClCompile Include="Core\Editor\Interface\TextEditor.cpp" />
     <ClCompile Include="Core\Editor\mouse_picking.cpp" />
     <ClCompile Include="Core\Editor\ShaderCompiler\clientWindows.c" />
@@ -251,7 +259,17 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Core\Application.h" />
-    <ClInclude Include="Core\Editor\Interface\Guizmo.h" />
+    <ClInclude Include="Core\Editor\ActionManager\Action.h" />
+    <ClInclude Include="Core\Editor\ActionManager\ActionManager.h" />
+    <ClInclude Include="Core\Editor\ActionManager\Actions\ComponentAction.h" />
+    <ClInclude Include="Core\Editor\ActionManager\Actions\LightAction.h" />
+    <ClInclude Include="Core\Editor\ActionManager\Actions\MeshAction.h" />
+    <ClInclude Include="Core\Editor\ActionManager\Actions\ModelAction.h" />
+    <ClInclude Include="Core\Editor\ActionManager\Actions\TransformObject.h" />
+    <ClInclude Include="Core\Editor\ActionManager\ActionType.h" />
+    <ClInclude Include="Core\Editor\ActionManager\PrevStates.h" />
+    <ClInclude Include="Core\Editor\Guizmo.h" />
+    <ClInclude Include="Core\Editor\mouse_picking.h" />
     <ClInclude Include="Core\Math\Lerp.h" />
     <ClInclude Include="Core\Memory\Allocator.h" />
     <ClInclude Include="CommonDefines.h" />
@@ -778,6 +796,18 @@
     <ClInclude Include="resource.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Content\Maps\dafad.real" />
+    <None Include="Content\Maps\GreatCyberpunk.real" />
+    <None Include="Content\Maps\GreatSponza.real" />
+    <None Include="Content\Maps\Japan.real" />
+    <None Include="Content\Maps\Minecraft.level" />
+    <None Include="Content\Maps\Japan.level" />
+    <None Include="Content\Maps\Cyberpunk.level" />
+    <None Include="Content\Maps\Minecraft.real" />
+    <None Include="Content\Maps\mi_dragoncito.real" />
+    <None Include="Content\Maps\patata.real" />
+    <None Include="Content\Maps\Scene2.real" />
+    <None Include="Content\Maps\Sponza.level" />
     <None Include="Content\Meshes\backpack.mtl" />
     <None Include="Content\Scenes\README.md" />
     <None Include="Content\Scenes\Sponza.bin" />

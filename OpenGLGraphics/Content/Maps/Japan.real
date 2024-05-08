@@ -61,14 +61,14 @@
       ]
     },
     {
-      "_id": "",
+      "_id": "SKYBOX",
       "components": [
         {
           "path": "adfadfasfa",
           "type": "Skybox"
         }
       ],
-      "name": "Sky_bg",
+      "name": "SKYBOX",
       "position": [
         0.0,
         0.0,

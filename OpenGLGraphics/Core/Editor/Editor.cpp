@@ -33,11 +33,7 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	//If any input is being used, camera controls are locked
 	editorLocked = properties.isFocused() || texteditor.isFocused();
 	
-	//SceneView
-	sceneView.Render(pipeline);
-
-	//Guizmo
-	guizmo.Render(pipeline.getCamera());
+	
 
 	mainMenu.Render(pipeline);
 	assetManager.Render();
@@ -48,9 +44,17 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	
 	texteditor.Render("Shader Editor",1);
 
+	//SceneView
+	sceneView.Render(pipeline);
+
+	//Guizmo
+	guizmo.Render(pipeline.getCamera());
+
 	
 
 	
+
+
 
 
 	

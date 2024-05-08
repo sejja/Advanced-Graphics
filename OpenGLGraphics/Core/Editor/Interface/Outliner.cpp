@@ -6,6 +6,7 @@
 #include "Core/Editor/SelectedObj.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 #include "Core/Editor/Editor.h"
+#include <random>
 
 
 SelectedObj& selectedObj = Singleton<Editor>::Instance().GetSelectedObj();
@@ -32,10 +33,6 @@ std::string Outliner::formatObjName(const std::shared_ptr<Core::Object>& obj) {
 	if (lower.find("light") != std::string::npos) {
 		displayName = ICON_FA_LIGHTBULB " " + displayName;
 	}
-	else if (obj->GetName().find("SKYBOX") != std::string::npos) {
-		displayName = ICON_FA_MOUNTAIN_SUN " " + displayName;
-
-	}
 	else {
 		displayName = ICON_FA_CUBE " " + displayName;
 	}
@@ -58,26 +55,20 @@ void Outliner::RenderOptions()
 	ImGui::SameLine();
 	if (ImGui::Button(ICON_FA_CIRCLE_PLUS" New Object")) {
 		Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
-		auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
 		std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
 		obj->SetPosition(glm::vec3(0.0f,0.0f,0.0f));
 		obj->SetRotation(glm::vec3(0.0f, 0.0f, 0.0f));
 		obj->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
 		obj->SetName("New Object");
-		obj->SetID("New Object");
-
-		std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
-		renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>("Content/Meshes/cube_face.obj"));
-		renderer->SetShaderProgram(resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredGeometry.shader"));
-		obj->AddComponent(std::move(renderer));
+		obj->SetID(generateID());
 		scene.addObject(obj);
 	}
 
 }
 
+//Tree with list of selectable items in scene
 void Outliner::RenderSceneObjects(){
 	Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
-	//Tree with list of selectable items in scene
 	ImGui::SetNextItemOpen(true, ImGuiCond_Once);
 	const std::vector<std::shared_ptr<Core::Object>>& sceneObjects = scene.GetObjects();
 	if (ImGui::TreeNode(ICON_FA_HOUSE " Main (Editor)")) {
@@ -97,8 +88,6 @@ void Outliner::RenderSceneObjects(){
 			if (searchField != "" && lower.find(searchField) == std::string::npos) {
 				continue;
 			}
-
-
 
 			//Check if object is selected
 			boolean isNodeSelected = obj == selectedObj.GetSelectedObject();
@@ -122,7 +111,6 @@ void Outliner::RenderSceneObjects(){
 					editingName = false;
 				}
 			}
-			
 			if (ImGui::BeginPopupContextItem()) {
 				if (ImGui::MenuItem(ICON_FA_I_CURSOR" Rename")) {
 					selectedObj.SetSelectedObject(obj);
@@ -142,9 +130,6 @@ void Outliner::RenderSceneObjects(){
 				ImGui::EndPopup();
 			}
 
-
-			
-
 			ImGui::PopID();
 			i++;
 		}
@@ -156,7 +141,16 @@ void Outliner::RenderSceneObjects(){
 	ImGui::Spacing(); 
 }
 
-
+std::string Outliner::generateID() {
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	int min = 10000;
+	int max = 99999;
+	std::uniform_int_distribution<> dis(min, max);
+	int random_number = dis(gen);
+	std::string id = std::to_string(random_number);
+	return id;
+}
 
 			
 		

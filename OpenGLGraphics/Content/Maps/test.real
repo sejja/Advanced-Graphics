@@ -11,7 +11,7 @@
             ],
             "name": "Palace",
             "position": [
-                0.0,
+                24.3110408782959,
                 -10.0,
                 0.0
             ],
@@ -69,7 +69,8 @@
                     "model": "Content/Meshes/Dragon/scene.gltf",
                     "shader": "Content/Shaders/DeferredGeometry.shader",
                     "type": "Model Renderer"
-                }
+                },
+                null
             ],
             "name": "Dragon",
             "position": [
@@ -159,7 +160,7 @@
             ]
         },
         {
-            "_id": "SKYBOX",
+            "_id": "",
             "components": [
                 {
                     "path": "adfadfasfa",
@@ -274,11 +275,11 @@
         {
             "_id": "New Object",
             "components": [
-              {
-                "Diffuse": "Content/Textures/decal_skull_d.png",
-                "Normal": "Content/Textures/decal_skull_n.png",
-                "type": "Decal"
-              }
+                {
+                    "Diffuse": "Content/Textures/decal_skull_d.png",
+                    "Normal": "Content/Textures/decal_skull_n.png",
+                    "type": "Decal"
+                }
             ],
             "name": "Skull Decal",
             "position": [
@@ -294,7 +295,7 @@
             "scale": [
                 10.0,
                 10.000000953674316,
-                10.000001907348633
+                10.000000953674316
             ]
         }
     ]
