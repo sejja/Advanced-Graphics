@@ -74,7 +74,10 @@ namespace Core {
 			renderer->SetMesh(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<::Graphics::Primitives::GLBModel>("Content/Meshes/sphere_20_averaged.obj"));
 			renderer->SetShaderProgram(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/White.shader"));
 
-			instanceRenderer.add_To_InstancedRendering(renderer, obj);
+			
+			//instanceRenderer.add_To_InstancedRendering(renderer, obj); //The instanced rendering has problem if you tries to instanced more than 2 objects, may be some memory lecture problems @TODO
+			// 
+			
 			//TEMPORAL PARA SABER SI ES LUZ HASTA NUEVO LEVEL 
 			obj->SetName(x.type + " Light_light");
 			
