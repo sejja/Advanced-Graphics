@@ -26,6 +26,7 @@
 #include <string>
 
 #include "Core/Assets/ResourceManager.h"
+#include "Core/Logger.h"
 
 using json = nlohmann::json;
 
@@ -38,6 +39,7 @@ namespace Core {
 	void Scene::CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
 		//mParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
+		auto& logger = Singleton<Logger>::Instance();
 		
 		bool hasSkybox = false;
 
@@ -118,6 +120,9 @@ namespace Core {
 						decal->SetNormal(resmg.GetResource<Core::Graphics::Texture>(std::string(components[j]["Normal"]).c_str()));
 						obj->AddComponent(std::move(decal));
 					}
+					else {
+						logger.logMessage(LogLevel::WARNING, "Unknown component type");
+					}
 				}
 
 				upload(obj);
@@ -125,11 +130,13 @@ namespace Core {
 			}
 			catch (std::exception ex) {
 				std::cout << ex.what() << std::endl;
+				logger.logMessage(LogLevel::WARNING, "Object could not be loaded");
 			}
 		}
 
 
 		if (hasSkybox == false) {
+			logger.logMessage("No skybox found, creating default skybox");
 			std::shared_ptr<Core::Object> sky = std::move(std::make_shared<Core::Object>());
 			std::shared_ptr<Core::Graphics::Skybox> skycomp = std::make_shared<Core::Graphics::Skybox>(sky);
 			skycomp->CreateCubeMap();
@@ -160,6 +167,7 @@ namespace Core {
 	}
 
 	void Scene::Save(const std::string_view& filename) {
+		Logger& logger = Singleton<Logger>::Instance();
 		auto resmg = Singleton<Core::Assets::ResourceManager>::Instance();
 		//printf("Listos para guardar\n");
 		std::cout << filename << std::endl;
@@ -259,6 +267,10 @@ namespace Core {
 					component["center"][1] = fire->GetSystemCenter().y;
 					component["center"][2] = fire->GetSystemCenter().z;
 				}
+				else {
+					logger.logMessage(LogLevel::WARNING, "Unknown component type");
+				}
+				
 				
 				object["components"][j] = component;
 			}

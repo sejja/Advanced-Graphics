@@ -12,6 +12,7 @@
 #include "Core/Window/SDLWindow.h"
 #include "Core/AppWrapper.h"
 #include "Core/Singleton.h"
+#include "Core/Logger.h"
 
 
 // ------------------------------------------------------------------------
@@ -21,11 +22,11 @@
 */ //----------------------------------------------------------------------
 int main() {
     AppWrapper& app = Singleton<AppWrapper>::Instance();
-    
-	;
-    //app.mScene.UploadObjectsToPipeline(app.GetPipelineRef());
+    Core::Logger& logger = Singleton<Core::Logger>::Instance();
 
-    //app.getScene().Save("Content/Maps/Scene.json");
+    /*logger.logMessage("Prueba");
+    logger.logMessage(LogLevel::WARNING, "Prueba Warning");
+    logger.logMessage(LogLevel::ERROR, "Prueba Error");*/
 
     app.SetTickFunction([&app]() {
 		app.getScene().Tick();
