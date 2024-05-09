@@ -248,7 +248,20 @@ namespace Core {
 					component["Diffuse"] = *resmg.GetResourceName<Core::Graphics::Texture>(std::static_pointer_cast<::Graphics::Primitives::Decal>(comp)->GetDiffuse().lock());
 					component["Normal"] = *resmg.GetResourceName<Core::Graphics::Texture>(std::static_pointer_cast<::Graphics::Primitives::Decal>(comp)->GetNormal().lock());
 				} else if (typeid(*comp) == typeid(Core::Particles::FireSystem)) {
-					
+					component["type"] = "Fire";
+					std::shared_ptr<Core::Particles::FireSystem> fire = std::static_pointer_cast<Core::Particles::FireSystem>(comp);
+					component["color"][0] = fire->GetBaseColor().r;
+					component["color"][1] = fire->GetBaseColor().g;
+					component["color"][2] = fire->GetBaseColor().b;
+					component["gap"] = fire->GetFireGap();
+					component["height"] = fire->GetFireHeight();
+					component["particleSize"] = fire->GetParticleSize();
+					component["radiusVector"][0] = fire->GetRadiusVector().x;
+					component["radiusVector"][1] = fire->GetRadiusVector().y;
+					component["radiusVector"][2] = fire->GetRadiusVector().z;
+					component["center"][0] = fire->GetSystemCenter().x;
+					component["center"][1] = fire->GetSystemCenter().y;
+					component["center"][2] = fire->GetSystemCenter().z;
 				}
 				
 				object["components"][j] = component;
