@@ -54,6 +54,7 @@ public:
 
 	bool getIsEditing() { return editComplete; }
 	void setEditing(bool value) { editComplete = value; }
+
     
 
 private:

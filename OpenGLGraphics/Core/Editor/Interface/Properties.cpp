@@ -441,7 +441,8 @@ void Properties::objectOutliner(Core::Graphics::OpenGLPipeline& pipeline) {
             if (ImGui::Selectable(ICON_FA_FIRE " Fire System")) {
 
 				auto particleManager = pipeline.GetParticleManager();
-                std::shared_ptr<Core::Particles::FireSystem> fireSystem = std::make_shared<Core::Particles::FireSystem>(particleManager);
+                std::shared_ptr<Core::Particles::FireSystem> fireSystem = std::make_shared<Core::Particles::FireSystem>(obj);
+				fireSystem->SetSystemCenter(glm::vec3(0.0f, 0.0f, 0.0f), obj->GetPosition());
                 obj->AddComponentR(fireSystem);
                 particleManager->AddComponent(std::move(fireSystem));
                 auto action = std::make_shared<ComponentAction>(fireSystem, CompActionType::ADD);

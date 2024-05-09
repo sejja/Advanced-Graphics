@@ -26,6 +26,7 @@
 #include <string>
 
 #include "Core/Assets/ResourceManager.h"
+#include "Core/Editor/Editor.h"
 
 using json = nlohmann::json;
 
@@ -43,6 +44,9 @@ namespace Core {
 
 		std::ifstream f(file.data());
 		json data = json::parse(f);
+
+		//limpiar actions
+		Singleton<::Editor>::Instance().GetActionManager()->Clear();
 
 		json objects = data["objects"];
 		for (int i = 0; i < objects.size(); i++) {
