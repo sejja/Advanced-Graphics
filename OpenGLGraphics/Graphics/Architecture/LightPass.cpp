@@ -84,27 +84,43 @@ namespace Graphics {
 				shadowTransforms.push_back(shadowProj* glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 1), glm::vec3(0, -1, 0)));
 				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, -1), glm::vec3(0, -1, 0)));
 
-				glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.0f, 0.1f, 1000.f);
+				//glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.0f, 0.1f, 1000.f);
 
-				glBindTexture(GL_TEXTURE_CUBE_MAP, lightData->depthCubemap);
-				//Borrar textura igual
+				//glBindTexture(GL_TEXTURE_CUBE_MAP, lightData->depthCubemap);
+				////Borrar textura igual
+
+				//lightData->depthMapFBO.Bind();
+				//for (int i = 0; i<6; i++) { 
+				//	//glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+				//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, lightData->depthCubemap, 0);
+
+				//	auto shader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
+				//	shader->Bind();
+				//	//shader->
+				//	shader->SetShaderUniform("uView", &shadowTransforms[i]);
+				//	shader->SetShaderUniform("uProj", &lightProjection);
+
+				//	lightData->depthMapFBO.Clear(true);
+				//	rend_func(shader);
+				//}
+				//
+				//lightData->depthMapFBO.Unbind();
 
 				lightData->depthMapFBO.Bind();
-				for (int i = 0; i<6; i++) { 
-					//glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
-					glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, lightData->depthCubemap, 0);
+				lightData->depthMapFBO.Clear(true);
 
-					auto shader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
-					shader->Bind();
-					//shader->
-					shader->SetShaderUniform("uView", &shadowTransforms[i]);
-					shader->SetShaderUniform("uProj", &lightProjection);
-
-					lightData->depthMapFBO.Clear(true);
-					rend_func(shader);
+				auto shader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
+				for (int i = 0; i < 6; i++) {
+					shader->SetShaderUniform("shadowMatrices[" + std::to_string(i) + "]", &shadowTransforms[i]);
 				}
-				
+
+				shader->SetShaderUniform("lightPos", &lightData->mPosition);
+				shader->SetShaderUniform("far_plane", &far);
+
+				rend_func(shader);
+
 				lightData->depthMapFBO.Unbind();
+
 			}
 		}
 
