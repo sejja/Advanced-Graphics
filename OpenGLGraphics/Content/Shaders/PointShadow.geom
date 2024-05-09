@@ -15,6 +15,7 @@ void main()
         for(int i = 0; i < 3; ++i) // for each triangle vertex
         {
             FragPos = gl_in[i].gl_Position;
+//            FragPos.y = 1.0 -  FragPos.y; // invert y position
             gl_Position = shadowMatrices[face] * FragPos;
             EmitVertex();
         }    
