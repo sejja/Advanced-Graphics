@@ -143,7 +143,7 @@ namespace Core {
 			sky->AddComponent(std::move(skycomp));
 			sky->SetName("SKYBOX");
 			mObjects.emplace_back(sky);
-			std::cout << "Creando skybox de 0" << std::endl;
+			//std::cout << "Creando skybox de 0" << std::endl;
 		}
 
 
