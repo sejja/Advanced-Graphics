@@ -10,6 +10,7 @@
 #include "gtc/matrix_transform.hpp"
 #include "Graphics/Primitives/ShaderProgram.h"
 #include "Graphics/Architecture/Utils/GLUtils.h"
+#include "Graphics/Architecture/InstancedRendering/InstancedRendering.h"
 
 namespace Graphics {
 	namespace Architecture {
@@ -30,7 +31,7 @@ namespace Graphics {
 			mPointShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredPointLighting.shader");
 			mSpotShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredSpotLighting.shader");
 			mShadowShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Shadow.shader");
-			//mShadowShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/InstancedShaders/Shadow/InstancedShadow.shader");
+			this->mInstancedShadowShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/InstancedShaders/Shadow/InstancedShadow.shader");
 		}
 
 		// ------------------------------------------------------------------------
@@ -65,6 +66,31 @@ namespace Graphics {
 					rend_func(shadow);
 					shmp.Unbind();
 					x->mShadowMatrix = lightProjection * lightView;
+				}
+			}
+
+			shadow = mInstancedShadowShader->Get();
+			shadow->Bind();
+
+			if (Singleton<Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().has_instanced())
+			{
+				//Renders all Shadow maps from spot lighting
+				for (const auto& x : sSpotLightData) {
+
+					//If it does cast shadows
+					if (x->mShadowCaster) {
+						Core::Graphics::FrameBuffer& shmp = x->mShadowMap;
+						glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.33f, 0.1f, 1000.f);
+						glm::mat4 lightView = glm::lookAt(x->mPosition, x->mDirection, glm::vec3(0, 1, 0));
+
+						shmp.Bind();
+						shmp.Clear(true);
+						shadow->SetShaderUniform("uProjection", &lightProjection);
+						shadow->SetShaderUniform("uView", &lightView);
+						Singleton<Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().render_shader(0, shadow);
+						shmp.Unbind();
+						x->mShadowMatrix = lightProjection * lightView;
+					}
 				}
 			}
 		}

@@ -18,7 +18,7 @@ layout(std140, binding = 1) uniform TransformBlock {
 
 layout(location = 5) out vec2 oUVs;
 layout(location = 6) out vec3 oNormal;
-layout(location = 7) out vec3 oPosition;
+layout(location = 7) out vec4 oPosition;
 layout(location = 8) out vec3 oTangent;
 layout(location = 9) out vec3 oBitangent;
 
@@ -32,7 +32,7 @@ void main() {
     const vec4 pos = vec4(aPosition, 1.0);
 	oUVs = aUVs;
 	oNormal = aNormal;
-	oPosition = vec3(instancedGeometryPos[gl_InstanceID] * pos);
+	oPosition = (ubView *  instancedGeometryPos[gl_InstanceID] * pos);
 	oTangent = aTangent;
 	oBitangent = aBitangent;
 	instancedID = gl_InstanceID;

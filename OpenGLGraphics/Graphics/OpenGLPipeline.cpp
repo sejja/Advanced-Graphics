@@ -94,6 +94,7 @@ namespace Core {
 			glGenBuffers(1, &mUniformBuffer);
 
 			glBindBuffer(GL_UNIFORM_BUFFER, mUniformBuffer);
+			glBindBufferBase(GL_UNIFORM_BUFFER,0 , mUniformBuffer);
 			glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + sizeof(glm::vec3) + sizeof(glm::vec2), NULL, GL_STATIC_DRAW);
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -419,7 +420,7 @@ namespace Core {
 				mGBuffer->Bind();
 				mGBuffer->ClearBuffer();
 
-				Singleton<::Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().render();
+				Singleton<::Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().render(1);
 
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
 					[this, &obsoletes, &projection, &view](const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
@@ -461,7 +462,7 @@ namespace Core {
 			glm::mat4 view = cam.GetViewMatrix();
 			glm::mat4 projection = cam.GetProjectionMatrix();
 		
-			glBindBuffer(GL_UNIFORM_BUFFER, mUniformBuffer);
+			glBindBufferBase(GL_UNIFORM_BUFFER,0 , mUniformBuffer);
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &view);
 			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &projection);
 			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), &cam.GetPositionRef());

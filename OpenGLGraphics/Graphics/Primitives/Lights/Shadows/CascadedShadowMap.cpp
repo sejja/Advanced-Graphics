@@ -10,6 +10,7 @@
 #include "Graphics/Primitives/Lights/DirectionalLight.h"
 #include "gtc/matrix_transform.hpp"
 #include "Graphics/Camera.h"
+#include "Graphics/Architecture/InstancedRendering/InstancedRendering.h"
 
 namespace Graphics {
 	namespace Primitives {
@@ -171,7 +172,7 @@ namespace Graphics {
                     std::array<glm::mat4, 5> lightMatrices = GetLightSpaceMatrices(camview, dir);
                     constexpr const char* uniformslightSpaces[] = { "lightSpaceMatrices[0]", "lightSpaceMatrices[1]", "lightSpaceMatrices[2]", "lightSpaceMatrices[3]", "lightSpaceMatrices[4]" };
 
-                    Core::Graphics::ShaderProgram* const shd = mShader->Get();
+                    Core::Graphics::ShaderProgram* shd = mShader->Get();
                     mLightMatrices = lightMatrices;
                     shd->Bind();
 
@@ -184,6 +185,20 @@ namespace Graphics {
                     glClear(GL_DEPTH_BUFFER_BIT);
                     glCullFace(GL_FRONT);  // peter panning
                     rend_func(shd);
+
+                    //---------------------------------------------------------------------------
+
+                    if (Singleton<Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().has_instanced())
+                    {
+                        shd = mInstancedShader->Get();
+                        shd->Bind();
+
+                        // Set the light space matrices
+                        for (size_t i = 0; i < mLightMatrices.size(); ++i)
+                            shd->SetShaderUniform(uniformslightSpaces[i], &mLightMatrices[i]);
+
+                        Singleton<Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().render_shader(0, shd);
+                    }
                     glCullFace(GL_BACK);
                 }
 

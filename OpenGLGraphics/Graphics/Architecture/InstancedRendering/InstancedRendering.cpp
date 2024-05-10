@@ -37,6 +37,14 @@ namespace Graphics::Architecture::InstancedRendering
 
 	}
 
+	void InstanceRenderer::render_shader(int fetch, Core::Graphics::ShaderProgram* shader)
+	{
+		if (fetch) this->meshMap->fetch_Instanced();
+
+		shader->Bind();
+		this->meshMap->InstancedRender();
+	}
+
 	int InstanceRenderer::is_Instanced(Graphics::Primitives::Mesh* mesh)
 	{
 		if (meshMap->getInstancedMap()->find(mesh) == meshMap->getInstancedMap()->end())
@@ -46,6 +54,11 @@ namespace Graphics::Architecture::InstancedRendering
 		}
 
 		return meshMap->getInstancedMap()->at(mesh).instancedMesh.get()->initiated;
+	}
+
+	int InstanceRenderer::has_instanced()
+	{
+		return this->meshMap->getInstancedMap()->size() > 0;
 	}
 
 	int InstanceRenderer::removeObject(std::weak_ptr<Core::Object> object)
@@ -71,4 +84,6 @@ namespace Graphics::Architecture::InstancedRendering
 	{
 		this->meshMap->clear();
 	}
+
+
 }
