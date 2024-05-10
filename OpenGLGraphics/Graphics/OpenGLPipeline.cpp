@@ -23,7 +23,7 @@
 #include "Graphics/Tools/OpenGLInfo.h"
 #include "Graphics/Architecture/Utils/GLUtils.h"
 #include "Graphics/Primitives/Decal.h"
-#include "Graphics/Architecture/CubemapFramebuffer.h"
+
 
 
 using namespace Core::Graphics;
@@ -278,10 +278,10 @@ namespace Core {
 		}
 
 
-		void OpenGLPipeline::RenderShadowMaps(glm::mat4 view) {
+		void OpenGLPipeline::RenderShadowMaps(glm::mat4 view, const glm::u16vec2 dim) {
 			std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes;
 
-			mLightPass->RenderShadowMaps({1600, 900}, view, [&obsoletes, this](ShaderProgram* shader) {
+			mLightPass->RenderShadowMaps(dim, view, [&obsoletes, this](ShaderProgram* shader) {
 				//Render all objects
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
 				[this, &obsoletes, &shader](const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
@@ -303,17 +303,16 @@ namespace Core {
 
 			
 			
-			RenderShadowMaps(cam.GetViewMatrix());
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 
 			//if (firstTime > 0) {
 				RenderReflectionCubemap(glm::vec3(0.0f,0.0f,0.0f));
-				firstTime--;
+				//firstTime--;
 			//}
+			RenderShadowMaps(cam.GetViewMatrix(), {1600,900});
 			
 			glActiveTexture(GL_TEXTURE11);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionCubemap);
-			//RenderReflectionCubemap(cam.GetPosition());
 			UpdateUniformBuffers(cam.GetViewMatrix(),cam.GetProjectionMatrix()); // SI
 			GeometryPass({1600,900},cam.GetViewMatrix(), cam.GetProjectionMatrix()); //si
 			mSSAOBuffer->RenderAO(*mGBuffer);
@@ -458,6 +457,7 @@ namespace Core {
 			glBindBuffer(GL_UNIFORM_BUFFER, NULL);
 		}
 
+
 		// ------------------------------------------------------------------------
 		/*! Directional Light Pass
 		*
@@ -503,12 +503,32 @@ namespace Core {
 		void OpenGLPipeline::RenderReflectionCubemap(const glm::vec3& position)
 		{
 		    // Set up framebuffer and cubemap
-		    GLuint reflectionFramebuffer;
+		   GLuint reflectionFramebuffer;
+		   GLuint refelectionFrameBufferTexture;
+		   //std::unique_ptr<FrameBuffer> finalReflectionFramebuffer;
 		   GLuint reflectionDepth;
 		   int reflectionSize = 512;
+
+
+		   //finalReflectionFramebuffer = std::make_unique<FrameBuffer>();
+		   //finalReflectionFramebuffer->Create();
+		   //finalReflectionFramebuffer->CreateRenderTexture({ reflectionSize , reflectionSize });
 		    
 		    glGenFramebuffers(1, &reflectionFramebuffer);
+			glGenTextures(1, &refelectionFrameBufferTexture);
+			glBindTexture(GL_TEXTURE_2D, refelectionFrameBufferTexture);
 			glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, reflectionSize, reflectionSize, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+			float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+			glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
+			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, refelectionFrameBufferTexture, 0);
+			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) throw std::exception("FrameBuffer is Incomplete");
+			
 		    glGenTextures(1, &reflectionCubemap);
 		    glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionCubemap);
 
@@ -538,8 +558,7 @@ namespace Core {
 			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, reflectionSize, reflectionSize); // use a single renderbuffer object for both a depth AND stencil buffer.
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, reflectionDepth); // now actually attach it
 			
-			glActiveTexture(GL_TEXTURE11);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionCubemap);
+			
 			
 			// Check if framebuffer is complete
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
@@ -547,9 +566,14 @@ namespace Core {
 				std::cerr << "Framebuffer is not complete!" << glGetError() << std::endl;
 			}
 
+			
 		    // Render to each cubemap face
 		    for (GLuint i = 0; i < 6; ++i)
 		    {
+
+				glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
+				glActiveTexture(GL_TEXTURE11);
+				glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionCubemap);
 				glEnable(GL_CULL_FACE);
 				glViewport(0, 0, reflectionSize, reflectionSize);
 				//glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
@@ -559,10 +583,10 @@ namespace Core {
 		        // Set the camera to look in the direction of the cubemap face
 				if(i == 2) {
 					//view = glm::lookAt(position, position + cubeMapDirections[i], glm::vec3(1.0f, 0.0f, 0.0f));
-					view = CorrectRollDirection(true, -90.01f, 0.0f, 90.0f, position);
+					view = CorrectRollDirection(true, -90.01f, 0.0f, 90.01f, position);
 				}
 				else if (i == 3) {
-					view = CorrectRollDirection(false, 90.01f, 0.0f, -90.0f, position);
+					view = CorrectRollDirection(false, 90.01f, 0.0f, -90.01f, position);
 					
 				}
 				else {
@@ -572,19 +596,27 @@ namespace Core {
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionCubemap, 0);
 		        // Render scene with this view matrix
 		        // Call your rendering functions here, e.g., GeometryPass(), Skybox::sCurrentSky->Render(cam, *this)
+				RenderShadowMaps(view, { 512, 512 });
 				UpdateUniformBuffers(view, projectionMatrix);
 				//RenderShadowMaps(view);
 				GeometryPass({ 512, 512 },view,projectionMatrix);
 				glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
-				BloomPass(reflectionFramebuffer);
-				
-				
+
 				mLightPass->RenderLights({ 1600, 900}, *mGBuffer, *mSSAOBuffer);
+				glViewport(0,0,512,512);
 				mGBuffer->BlitDepthBufferReflections(reflectionCubemap);
 				Skybox::sCurrentSky->RenderSpecific(view,projectionMatrix, *this);
-		        // You may want to read back the rendered data from each face if needed
 				
-				
+				//glBindFramebuffer(GL_FRAMEBUFFER, finalReflectionFramebuffer->GetHandle());
+				//glViewport(0, 0, reflectionSize, reflectionSize);
+				//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				////glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionCubemap, 0);
+				//glActiveTexture(GL_TEXTURE0);
+				//glBindTexture(GL_TEXTURE_2D, refelectionFrameBufferTexture);
+				//RendererShader->Get()->Bind();
+				//RendererShader->Get()->SetShaderUniform("exposure", exposure);
+				//::Graphics::Architecture::Utils::GLUtils::RenderScreenQuad();
+
 				
 		    }
 		    // Cleanup

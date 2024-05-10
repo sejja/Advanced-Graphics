@@ -93,7 +93,7 @@ namespace Core {
             glDepthMask(GL_FALSE);
             glDisable(GL_CULL_FACE);
             glDepthFunc(GL_LEQUAL);
-
+            //glViewport(0, 0, 512, 512);
             // Bind the program and this object's VAO
             mShaderProgram->Get()->Bind();
 

@@ -61,7 +61,7 @@ namespace Core {
 			void GroupRender(std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
 				const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it,
 				ShaderProgram* shader);
-			void RenderShadowMaps(glm::mat4 view);
+			void RenderShadowMaps(glm::mat4 view, const glm::u16vec2 dim);
 			void UpdateUniformBuffers(glm::mat4 view, glm::mat4 projection);
 			void RenderParticlesSystems();
 			void DirectionalLightPass();

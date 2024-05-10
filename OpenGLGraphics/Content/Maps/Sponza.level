@@ -21,7 +21,7 @@ mesh Content/Scenes/Sponza/Sponza.gltf
 object Sphere
 translate 0 0 0
 rotation 0 0 0
-scale 20 20 20
+scale 10 10 10
 mesh Content/Meshes/sphere_20_averaged.obj
 
 #light data
