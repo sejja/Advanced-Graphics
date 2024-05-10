@@ -48,6 +48,7 @@ namespace Graphics {
 					std::array<float, 4> mCascadedLevels;
 					std::array<glm::mat4, 5> mLightMatrices;
 					Core::Assets::Asset<Core::Graphics::ShaderProgram> mShader;
+					Core::Assets::Asset<Core::Graphics::ShaderProgram> mInstancedShader;
 				#pragma endregion
 				};
 			}

@@ -21,8 +21,9 @@ namespace Graphics {
                 *   Constructs a Shadow Map, initializing the 3D Lightmaps and the Framebuffer
                 */ //----------------------------------------------------------------------
                 CascadedShadowMap::CascadedShadowMap() :
-                    mCascadedLevels({ 10000.f / 50.0f, 10000.f / 25.0f, 10000.f / 10.0f, 10000.f / 2.0f } ),
+                    mCascadedLevels({ 10000.f / 50.0f, 10000.f / 25.0f, 10000.f / 10.0f, 10000.f / 2.0f }),
                     mShader(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/CascadedShadowMap.shader")),
+                    mInstancedShader(Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/InstancedShaders/CascadeShadow/InstancedCascadedShadowMap.shader")),
                     mLightMatrices() {
                     glGenFramebuffers(1, &mLightBuffer);
 
