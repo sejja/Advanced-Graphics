@@ -844,6 +844,10 @@
     <None Include="Content\Shaders\GeometryDecal.frag" />
     <None Include="Content\Shaders\GeometryDecal.shader" />
     <None Include="Content\Shaders\GeometryDecal.vert" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.frag" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.geom" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.shader" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.vert" />
     <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.shader">
       <DeploymentContent>true</DeploymentContent>
     </None>
@@ -853,6 +857,9 @@
     <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.frag">
       <DeploymentContent>true</DeploymentContent>
     </None>
+    <None Include="Content\Shaders\InstancedShaders\Shadow\InstancedShadow.frag" />
+    <None Include="Content\Shaders\InstancedShaders\Shadow\InstancedShadow.shader" />
+    <None Include="Content\Shaders\InstancedShaders\Shadow\InstancedShadow.vert" />
     <None Include="Content\Shaders\Renderer.frag" />
     <None Include="Content\Shaders\FireParticle.vert" />
     <None Include="Content\Shaders\Refractive.frag" />

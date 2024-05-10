@@ -1901,6 +1901,12 @@
     <ClInclude Include="Core\Editor\ActionManager\Actions\ComponentAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Core\ParticleSystem\SmokeSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\InstancedRendering\InstancedRendering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\SDL\Include\SDL_config.h.cmake" />
@@ -2400,6 +2406,13 @@
     <None Include="Content\Maps\GreatCyberpunk.real" />
     <None Include="Content\Maps\Japan.real" />
     <None Include="Content\Maps\Minecraft.real" />
+    <None Include="Content\Shaders\InstancedShaders\Shadow\InstancedShadow.vert" />
+    <None Include="Content\Shaders\InstancedShaders\Shadow\InstancedShadow.shader" />
+    <None Include="Content\Shaders\InstancedShaders\Shadow\InstancedShadow.frag" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.vert" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.shader" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.geom" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.frag" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
