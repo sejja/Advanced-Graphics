@@ -84,7 +84,6 @@ namespace Graphics {
 						glm::mat4 lightView = glm::lookAt(x->mPosition, x->mDirection, glm::vec3(0, 1, 0));
 
 						shmp.Bind();
-						shmp.Clear(true);
 						shadow->SetShaderUniform("uProjection", &lightProjection);
 						shadow->SetShaderUniform("uView", &lightView);
 						Singleton<Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().render_shader(0, shadow);
