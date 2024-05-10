@@ -55,6 +55,7 @@ namespace Graphics {
 			Core::Assets::Asset<Core::Graphics::ShaderProgram> mPointShader;
 			Core::Assets::Asset<Core::Graphics::ShaderProgram> mSpotShader;
 			Core::Assets::Asset<Core::Graphics::ShaderProgram> mShadowShader;
+			Core::Assets::Asset<Core::Graphics::ShaderProgram> mInstancedShadowShader;
 			static lightmap< Graphics::Primitives::Lights::DirectionalLight::DirectionalLightData> sDirectionalLightData;
 			static lightmap< Graphics::Primitives::Lights::SpotLight::SpotLightData> sSpotLightData;
 			static lightmap< Graphics::Primitives::Lights::PointLight::PointLightData> sPointLightData;

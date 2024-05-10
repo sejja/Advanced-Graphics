@@ -1,5 +1,5 @@
 {
-	"Vertex" : "Content/Shaders/InstancedCascadedShadowMap.vert",
-	"Geometry" : "Content/Shaders/InstancedCascadedShadowMap.geom",
-	"Fragment" : "Content/Shaders/InstancedCascadedShadowMap.frag"
+	"Vertex" : "Content/Shaders/InstancedShaders/CascadeShadow/InstancedCascadedShadowMap.vert",
+	"Geometry" : "Content/Shaders/InstancedShaders/CascadeShadow/InstancedCascadedShadowMap.geom",
+	"Fragment" : "Content/Shaders/InstancedShaders/CascadeShadow/InstancedCascadedShadowMap.frag"
 }
