@@ -177,12 +177,10 @@ void MainMenu::RenderEditMenu() {
         if (ImGui::MenuItem("Undo", "CTRL+Z")) {
             std::cout << "Undoing action" << std::endl;
             Singleton<::Editor>::Instance().GetActionManager()->Undo();
-            RenderIsSavingState();
         }
         if (ImGui::MenuItem("Redo", "CTRL+Y")) {
             std::cout << "Redoing action" << std::endl;
             Singleton<::Editor>::Instance().GetActionManager()->Redo();
-            RenderIsSavingState();
         }
         ImGui::Text((std::to_string(numActions) + " edit actions stored").c_str());
         std::string actionString = "Now at action: [" + std::to_string(curAction) + "]";
@@ -223,6 +221,7 @@ void MainMenu::RenderActionButtons(){
     if (Singleton<::Editor>::Instance().GetActionManager()->canUndo()) {
         if (ImGui::Button(ICON_FA_REPLY"", ImVec2(30, buttonHeight))) {
             Singleton<::Editor>::Instance().GetActionManager()->Undo();
+            RenderIsSavingState();
         }
     }
     else {
@@ -238,6 +237,7 @@ void MainMenu::RenderActionButtons(){
     if (Singleton<::Editor>::Instance().GetActionManager()->canRedo()) {
         if (ImGui::Button(ICON_FA_SHARE"", ImVec2(30, buttonHeight))) {
             Singleton<::Editor>::Instance().GetActionManager()->Redo();
+            RenderIsSavingState();
         }
     }
     else {

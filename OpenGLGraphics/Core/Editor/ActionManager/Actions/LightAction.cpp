@@ -37,15 +37,13 @@ LightAction::LightAction(std::shared_ptr<::Graphics::Primitives::Lights::Light> 
 
 
 void LightAction::Undo() {
+	mLight->SetColor(prevLightColor);
+	mLight->SetPosition(prevLightPos,mLight->GetParent().lock()->GetPosition());
 	if (auto pointLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::PointLight>(mLight)) {
-		//pointLight->SetPosition(prevLightPos);
-		pointLight->SetColor(prevLightColor);
 		pointLight->SetRadius(prevLightRadius);
 		pointLight->SetFallOff(prevLightFallOff);
 	}
 	else if (auto spotLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::SpotLight>(mLight)) {
-		//spotLight->SetPosition(prevLightPos);
-		spotLight->SetColor(prevLightColor);
 		spotLight->SetRadius(prevLightRadius);
 		spotLight->SetFallOff(prevLightFallOff);
 		spotLight->SetDirection(prevLightDirection);
@@ -54,22 +52,18 @@ void LightAction::Undo() {
 		spotLight->SetShadowCaster(prevLightShadowCaster);
 	}
 	else if (auto dirLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::DirectionalLight>(mLight)) {
-		//dirLight->SetPosition(prevLightPos);
-		dirLight->SetColor(prevLightColor);
 		dirLight->SetDirection(prevLightDirection);
 	}
 }
 
 void LightAction::Redo() {
+	mLight->SetColor(curLightColor);
+	mLight->SetPosition(curLightPos, mLight->GetParent().lock()->GetPosition());
 	if (auto pointLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::PointLight>(mLight)) {
-		//pointLight->SetPosition(curLightPos);
-		pointLight->SetColor(curLightColor);
 		pointLight->SetRadius(curLightRadius);
 		pointLight->SetFallOff(curLightFallOff);
 	}
 	else if (auto spotLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::SpotLight>(mLight)) {
-		//spotLight->SetPosition(curLightPos);
-		spotLight->SetColor(curLightColor);
 		spotLight->SetRadius(curLightRadius);
 		spotLight->SetFallOff(curLightFallOff);
 		spotLight->SetDirection(curLightDirection);
@@ -78,8 +72,6 @@ void LightAction::Redo() {
 		spotLight->SetShadowCaster(curLightShadowCaster);
 	}
 	else if (auto dirLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::DirectionalLight>(mLight)) {
-		//dirLight->SetPosition(curLightPos);
-		dirLight->SetColor(curLightColor);
 		dirLight->SetDirection(curLightDirection);
 	}
 }
