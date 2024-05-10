@@ -30,7 +30,7 @@ namespace Graphics {
 			mPointShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredPointLighting.shader");
 			mSpotShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/DeferredSpotLighting.shader");
 			mShadowShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/Shadow.shader");
-			mShadowShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/InstancedShaders/Shadow/InstancedShadow.shader");
+			//mShadowShader = resmg.GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/InstancedShaders/Shadow/InstancedShadow.shader");
 		}
 
 		// ------------------------------------------------------------------------
