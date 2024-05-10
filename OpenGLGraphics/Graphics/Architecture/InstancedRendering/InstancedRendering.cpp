@@ -16,10 +16,10 @@ namespace Graphics::Architecture::InstancedRendering
 
 	void InstanceRenderer::add_To_InstancedRendering(std::weak_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL> > renderer, std::weak_ptr<Core::Object> object)
 	{
-		std::vector<Graphics::Primitives::Mesh>* meshes =  renderer.lock().get()->getModel()->getMeshes();
+		std::vector<Graphics::Primitives::Mesh>& meshes =  renderer.lock().get()->getModel()->getMeshes();
 		//std::cout << "Adding Object: " << object.lock() << "\n";
 		InstancedMeshMap& map = *this->meshMap;
-		std::for_each(meshes->begin(), meshes->end(), [this, &object, &map](Graphics::Primitives::Mesh& x) {
+		std::for_each(meshes.begin(), meshes.end(), [this, &object, &map](Graphics::Primitives::Mesh& x) {
 			map.put(&x, object);
 			//std::cout << "\tMesh: " << &x << "\n";
 		});
@@ -65,5 +65,10 @@ namespace Graphics::Architecture::InstancedRendering
 		this->meshMap->printInstancedMap();
 		//this->meshMap->printMeshMap();
 		std::cout << std::endl;
+	}
+
+	void InstanceRenderer::clear()
+	{
+		this->meshMap->clear();
 	}
 }

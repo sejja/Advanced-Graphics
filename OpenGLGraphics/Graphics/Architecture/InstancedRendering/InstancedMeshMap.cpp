@@ -109,6 +109,12 @@ namespace Graphics {
 					pair.first->drawInstanced( pair.second );
 				}
 			}
+
+			void InstancedMeshMap::clear()
+			{
+				this->ptr_InstancedMesh_Objects_Map.clear();
+				this->ptr_Mesh_Objetcs_Map.clear();
+			}
 		}
 	}
 }

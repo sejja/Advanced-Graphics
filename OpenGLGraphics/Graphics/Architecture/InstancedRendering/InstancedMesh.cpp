@@ -25,23 +25,24 @@ namespace Graphics {
 
 			void InstancedMesh::drawInstanced(std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> instancedObject)
 			{
-					//std::cout << "Drawing mesh: " << this << "\n";
-				
-				// Bind all needed textures
+				//std::cout << "Drawing mesh: " << this << "\n";
+
+			// Bind all needed textures
 				this->asociatedMesh->bindTextures();
 
 				// Bind the VAO
 				glBindVertexArray(this->asociatedMesh->getVao());
-					//std::cout << "Binded VAO: " << this->asociatedMesh->getVao() << "\n";
+				//std::cout << "Binded VAO: " << this->asociatedMesh->getVao() << "\n";
 
-				//Bind the uniform buffer
-				glBindBuffer(GL_UNIFORM_BUFFER, ubo);
+			//Bind the uniform buffer
+				glBindBufferBase(GL_UNIFORM_BUFFER, 1, ubo);
 				//glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * this->transforms->size(), nullptr, GL_DYNAMIC_DRAW); //clear previus data
 				glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * this->transforms->size(), this->transforms->data(), GL_DYNAMIC_DRAW);
+				//glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4) * this->transforms->size(), this->transforms->data());
 
 				//std::cout << &(this->transforms) << std::endl;
-				glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(this->asociatedMesh->getCount()), GL_UNSIGNED_INT, 0, static_cast<int>(transforms->size())); 
-					//glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(this->asociatedMesh->getCount()), GL_UNSIGNED_INT, 0, static_cast<int>(this->transforms->size())); //Si lo cambias por el this->transforms->size() la textura de las bolas de luz cambia, porque? ni idea @Diego alguna idea?
+				glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(this->asociatedMesh->getCount()), GL_UNSIGNED_INT, 0, static_cast<int>(transforms->size()));
+				//glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(this->asociatedMesh->getCount()), GL_UNSIGNED_INT, 0, static_cast<int>(this->transforms->size())); //Si lo cambias por el this->transforms->size() la textura de las bolas de luz cambia, porque? ni idea @Diego alguna idea?
 				glBindVertexArray(0);
 				glActiveTexture(GL_TEXTURE0);
 				glBindBuffer(GL_UNIFORM_BUFFER, 0);

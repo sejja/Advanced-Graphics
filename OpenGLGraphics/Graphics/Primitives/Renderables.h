@@ -60,7 +60,7 @@ namespace Core {
 			inline void SetProcudesShadow(const bool shadow) noexcept;
 			inline bool GetProcudesShadow() const noexcept;
 
-			::Graphics::Primitives::GLBModel* getModel();
+			::Graphics::Primitives::Model* getModel();
 
 #pragma endregion
 

@@ -40,6 +40,7 @@ namespace Core {
 	void Scene::CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
 		//mParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
+		auto& instancedRenderer = Singleton<::Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance();
 		
 		bool hasSkybox = false;
 
@@ -66,6 +67,8 @@ namespace Core {
 
 						std::string mesh = components[j]["model"];
 						renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>(mesh.c_str()));
+
+						if(obj->GetID() != "New Object") instancedRenderer.add_To_InstancedRendering(renderer, obj);
 
 						std::string shader = components[j]["shader"];
 						renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>(shader.c_str()));
@@ -142,7 +145,7 @@ namespace Core {
 		}
 
 
-		instanceRenderer.fetch();
+		instancedRenderer.fetch();
 
 		/*Test data*/
 		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
@@ -266,6 +269,7 @@ namespace Core {
 	void Scene::ClearScene()
 	{
 		mObjects.clear();
+		Singleton<::Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().clear();
 	}
 
 }

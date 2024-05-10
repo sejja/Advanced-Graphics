@@ -30,6 +30,7 @@ namespace Graphics {
 
 				void printInstancedMap();
 				void printMeshMap();
+				void clear();
 			private:
 
 				void initInstancedMesh(InstancedMesh* instancedMesh, Graphics::Primitives::Mesh* mesh);
@@ -40,6 +41,8 @@ namespace Graphics {
 
 				/* This map link a mesh to every instanced Instanced render node where there is a vector of each object that is rendering in the instanced mesh, in case of contai only one object the instanced rendering is not initiated */
 				std::unordered_map< Graphics::Primitives::Mesh* , InstancedRenderNode > ptr_Mesh_Objetcs_Map;
+
+
 			};
 		}
 	}

@@ -29,6 +29,7 @@ namespace Graphics {
 				int is_Instanced(Graphics::Primitives::Mesh* mesh);
 				int removeObject(std::weak_ptr<Core::Object> object);
 				void fetch();
+				void clear();
 
 			private:
 
