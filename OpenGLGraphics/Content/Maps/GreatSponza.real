@@ -10,21 +10,758 @@
         }
       ],
       "name": "Palace",
-      "position": [
-        0.0,
-        -10.0,
-        0.0
+      "position": [ 0.0, 0.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
       ],
-      "rotation": [
-        0.0,
-        -0.0,
-        0.0
+      "name": "Palace",
+      "position": [ 0.0, -200.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
       ],
-      "scale": [
-        0.20000000298023224,
-        0.20000000298023224,
-        0.20000000298023224
-      ]
+      "name": "Palace",
+      "position": [ 0.0, -400.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ 0.0, -600.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -300.0, -0.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -600.0, -0.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -900.0, -0.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, 300.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, 300.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, 600.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, 900.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, -300.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, -600.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, -900.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -200.0, -300.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -400.0, -600.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -600.0, -900.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ 0.0, 0.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ 0.0, -200.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ 0.0, -400.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ 0.0, -600.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -300.0, -0.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -600.0, -0.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -900.0, -0.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, 300.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, 300.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, 600.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, 900.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, -300.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, -600.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, -900.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -200.0, -300.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -400.0, -600.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -600.0, -900.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ 0.0, 0.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ 0.0, -200.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ 0.0, -400.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ 0.0, -600.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -300.0, -0.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -600.0, -0.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -900.0, -0.0, 0.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, 300.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, 300.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, 600.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, 900.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, -300.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, -600.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -0.0, -900.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -200.0, -300.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -400.0, -600.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
+    },
+
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [ -0.0, -600.0, -900.0 ],
+      "rotation": [ 0.0, -0.0, 0.0 ],
+      "scale": [ 0.20000000298023224, 0.20000000298023224, 0.20000000298023224 ]
     },
 
     {
@@ -81,60 +818,6 @@
       ],
       "rotation": [
         0.0,
-        -0.0,
-        -0.0
-      ],
-      "scale": [
-        0.4000000059604645,
-        0.4000000059604645,
-        0.4000000059604645
-      ]
-    },
-
-    {
-      "_id": "Dragon",
-      "components": [
-        {
-          "model": "Content/Meshes/Dragon/scene.gltf",
-          "shader": "Content/Shaders/DeferredGeometry.shader",
-          "type": "Model Renderer"
-        }
-      ],
-      "name": "Dragon",
-      "position": [
-        3.574063539505005,
-        -30.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        -0.0,
-        -0.0
-      ],
-      "scale": [
-        0.4000000059604645,
-        0.4000000059604645,
-        0.4000000059604645
-      ]
-    },
-
-    {
-      "_id": "Dragon",
-      "components": [
-        {
-          "model": "Content/Meshes/Dragon/scene.gltf",
-          "shader": "Content/Shaders/DeferredGeometry.shader",
-          "type": "Model Renderer"
-        }
-      ],
-      "name": "Dragon",
-      "position": [
-        3.574063539505005,
-        -60.0,
-        0.0
-      ],
-      "rotation": [
-        45.0,
         -0.0,
         -0.0
       ],
