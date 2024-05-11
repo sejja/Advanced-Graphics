@@ -7,8 +7,8 @@ namespace Graphics {
 		namespace InstancedRendering {
 			InstancedMesh::InstancedMesh()
 			{
-				//this->asociatedMesh = std::make_shared<Graphics::Primitives::Mesh>(asociatedMesh);
-
+				
+				//generate the uniform buffer that contains the 
 				glGenBuffers(1, &ubo);
 				glBindBuffer(GL_UNIFORM_BUFFER, ubo);
 				glBindBufferBase(GL_UNIFORM_BUFFER, 1, ubo);
@@ -20,29 +20,27 @@ namespace Graphics {
 			}
 			InstancedMesh::~InstancedMesh()
 			{
-
+				delete this->transforms;
+				glDeleteBuffers(GL_UNIFORM_BUFFER, &ubo);
 			}
 
 			void InstancedMesh::drawInstanced(std::shared_ptr<std::vector<std::shared_ptr<Core::Object>>> instancedObject)
 			{
-				//std::cout << "Drawing mesh: " << this << "\n";
 
 			// Bind all needed textures
 				this->asociatedMesh->bindTextures();
 
-				// Bind the VAO
+			// Bind the VAO
 				glBindVertexArray(this->asociatedMesh->getVao());
-				//std::cout << "Binded VAO: " << this->asociatedMesh->getVao() << "\n";
 
-			//Bind the uniform buffer
+			// Bind the uniform buffer
 				glBindBufferBase(GL_UNIFORM_BUFFER, 1, ubo);
-				//glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * this->transforms->size(), nullptr, GL_DYNAMIC_DRAW); //clear previus data
 				glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * this->transforms->size(), this->transforms->data(), GL_DYNAMIC_DRAW);
-				//glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4) * this->transforms->size(), this->transforms->data());
 
-				//std::cout << &(this->transforms) << std::endl;
+			// Draw call
 				glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(this->asociatedMesh->getCount()), GL_UNSIGNED_INT, 0, static_cast<int>(transforms->size()));
-				//glDrawElementsInstanced(GL_TRIANGLES, static_cast<unsigned int>(this->asociatedMesh->getCount()), GL_UNSIGNED_INT, 0, static_cast<int>(this->transforms->size())); //Si lo cambias por el this->transforms->size() la textura de las bolas de luz cambia, porque? ni idea @Diego alguna idea?
+			
+			// Set to the default for the next render
 				glBindVertexArray(0);
 				glActiveTexture(GL_TEXTURE0);
 				glBindBuffer(GL_UNIFORM_BUFFER, 0);
@@ -57,11 +55,7 @@ namespace Graphics {
 						glm::rotate(glm::mat4(1.0f), parent->GetRotation().y, glm::vec3(1.0f, 0.0f, 0.0f)) *
 						glm::rotate(glm::mat4(1.0f), parent->GetRotation().x, glm::vec3(0.0f, 1.0f, 0.0f)) *
 						glm::scale(glm::mat4(0.01f), parent->GetScale());
-
-					//std::cout << "Instanced Rendering: " << parent.get() << "\n";
 					this->transforms->push_back(matrix);
-
-					//std::cout << "Updated to instanced rendering:" << parent.get() << "\n";
 				});
 			}
 

@@ -41,9 +41,11 @@ namespace Graphics {
 				
 			}
 
+			/// <summary>
+			/// This function updates the position and new Objects to the instanced rendering. 
+			/// </summary>
 			void InstancedMeshMap::fetch_Instanced()
 			{
-				//printInstancedMap();
 				for (const auto& mesh : this->ptr_Mesh_Objetcs_Map)
 				{
 					if (mesh.second.objects.get()->size() > 1)
@@ -108,6 +110,22 @@ namespace Graphics {
 				{
 					pair.first->drawInstanced( pair.second );
 				}
+			}
+
+			void InstancedMeshMap::removeObject(Core::Object* ptr_obj)
+			{
+
+				for (const auto& mesh : this->ptr_Mesh_Objetcs_Map)
+				{
+					if (mesh.second.objects.get()->size() > 1)
+					{
+						mesh.second.objects.get()->erase(std::remove_if(mesh.second.objects.get()->begin(), mesh.second.objects.get()->end(), 
+							[ptr_obj](std::shared_ptr<Core::Object> x ) {
+							return x.get() == ptr_obj;
+							}), mesh.second.objects.get()->end());
+					}
+				}
+
 			}
 
 			void InstancedMeshMap::clear()

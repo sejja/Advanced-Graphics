@@ -27,7 +27,7 @@ namespace Graphics {
 				void fetch_Instanced();
 				std::unordered_map< Graphics::Primitives::Mesh*, InstancedRenderNode >* getInstancedMap();
 				void InstancedRender();
-
+				void removeObject(Core::Object* ptr_obj);
 				void printInstancedMap();
 				void printMeshMap();
 				void clear();

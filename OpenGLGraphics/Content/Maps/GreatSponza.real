@@ -92,6 +92,60 @@
     },
 
     {
+      "_id": "Dragon",
+      "components": [
+        {
+          "model": "Content/Meshes/Dragon/scene.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Dragon",
+      "position": [
+        3.574063539505005,
+        -30.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        -0.0
+      ],
+      "scale": [
+        0.4000000059604645,
+        0.4000000059604645,
+        0.4000000059604645
+      ]
+    },
+
+    {
+      "_id": "Dragon",
+      "components": [
+        {
+          "model": "Content/Meshes/Dragon/scene.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Dragon",
+      "position": [
+        3.574063539505005,
+        -60.0,
+        0.0
+      ],
+      "rotation": [
+        45.0,
+        -0.0,
+        -0.0
+      ],
+      "scale": [
+        0.4000000059604645,
+        0.4000000059604645,
+        0.4000000059604645
+      ]
+    },
+
+    {
       "_id": "2",
       "components": [
         {
