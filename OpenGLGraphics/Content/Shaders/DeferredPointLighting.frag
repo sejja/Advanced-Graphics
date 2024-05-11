@@ -34,6 +34,19 @@ layout (std140) uniform UniformBuffer {
 };
 
 uniform Light uLight;
+uniform samplerCube depthMap;
+
+float ShadowCalculation(vec3 fragPos) {
+    vec3 fragToLigth = fragPos - uLight.mPosition;
+    float closestDepth = texture(depthMap, fragToLigth).r;
+    closestDepth *= uLight.mRadius;
+    float currentDepth = length(fragToLigth);
+
+    float bias = 0.05; 
+    float shadow = currentDepth -  bias > closestDepth ? 0.0 : 1.0; //Esto es un if raro
+
+    return shadow;
+}
 
 // ------------------------------------------------------------------------
 /*! Shader Entrypoint
@@ -47,11 +60,15 @@ void main() {
     const vec3 lightDir = normalize(vec3(ubView * vec4(uLight.mPosition, 1)) - fragPos);
     float AmbientOcclusion = texture(gSSAO, oUVs).r;
 
-    FragColor = texture(gAlbedoSpec, oUVs) * AmbientOcclusion * vec4(//atenuation
+    float shadow = ShadowCalculation(fragPos);
+
+    FragColor = texture(gAlbedoSpec, oUVs) * AmbientOcclusion * vec4(
+            //atenuation
              pow(smoothstep(uLight.mRadius, 0, length(vec3(ubView * vec4(uLight.mPosition, 1)) - fragPos)), uLight.mFallOff) 
             //ambient
-            * (( (max(dot(normal, lightDir), 0.0) * uLight.mColor 
+            * (( (max(dot(normal, lightDir), 0.0) * shadow * uLight.mColor
             //specular
             + uLight.mColor * pow(max(dot(normalize(vec3(ubView * vec4(ubCameraPosition, 1)) - fragPos), 
+
                 reflect(-lightDir, normal)), 0.0), 32)))), 1.0);
 } 

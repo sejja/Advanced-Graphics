@@ -162,6 +162,7 @@ namespace Graphics {
 				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x->mColor);
 				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x->mRadius);
 				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x->mFallOff);
+
 				glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 				Utils::GLUtils::RenderScreenQuad();
 			}
@@ -186,6 +187,7 @@ namespace Graphics {
 					shadptr->SetShaderUniform("uShadowMatrix", &x->mShadowMatrix);
 					x->mShadowMap.BindTexture(4);
 				}
+
 				glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 				Utils::GLUtils::RenderScreenQuad();
 			}
