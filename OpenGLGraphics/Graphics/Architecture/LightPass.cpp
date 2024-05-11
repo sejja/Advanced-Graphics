@@ -158,6 +158,8 @@ namespace Graphics {
 			for (const auto& x : sPointLightData) {
 				StencilPass(x->mPosition, x->CalculateSphereOfInfluence());
 				shadptr->Bind();
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_CUBE_MAP, x->depthCubemap);
 				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &x->mPosition);
 				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x->mColor);
 				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x->mRadius);
