@@ -77,12 +77,12 @@ namespace Graphics {
 				glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 1.0f, near, far);
 
 				std::vector<glm::mat4> shadowTransforms;
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(-1, 0, 0), glm::vec3(0, 1, 0)));
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 0), glm::vec3(0, 1, 0)));
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, -1, 0), glm::vec3(-1, 0, 0))); 
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 1, 0), glm::vec3(1, 0, 0))); 
-				shadowTransforms.push_back(shadowProj* glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 0, 1), glm::vec3(0, 1, 0)));
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 0, -1), glm::vec3(0, 1, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 1, 0), glm::vec3(0, 0, 1))); 
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, -1, 0), glm::vec3(1, 0, -1))); 
+				shadowTransforms.push_back(shadowProj* glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 0, 1), glm::vec3(0, -1, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 0, -1), glm::vec3(0, -1, 0)));
 
 				//glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.0f, 0.1f, 1000.f);
 
@@ -158,12 +158,12 @@ namespace Graphics {
 			for (const auto& x : sPointLightData) {
 				StencilPass(x->mPosition, x->CalculateSphereOfInfluence());
 				shadptr->Bind();
-				glActiveTexture(GL_TEXTURE0);
+				glActiveTexture(GL_TEXTURE5);
 				glBindTexture(GL_TEXTURE_CUBE_MAP, x->depthCubemap);
 				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &x->mPosition);
-				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x->mColor);
-				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x->mRadius);
-				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x->mFallOff);
+				//shadptr->SetShaderUniform((id + ".mColor").c_str(), &x->mColor);
+				//shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x->mRadius);
+				//shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x->mFallOff);
 
 				glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 				Utils::GLUtils::RenderScreenQuad();

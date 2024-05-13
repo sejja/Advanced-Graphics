@@ -17,6 +17,7 @@ layout(binding = 1) uniform sampler2D gNormal;
 layout(binding = 2) uniform sampler2D gAlbedoSpec;
 layout(binding = 3) uniform sampler2D gSSAO;
 layout(binding = 4) uniform sampler2D uShadowMap;
+layout(binding = 5) uniform samplerCube depthMap;
 
 struct Light {
     vec3 mPosition;
@@ -34,7 +35,7 @@ layout (std140) uniform UniformBuffer {
 };
 
 uniform Light uLight;
-uniform samplerCube depthMap;
+uniform mat4 shadowMatrix;
 
 float ShadowCalculation(vec3 fragPos) {
     vec3 fragToLigth = fragPos - uLight.mPosition;
@@ -62,13 +63,16 @@ void main() {
 
     float shadow = ShadowCalculation(fragPos);
 
-    FragColor = texture(gAlbedoSpec, oUVs) * AmbientOcclusion * vec4(
-            //atenuation
-             pow(smoothstep(uLight.mRadius, 0, length(vec3(ubView * vec4(uLight.mPosition, 1)) - fragPos)), uLight.mFallOff) 
-            //ambient
-            * (( (max(dot(normal, lightDir), 0.0) * shadow * uLight.mColor
-            //specular
-            + uLight.mColor * pow(max(dot(normalize(vec3(ubView * vec4(ubCameraPosition, 1)) - fragPos), 
-
-                reflect(-lightDir, normal)), 0.0), 32)))), 1.0);
+//    FragColor = texture(gAlbedoSpec, oUVs) * AmbientOcclusion * shadow * vec4(
+//            //atenuation
+//             pow(smoothstep(uLight.mRadius, 0, length(vec3(ubView * vec4(uLight.mPosition, 1)) - fragPos)), uLight.mFallOff) 
+//            //ambient
+//            * (( (max(dot(normal, lightDir), 0.0) * uLight.mColor
+//            //specular
+//            + uLight.mColor * pow(max(dot(normalize(vec3(ubView * vec4(ubCameraPosition, 1)) - fragPos), 
+//
+//                reflect(-lightDir, normal)), 0.0), 32)))), 1.0);
+    vec3 fragToLigth = fragPos - uLight.mPosition;
+    float closestDepth = texture(depthMap, fragToLigth).r;
+    FragColor = vec4(vec3(closestDepth), 1.0);
 } 
