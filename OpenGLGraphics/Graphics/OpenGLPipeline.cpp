@@ -109,8 +109,8 @@ namespace Core {
 			cubeMapDirections[1] = glm::vec3(-1.0f, 0.0f, 0.0f); // -X
 			cubeMapDirections[2] = glm::vec3(0.0f, -1.0f, 0.0f);  // +Y
 			cubeMapDirections[3] = glm::vec3(0.0f, 1.0f, 0.0f); // -Y
-			cubeMapDirections[4] = glm::vec3(0.0f, 0.0f, -1.0f);  // +Z
-			cubeMapDirections[5] = glm::vec3(0.0f, 0.0f, 1.0f); // -Z
+			cubeMapDirections[4] = glm::vec3(0.0f, 0.0f, 1.0f);  // +Z
+			cubeMapDirections[5] = glm::vec3(0.0f, 0.0f, -1.0f); // -Z
 			mDebug = std::make_unique<::Graphics::Debug::DebugSystem>();
 			mSSAOBuffer = std::make_unique<::Graphics::Architecture::SSAO::SSAOBuffer>(mDimensions);
 		}
@@ -305,10 +305,10 @@ namespace Core {
 			
 			Skybox::sCurrentSky->UploadSkyboxCubeMap();
 
-			//if (firstTime > 0) {
+			if (firstTime > 0) {
 				RenderReflectionCubemap(glm::vec3(0.0f,0.0f,0.0f));
-				//firstTime--;
-			//}
+				firstTime--;
+			}
 			RenderShadowMaps(cam.GetViewMatrix(), {1600,900});
 			
 			glActiveTexture(GL_TEXTURE11);
@@ -583,14 +583,14 @@ namespace Core {
 		        // Set the camera to look in the direction of the cubemap face
 				if(i == 2) {
 					//view = glm::lookAt(position, position + cubeMapDirections[i], glm::vec3(1.0f, 0.0f, 0.0f));
-					view = CorrectRollDirection(true, -90.01f, 0.0f, 90.01f, position);
+					view = CorrectRollDirection(true, 90.01f, 0.0f, -90.01f, position);
 				}
 				else if (i == 3) {
-					view = CorrectRollDirection(false, 90.01f, 0.0f, -90.01f, position);
+					view = CorrectRollDirection(false, -90.01f, 0.0f, 90.01f, position);
 					
 				}
 				else {
-					view = glm::lookAt(position, position + cubeMapDirections[i], glm::vec3(0.0f, 1.0f, 0.0f));
+					view = glm::lookAt(position, position + cubeMapDirections[i], glm::vec3(0.0f, -1.0f, 0.0f));
 				}
 				glm::mat4 projectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10000.0f);
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionCubemap, 0);
@@ -634,10 +634,10 @@ namespace Core {
 			glm::vec3 Front = glm::normalize(front);
 			glm::vec3 Right;
 			if(!y){
-				Right = glm::normalize(glm::cross(Front, glm::vec3(1.0f, 0.0f, 0.0f)));
+				Right = glm::normalize(glm::cross(Front, glm::vec3(-1.0f, 0.0f, 0.0f)));
 			}
 			else {
-				Right = glm::normalize(glm::cross(Front, glm::vec3(-1.0f, 0.0f, 0.0f)));
+				Right = glm::normalize(glm::cross(Front, glm::vec3(1.0f, 0.0f, 0.0f)));
 			}
 			glm::vec3 Up = glm::normalize(glm::cross(Right, Front));
 
