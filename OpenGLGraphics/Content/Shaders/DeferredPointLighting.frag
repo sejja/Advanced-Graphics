@@ -35,7 +35,6 @@ layout (std140) uniform UniformBuffer {
 };
 
 uniform Light uLight;
-uniform mat4 shadowMatrix;
 
 float ShadowCalculation(vec3 fragPos) {
     vec3 fragToLigth = fragPos - uLight.mPosition;
