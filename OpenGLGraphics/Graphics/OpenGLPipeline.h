@@ -43,6 +43,7 @@ namespace Core {
 			FrameBuffer* GetRenderFrameBuffer();
 			GLuint GetRenderTexture();
 			std::vector<FrameBuffer> GetShadowMappingBuffer() { return mShadowBuffers; };
+			void RenderReflectionCubemap(const glm::vec3& position);
 
 			void setSceneFrameDimensions(const glm::lowp_u16vec2& dim) { sceneFrameDimensions = dim; }
 			float GetAspectRatio() { return static_cast<float>(sceneFrameDimensions.x) / static_cast<float>(sceneFrameDimensions.y); }
@@ -55,7 +56,7 @@ namespace Core {
 			void updateRenderablesGroups(const Core::Assets::Asset<ShaderProgram>& curShader, const Core::Assets::Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable);
 
 		private:
-			void GeometryPass(const glm::u16vec2 dim, glm::mat4 view, glm::mat4 projection);
+			void GeometryPass(const glm::u16vec2 dim, glm::mat4 view, glm::mat4 projection, const ::Graphics::Architecture::GBuffer& mGBuffer);
 			void RenderGUI();
 			void FlushObsoletes(std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes);
 			void GroupRender(std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
@@ -66,7 +67,7 @@ namespace Core {
 			void RenderParticlesSystems();
 			void DirectionalLightPass();
 			void BloomPass(GLuint targetbuffer);
-			void RenderReflectionCubemap(const glm::vec3& position);
+			
 			glm::mat4 CorrectRollDirection(bool y, float pitch, float yaw, float roll, const glm::vec3& cameraPosition);
 			void DecalPass();
 
@@ -78,6 +79,7 @@ namespace Core {
 			glm::lowp_u16vec2 sceneFrameDimensions;
 			std::vector<FrameBuffer> mShadowBuffers;
 			std::unique_ptr<::Graphics::Architecture::GBuffer> mGBuffer;
+			std::unique_ptr<::Graphics::Architecture::GBuffer> mGBufferReflections;
 			std::unique_ptr<::Graphics::Architecture::LightPass> mLightPass;
 			Core::Assets::Asset<ShaderProgram> mDirectionalLightShader;
 			std::unique_ptr<FrameBuffer> mFrameBuffer;
@@ -88,13 +90,14 @@ namespace Core {
 
 			// CubemapReflections
 			glm::vec3 cubeMapDirections[6];
-			int firstTime = 10;
+			int firstTime = 2;
 
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 
 
 			GLboolean AntiAliasing = false;
 			Core::Assets::Asset<ShaderProgram> RendererShader;
+			Core::Assets::Asset<ShaderProgram> reflectionRendererShader;
 			float exposure = 1;
 			std::unique_ptr<::Graphics::Debug::DebugSystem> mDebug;
 			std::unique_ptr<::Graphics::Architecture::Bloom::BloomRenderer> mBloomRenderer;

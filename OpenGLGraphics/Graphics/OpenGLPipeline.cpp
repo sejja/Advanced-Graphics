@@ -54,6 +54,7 @@ namespace Core {
 			glDisable(GL_STENCIL_TEST);
 			glClearColor(0.f, 0.f, 0.f, 0.f);
 			mGBuffer = std::make_unique<::Graphics::Architecture::GBuffer>(mDimensions);
+			mGBufferReflections = std::make_unique<::Graphics::Architecture::GBuffer>(glm::lowp_u16vec2 { 512, 512 });
 			mDirectionalLightShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/DeferredDirectionalLighting.shader");
 
 
@@ -65,6 +66,7 @@ namespace Core {
 			mHDRBuffer->Create();
 			mHDRBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
 			RendererShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Renderer.shader");
+			reflectionRendererShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Renderer.shader");
 
 			//-------------------------
 			glEnable(GL_MULTISAMPLE);
@@ -314,7 +316,7 @@ namespace Core {
 			glActiveTexture(GL_TEXTURE11);
 			glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionCubemap);
 			UpdateUniformBuffers(cam.GetViewMatrix(),cam.GetProjectionMatrix()); // SI
-			GeometryPass({1600,900},cam.GetViewMatrix(), cam.GetProjectionMatrix()); //si
+			GeometryPass({1600,900},cam.GetViewMatrix(), cam.GetProjectionMatrix(), *mGBuffer); //si
 			mSSAOBuffer->RenderAO(*mGBuffer);
 			mGeometryDeform.DecalPass(*mGBuffer);
 
@@ -400,7 +402,7 @@ namespace Core {
 		*
 		*   Draws the geometry on the G-Buffer
 		*/ //----------------------------------------------------------------------
-		void OpenGLPipeline::GeometryPass(const glm::u16vec2 dim, glm::mat4 view, glm::mat4 projection) {
+		void OpenGLPipeline::GeometryPass(const glm::u16vec2 dim, glm::mat4 view, glm::mat4 projection,const ::Graphics::Architecture::GBuffer& mGBuffer) {
 			glDepthMask(GL_TRUE);
 			glDisable(GL_BLEND);
 			//glEnable(GL_DEPTH_TEST);
@@ -414,8 +416,8 @@ namespace Core {
 
 			{
 
-				mGBuffer->Bind();
-				mGBuffer->ClearBuffer();
+				mGBuffer.Bind();
+				mGBuffer.ClearBuffer();
 
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
 					[this, &obsoletes, &projection, &view](const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
@@ -505,14 +507,14 @@ namespace Core {
 		    // Set up framebuffer and cubemap
 		   GLuint reflectionFramebuffer;
 		   GLuint refelectionFrameBufferTexture;
-		   //std::unique_ptr<FrameBuffer> finalReflectionFramebuffer;
+		   std::unique_ptr<FrameBuffer> finalReflectionFramebuffer;
 		   GLuint reflectionDepth;
 		   int reflectionSize = 512;
 
 
-		   //finalReflectionFramebuffer = std::make_unique<FrameBuffer>();
-		   //finalReflectionFramebuffer->Create();
-		   //finalReflectionFramebuffer->CreateRenderTexture({ reflectionSize , reflectionSize });
+		   finalReflectionFramebuffer = std::make_unique<FrameBuffer>();
+		   finalReflectionFramebuffer->Create();
+		   finalReflectionFramebuffer->CreateRenderTexture({ reflectionSize , reflectionSize });
 		    
 		    glGenFramebuffers(1, &reflectionFramebuffer);
 			glGenTextures(1, &refelectionFrameBufferTexture);
@@ -566,7 +568,7 @@ namespace Core {
 				std::cerr << "Framebuffer is not complete!" << glGetError() << std::endl;
 			}
 
-			
+			glm::mat4 view;
 		    // Render to each cubemap face
 		    for (GLuint i = 0; i < 6; ++i)
 		    {
@@ -576,13 +578,9 @@ namespace Core {
 				glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionCubemap);
 				glEnable(GL_CULL_FACE);
 				glViewport(0, 0, reflectionSize, reflectionSize);
-				//glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
 				
-				//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				glm::mat4 view;
 		        // Set the camera to look in the direction of the cubemap face
 				if(i == 2) {
-					//view = glm::lookAt(position, position + cubeMapDirections[i], glm::vec3(1.0f, 0.0f, 0.0f));
 					view = CorrectRollDirection(true, 90.01f, 0.0f, -90.01f, position);
 				}
 				else if (i == 3) {
@@ -594,29 +592,27 @@ namespace Core {
 				}
 				glm::mat4 projectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10000.0f);
 				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionCubemap, 0);
-		        // Render scene with this view matrix
-		        // Call your rendering functions here, e.g., GeometryPass(), Skybox::sCurrentSky->Render(cam, *this)
+				// Render scene with this view matrix
 				RenderShadowMaps(view, { 512, 512 });
 				UpdateUniformBuffers(view, projectionMatrix);
-				//RenderShadowMaps(view);
-				GeometryPass({ 512, 512 },view,projectionMatrix);
+				GeometryPass({ 512, 512 },view,projectionMatrix, *mGBufferReflections);
 				glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
 
-				mLightPass->RenderLights({ 1600, 900}, *mGBuffer, *mSSAOBuffer);
-				glViewport(0,0,512,512);
-				mGBuffer->BlitDepthBufferReflections(reflectionCubemap);
+				mLightPass->RenderLights({ 512, 512}, *mGBufferReflections, *mSSAOBuffer);
+				mGBufferReflections->BlitDepthBufferReflections(reflectionCubemap);
 				Skybox::sCurrentSky->RenderSpecific(view,projectionMatrix, *this);
 				
-				//glBindFramebuffer(GL_FRAMEBUFFER, finalReflectionFramebuffer->GetHandle());
-				//glViewport(0, 0, reflectionSize, reflectionSize);
-				//glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-				////glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionCubemap, 0);
-				//glActiveTexture(GL_TEXTURE0);
-				//glBindTexture(GL_TEXTURE_2D, refelectionFrameBufferTexture);
-				//RendererShader->Get()->Bind();
-				//RendererShader->Get()->SetShaderUniform("exposure", exposure);
-				//::Graphics::Architecture::Utils::GLUtils::RenderScreenQuad();
 
+				// WIP PostProcessing
+				glBindFramebuffer(GL_FRAMEBUFFER, finalReflectionFramebuffer->GetHandle());
+				glViewport(0, 0, reflectionSize, reflectionSize);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionCubemap, 0);
+				glActiveTexture(GL_TEXTURE20);
+				glBindTexture(GL_TEXTURE_2D, refelectionFrameBufferTexture);
+				reflectionRendererShader->Get()->Bind();
+				reflectionRendererShader->Get()->SetShaderUniform("exposure", exposure);
+				::Graphics::Architecture::Utils::GLUtils::RenderScreenQuad();
 				
 		    }
 		    // Cleanup

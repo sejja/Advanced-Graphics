@@ -42,6 +42,10 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
             if (ImGui::Checkbox("Anti-Aliasing", &antiAlias)) {
                 pipeline.setAntiAliasing(antiAlias);
             }
+            // Button for RenderCubemapReflections
+			if (ImGui::Button("Render Cubemap Reflections")) {
+				pipeline.RenderReflectionCubemap(glm::vec3(0.0f, 0.0f, 0.0f));
+			}
 
             ImGui::EndMenu();
         }
