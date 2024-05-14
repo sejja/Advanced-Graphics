@@ -77,12 +77,12 @@ namespace Graphics {
 				glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 1.0f, near, far);
 
 				std::vector<glm::mat4> shadowTransforms;
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0)));
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0)));
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 1, 0), glm::vec3(0, 0, 1))); 
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, -1, 0), glm::vec3(1, 0, -1))); 
-				shadowTransforms.push_back(shadowProj* glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 0, 1), glm::vec3(0, -1, 0)));
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 0, -1), glm::vec3(0, -1, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(-1, 0, 0), glm::vec3(0, 1, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 0), glm::vec3(0, 1, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, -1, 0), glm::vec3(-1, 0, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 1, 0), glm::vec3(1, 0, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 0, 1), glm::vec3(0, 1, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 0, -1), glm::vec3(0, 1, 0)));
 
 				//glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.0f, 0.1f, 1000.f);
 

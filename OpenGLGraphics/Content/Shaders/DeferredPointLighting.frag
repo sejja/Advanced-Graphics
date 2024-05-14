@@ -37,7 +37,7 @@ layout (std140) uniform UniformBuffer {
 uniform Light uLight;
 
 float ShadowCalculation(vec3 fragPos) {
-    vec3 fragToLigth = fragPos - uLight.mPosition;
+    vec3 fragToLigth = vec3(inverse(ubView) * vec4(fragPos, 1)) - uLight.mPosition;
     float closestDepth = texture(depthMap, fragToLigth).r;
     closestDepth *= uLight.mRadius;
     float currentDepth = length(fragToLigth);
@@ -71,7 +71,7 @@ void main() {
 //            + uLight.mColor * pow(max(dot(normalize(vec3(ubView * vec4(ubCameraPosition, 1)) - fragPos), 
 //
 //                reflect(-lightDir, normal)), 0.0), 32)))), 1.0);
-    vec3 fragToLigth = fragPos - uLight.mPosition;
+    vec3 fragToLigth = vec3(inverse(ubView) * vec4(fragPos, 1)) - uLight.mPosition;
     float closestDepth = texture(depthMap, fragToLigth).r;
     FragColor = vec4(vec3(closestDepth), 1.0);
 } 
