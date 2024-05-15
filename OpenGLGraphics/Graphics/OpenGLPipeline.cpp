@@ -24,6 +24,8 @@
 #include "Graphics/Architecture/Utils/GLUtils.h"
 #include "Graphics/Primitives/Decal.h"
 #include "Dependencies/ImGuizmo/ImGuizmo.h"
+#include "Core/AppWrapper.h"
+
 
 
 using namespace Core::Graphics;
@@ -316,6 +318,25 @@ namespace Core {
 			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
 			//glEnable(GL_DEPTH_TEST);
 
+			auto scene = Singleton<AppWrapper>::Instance().getScene();
+			// Draw octree
+			auto debug_draw_octree = [&]() {
+				
+			for (auto& it : scene.GetOctree().m_nodes) {
+				if (it.second->first) {
+					aabb b = LocationalCode::compute_bv(it.second->locational_code, scene.GetOctree().root_size());
+					mDebug->DrawAABB(b.pos, b.sca, glm::vec4(0.4 * it.second->locational_code, 1.0, 0, 0),cam);
+				}
+			}
+			};
+
+			// Frustum to test
+			frustrum frust(cam.GetProjectionMatrix() * cam.GetViewMatrix());
+			scene.OctreeCheck(frust);
+
+
+
+
 			RenderParticlesSystems();
 
 			BloomPass(mHDRBuffer->GetHandle());
@@ -485,6 +506,7 @@ namespace Core {
 			glCullFace(GL_FRONT);
 
 		}
+
 
 		void OpenGLPipeline::RenderParticlesSystems()
 		{

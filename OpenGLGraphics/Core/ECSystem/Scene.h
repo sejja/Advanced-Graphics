@@ -40,6 +40,21 @@ namespace Core {
 			mObjects.erase(std::remove(mObjects.begin(), mObjects.end(), obj), mObjects.end());
 		}
 
+		
+		Octree<Object>& GetOctree() {
+			return m_octree;
+		}
+		
+		void CreateOctree(int levels, int sizebit);
+		void AddObjToNode(const std::shared_ptr<Object>& obj, Octree<Object>::node* node);
+		void EraseObjFromPrevNode(const std::shared_ptr<Object>& obj, Octree<Object>& tree);
+		void CheckFrustrumObjectCollisions(Octree<Object>::node* node, frustrum const& frus);
+		void OctreeCheck(frustrum const& frustum);
+
+		// Stats
+		int stat_draw_calls = 0;
+		int stat_frustum_aabb_checks = 0;
+		int stat_frustum_aabb_positive = 0;
 
 #pragma endregion	
 
@@ -47,6 +62,8 @@ namespace Core {
 	private:
 		SceneParser mParser;
 		std::vector<std::shared_ptr<Object>> mObjects;
+
+		Octree<Object> m_octree;
 #pragma endregion
 	};
 }

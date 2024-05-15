@@ -12,7 +12,7 @@ ActionManager::~ActionManager()
 }
 
 void ActionManager::AddAction(std::shared_ptr<Action> action){
-	actions.resize(currentAction + 1);// si hay acciones en el futuro, las borra
+	actions.resize(currentAction + 1);// si hay acciones futuras, las borra
 	actions.push_back(action);
 	currentAction++;
 }

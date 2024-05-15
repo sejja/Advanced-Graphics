@@ -288,6 +288,21 @@
     <ClCompile Include="Core\Editor\ActionManager\Actions\ComponentAction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Graphics\Architecture\SpacePartitioning\octree.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\SpacePartitioning\math.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\SpacePartitioning\shapes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="D:\Asier\Descargas\Space-Partitioning-master\Space-Partitioning-master\src\geometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\SpacePartitioning\geometry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -1883,6 +1898,24 @@
     <ClInclude Include="Core\Editor\ActionManager\Actions\ComponentAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Graphics\Architecture\SpacePartitioning\octree.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Asier\Descargas\Space-Partitioning-master\Space-Partitioning-master\src\math.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\SpacePartitioning\math.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\SpacePartitioning\shapes.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="D:\Asier\Descargas\Space-Partitioning-master\Space-Partitioning-master\src\geometry.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\SpacePartitioning\geometry.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\SDL\Include\SDL_config.h.cmake" />
@@ -2379,6 +2412,9 @@
     <None Include="Content\Maps\GreatCyberpunk.real" />
     <None Include="Content\Maps\Japan.real" />
     <None Include="Content\Maps\Minecraft.real" />
+    <None Include="Graphics\Architecture\SpacePartitioning\octree.inl">
+      <Filter>Header Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />

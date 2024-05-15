@@ -135,10 +135,10 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "CXX compiler"
+					"value" : "No help, variable specified on the command line."
 				}
 			],
-			"type" : "STRING",
+			"type" : "FILEPATH",
 			"value" : "D:/Apps/Visual Studio/VC/Tools/MSVC/14.39.33519/bin/Hostx64/x64/cl.exe"
 		},
 		{
@@ -247,10 +247,10 @@
 				},
 				{
 					"name" : "HELPSTRING",
-					"value" : "C compiler"
+					"value" : "No help, variable specified on the command line."
 				}
 			],
-			"type" : "STRING",
+			"type" : "FILEPATH",
 			"value" : "D:/Apps/Visual Studio/VC/Tools/MSVC/14.39.33519/bin/Hostx64/x64/cl.exe"
 		},
 		{

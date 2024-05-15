@@ -27,6 +27,10 @@
 
 #include "Core/Assets/ResourceManager.h"
 #include "Core/Editor/Editor.h"
+#include "Core/Editor/SelectedObj.h"
+#include <gtx/euler_angles.hpp>
+#include "Graphics/Architecture/SpacePartitioning/geometry.hpp"
+
 
 using json = nlohmann::json;
 
@@ -280,5 +284,197 @@ namespace Core {
 	{
 		mObjects.clear();
 	}
+
+
+
+
+
+
+
+
+
+
+
+	void Scene::AddObjToNode(const std::shared_ptr<Object>& obj, Octree<Object>::node* node) {
+		if (obj->GetOctreeNode() == nullptr) {
+			obj->GetOctreeNode()->first = obj; //set this object as the first object
+		}
+		else {
+			bool flag = false; //flag to check if the object was already inserted
+			std::shared_ptr<Object> pointer = obj->GetOctreeNode()->first;
+			while (pointer->GetOctreeNextObj() != nullptr) {
+				pointer = pointer->GetOctreeNextObj();
+				if (pointer->GetID() == obj->GetID()) {//same object
+					flag = true;
+					break;
+				}
+			}
+			//set the pointers if the object was not already inside, check also with the first and last objects
+			if (!flag && obj->GetOctreeNode()->first->GetID() != obj->GetID()) {
+				pointer->GetOctreeNextObj() = obj;
+				obj->GetOctreePrevObj() = pointer;
+			}
+		}
+	}
+
+	void Scene::EraseObjFromPrevNode(const std::shared_ptr<Object>& obj, Octree<Object>& tree) {
+		//traverse through the linked list, in order to erase it from the prev linked list
+		std::shared_ptr<Object> pointer = obj->GetOctreeNode()->first;
+		if (obj->GetOctreeNode()->first) {
+			//if it was in the 1 position
+			if (obj->GetOctreeNode()->first->GetID() == obj->GetID()) {
+				if (pointer->GetOctreeNextObj() == nullptr) //alone in the linked list
+				{
+					obj->GetOctreeNode()->first = nullptr;
+					if (obj->GetOctreeNode()->children_active == 0) //if not children nodes delete
+						tree.delete_node(obj->GetOctreeNode()->locational_code);
+
+				}
+				else { //stil more objects in the linked list
+					obj->GetOctreeNode()->first = obj->GetOctreeNextObj();
+					obj->GetOctreeNextObj() = nullptr;
+				}
+			}
+			else {
+				while (pointer->GetOctreeNextObj() != nullptr) {
+					//traverse
+					pointer = pointer->GetOctreeNextObj();
+
+					if (pointer->GetID() == obj->GetID()) {
+						//if it is in the last position
+						if (pointer->GetOctreeNextObj() == nullptr) {
+							pointer->GetOctreePrevObj()->GetOctreeNextObj() = nullptr;
+						}
+						else {
+							pointer->GetOctreePrevObj()->GetOctreeNextObj() = pointer->GetOctreeNextObj();
+							pointer->GetOctreeNextObj()->GetOctreePrevObj() = pointer->GetOctreePrevObj();
+						}
+
+						//set to null the pointers of the object
+						obj->GetOctreePrevObj() = nullptr;
+						obj->GetOctreeNextObj() = nullptr;
+					}
+				}
+			}
+		}
+	}
+	/*
+	void Scene::CheckFrustrumObjectCollisions(Octree<Object>::node* node, frustrum const& frus)
+	{
+		std::shared_ptr<Object> pointer = node->first;
+
+		while (pointer) {
+			const glm::mat4& model = pointer->G;//mesh del componente
+			glm::vec3 min = model * glm::vec4(pointer->bv.min, 1.f);
+			glm::vec3 max = model * glm::vec4(pointer->bv.max, 1.f);
+			eResult c = classify_frustum_aabb_naive(frus, aabb(pointer->bv.min, pointer->bv.max));
+
+			if (c == eOUTSIDE)  // its is outside, not render it
+				pointer->visible = false;
+			else
+				pointer->visible = true;
+
+			pointer = pointer->m_octree_next_obj;
+		}
+	}
+	*/
+
+	void Scene::OctreeCheck(frustrum const& frustum)
+	{
+		stat_frustum_aabb_checks = 0;
+		stat_frustum_aabb_positive = 0;
+
+		for (auto& it : m_octree.m_nodes) {
+			if (it.second->first) {//if it has objects inside
+				aabb node = LocationalCode::compute_bv(it.second->locational_code, m_octree.root_size());
+				eResult c = ::classify_frustum_aabb_naive(frustum, node);
+				stat_frustum_aabb_checks++;
+
+				if (c == eINSIDE) {
+					std::shared_ptr<Object> pointer = it.second->first;
+					while (pointer) {
+						pointer->SetVisible(true);
+						pointer = pointer->GetOctreeNextObj();
+						stat_frustum_aabb_positive++;
+					}
+				}
+				else if (c == eOUTSIDE) {
+					std::shared_ptr<Object> pointer = it.second->first;
+					while (pointer) {
+						pointer->SetVisible(false);
+						pointer = pointer->GetOctreeNextObj();
+					}
+				}
+				else {// overlaping
+					CheckFrustrumObjectCollisions(it.second, frustum);
+				}
+			}
+		}
+	}
+
+	/**
+	 * @brief
+	 */
+
+
+	void Scene::CreateOctree(int levels, int sizebit)
+	{
+		m_octree.set_root_size(1u << sizebit);
+		m_octree.set_levels(levels);
+
+		auto& renderables = mObjects;
+
+		for (const auto& obj : mObjects) {
+
+			for (const auto& comp : obj->GetAllComponents()) {
+				if (std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp)) {
+					auto glbModel = meshComp->GetModel();
+					if (glbModel) {
+
+						aiAABB boundingBox = glbModel->Get()->getAABB();
+
+						// Get the object's position, scale, and rotation
+						glm::vec3 objPosition = obj->GetPosition();
+						glm::vec3 objScale = obj->GetScale();
+						glm::vec3 objRotation = obj->GetRotation();
+
+						// Convert Euler angles to a rotation matrix
+						glm::mat4 rotationMatrix = glm::eulerAngleXYZ(glm::radians(objRotation.x), glm::radians(objRotation.y), glm::radians(objRotation.z));
+
+						// Apply object's transform to the AABB
+						glm::mat4 modelMatrix = glm::translate(glm::mat4(1.0f), objPosition) * rotationMatrix * glm::scale(glm::mat4(1.0f), objScale);
+						glm::vec4 minCorner(boundingBox.mMin.x, boundingBox.mMin.y, boundingBox.mMin.z, 1.0f);
+						glm::vec4 maxCorner(boundingBox.mMax.x, boundingBox.mMax.y, boundingBox.mMax.z, 1.0f);
+
+
+						// Create or get the octree node for the transformed AABB
+						Octree<Object>::node* newNode = m_octree.create_node(aabb(minCorner, maxCorner));
+
+						// Check if the object already has an octree node
+						if (obj->GetOctreeNode()) {
+							if (obj->GetOctreeNode() == newNode)
+								continue;
+							else {
+								EraseObjFromPrevNode(obj, m_octree);
+								obj->SetOctreeNode(newNode);
+								AddObjToNode(obj, obj->GetOctreeNode());
+							}
+						}
+						else {
+							obj->SetOctreeNode(newNode);
+							AddObjToNode(obj, obj->GetOctreeNode());
+						}
+
+
+
+					}
+				}
+			}
+
+		}
+
+	}
+
+
 
 }
