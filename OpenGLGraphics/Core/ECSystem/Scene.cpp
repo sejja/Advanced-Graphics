@@ -358,9 +358,10 @@ namespace Core {
 			}
 		}
 	}
-	/*
+	
 	void Scene::CheckFrustrumObjectCollisions(Octree<Object>::node* node, frustrum const& frus)
 	{
+		/*
 		std::shared_ptr<Object> pointer = node->first;
 
 		while (pointer) {
@@ -376,8 +377,9 @@ namespace Core {
 
 			pointer = pointer->m_octree_next_obj;
 		}
+		*/
 	}
-	*/
+	
 
 	void Scene::OctreeCheck(frustrum const& frustum)
 	{

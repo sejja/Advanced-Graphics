@@ -3,7 +3,7 @@
 
 #include "shapes.hpp"
 #include <unordered_map>
-#include "Core/ECSystem/Object.h"
+#include <memory>
 
 namespace LocationalCode {
     static const unsigned maxBits = sizeof(unsigned) * 8;
