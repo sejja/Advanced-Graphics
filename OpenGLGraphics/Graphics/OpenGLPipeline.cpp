@@ -322,8 +322,10 @@ namespace Core {
 			// Draw octree
 			auto debug_draw_octree = [&]() {
 				
+			std::cout << "Octree nodes: " << scene.GetOctree().m_nodes.size() << std::endl;
 			for (auto& it : scene.GetOctree().m_nodes) {
 				if (it.second->first) {
+					std::cout << "Node: " << it.first << " has " << std::endl;
 					aabb b = LocationalCode::compute_bv(it.second->locational_code, scene.GetOctree().root_size());
 					mDebug->DrawAABB(b.pos, b.sca, glm::vec4(0.4 * it.second->locational_code, 1.0, 0, 0),cam);
 				}
@@ -333,8 +335,10 @@ namespace Core {
 			// Frustum to test
 			frustrum frust(cam.GetProjectionMatrix() * cam.GetViewMatrix());
 			scene.OctreeCheck(frust);
+			debug_draw_octree();
 
-
+			scene.GetOctree().set_levels(3);
+			scene.CreateOctree(3, 7);
 
 
 			RenderParticlesSystems();

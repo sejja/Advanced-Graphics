@@ -296,7 +296,7 @@ namespace Core {
 
 
 	void Scene::AddObjToNode(const std::shared_ptr<Object>& obj, Octree<Object>::node* node) {
-		if (obj->GetOctreeNode() == nullptr) {
+		if (!obj->GetOctreeNode()->first) {
 			obj->GetOctreeNode()->first = obj; //set this object as the first object
 		}
 		else {
@@ -454,6 +454,7 @@ namespace Core {
 
 						// Check if the object already has an octree node
 						if (obj->GetOctreeNode()) {
+
 							if (obj->GetOctreeNode() == newNode)
 								continue;
 							else {
