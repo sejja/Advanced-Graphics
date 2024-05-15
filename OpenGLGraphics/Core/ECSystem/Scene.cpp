@@ -73,7 +73,7 @@ namespace Core {
 						renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>(mesh.c_str()));
 
 						//if(obj->GetID() != "New Object") 
-						instancedRenderer.add_To_InstancedRendering(renderer, obj);
+						//instancedRenderer.add_To_InstancedRendering(renderer, obj);
 
 						std::string shader = components[j]["shader"];
 						renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>(shader.c_str()));
