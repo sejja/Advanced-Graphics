@@ -19,6 +19,7 @@ namespace Core {
             SetSystemCenter(glm::vec3(0.0f, 0.0f, 75.0f), glm::vec3(0.0f, 0.0f, 0.0f));
             this->name = "fuego";
             this->id = "fuego";
+            this->mParent = parent;
 		}
 
         /*The center of the system is in 0,0,0 by default*/

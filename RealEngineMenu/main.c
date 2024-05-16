@@ -51,6 +51,21 @@ int main() {
 		{
 		case '1':
 			//printf(system("dir ..\\x64\\Debug"));
+		#if _DEBUG
+			//system("dir ..\\x64\\Debug");
+			printf("Loading AssetLoader\n");
+			system("start ..\\x64\\Debug\\AssetLoader.exe");
+			Sleep(1000);
+			printf("AssetLoader loaded\n");
+			printf("Loading ShaderCompilerServer\n");
+			system("start ..\\x64\\Debug\\ShaderCompilerServer.exe");
+			Sleep(1000);
+			printf("ShaderCompilerServer loaded\n");
+			printf("Loading OpenGLGraphics\n");
+			system("..\\x64\\Debug\\OpenGLGraphics.exe");
+			Sleep(1000);
+			printf("start OpenGLGraphics loaded\n");
+		#else
 			printf("Loading AssetLoader\n");
 			system("start AssetLoader.exe");
 			Sleep(1000);
@@ -63,9 +78,14 @@ int main() {
 			system("OpenGLGraphics.exe");
 			Sleep(1000);
 			printf("start OpenGLGraphics loaded\n");
+		#endif
 			return 0;
 		case '2':
+			#if _DEBUG
+			system("..\\x64\\Debug\\AssetLoader.exe");
+			#else
 			system("AssetLoader.exe");
+			#endif
 			return 0;
 		default:
 			print_Linus();

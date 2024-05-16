@@ -20,7 +20,10 @@ public:
 	std::vector <std::shared_ptr<Action>> GetActions() { return actions; }
 	int GetCurrentAction() { return currentAction; }
 
-
+	void Clear() { 
+		actions.clear();
+		currentAction = -1;
+	};
 
 private:
 	std::vector<std::shared_ptr<Action>> actions;

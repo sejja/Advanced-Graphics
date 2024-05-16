@@ -42,7 +42,6 @@ namespace Core {
 			std::shared_ptr<Core::Particles::ParticleMangager> GetParticleManager() { return particleManager.lock(); }
 
 			::Graphics::Architecture::GBuffer* GetGBuffer();
-			FrameBuffer* GetRenderFrameBuffer();
 			GLuint GetRenderTexture();
 			std::vector<FrameBuffer> GetShadowMappingBuffer() { return mShadowBuffers; };
 
@@ -66,7 +65,6 @@ namespace Core {
 			void GroupRender(std::unordered_multimap<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>::const_iterator> obsoletes,
 				const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it,
 				ShaderProgram* shader);
-			void LightingPass();
 			void RenderShadowMaps();
 			void UpdateUniformBuffers();
 			void RenderParticlesSystems();

@@ -38,5 +38,15 @@ namespace Core
 				}
 			);
 		}
+
+		void ParticleMangager::loadParticles(char* path)
+		{
+
+		}
+
+		void ParticleMangager::saveParticles(char* path)
+		{
+
+		}
 	}
 }
