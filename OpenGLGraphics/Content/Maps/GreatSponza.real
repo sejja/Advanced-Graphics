@@ -75,35 +75,8 @@
       ],
       "name": "Dragon",
       "position": [
-        3.574063539505005,
-        30.0,
-        0.0
-      ],
-      "rotation": [
         0.0,
-        -0.0,
-        -0.0
-      ],
-      "scale": [
-        0.4000000059604645,
-        0.4000000059604645,
-        0.4000000059604645
-      ]
-    },
-
-    {
-      "_id": "Dragon",
-      "components": [
-        {
-          "model": "Content/Meshes/Dragon/scene.gltf",
-          "shader": "Content/Shaders/DeferredGeometry.shader",
-          "type": "Model Renderer"
-        }
-      ],
-      "name": "Dragon",
-      "position": [
-        3.574063539505005,
-        -30.0,
+        -10.0,
         0.0
       ],
       "rotation": [
@@ -184,7 +157,7 @@
       "components": [
         {
           "model": "Content/Meshes/cube_face.obj",
-          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "shader": "Content/Shaders/White.shader",
           "type": "Model Renderer"
         },
         {

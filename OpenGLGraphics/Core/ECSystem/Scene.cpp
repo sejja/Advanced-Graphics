@@ -28,6 +28,7 @@
 #include "Graphics/Architecture/InstancedRendering/InstancedRendering.h"
 
 #include "Core/Assets/ResourceManager.h"
+#include "Core/Logger.h"
 #include "Core/Editor/Editor.h"
 
 using json = nlohmann::json;
@@ -42,7 +43,8 @@ namespace Core {
 		//mParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
 		auto& instancedRenderer = Singleton<::Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance();
-
+		auto& logger = Singleton<Logger>::Instance();
+		
 		bool hasSkybox = false;
 
 		std::ifstream f(file.data());
@@ -55,7 +57,7 @@ namespace Core {
 
 		json objects = data["objects"];
 		for (int i = 0; i < objects.size(); i++) {
-			//try {
+			try {
 			printf("Creating object\n");
 			std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
 			obj->SetName(objects[i]["name"]);
@@ -138,28 +140,32 @@ namespace Core {
 					obj->AddComponentR(fire);
 					particleManager->AddComponent(std::move(fire));
 				}
+				else {
+					logger.logMessage(LogLevel::WARNING, "Unknown component type");
+				}
 			}
 
 			upload(obj);
 			mObjects.emplace_back(std::move(obj));
-			//}
-			/*catch (std::exception ex) {
+			}
+			catch (std::exception ex) {
 				std::cout << ex.what() << std::endl;
-			}*/
-
+				logger.logMessage(LogLevel::WARNING, "Object could not be loaded");
+			}
 		}
 		mObjects.emplace_back(particleManager);
 		Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);
 
 
 		if (hasSkybox == false) {
+			logger.logMessage("No skybox found, creating default skybox");
 			std::shared_ptr<Core::Object> sky = std::move(std::make_shared<Core::Object>());
 			std::shared_ptr<Core::Graphics::Skybox> skycomp = std::make_shared<Core::Graphics::Skybox>(sky);
 			skycomp->CreateCubeMap();
 			sky->AddComponent(std::move(skycomp));
 			sky->SetName("SKYBOX");
 			mObjects.emplace_back(sky);
-			std::cout << "Creando skybox de 0" << std::endl;
+			//std::cout << "Creando skybox de 0" << std::endl;
 		}
 
 
@@ -185,6 +191,7 @@ namespace Core {
 	}
 
 	void Scene::Save(const std::string_view& filename) {
+		Logger& logger = Singleton<Logger>::Instance();
 		auto resmg = Singleton<Core::Assets::ResourceManager>::Instance();
 		//printf("Listos para guardar\n");
 		std::cout << filename << std::endl;
@@ -286,7 +293,11 @@ namespace Core {
 					component["center"][1] = fire->GetSystemCenter().y;
 					component["center"][2] = fire->GetSystemCenter().z;
 				}
-
+				else {
+					logger.logMessage(LogLevel::WARNING, "Unknown component type");
+				}
+				
+				
 				object["components"][j] = component;
 			}
 			data["objects"][i] = object;
