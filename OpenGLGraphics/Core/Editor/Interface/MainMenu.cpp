@@ -1,8 +1,9 @@
 #include "MainMenu.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 #include <Dependencies/Json/single_include/json.hpp>
-#include "Core/Network/Client.h"
-#include "Core/Network/Server.h"
+#include "Core/Remote/Client.h"
+#include "Core/Remote/Server.h"
+#include "Core/Remote/NetManager.hpp"
 #include "Core/AppWrapper.h"
 #include "Core/Editor/Editor.h"
 #include <stdlib.h>
@@ -106,8 +107,10 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
 
 void MainMenu::RenderRemoteControlMenu() {
     if (ImGui::BeginMenu("Remote")) {
+
         Server& server = Singleton<Server>::Instance();
         Client& client = Singleton<Client>::Instance();
+
         if (!server.isRunning() && !client.isConnected()) {
 
             if (ImGui::MenuItem("Host Server", NULL)) {

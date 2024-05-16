@@ -13,6 +13,7 @@
 
 
 
+
 using json = nlohmann::json;
 
 class Common {
@@ -22,10 +23,13 @@ public:
     void sendObjectIfChanged(const std::shared_ptr<Core::Object>& obj);
     void sendParticleIfChanged(const std::shared_ptr<Core::Particles::FireSystem>& fireSystem);
 
+	void setLastSentObject(const std::shared_ptr<Core::Object>& obj);
 protected:
     SOCKET serverSocket, clientSocket;
     std::shared_ptr<Core::Object> lastSentObject;
     std::shared_ptr<Core::Particles::ParticleSystem> lastSentParticleSys;
+
+   
     
 
     static DWORD WINAPI ReceiveThread(LPVOID lpParam);

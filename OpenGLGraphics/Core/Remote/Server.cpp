@@ -137,6 +137,7 @@ int Server::StartServer() {
 
     std::cout << "Client connected." << std::endl;
 
+
     // Crear hilo para recibir mensajes del cliente
     HANDLE receiverThread = CreateThread(NULL, 0, ReceiveThread, &clientSocket, 0, NULL);
 

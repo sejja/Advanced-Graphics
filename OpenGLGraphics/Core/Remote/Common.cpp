@@ -2,6 +2,7 @@
 #include <iostream>
 #include "Core/ECSystem/Scene.h"
 #include "Core/AppWrapper.h"
+#include "NetManager.hpp"
 
 enum class MessageType {
     ObjectTransform,
@@ -213,16 +214,31 @@ std::shared_ptr<Core::Particles::ParticleSystem> getParticleSysByID(const std::s
 
 }
 
+void Common::setLastSentObject(const std::shared_ptr<Core::Object>& obj) {
+	lastSentObject = std::make_shared<Core::Object>(*obj);
+}
+
 void Common::transformObject(const json& data) {
+   
     std::shared_ptr<Core::Object> obj = getObjectByID(data["id"]);
     if (obj != NULL) {
         glm::vec3 newPos = { data["position"][0], data["position"][1], data["position"][2] };
         glm::vec3 newRot = { data["rotation"][0], data["rotation"][1], data["rotation"][2] };
         glm::vec3 newScale = { data["scale"][0], data["scale"][1], data["scale"][2] };
 
+		//lastSentObject->SetPosition(newPos);
+		//lastSentObject->SetRotation(newRot);
+		//lastSentObject->SetScale(newScale);
+		
+
         obj->SetPosition(newPos);
         obj->SetRotation(newRot);
         obj->SetScale(newScale);
+
+        auto net = Singleton<NetManager>::Instance();
+        if (net.isServer()) {net.GetServer().setLastSentObject(obj);}
+        else {net.GetClient().setLastSentObject(obj);}
+
     }
     else {
         std::cerr << "Object not found" << std::endl;

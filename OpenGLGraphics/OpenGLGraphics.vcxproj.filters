@@ -168,10 +168,10 @@
     <ClCompile Include="Graphics\Primitives\GLBModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Network\Client.cpp">
+    <ClCompile Include="Core\Remote\Client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Network\Server.cpp">
+    <ClCompile Include="Core\Remote\Server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Architecture\HDRBuffer.cpp">
@@ -189,7 +189,7 @@
     <ClCompile Include="Core\ParticleSystem\FireSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Core\Network\Common.cpp">
+    <ClCompile Include="Core\Remote\Common.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Editor\ShaderCompiler\clientWindows.c">
@@ -304,6 +304,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Core\Editor\ActionManager\Actions\ComponentAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Remote\NetManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1616,10 +1619,10 @@
     <ClInclude Include="Core\AppWrapper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Network\Client.h">
+    <ClInclude Include="Core\Remote\Client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Network\Server.h">
+    <ClInclude Include="Core\Remote\Server.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Editor\Assets\Fonts\IconsFontAwesome.h">
@@ -1661,7 +1664,7 @@
     <ClInclude Include="Core\Editor\SelectedObj.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Network\Common.h">
+    <ClInclude Include="Core\Remote\Common.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Primitives\GLBMesh.h">
@@ -1905,6 +1908,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Graphics\Architecture\InstancedRendering\InstancedRendering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Remote\NetManager.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
