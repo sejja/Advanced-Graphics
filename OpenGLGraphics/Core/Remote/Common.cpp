@@ -557,7 +557,16 @@ void Common::getScene(const json& data){
 
 	std::cout << "SCEENENNENENENE : " << scene << std::endl;
 
-    app.getScene().loadScene(scene, [&app](const std::shared_ptr<Core::Object>& obj) {
+    std::ofstream file("Core/Remote/BulkTransfer/scene.json");
+    if (file.is_open()) {
+        file << scene.dump(4);
+        file.close();
+    }
+    else {
+        std::cerr << "No se pudo abrir el archivo para escritura" << std::endl;
+    }
+
+    app.getScene().CreateScene("Content/Maps/GreatSponza.real", [&app](const std::shared_ptr<Core::Object>& obj) {
         obj->ForEachComponent([&app](const std::shared_ptr<Core::Component>& comp) {
             std::shared_ptr<Core::Graphics::Renderable> renderable = std::dynamic_pointer_cast<Core::Graphics::Renderable>(comp);
             //If the object is a renderable
