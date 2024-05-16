@@ -2,13 +2,15 @@
 #include <iostream>
 #include "Core/ECSystem/Scene.h"
 #include "Core/AppWrapper.h"
-#include "NetManager.hpp"
+#include "NetManager.h"
+#include "Core/Editor/Editor.h"
 
 enum class MessageType {
     ObjectTransform,
     ObjectCreation,
     ObjectDeletion,
     ObjectProperty,
+	ComponentCreation,
     ParticleTransform,
     Unknown
 };
@@ -27,6 +29,9 @@ MessageType getMessageType(const std::string& typeStr) {
     }
     else if (typeStr == "object_property") {
         return MessageType::ObjectProperty;
+    }
+    else if (typeStr == "component_creation") {
+        return MessageType::ComponentCreation;
     }
     else if (typeStr == "particle_transform") {
         return MessageType::ParticleTransform;
@@ -69,13 +74,15 @@ DWORD WINAPI Common::ReceiveThread(LPVOID lpParam) {
                     transformObject(receivedJson);
                     break;
                 case MessageType::ObjectCreation:
-                    // Crear objeto
-                    //createObject(receivedJson);
+                    createObject(receivedJson);
                     break;
                 case MessageType::ObjectDeletion:
                     // Borrar objeto
-                    //deleteObject(receivedJson);
+                    deleteObject(receivedJson);
                     break;
+				case MessageType::ComponentCreation:
+					createComponent(receivedJson);
+					break;
                 case MessageType::ObjectProperty:
                     // Cambiar propiedad de objeto, luz , textura, etc
                     //changeObjectProperty(receivedJson);
@@ -149,16 +156,68 @@ void Common::sendParticleIfChanged(const std::shared_ptr<Core::Particles::FireSy
     }
 }
 
-void Common::sendObjectIfChanged(const std::shared_ptr<Core::Object>& obj) {
+void Common::sendNewObject(const std::shared_ptr<Core::Object>& obj)
+{
+	glm::vec3 curPos = obj->GetPosition();
+	glm::vec3 curRot = obj->GetRotation();
+	glm::vec3 curScale = obj->GetScale();
 
+	json data = {
+		{"type", "object_creation"},
+		{"id", obj->GetID()},
+        {"name", obj->GetName()},
+		{"position", {curPos.x, curPos.y, curPos.z}},
+		{"rotation", {curRot.x, curRot.y, curRot.z}},
+		{"scale", {curScale.x, curScale.y, curScale.z}}
+	};
+
+	sendToPeer(data);
+}
+
+void Common::sendNewComponent(const std::shared_ptr<Core::Component>& comp){
+    auto lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(comp);
+    auto meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp);
+    auto fireSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(comp);
+    auto decal = std::dynamic_pointer_cast<Graphics::Primitives::Decal>(comp);
+	std::string ctype = "";
+    if (lightComp) {ctype = "Light";}
+    else if (meshComp) {ctype = "Mesh";}
+    else if (fireSystem) {ctype = "FireSystem";}
+    else if (decal) {ctype = "Decal";}
+    else {
+		std::cerr << "Component type not recognized" << std::endl;
+        return;
+	}
+
+	json data = {
+		{"type", "component_creation"},
+		{"CompType", ctype},
+		{"compID", comp->GetID()},
+        {"lightType", lightComp ? "Point" : "NONE"},
+		{"objID", comp->GetParent().lock()->GetID()}
+	};
+
+	sendToPeer(data);
+}
+
+void Common::sendDeleteObject(const std::shared_ptr<Core::Object>& obj){
+	json data = {
+		{"type", "object_deletion"},
+		{"id", obj->GetID()}
+	};
+	sendToPeer(data);
+}
+
+void Common::sendMapRequest()
+{
+}
+
+void Common::sendObjectIfChanged(const std::shared_ptr<Core::Object>& obj) {
     glm::vec3 curPos = obj->GetPosition();
     glm::vec3 curRot = obj->GetRotation();
     glm::vec3 curScale = obj->GetScale();
 
-
     bool positionChanged = true, rotationChanged = true, scaleChanged = true;
-
-
 
     if (lastSentObject != NULL) {
         positionChanged = curPos != lastSentObject->GetPosition();
@@ -166,20 +225,17 @@ void Common::sendObjectIfChanged(const std::shared_ptr<Core::Object>& obj) {
         scaleChanged = curScale != lastSentObject->GetScale();
     }
 
-
     if (positionChanged || rotationChanged || scaleChanged) {
-
         printf("Sending object properties to client\n");
         json data = {
             {"type", "object_transform"},
             {"id", obj->GetID()},
+			{"name", obj->GetName()},
             {"position", {curPos.x, curPos.y, curPos.z}},
             {"rotation", {curRot.x, curRot.y, curRot.z}},
             {"scale", {curScale.x, curScale.y, curScale.z}}
         };
-
         sendToPeer(data);
-
         lastSentObject = std::make_shared<Core::Object>(*obj);
     }
 }
@@ -194,7 +250,6 @@ std::shared_ptr<Core::Object> getObjectByID(const std::string& objectID) {
         }
     }
     return NULL;
-
 }
 
 std::shared_ptr<Core::Particles::ParticleSystem> getParticleSysByID(const std::string& objectID) {
@@ -211,7 +266,6 @@ std::shared_ptr<Core::Particles::ParticleSystem> getParticleSysByID(const std::s
         }
     }
     return NULL;
-
 }
 
 void Common::setLastSentObject(const std::shared_ptr<Core::Object>& obj) {
@@ -226,11 +280,6 @@ void Common::transformObject(const json& data) {
         glm::vec3 newRot = { data["rotation"][0], data["rotation"][1], data["rotation"][2] };
         glm::vec3 newScale = { data["scale"][0], data["scale"][1], data["scale"][2] };
 
-		//lastSentObject->SetPosition(newPos);
-		//lastSentObject->SetRotation(newRot);
-		//lastSentObject->SetScale(newScale);
-		
-
         obj->SetPosition(newPos);
         obj->SetRotation(newRot);
         obj->SetScale(newScale);
@@ -243,6 +292,83 @@ void Common::transformObject(const json& data) {
     else {
         std::cerr << "Object not found" << std::endl;
     }
+}
+
+void Common::createObject(const json& data)
+{
+	std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
+	obj->SetID(data["id"]);
+	obj->SetName(data["name"]);
+	obj->SetPosition({ data["position"][0], data["position"][1], data["position"][2] });
+	obj->SetRotation({ data["rotation"][0], data["rotation"][1], data["rotation"][2] });
+	obj->SetScale({ data["scale"][0], data["scale"][1], data["scale"][2] });
+
+	Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
+	scene.addObject(obj);
+
+}
+
+void Common::createComponent(const json& data)
+{
+	std::shared_ptr<Core::Object> obj = getObjectByID(data["objID"]);
+	if (obj != NULL) {
+		std::shared_ptr<Core::Component> comp;
+
+		if (data["CompType"] == "Light") {
+            std::shared_ptr<::Graphics::Primitives::Lights::PointLight> light;
+            light = std::move(std::make_shared<::Graphics::Primitives::Lights::PointLight>(obj));
+            light->SetRadius(1.0f);
+            light->SetFallOff(0.5f);
+            light->SetColor(glm::vec3(1.0f, 1.0f, 1.0f));
+            glm::vec3 relativePos = glm::vec3(0.0f, 0.0f, 0.0f);
+            light->SetPosition(relativePos, obj->GetPosition());
+            obj->AddComponent(std::move(light));
+			light->SetID(data["compID"]);
+		}
+		else if (data["CompType"] == "Mesh") {
+            auto renderer = std::make_shared<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
+            obj->AddComponent(std::move(renderer));
+			renderer->SetID(data["compID"]);
+		}
+		else if (data["CompType"] == "FireSystem") {
+            auto& pipeline = Singleton<AppWrapper>::Instance().GetPipeline();
+            auto particleManager = pipeline.GetParticleManager();
+            std::shared_ptr<Core::Particles::FireSystem> fireSystem = std::make_shared<Core::Particles::FireSystem>(obj);
+            fireSystem->SetSystemCenter(glm::vec3(0.0f, 0.0f, 0.0f), obj->GetPosition());
+            obj->AddComponentR(fireSystem);
+            particleManager->AddComponent(std::move(fireSystem));
+            fireSystem->SetID(data["compID"]);
+		}
+		else if (data["CompType"] == "Decal") {
+            auto decal = std::make_shared<Graphics::Primitives::Decal>(obj);
+            obj->AddComponent(std::move(decal));
+			decal->SetID(data["compID"]);
+		}
+		else {
+			std::cerr << "Component type not recognized" << std::endl;
+			return;
+		}
+	}
+	else {
+		std::cerr << "Object not found" << std::endl;
+	}
+}
+
+void Common::deleteObject(const json& data){
+	std::shared_ptr<Core::Object> obj = getObjectByID(data["id"]);
+	if (obj != NULL) {
+		Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
+		scene.removeObject(obj);
+
+        if (Singleton<Editor>::Instance().GetSelectedObj().GetSelectedObject()->GetID()==obj->GetID()) {
+			Singleton<Editor>::Instance().GetSelectedObj().SetSelectedObject(NULL);
+            Singleton<Editor>::Instance().GetSelectedObj().SetSelectedComponent(NULL);
+            Singleton<Editor>::Instance().GetSelectedObj().SetSelectedMesh(NULL);
+        }
+	}
+	else {
+		std::cerr << "Object not found" << std::endl;
+	}
 }
 
 
@@ -263,11 +389,12 @@ void Common::transformParticle(const json& data) {
         fireSys->SetBaseColor(newColor);
         fireSys->ChangeFireSize(newRadius[0], newRadius[1], newRadius[2], newGap, newHeight);
         fireSys->SetParticleSize(newParticleSize);
-
-
-
     }
     else {
         std::cerr << "Particle system not found" << std::endl;
     }
+}
+
+void Common::getScene(const json& data)
+{
 }

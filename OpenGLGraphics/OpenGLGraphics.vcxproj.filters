@@ -1910,7 +1910,7 @@
     <ClInclude Include="Graphics\Architecture\InstancedRendering\InstancedRendering.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Core\Remote\NetManager.hpp">
+    <ClInclude Include="Core\Remote\NetManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

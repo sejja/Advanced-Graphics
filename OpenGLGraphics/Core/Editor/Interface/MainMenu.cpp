@@ -3,7 +3,7 @@
 #include <Dependencies/Json/single_include/json.hpp>
 #include "Core/Remote/Client.h"
 #include "Core/Remote/Server.h"
-#include "Core/Remote/NetManager.hpp"
+#include "Core/Remote/NetManager.h"
 #include "Core/AppWrapper.h"
 #include "Core/Editor/Editor.h"
 #include <stdlib.h>

@@ -6,6 +6,7 @@
 #include "Client.h"
 
 
+
 class NetManager {
 
 	
@@ -41,8 +42,21 @@ public:
 	}
 
 
+	/*
+	template<typename T>
+	T& getInstance() {
+		if (isServer()) {
+			return GetServer();
+		}
+		else {
+			return GetClient();
+		}
+	}
+	*/
+	
 
 	
+
 
 
 private:
