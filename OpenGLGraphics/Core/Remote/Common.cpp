@@ -4,6 +4,12 @@
 #include "Core/AppWrapper.h"
 #include "NetManager.h"
 #include "Core/Editor/Editor.h"
+#include "Graphics/Primitives/ShaderProgram.h"
+#include "Graphics/Primitives/Lights/DirectionalLight.h"
+#include "Graphics/Primitives/Lights/PointLight.h"
+#include "Graphics/Primitives/Lights/SpotLight.h"
+#include <fstream>
+
 
 enum class MessageType {
     ObjectTransform,
@@ -12,6 +18,8 @@ enum class MessageType {
     ObjectProperty,
 	ComponentCreation,
     ParticleTransform,
+    TransferTypeUpdate,
+    InitScene,
     Unknown
 };
 
@@ -36,6 +44,12 @@ MessageType getMessageType(const std::string& typeStr) {
     else if (typeStr == "particle_transform") {
         return MessageType::ParticleTransform;
     }
+	else if (typeStr == "transfer_type_update") {
+		return MessageType::TransferTypeUpdate;
+	}
+    else if (typeStr == "init_scene") {
+        return MessageType::InitScene;
+    }
     else {
         return MessageType::Unknown;
     }
@@ -45,10 +59,10 @@ MessageType getMessageType(const std::string& typeStr) {
 
 DWORD WINAPI Common::ReceiveThread(LPVOID lpParam) {
     SOCKET clientSocket = *((SOCKET*)lpParam);
-    char buffer[1024];
+    char buffer[4096];
     int bytesReceived;
     while (true) {
-        bytesReceived = recv(clientSocket, buffer, 1024, 0);
+        bytesReceived = recv(clientSocket, buffer, 4096, 0);
         if (bytesReceived > 0) {
             buffer[bytesReceived] = '\0';
             std::cout << "Received from peer: " << buffer << std::endl;
@@ -69,6 +83,9 @@ DWORD WINAPI Common::ReceiveThread(LPVOID lpParam) {
                 MessageType messageType = getMessageType(receivedJson["type"]);
 
                 switch (messageType) {
+                case MessageType::InitScene:
+					getScene(receivedJson);
+					break;
                 case MessageType::ObjectTransform:
                     // Actualizar la posici?n del objeto
                     transformObject(receivedJson);
@@ -208,8 +225,29 @@ void Common::sendDeleteObject(const std::shared_ptr<Core::Object>& obj){
 	sendToPeer(data);
 }
 
-void Common::sendMapRequest()
-{
+void Common::sendInitScene(){
+    Singleton<AppWrapper>::Instance().getScene().Save("Core/Remote/BulkTransfer/scene.json");
+
+    std::ifstream file("Core/Remote/BulkTransfer/scene.json");
+    if (!file.is_open()) {
+        std::cerr << "Cant open save /bulktransfer/scene.json" << std::endl;
+        return;
+    }
+    json sceneData;
+    file >> sceneData;
+    file.close();
+
+    json data = {
+        {"type", "init_scene"},
+        {"scene", sceneData}
+    };
+
+    std::cout << "DATA" << data << std::endl;
+    sendToPeer(data);
+}
+
+void Common::sendMapRequest(){
+
 }
 
 void Common::sendObjectIfChanged(const std::shared_ptr<Core::Object>& obj) {
@@ -252,6 +290,18 @@ std::shared_ptr<Core::Object> getObjectByID(const std::string& objectID) {
     return NULL;
 }
 
+std::shared_ptr<Core::Component> getComponentByID(std::shared_ptr<Core::Object> obj, const std::string& compID) {
+    std::vector<std::shared_ptr<Core::Component>> comps = obj->GetAllComponents();
+    for (auto& comp : comps) {
+        if (comp->GetID() == compID) {
+            return comp;
+        }
+    }
+    return NULL;
+
+}
+
+
 std::shared_ptr<Core::Particles::ParticleSystem> getParticleSysByID(const std::string& objectID) {
     Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
     for (const auto& obj : scene.GetObjects()) {
@@ -262,7 +312,6 @@ std::shared_ptr<Core::Particles::ParticleSystem> getParticleSysByID(const std::s
                     return particleSys;
                 }
             }
-
         }
     }
     return NULL;
@@ -270,6 +319,109 @@ std::shared_ptr<Core::Particles::ParticleSystem> getParticleSysByID(const std::s
 
 void Common::setLastSentObject(const std::shared_ptr<Core::Object>& obj) {
 	lastSentObject = std::make_shared<Core::Object>(*obj);
+}
+
+void Common::sendTransferTypeUpdate(bool bulkTransfer){
+	json data = {
+		{"type", "transfer_type_update"},
+		{"bulkTransfer", bulkTransfer}
+	};
+	sendToPeer(data);
+
+	if (bulkTransfer) {
+		bulkTransferScene();
+	}
+}
+
+void Common::bulkTransferScene() {
+    Singleton<AppWrapper>::Instance().getScene().Save("Core/Remote/BulkTransfer/scene.json");
+
+    std::ifstream file("Core/Remote/BulkTransfer/scene.json");
+    if (!file.is_open()) {
+        std::cerr << "Cant open save /bulktransfer/scene.json" << std::endl;
+        return;
+    }
+    json sceneData;
+    file >> sceneData;
+    file.close();
+
+    json data = {
+        {"type", "bulk_transfer"},
+        {"scene", sceneData}
+    };
+
+	std::cout << "DATA" << data << std::endl;
+    sendToPeer(data);
+}
+
+void Common::getBulkTransfer(const json& data){
+    auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
+    json sceneData = data["scene"];
+    json objects = sceneData["objects"];
+
+    for (int i = 0; i < objects.size(); i++) {
+        try {
+            printf("Updating object\n");
+
+            std::shared_ptr<Core::Object> obj = getObjectByID(objects[i]["_id"]);
+            obj->SetName(objects[i]["name"]);
+            obj->SetPosition(glm::vec3(objects[i]["position"][0], objects[i]["position"][1], objects[i]["position"][2]));
+            obj->SetRotation(glm::vec3(objects[i]["rotation"][0], objects[i]["rotation"][1], objects[i]["rotation"][2]));
+            obj->SetScale(glm::vec3(objects[i]["scale"][0], objects[i]["scale"][1], objects[i]["scale"][1]));
+
+            json components = objects[i]["components"];
+
+            for (int j = 0; j < components.size(); j++) {
+
+                auto comp = getComponentByID(obj, components[j]["id"]);
+
+
+                auto lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(comp);
+                auto fireSystem = std::dynamic_pointer_cast<Core::Particles::FireSystem>(comp);
+                auto decal = std::dynamic_pointer_cast<Graphics::Primitives::Decal>(comp);
+
+                if (components[j]["type"] == "Model Renderer") {
+                    auto meshComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp);
+                    std::string mesh = components[j]["model"];
+                    std::string shader = components[j]["shader"];
+                    meshComp->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>(mesh.c_str()));
+                    meshComp->SetShaderProgram(resmg.GetResource<Core::Graphics::ShaderProgram>(shader.c_str()));
+                }
+                else if (components[j]["type"] == "Directional Light") {
+                    printf("\tCreating light\n");
+                    std::shared_ptr<::Graphics::Primitives::Lights::DirectionalLight> light = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::DirectionalLight>(comp);
+                    light->SetColor(glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]));
+                    light->SetDirection(glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]));
+                }
+                else if (components[j]["type"] == "Point Light") {
+                    printf("\tCreating light\n");
+                    std::shared_ptr<::Graphics::Primitives::Lights::PointLight> light = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::PointLight>(comp);
+                    light->SetColor(glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]));
+                    light->SetRadius(components[j]["radius"]);
+                    light->SetFallOff(components[j]["fallOf"]);
+                }
+                else if (components[j]["type"] == "Spot Light") {
+                    std::shared_ptr<::Graphics::Primitives::Lights::SpotLight> light = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::SpotLight>(comp);
+                    light->SetColor(glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]));
+                    light->SetDirection(glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]));
+                    light->SetInner(components[j]["innerAngle"]);
+                    light->SetOuter(components[j]["outterAngle"]);
+                    light->SetFallOff(components[j]["fallOff"]);
+                    light->SetRadius(components[j]["radius"]);
+                    light->SetShadowCaster(components[j]["shadowCaster"]);
+                }
+                else if (components[j]["type"] == "Decal") {
+                    std::shared_ptr<::Graphics::Primitives::Decal> decal = std::dynamic_pointer_cast<::Graphics::Primitives::Decal>(comp);
+                    decal->SetDiffuse(resmg.GetResource<Core::Graphics::Texture>(std::string(components[j]["Diffuse"]).c_str()));
+                    decal->SetNormal(resmg.GetResource<Core::Graphics::Texture>(std::string(components[j]["Normal"]).c_str()));
+                }
+            }
+
+        }
+        catch (std::exception ex) {
+            std::cout << ex.what() << std::endl;
+        }
+    }
 }
 
 void Common::transformObject(const json& data) {
@@ -395,6 +547,21 @@ void Common::transformParticle(const json& data) {
     }
 }
 
-void Common::getScene(const json& data)
-{
+void Common::getScene(const json& data){
+    auto& app = Singleton<AppWrapper>::Instance();
+    app.GetPipeline().ClearPipeline();
+    app.getScene().ClearScene();
+
+
+	json scene = data["scene"];
+
+	std::cout << "SCEENENNENENENE : " << scene << std::endl;
+
+    app.getScene().loadScene(scene, [&app](const std::shared_ptr<Core::Object>& obj) {
+        obj->ForEachComponent([&app](const std::shared_ptr<Core::Component>& comp) {
+            std::shared_ptr<Core::Graphics::Renderable> renderable = std::dynamic_pointer_cast<Core::Graphics::Renderable>(comp);
+            //If the object is a renderable
+            if (renderable) app.GetPipeline().AddRenderable(renderable);
+            });
+        });  
 }

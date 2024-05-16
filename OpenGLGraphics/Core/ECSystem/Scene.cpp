@@ -21,7 +21,7 @@
 
 #include "Core/AppWrapper.h"
 #include "Core/Graphics/Pipeline.h"
-#include "Dependencies/Json/single_include/json.hpp"
+
 #include <fstream>
 #include <string>
 
@@ -30,7 +30,7 @@
 #include "Core/Assets/ResourceManager.h"
 #include "Core/Editor/Editor.h"
 
-using json = nlohmann::json;
+
 
 namespace Core {
 	// ------------------------------------------------------------------------
@@ -40,16 +40,152 @@ namespace Core {
 	*/ // ---------------------------------------------------------------------
 	void Scene::CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
 		//mParser.LoadDataFromFile(file.data());
-		auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
-		auto& instancedRenderer = Singleton<::Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance();
 		
-		bool hasSkybox = false;
+		//limpiar actions
+		Singleton<::Editor>::Instance().GetActionManager()->Clear();
 
 		std::ifstream f(file.data());
 		json data = json::parse(f);
 
-		//limpiar actions
-		Singleton<::Editor>::Instance().GetActionManager()->Clear();
+		loadScene(data, upload);
+		
+	}
+
+	// ------------------------------------------------------------------------
+	/*! Tick
+	*
+	*   Updates all the objects and it's components
+	*/ // ---------------------------------------------------------------------
+	void Scene::Tick() {
+		std::for_each(std::execution::par, mObjects.begin(), mObjects.end(), [](const std::shared_ptr<Core::Object>& x) {
+			x->Update();
+			});
+	}
+
+	void Scene::Save(const std::string_view& filename) {
+		auto resmg = Singleton<Core::Assets::ResourceManager>::Instance();
+		//printf("Listos para guardar\n");
+		std::cout << filename << std::endl;
+		json data;
+		for (int i = 0; i < mObjects.size(); i++) {
+			json object;
+			if (mObjects[i]->GetName() == "ParticleManager") {
+				continue;
+			}
+			object["name"] = mObjects[i]->GetName();
+			object["_id"] = mObjects[i]->GetID();
+			object["position"] = { mObjects[i]->GetPosition().x, mObjects[i]->GetPosition().y, mObjects[i]->GetPosition().z };
+			object["rotation"] = { mObjects[i]->GetRotation().x, mObjects[i]->GetRotation().y, mObjects[i]->GetRotation().z };
+			object["scale"] = { mObjects[i]->GetScale().x, mObjects[i]->GetScale().y, mObjects[i]->GetScale().z };
+
+
+			std::vector<std::shared_ptr<Core::Component>> components = mObjects[i]->GetAllComponents();
+
+			for (int j = 0; j < components.size(); j++) {
+				json component;
+				//data["objects"][i]["components"][j] = component;
+				std::shared_ptr<Core::Component> comp = components[j];
+				component["id"] = comp->GetID();
+				//printf("Component type: %s\n", typeid(*comp).name());
+				if (typeid(*comp) == typeid(Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>)) {
+					//printf("Model\n");
+					std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::static_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp);
+					component["type"] = "Model Renderer";
+					std::shared_ptr<std::string> str = resmg.GetResourceName<Core::Graphics::ShaderProgram>(renderer->GetShaderProgram().lock());
+					//std::cout << *str << std::endl;
+					component["shader"] = *str;
+					component["model"] = *resmg.GetResourceName<::Graphics::Primitives::Model>(renderer->GetModel());
+				}
+				else if (typeid(*comp) == typeid(::Graphics::Primitives::Lights::DirectionalLight)) {
+					printf("Se hizo la luz\n");
+					component["type"] = "Directional Light";
+					std::shared_ptr<::Graphics::Primitives::Lights::DirectionalLight> light = std::static_pointer_cast<::Graphics::Primitives::Lights::DirectionalLight>(comp);
+					//light->
+					component["color"][0] = light->GetColor().r;
+					component["color"][1] = light->GetColor().g;
+					component["color"][2] = light->GetColor().b;
+					//component["shadowCaster"] = light->mData->mShadowCaster;
+					component["direction"][0] = light->GetDirection().x; //Comprobar que funcione
+					component["direction"][1] = light->GetDirection().y;
+					component["direction"][2] = light->GetDirection().z;
+				}
+				else if (typeid(*comp) == typeid(::Graphics::Primitives::Lights::PointLight)) {
+					printf("Se hizo la luz\n");
+					component["type"] = "Point Light";
+					std::shared_ptr<::Graphics::Primitives::Lights::PointLight> light = std::static_pointer_cast<::Graphics::Primitives::Lights::PointLight>(comp);
+					component["color"][0] = light->GetColor().r;
+					component["color"][1] = light->GetColor().g;
+					component["color"][2] = light->GetColor().b;
+					//component["shadowCaster"] = light->mData->mShadowCaster;
+					//component["shadowCaster"] = light->GetShadowCasting();
+					component["radius"] = light->GetRadius();
+					component["fallOf"] = light->GetFallOff();
+					//component["innerAngle"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mInner;
+					//component["outterAngle"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mOutter;
+				}
+				else if (typeid(*comp) == typeid(::Graphics::Primitives::Lights::SpotLight)) {
+					printf("Se hizo la luz\n");
+					component["type"] = "Spot Light";
+					std::shared_ptr<::Graphics::Primitives::Lights::SpotLight> light = std::static_pointer_cast<::Graphics::Primitives::Lights::SpotLight>(comp);
+					component["color"][0] = light->GetColor().r;
+					component["color"][1] = light->GetColor().g;
+					component["color"][2] = light->GetColor().b;
+					component["shadowCaster"] = light->GetShadowCasting();
+					component["direction"][0] = light->GetDirection().x;
+					component["direction"][1] = light->GetDirection().y;
+					component["direction"][2] = light->GetDirection().z;
+					component["innerAngle"] = light->GetInner();
+					component["outterAngle"] = light->GetOutter();
+					component["fallOff"] = light->GetFallOff();
+					component["radius"] = light->GetRadius();
+				}
+				else if (typeid(*comp) == typeid(Core::Graphics::Skybox)) {
+					component["type"] = "Skybox";
+					component["path"] = std::static_pointer_cast<Core::Graphics::Skybox>(comp)->GetPath();
+				}
+				else if (typeid(*comp) == typeid(::Graphics::Primitives::Decal)) {
+					component["type"] = "Decal";
+					component["Diffuse"] = *resmg.GetResourceName<Core::Graphics::Texture>(std::static_pointer_cast<::Graphics::Primitives::Decal>(comp)->GetDiffuse().lock());
+					component["Normal"] = *resmg.GetResourceName<Core::Graphics::Texture>(std::static_pointer_cast<::Graphics::Primitives::Decal>(comp)->GetNormal().lock());
+				} else if (typeid(*comp) == typeid(Core::Particles::FireSystem)) {
+					component["type"] = "Fire";
+					std::shared_ptr<Core::Particles::FireSystem> fire = std::static_pointer_cast<Core::Particles::FireSystem>(comp);
+					component["color"][0] = fire->GetBaseColor().r;
+					component["color"][1] = fire->GetBaseColor().g;
+					component["color"][2] = fire->GetBaseColor().b;
+					component["gap"] = fire->GetFireGap();
+					component["height"] = fire->GetFireHeight();
+					component["particleSize"] = fire->GetParticleSize();
+					component["radiusVector"][0] = fire->GetRadiusVector().x;
+					component["radiusVector"][1] = fire->GetRadiusVector().y;
+					component["radiusVector"][2] = fire->GetRadiusVector().z;
+					component["center"][0] = fire->GetSystemCenter().x;
+					component["center"][1] = fire->GetSystemCenter().y;
+					component["center"][2] = fire->GetSystemCenter().z;
+				}
+				
+				object["components"][j] = component;
+			}
+			data["objects"][i] = object;
+		}
+		std::ofstream file;
+		file.open(filename.data());
+
+		file << data.dump(4);
+
+		file.close();
+	}
+
+	void Scene::ClearScene()
+	{
+		mObjects.clear();
+		Singleton<::Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().clear();
+	}
+
+	void Scene::loadScene(const json& data, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload) {
+		auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
+		auto& instancedRenderer = Singleton<::Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance();
+		bool hasSkybox = false;
 
 		json objects = data["objects"];
 		for (int i = 0; i < objects.size(); i++) {
@@ -152,142 +288,9 @@ namespace Core {
 
 		instancedRenderer.fetch();
 
-		/*Test data*/
 		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
-		//std::shared_ptr<Core::Particles::FireSystem> testParticleSystem = std::make_shared<Core::Particles::FireSystem>(particleManager);
-		//particleManager->AddComponent(std::move(testParticleSystem));
 		mObjects.emplace_back(particleManager);
 		Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);
-	}
-
-	// ------------------------------------------------------------------------
-	/*! Tick
-	*
-	*   Updates all the objects and it's components
-	*/ // ---------------------------------------------------------------------
-	void Scene::Tick() {
-		std::for_each(std::execution::par, mObjects.begin(), mObjects.end(), [](const std::shared_ptr<Core::Object>& x) {
-			x->Update();
-			});
-	}
-
-	void Scene::Save(const std::string_view& filename) {
-		auto resmg = Singleton<Core::Assets::ResourceManager>::Instance();
-		//printf("Listos para guardar\n");
-		std::cout << filename << std::endl;
-		json data;
-		for (int i = 0; i < mObjects.size(); i++) {
-			json object;
-			if (mObjects[i]->GetName() == "ParticleManager") {
-				continue;
-			}
-			object["name"] = mObjects[i]->GetName();
-			object["_id"] = mObjects[i]->GetID();
-			object["position"] = { mObjects[i]->GetPosition().x, mObjects[i]->GetPosition().y, mObjects[i]->GetPosition().z };
-			object["rotation"] = { mObjects[i]->GetRotation().x, mObjects[i]->GetRotation().y, mObjects[i]->GetRotation().z };
-			object["scale"] = { mObjects[i]->GetScale().x, mObjects[i]->GetScale().y, mObjects[i]->GetScale().z };
-
-
-			std::vector<std::shared_ptr<Core::Component>> components = mObjects[i]->GetAllComponents();
-
-			for (int j = 0; j < components.size(); j++) {
-				json component;
-				//data["objects"][i]["components"][j] = component;
-				std::shared_ptr<Core::Component> comp = components[j];
-				//printf("Component type: %s\n", typeid(*comp).name());
-				if (typeid(*comp) == typeid(Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>)) {
-					//printf("Model\n");
-					std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::static_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp);
-					component["type"] = "Model Renderer";
-					std::shared_ptr<std::string> str = resmg.GetResourceName<Core::Graphics::ShaderProgram>(renderer->GetShaderProgram().lock());
-					//std::cout << *str << std::endl;
-					component["shader"] = *str;
-					component["model"] = *resmg.GetResourceName<::Graphics::Primitives::Model>(renderer->GetModel());
-				}
-				else if (typeid(*comp) == typeid(::Graphics::Primitives::Lights::DirectionalLight)) {
-					printf("Se hizo la luz\n");
-					component["type"] = "Directional Light";
-					std::shared_ptr<::Graphics::Primitives::Lights::DirectionalLight> light = std::static_pointer_cast<::Graphics::Primitives::Lights::DirectionalLight>(comp);
-					//light->
-					component["color"][0] = light->GetColor().r;
-					component["color"][1] = light->GetColor().g;
-					component["color"][2] = light->GetColor().b;
-					//component["shadowCaster"] = light->mData->mShadowCaster;
-					component["direction"][0] = light->GetDirection().x; //Comprobar que funcione
-					component["direction"][1] = light->GetDirection().y;
-					component["direction"][2] = light->GetDirection().z;
-				}
-				else if (typeid(*comp) == typeid(::Graphics::Primitives::Lights::PointLight)) {
-					printf("Se hizo la luz\n");
-					component["type"] = "Point Light";
-					std::shared_ptr<::Graphics::Primitives::Lights::PointLight> light = std::static_pointer_cast<::Graphics::Primitives::Lights::PointLight>(comp);
-					component["color"][0] = light->GetColor().r;
-					component["color"][1] = light->GetColor().g;
-					component["color"][2] = light->GetColor().b;
-					//component["shadowCaster"] = light->mData->mShadowCaster;
-					//component["shadowCaster"] = light->GetShadowCasting();
-					component["radius"] = light->GetRadius();
-					component["fallOf"] = light->GetFallOff();
-					//component["innerAngle"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mInner;
-					//component["outterAngle"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mOutter;
-				}
-				else if (typeid(*comp) == typeid(::Graphics::Primitives::Lights::SpotLight)) {
-					printf("Se hizo la luz\n");
-					component["type"] = "Spot Light";
-					std::shared_ptr<::Graphics::Primitives::Lights::SpotLight> light = std::static_pointer_cast<::Graphics::Primitives::Lights::SpotLight>(comp);
-					component["color"][0] = light->GetColor().r;
-					component["color"][1] = light->GetColor().g;
-					component["color"][2] = light->GetColor().b;
-					component["shadowCaster"] = light->GetShadowCasting();
-					component["direction"][0] = light->GetDirection().x;
-					component["direction"][1] = light->GetDirection().y;
-					component["direction"][2] = light->GetDirection().z;
-					component["innerAngle"] = light->GetInner();
-					component["outterAngle"] = light->GetOutter();
-					component["fallOff"] = light->GetFallOff();
-					component["radius"] = light->GetRadius();
-				}
-				else if (typeid(*comp) == typeid(Core::Graphics::Skybox)) {
-					component["type"] = "Skybox";
-					component["path"] = std::static_pointer_cast<Core::Graphics::Skybox>(comp)->GetPath();
-				}
-				else if (typeid(*comp) == typeid(::Graphics::Primitives::Decal)) {
-					component["type"] = "Decal";
-					component["Diffuse"] = *resmg.GetResourceName<Core::Graphics::Texture>(std::static_pointer_cast<::Graphics::Primitives::Decal>(comp)->GetDiffuse().lock());
-					component["Normal"] = *resmg.GetResourceName<Core::Graphics::Texture>(std::static_pointer_cast<::Graphics::Primitives::Decal>(comp)->GetNormal().lock());
-				} else if (typeid(*comp) == typeid(Core::Particles::FireSystem)) {
-					component["type"] = "Fire";
-					std::shared_ptr<Core::Particles::FireSystem> fire = std::static_pointer_cast<Core::Particles::FireSystem>(comp);
-					component["color"][0] = fire->GetBaseColor().r;
-					component["color"][1] = fire->GetBaseColor().g;
-					component["color"][2] = fire->GetBaseColor().b;
-					component["gap"] = fire->GetFireGap();
-					component["height"] = fire->GetFireHeight();
-					component["particleSize"] = fire->GetParticleSize();
-					component["radiusVector"][0] = fire->GetRadiusVector().x;
-					component["radiusVector"][1] = fire->GetRadiusVector().y;
-					component["radiusVector"][2] = fire->GetRadiusVector().z;
-					component["center"][0] = fire->GetSystemCenter().x;
-					component["center"][1] = fire->GetSystemCenter().y;
-					component["center"][2] = fire->GetSystemCenter().z;
-				}
-				
-				object["components"][j] = component;
-			}
-			data["objects"][i] = object;
-		}
-		std::ofstream file;
-		file.open(filename.data());
-
-		file << data.dump(4);
-
-		file.close();
-	}
-
-	void Scene::ClearScene()
-	{
-		mObjects.clear();
-		Singleton<::Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().clear();
 	}
 
 }

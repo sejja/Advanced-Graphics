@@ -160,6 +160,15 @@ void MainMenu::RenderRemoteControlMenu() {
             }
             ImGui::PopStyleColor();
 
+            if (ImGui::Checkbox(ICON_FA_BOX" Bulk Transfer", &server.bulkTransfer)) {
+				server.sendTransferTypeUpdate(server.bulkTransfer);
+            }
+
+			if (ImGui::Button("TEST ENVIAR SCENE")) {
+                server.sendInitScene();
+			}
+
+
         }
         else if (client.isConnected()) {
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));

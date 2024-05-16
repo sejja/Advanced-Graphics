@@ -28,18 +28,27 @@ public:
 	void sendNewComponent(const std::shared_ptr<Core::Component>& comp);
 	void sendDeleteObject(const std::shared_ptr<Core::Object>& obj);
 
+	void sendInitScene();
 	void sendMapRequest();
 
 	void setLastSentObject(const std::shared_ptr<Core::Object>& obj);
+
+	void sendTransferTypeUpdate(bool bulkTransfer);
+
+	void bulkTransferScene();
+
+	bool bulkTransfer = false;
+
 protected:
     SOCKET serverSocket, clientSocket;
     std::shared_ptr<Core::Object> lastSentObject;
     std::shared_ptr<Core::Particles::ParticleSystem> lastSentParticleSys;
 
-   
-    
-
     static DWORD WINAPI ReceiveThread(LPVOID lpParam);
+
+	//Data handling
+
+	static void getBulkTransfer(const json& data);
 
     static void transformObject(const json& receivedJson);
 
