@@ -10,6 +10,7 @@ enum class AssetType {
 	MATERIAL,
 	SHADER,
 	FOLDER,
+	LEVEL,
 	OTHER
 };
 

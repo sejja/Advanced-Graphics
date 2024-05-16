@@ -246,6 +246,15 @@
     <ClCompile Include="Graphics\Architecture\GeometryDeform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Dependencies\ImGuizmo\ImGuizmo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\Guizmo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\mouse_picking.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="Graphics\Architecture\SSAO\Kernel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -253,6 +262,48 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Graphics\Architecture\SSAO\SSAOBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\ParticleSystem\SmokeSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMesh.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMeshMap.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMeshMap.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMesh.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedRendering.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Action.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\ActionManager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Actions\TransformObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\PrevStates.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Actions\MeshAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Actions\ModelAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Actions\LightAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Actions\ComponentAction.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -1811,6 +1862,51 @@
     <ClInclude Include="Graphics\Architecture\SSAO\SSAOBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="D:\Asier\Descargas\ImApp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Dependencies\ImGuizmo\ImGuizmo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\Guizmo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Action.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\ActionManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Actions\TransformObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\ActionType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\mouse_picking.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\PrevStates.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Actions\MeshAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Actions\ModelAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Actions\LightAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Actions\ComponentAction.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\ParticleSystem\SmokeSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics\Architecture\InstancedRendering\InstancedRendering.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Dependencies\SDL\Include\SDL_config.h.cmake" />
@@ -2225,7 +2321,6 @@
       <Filter>Header Files</Filter>
     </None>
     <None Include="Content\Shaders\Transform.vert" />
-    <None Include="Content\Maps\Sponza.level" />
     <None Include="Content\Shaders\Textured.shader" />
     <None Include="Content\Shaders\Shadow.frag" />
     <None Include="Content\Shaders\Shadow.shader" />
@@ -2288,20 +2383,36 @@
     <None Include="Content\Shaders\CascadedShadowMap.vert" />
     <None Include="Content\Shaders\DeferredLighting.frag" />
     <None Include="Content\Shaders\DeferredLighting.shader" />
-    <None Include="Content\Maps\Minecraft.level" />
-    <None Include="Content\Maps\Japan.level" />
     <None Include="Content\Shaders\GeometryDecal.frag" />
     <None Include="Content\Shaders\GeometryDecal.shader" />
     <None Include="Content\Shaders\GeometryDecal.vert" />
-    <None Include="Content\Maps\Cyberpunk.level" />
     <None Include="Content\Shaders\SSAO.frag" />
     <None Include="Content\Shaders\SSAO.shader" />
     <None Include="Content\Shaders\SSAO.vert" />
     <None Include="Content\Shaders\SSAOBlur.frag" />
     <None Include="Content\Shaders\SSAOBlur.shader" />
-    <None Include="Content\Shaders\reflectionRenderer.frag" />
-    <None Include="Content\Shaders\reflectionRenderer.shader" />
-    <None Include="Content\Shaders\reflectionRenderer.vert" />
+    <None Include="Content\Maps\patata.real" />
+    <None Include="Content\Maps\Scene2.real" />
+    <None Include="Content\Maps\mi_dragoncito.real" />
+    <None Include="Content\Maps\dafad.real" />
+    <None Include="Content\Maps\Minecraft.level" />
+    <None Include="Content\Maps\Japan.level" />
+    <None Include="Content\Maps\Cyberpunk.level" />
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.shader" />
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.vert" />
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.frag" />
+    <None Include="Content\Maps\Sponza.level" />
+    <None Include="Content\Maps\GreatSponza.real" />
+    <None Include="Content\Maps\GreatCyberpunk.real" />
+    <None Include="Content\Maps\Japan.real" />
+    <None Include="Content\Maps\Minecraft.real" />
+    <None Include="Content\Shaders\InstancedShaders\Shadow\InstancedShadow.vert" />
+    <None Include="Content\Shaders\InstancedShaders\Shadow\InstancedShadow.shader" />
+    <None Include="Content\Shaders\InstancedShaders\Shadow\InstancedShadow.frag" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.vert" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.shader" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.geom" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.frag" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="Dependencies\GLM\CMakeLists.txt" />
@@ -2782,6 +2893,12 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="Content\Textures\decal_skull_n.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="D:\Asier\Descargas\NoTexture.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Content\Textures\NoTexture.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

@@ -23,6 +23,11 @@ namespace Core {
 			mModel->Get()->Draw();
 		}
 
+		::Graphics::Primitives::Model* GLBModelRenderer<Pipeline::GraphicsAPIS::OpenGL>::getModel()
+		{
+			return mModel.get()->Get();
+		}
+
 		// ------------------------------------------------------------------------
 		/*! Constructor
 		*
@@ -30,5 +35,7 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		Renderable::Renderable(const std::weak_ptr<Object>& parent) :
 			Component(parent) {}
+
+
 	}
 }

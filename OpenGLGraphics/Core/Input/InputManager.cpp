@@ -9,13 +9,14 @@
 #include "InputManager.h"
 #include "Core/Singleton.h"
 #include <SDL_mouse.h>
+#include "Core/Editor/Editor.h"
 
 namespace Core {
 	namespace Input {
 		// ------------------------------------------------------------------------
-	/*! Set Mouse Position
-	*   Name says everything
-	*/ // ---------------------------------------------------------------------
+		/*! Set Mouse Position
+		*   Name says everything
+		*/ // ---------------------------------------------------------------------
 		void InputManager::SetMousePosition(const unsigned w, const unsigned h) const noexcept {
 			POINT p{ static_cast<LONG>(w), static_cast<LONG>(h) };
 			ClientToScreen(GetActiveWindow(), &p);
@@ -30,6 +31,7 @@ namespace Core {
 		void InputManager::ProcessInput() noexcept {
 			using Events::EventDispatcher;
 			EventDispatcher& dispatcher = Singleton<EventDispatcher>::Instance();
+
 			
 			for (KeyCode i = 0; i < 101; i++) mKeyboardState[i] = IsKeyDown(i);
 			const glm::u16vec2 previusMousePosition = mMousePosition;
@@ -76,7 +78,6 @@ namespace Core {
 		glm::u16vec2 InputManager::GetWindowCoordinatesMousePosition() const noexcept {
 			int x, y;
 			Uint32 buttons = SDL_GetMouseState(&x, &y);
-
 			return  { x, y };
 		}
 

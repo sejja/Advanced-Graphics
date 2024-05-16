@@ -16,9 +16,10 @@ namespace Core {
             particleSize = 4.0f; 
             baseColor = NormalizeRGBA(252, 186, 3, 255);
             acceleration = glm::vec3(0.0f, 0.5f, 0.0f);
-            SetSystemCenter(glm::vec3(0.0f, 0.0f, 75.0f)); 
+            SetSystemCenter(glm::vec3(0.0f, 0.0f, 75.0f), glm::vec3(0.0f, 0.0f, 0.0f));
             this->name = "fuego";
             this->id = "fuego";
+            this->mParent = parent;
 		}
 
         /*The center of the system is in 0,0,0 by default*/
@@ -44,7 +45,7 @@ namespace Core {
 		{
             glDeleteVertexArrays(1, &VAO);
             glDeleteBuffers(1, &VBO);
-            shaderProgram->Get()->~ShaderProgram();
+            glDeleteShader(shaderProgram->Get()->GetHandle());
 		}
 
         void FireSystem::ChangeFireSize(float radiusA, float radiusB, float radiusC, float gap, float height)

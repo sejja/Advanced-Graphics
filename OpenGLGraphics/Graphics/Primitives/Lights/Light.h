@@ -28,6 +28,7 @@ namespace Graphics {
 
 				#pragma region //Members
 					glm::vec3 mPosition;
+					glm::vec3 mRelativePosition;
 					glm::vec3 mColor;
 					bool mShadowCaster;
 				#pragma endregion
@@ -40,7 +41,7 @@ namespace Graphics {
 
 			#pragma region //Methods
 				DONTDISCARD glm::vec3 inline GetPosition() const noexcept;
-				void SetPosition(const glm::vec3& position) noexcept;
+				void SetPosition(const glm::vec3& position, const glm::vec3 objPos);
 				DONTDISCARD glm::vec3 inline GetColor() const noexcept;
 				void inline SetColor(const glm::vec3& color) noexcept;
 			#pragma endregion
@@ -75,7 +76,7 @@ namespace Graphics {
 			*   Gets the position of the light, relative to the parent
 			*/ //----------------------------------------------------------------------
 			glm::vec3 Light::GetPosition() const noexcept {
-				return GetParent().expired() ? glm::vec3() : mData->mPosition - GetParent().lock()->GetPosition();
+				return GetParent().expired() ? glm::vec3() : mData->mRelativePosition;
 			}
 		}
 	}

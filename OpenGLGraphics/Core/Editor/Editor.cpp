@@ -1,11 +1,11 @@
 #include "Editor.h"
 #include <iostream>
-#include "Interface/AssetManager.h"
 #include "Core/Window/SDLWindow.h"
 #include "Core/Editor/SelectedObj.h"
 #include "Core/Singleton.h"
 #include "database.h"
 #include "Core/Editor/Interface/AssetIcon.h"
+
 
 
 
@@ -20,6 +20,10 @@ bool Editor::IsEditorLocked() {
 	return editorLocked;
 }
 
+bool Editor::IsSceneHovered() {
+	return sceneView.isHovered();
+}
+
 void Editor::SetEditorLocked(bool locked) {
 	editorLocked = locked;
 }
@@ -27,10 +31,9 @@ void Editor::SetEditorLocked(bool locked) {
 void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 	//If any input is being used, camera controls are locked
-	editorLocked = ImGui::IsAnyItemActive() || texteditor.isFocused();
-
-	//Singleton para gestionar objeto seleccionado
-	Singleton<SelectedObj>::Instance();
+	editorLocked = properties.isFocused() || texteditor.isFocused();
+	
+	
 
 	mainMenu.Render(pipeline);
 	assetManager.Render();
@@ -38,12 +41,20 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	outliner.Render();
 
 
-	//SceneView
-	sceneView.Render(pipeline);
 	
 	texteditor.Render("Shader Editor",1);
 
+	//SceneView
+	sceneView.Render(pipeline);
+
+	//Guizmo
+	guizmo.Render(pipeline.getCamera());
+
 	
+
+	
+
+
 
 
 	

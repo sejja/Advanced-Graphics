@@ -8,6 +8,7 @@
 #include "Core/Editor/Interface/TextEditor.h"
 #include <fstream>
 #include <iostream>
+#include "Core/AppWrapper.h"
 
 
 void drawDropWindow();
@@ -85,6 +86,20 @@ void AssetManager::Render() {
 			case AssetType::SHADER:
 				Singleton<Editor>::Instance().texteditor.ChangeFile(assets[i].ruta);
 				//printf(assets[i].ruta);
+				break;
+			case AssetType::LEVEL: 
+			{
+				auto& app = Singleton<AppWrapper>::Instance();
+				app.GetPipeline().ClearPipeline();
+				app.getScene().ClearScene();
+				app.getScene().CreateScene(assets[i].ruta, [&app](const std::shared_ptr<Core::Object>& obj) {
+					obj->ForEachComponent([&app](const std::shared_ptr<Core::Component>& comp) {
+						std::shared_ptr<Core::Graphics::Renderable> renderable = std::dynamic_pointer_cast<Core::Graphics::Renderable>(comp);
+						//If the object is a renderable
+						if (renderable) app.GetPipeline().AddRenderable(renderable);
+						});
+					});
+			}
 				break;
 			default:
 				

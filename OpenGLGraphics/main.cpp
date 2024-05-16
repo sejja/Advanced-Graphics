@@ -12,6 +12,7 @@
 #include "Core/Window/SDLWindow.h"
 #include "Core/AppWrapper.h"
 #include "Core/Singleton.h"
+#include "Core/Logger.h"
 
 
 // ------------------------------------------------------------------------
@@ -21,15 +22,11 @@
 */ //----------------------------------------------------------------------
 int main() {
     AppWrapper& app = Singleton<AppWrapper>::Instance();
-    
-	app.getScene().CreateScene("Content/Maps/Sponza.level", [&app](const std::shared_ptr<Core::Object>& obj) {
-        obj->ForEachComponent([&app](const std::shared_ptr<Core::Component>& comp) {
-            std::shared_ptr<Core::Graphics::Renderable> renderable = std::dynamic_pointer_cast<Core::Graphics::Renderable>(comp);
-            //If the object is a renderable
-            if (renderable) app.GetPipeline().AddRenderable(renderable);
-            });
-        });
-    //app.mScene.UploadObjectsToPipeline(app.GetPipelineRef());
+    Core::Logger& logger = Singleton<Core::Logger>::Instance();
+
+    /*logger.logMessage("Prueba");
+    logger.logMessage(LogLevel::WARNING, "Prueba Warning");
+    logger.logMessage(LogLevel::ERROR, "Prueba Error");*/
 
     app.SetTickFunction([&app]() {
 		app.getScene().Tick();

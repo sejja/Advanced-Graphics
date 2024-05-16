@@ -15,6 +15,7 @@ namespace Core {
 
 			void LoadCubeMap(std::string path);
 			void CreateCubeMap();
+			inline std::string_view GetPath();
 			void Render(Core::Primitives::Camera& cam, Core::Graphics::OpenGLPipeline& pipeline);
 			void RenderSpecific(glm::mat4 view, glm::mat4 projection, Core::Graphics::OpenGLPipeline& pipeline);
 			void UploadSkyboxCubeMap();
@@ -24,5 +25,12 @@ namespace Core {
 			Core::Assets::Asset<::Graphics::Primitives::Model> mModel;
 			GLuint mMapHandle;
 		};
+
+		inline std::string_view Skybox::GetPath()
+		{
+			return mCubeMapPath;
+		}
+
+		
 	};
 }

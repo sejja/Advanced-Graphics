@@ -39,8 +39,9 @@ namespace Core {
 			virtual void SetDimensions(const glm::lowp_u16vec2& dim) override;
 			inline void AddRenderable(const std::weak_ptr<Renderable>& renderer);
 			void SetParticleManager(std::shared_ptr<Core::Particles::ParticleMangager> particleManager);
+			std::shared_ptr<Core::Particles::ParticleMangager> GetParticleManager() { return particleManager.lock(); }
+
 			::Graphics::Architecture::GBuffer* GetGBuffer();
-			FrameBuffer* GetRenderFrameBuffer();
 			GLuint GetRenderTexture();
 			std::vector<FrameBuffer> GetShadowMappingBuffer() { return mShadowBuffers; };
 			void RenderReflectionCubemap(const glm::vec3& position);
@@ -51,7 +52,10 @@ namespace Core {
 			GLboolean& getAntiAliasing() { return AntiAliasing; }
 			void setAntiAliasing(GLboolean aa) { AntiAliasing = aa; }
 			GLuint GetBloomTexture() { return mBloomRenderer->BloomTexture(); }
-		
+
+			void ClearPipeline();
+			Primitives::Camera* getCamera();
+
 
 			void updateRenderablesGroups(const Core::Assets::Asset<ShaderProgram>& curShader, const Core::Assets::Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable);
 
@@ -117,14 +121,16 @@ namespace Core {
 		*   EMPTY FUNCTION
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::Shutdown() {}
-		
+
 		// ------------------------------------------------------------------------
 		/*! Add Renderable
 		*
 		*   Adds a Renderable into the pipeline
 		*/ //----------------------------------------------------------------------
 		void OpenGLPipeline::AddRenderable(const std::weak_ptr<Renderable>& renderer) {
-			mGroupedRenderables[(std::dynamic_pointer_cast<GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(renderer.lock()))->GetShaderProgram().lock()].push_back(renderer);
+			if (std::dynamic_pointer_cast<GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(renderer.lock())) {
+				mGroupedRenderables[(std::dynamic_pointer_cast<GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(renderer.lock()))->GetShaderProgram().lock()].push_back(renderer);
+			}
 		}
 	}
 }

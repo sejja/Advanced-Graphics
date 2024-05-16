@@ -15,7 +15,14 @@ private:
 
 	void RenderFileMenu();
 	void RenderRemoteControlMenu();
-	void ServerStateInfo();
+	void RenderEditMenu();
+	void RenderServerStateInfo();
+	void RenderActionButtons();
+	void RenderIsSavingState();
+
+	bool savePopup = false;
+	bool previouslySaved = false;
+	char saveFileName[100] = "";
 
 
 };

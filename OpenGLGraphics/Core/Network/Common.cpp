@@ -235,7 +235,6 @@ void Common::transformParticle(const json& data) {
     //particlesys a firesys
     std::shared_ptr<Core::Particles::FireSystem> fireSys = std::dynamic_pointer_cast<Core::Particles::FireSystem>(particleSys);
 
-
     if (fireSys) {
         glm::vec3 newCenter = { data["center"][0], data["center"][1], data["center"][2] };
         glm::vec4 newColor = { data["color"][0], data["color"][1], data["color"][2], data["color"][3] };
@@ -244,7 +243,7 @@ void Common::transformParticle(const json& data) {
         float newHeight = data["height"];
         float newParticleSize = data["particleSize"];
 
-        fireSys->SetSystemCenter(newCenter);
+        //fireSys->SetSystemCenter(newCenter);
         fireSys->SetBaseColor(newColor);
         fireSys->ChangeFireSize(newRadius[0], newRadius[1], newRadius[2], newGap, newHeight);
         fireSys->SetParticleSize(newParticleSize);

@@ -1,0 +1,331 @@
+{
+  "objects": [
+    {
+      "_id": "Palace",
+      "components": [
+        {
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Palace",
+      "position": [
+        0.0,
+        -10.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "scale": [
+        0.20000000298023224,
+        0.20000000298023224,
+        0.20000000298023224
+      ]
+    },
+
+    {
+      "_id": "Point Light #1",
+      "components": [
+        {
+          "model": "Content/Meshes/sphere_20_averaged.obj",
+          "shader": "Content/Shaders/White.shader",
+          "type": "Model Renderer"
+        },
+        {
+          "color": [
+            0.9113300442695618,
+            0.06285027414560318,
+            0.6647275686264038
+          ],
+          "fallOf": 0.9100000262260437,
+          "radius": 20.200000762939453,
+          "type": "Point Light"
+        }
+      ],
+      "name": "Point Light #1",
+      "position": [
+        -77.39887237548828,
+        -1.6884777545928955,
+        -4.626708030700684
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+
+    {
+      "_id": "Dragon",
+      "components": [
+        {
+          "model": "Content/Meshes/Dragon/scene.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Dragon",
+      "position": [
+        0.0,
+        -10.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        -0.0
+      ],
+      "scale": [
+        0.4000000059604645,
+        0.4000000059604645,
+        0.4000000059604645
+      ]
+    },
+
+    {
+      "_id": "Dragon",
+      "components": [
+        {
+          "model": "Content/Meshes/Dragon/scene.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Dragon",
+      "position": [
+        3.574063539505005,
+        -60.0,
+        0.0
+      ],
+      "rotation": [
+        45.0,
+        -0.0,
+        -0.0
+      ],
+      "scale": [
+        0.4000000059604645,
+        0.4000000059604645,
+        0.4000000059604645
+      ]
+    },
+
+    {
+      "_id": "2",
+      "components": [
+        {
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "direction": [
+            0.3400000035762787,
+            0.8700000047683716,
+            0.3400000035762787
+          ],
+          "type": "Directional Light"
+        }
+      ],
+      "name": "Prueba2",
+      "position": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "_id": "New Object",
+      "components": [
+        {
+          "model": "Content/Meshes/cube_face.obj",
+          "shader": "Content/Shaders/White.shader",
+          "type": "Model Renderer"
+        },
+        {
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "fallOf": 0.5,
+          "radius": 1.0,
+          "type": "Point Light"
+        }
+      ],
+      "name": "New Object",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "_id": "SKYBOX",
+      "components": [
+        {
+          "path": "adfadfasfa",
+          "type": "Skybox"
+        }
+      ],
+      "name": "SKYBOX",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "_id": "New Object",
+      "components": [
+        {
+          "model": "..\\OpenGLGraphics\\Content\\Meshes\\sphere_20_averaged.obj",
+          "shader": "..\\OpenGLGraphics\\Content\\Shaders\\White.shader",
+          "type": "Model Renderer"
+        },
+        {
+          "color": [
+            0.8571428656578064,
+            0.04644615203142166,
+            0.04644615203142166
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "fallOff": 1.0,
+          "innerAngle": 63.15999984741211,
+          "outterAngle": 38.95000076293945,
+          "radius": 55.790000915527344,
+          "shadowCaster": true,
+          "type": "Spot Light"
+        }
+      ],
+      "name": "Spot Light #1",
+      "position": [
+        -81.07727813720703,
+        1.6722661256790161,
+        18.78205108642578
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "_id": "New Object",
+      "components": [
+        {
+          "model": "..\\OpenGLGraphics\\Content\\Meshes\\sphere_20_averaged.obj",
+          "shader": "..\\OpenGLGraphics\\Content\\Shaders\\White.shader",
+          "type": "Model Renderer"
+        },
+        {
+          "color": [
+            0.03193478658795357,
+            0.35788989067077637,
+            0.9261083602905273
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "fallOff": 1.0,
+          "innerAngle": 63.15999984741211,
+          "outterAngle": 38.95000076293945,
+          "radius": 55.790000915527344,
+          "shadowCaster": true,
+          "type": "Spot Light"
+        }
+      ],
+      "name": "Spot Light #2",
+      "position": [
+        -80.05580139160156,
+        4.885585784912109,
+        -22.45693016052246
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "_id": "New Object",
+      "components": [
+        {
+          "Diffuse": "Content/Textures/decal_skull_d.png",
+          "Normal": "Content/Textures/decal_skull_n.png",
+          "type": "Decal"
+        }
+      ],
+      "name": "Skull Decal",
+      "position": [
+        -83.23261260986328,
+        0.0,
+        -24.876203536987305
+      ],
+      "rotation": [
+        5.0,
+        0.0,
+        5.0
+      ],
+      "scale": [
+        10.0,
+        10.000000953674316,
+        10.000001907348633
+      ]
+    }
+  ]
+}

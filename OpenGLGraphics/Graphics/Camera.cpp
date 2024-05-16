@@ -32,7 +32,12 @@ namespace Core {
 			ed.Subscribe(*this, Core::Input::InputManager::D_Down(), [this](const Events::Event& event) {Position += Right; UpdateCameraVectors(); });
 			ed.Subscribe(*this, Core::Input::InputManager::S_Down(), [this](const Events::Event& event) {Position -= Front; UpdateCameraVectors(); });
 			ed.Subscribe(*this, Core::Input::InputManager::MouseMotion(), [this](const Events::Event& event) {
+				if (Singleton<::Editor>::Instance().IsEditorLocked()) { return; }
+				if (!Singleton<::Editor>::Instance().IsSceneHovered()) { return; }
+
+
 				glm::u16vec2 mouseMotion = (static_cast<const Core::Input::InputManager::MouseMotion&>(event)).mMovement;
+
 				if (firstMouse)
 				{
 					lastX = mouseMotion.x;
@@ -45,7 +50,7 @@ namespace Core {
 				lastX = mouseMotion.x;
 				lastY = mouseMotion.y;
 
-				if(Singleton<Core::Input::InputManager>::Instance().IsKeyDown(VK_LBUTTON)) {
+				if(Singleton<Core::Input::InputManager>::Instance().IsKeyDown(VK_RBUTTON)) {
 					float sensitivity = 0.1f;
 					xoffset *= sensitivity;
 					yoffset *= sensitivity;

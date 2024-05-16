@@ -32,18 +32,31 @@ namespace Graphics {
                 // bitangent
                 glm::vec3 mBitangent;
             };
+
         #pragma endregion
 
         #pragma region //Constructor
             Mesh(const std::vector<Vertex>& vertices, 
-                const std::vector<unsigned>& indices, 
+                const std::vector<unsigned int>& indices, 
                 const Core::Assets::Asset<Core::Graphics::Texture>& diffuse,
                 const Core::Assets::Asset<Core::Graphics::Texture>& normal);
+            void Draw();
+            void bindTextures();
+            GLuint getVao();
+            GLuint getVbo();
+            GLuint getCount();
         #pragma endregion
 
         #pragma region //Methods
             void Draw() const;
         #pragma endregion
+
+        Core::Assets::Asset<Core::Graphics::Texture> getDiffuse() const { return mDiffuse; }
+        Core::Assets::Asset<Core::Graphics::Texture> getNormal() const { return mNormal; }
+
+        void setDiffuse(Core::Assets::Asset<Core::Graphics::Texture> diffuse) { mDiffuse = diffuse; }
+        void setNormal(Core::Assets::Asset<Core::Graphics::Texture> normal) { mNormal = normal; }
+
 
         #pragma region //Members
         private:
