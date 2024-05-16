@@ -80,10 +80,9 @@ namespace Graphics {
 				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0)));
 				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0)));
 
+				shadowTransforms.push_back(shadowProj * CorrectRollDirection(true, 90.01f, 0.0f, -90.01f, lightData->mPosition));
+				shadowTransforms.push_back(shadowProj * CorrectRollDirection(false, -90.01f, 0.0f, 90.01f, lightData->mPosition));
 
-
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 1, 0), glm::vec3(1, 0, 0)));
-				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, -1, 0), glm::vec3(-1, 0, 0)));
 				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 0, 1), glm::vec3(0, -1, 0)));
 				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 0, -1), glm::vec3(0, -1, 0)));
 
@@ -235,28 +234,30 @@ namespace Graphics {
 			light->SetShaderUniform("uModel", &matrix);
 			mLightSphere->Get()->Draw();
 		}
+
+		glm::mat4 LightPass::CorrectRollDirection(bool y, float pitch, float yaw, float roll, const glm::vec3& cameraPosition) {
+			glm::vec3 front;
+			front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+			front.y = sin(glm::radians(pitch));
+			front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+			glm::vec3 Front = glm::normalize(front);
+			glm::vec3 Right;
+			if (!y) {
+				Right = glm::normalize(glm::cross(Front, glm::vec3(-1.0f, 0.0f, 0.0f)));
+			}
+			else {
+				Right = glm::normalize(glm::cross(Front, glm::vec3(1.0f, 0.0f, 0.0f)));
+			}
+			glm::vec3 Up = glm::normalize(glm::cross(Right, Front));
+
+			// Apply roll
+			glm::mat4 rollMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(roll), Front);
+			Right = glm::vec3(rollMatrix * glm::vec4(Right, 0.0f));
+			Up = glm::vec3(rollMatrix * glm::vec4(Up, 0.0f));
+
+			return std::move(glm::lookAt(cameraPosition, cameraPosition + Front, Up));
+		}
 	}
 
-	glm::mat4 CorrectRollDirection(bool y, float pitch, float yaw, float roll, const glm::vec3& cameraPosition) {
-		glm::vec3 front;
-		front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
-		front.y = sin(glm::radians(pitch));
-		front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
-		glm::vec3 Front = glm::normalize(front);
-		glm::vec3 Right;
-		if (!y) {
-			Right = glm::normalize(glm::cross(Front, glm::vec3(-1.0f, 0.0f, 0.0f)));
-		}
-		else {
-			Right = glm::normalize(glm::cross(Front, glm::vec3(1.0f, 0.0f, 0.0f)));
-		}
-		glm::vec3 Up = glm::normalize(glm::cross(Right, Front));
-
-		// Apply roll
-		glm::mat4 rollMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(roll), Front);
-		Right = glm::vec3(rollMatrix * glm::vec4(Right, 0.0f));
-		Up = glm::vec3(rollMatrix * glm::vec4(Up, 0.0f));
-
-		return std::move(glm::lookAt(cameraPosition, cameraPosition + Front, Up));
-	}
+	
 }

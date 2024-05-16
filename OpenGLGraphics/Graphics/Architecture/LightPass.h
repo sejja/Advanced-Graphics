@@ -19,6 +19,7 @@
 #include "Graphics/Primitives/Lights/SpotLight.h"
 #include "Graphics/Primitives/Lights/PointLight.h"
 #include "Graphics/Architecture/SSAO/SSAOBuffer.h"
+#include "Dependencies/GLM/glm.hpp"
 #include <functional>
 
 namespace Graphics {
@@ -58,6 +59,9 @@ namespace Graphics {
 			static lightmap< Graphics::Primitives::SpotLight::SpotLightData> sSpotLightData;
 			static lightmap< Graphics::Primitives::PointLight::PointLightData> sPointLightData;
 		#pragma endregion
+
+		#pragma region //Private methods
+			static glm::mat4 CorrectRollDirection(bool y, float pitch, float yaw, float roll, const glm::vec3& cameraPosition);
 		};
 
 		// ------------------------------------------------------------------------
