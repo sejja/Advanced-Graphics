@@ -92,6 +92,9 @@ namespace Core {
 					//light->mData->mShadowCaster = components[j]["shadowCaster"];
 					//((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)light->mData)->mDirection = glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]);
 					light->SetDirection(glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]));
+
+					light->SetPosition(glm::vec3(components[j]["position"][0], components[j]["position"][1], components[j]["position"][2]), obj->GetPosition());
+
 					obj->AddComponent(std::move(light));
 				}
 				else if (components[j]["type"] == "Point Light") { //Qué hago con inner, outter y fallOff?
@@ -104,6 +107,9 @@ namespace Core {
 					((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mOutter = components[j]["outterAngle"];*/
 					light->SetRadius(components[j]["radius"]);
 					light->SetFallOff(components[j]["fallOf"]);
+
+					light->SetPosition(glm::vec3(components[j]["position"][0], components[j]["position"][1], components[j]["position"][2]), obj->GetPosition());
+
 					obj->AddComponent(std::move(light));
 				}
 				else if (components[j]["type"] == "Spot Light") { //Fallof??
@@ -116,6 +122,9 @@ namespace Core {
 					light->SetFallOff(components[j]["fallOff"]);
 					light->SetRadius(components[j]["radius"]);
 					light->SetShadowCaster(components[j]["shadowCaster"]);
+
+					light->SetPosition(glm::vec3(components[j]["position"][0], components[j]["position"][1], components[j]["position"][2]), obj->GetPosition());
+
 					obj->AddComponent(std::move(light));
 				}
 				else if (components[j]["type"] == "Skybox") {
@@ -236,6 +245,10 @@ namespace Core {
 					component["direction"][0] = light->GetDirection().x; //Comprobar que funcione
 					component["direction"][1] = light->GetDirection().y;
 					component["direction"][2] = light->GetDirection().z;
+
+					component["position"][0] = light->GetPosition().x;
+					component["position"][1] = light->GetPosition().y;
+					component["position"][2] = light->GetPosition().z;
 				}
 				else if (typeid(*comp) == typeid(::Graphics::Primitives::Lights::PointLight)) {
 					printf("Se hizo la luz\n");
@@ -250,6 +263,10 @@ namespace Core {
 					component["fallOf"] = light->GetFallOff();
 					//component["innerAngle"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mInner;
 					//component["outterAngle"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mOutter;
+
+					component["position"][0] = light->GetPosition().x;
+					component["position"][1] = light->GetPosition().y;
+					component["position"][2] = light->GetPosition().z;
 				}
 				else if (typeid(*comp) == typeid(::Graphics::Primitives::Lights::SpotLight)) {
 					printf("Se hizo la luz\n");
@@ -266,6 +283,10 @@ namespace Core {
 					component["outterAngle"] = light->GetOutter();
 					component["fallOff"] = light->GetFallOff();
 					component["radius"] = light->GetRadius();
+
+					component["position"][0] = light->GetPosition().x;
+					component["position"][1] = light->GetPosition().y;
+					component["position"][2] = light->GetPosition().z;
 				}
 				else if (typeid(*comp) == typeid(Core::Graphics::Skybox)) {
 					component["type"] = "Skybox";
