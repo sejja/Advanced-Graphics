@@ -134,7 +134,7 @@ namespace Core {
 						std::shared_ptr<Core::Particles::FireSystem> fire = std::make_shared<Core::Particles::FireSystem>(obj);
 						fire->ChangeFireSize(components[j]["radiusVector"][0], components[j]["radiusVector"][1], components[j]["radiusVector"][2], components[j]["gap"], components[j]["height"]);
 						fire->SetBaseColor(glm::vec4(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2], components[j]["color"][3]));
-						fire->SetSystemCenter(glm::vec3(components[j]["center"][0], components[j]["center"][1], components["center"][2]), obj->GetPosition());
+						fire->SetSystemCenter(glm::vec3(components[j]["center"][0], components[j]["center"][1], components[j]["center"][2]), obj->GetPosition());
 						obj->AddComponentR(fire);
 						particleManager->AddComponent(std::move(fire));
 					}
