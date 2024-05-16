@@ -32,8 +32,8 @@ public:
     {
         unsigned int locational_code = 0;
         unsigned char  children_active = 0;
-        //T* first = nullptr;
-		std::shared_ptr<T> first = nullptr;
+        T* first = nullptr;
+		//std::shared_ptr<T> first = nullptr;
     };
 
     std::unordered_map<unsigned int, node*> m_nodes;

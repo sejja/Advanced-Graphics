@@ -296,8 +296,8 @@ namespace Core {
 
 
 	void Scene::AddObjToNode(const std::shared_ptr<Object>& obj, Octree<Object>::node* node) {
-		if (!obj->GetOctreeNode()->first) {
-			obj->GetOctreeNode()->first = obj; //set this object as the first object
+		if (obj->GetOctreeNode()->first == nullptr) {
+			obj->GetOctreeNode()->first = obj.get(); //set this object as the first object
 		}
 		else {
 			bool flag = false; //flag to check if the object was already inserted
