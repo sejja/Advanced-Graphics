@@ -99,6 +99,10 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
             TransformOptions();
             UpdateLightCompsPos(obj);
             sendToPeer(obj);
+            // Button for RenderCubemapReflections
+            if (ImGui::Button("Render Cubemap Reflections")) {
+                pipeline.RenderReflectionCubemap(obj.get()->GetPosition());
+            }
         }
 	}
 

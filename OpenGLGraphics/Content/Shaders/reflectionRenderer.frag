@@ -4,7 +4,7 @@ out vec4 FragColor;
 
 layout (location = 0) in vec2 texCoords;
 
-layout (binding = 16) uniform sampler2D screenTexture;
+layout (binding = 0) uniform sampler2D screenTexture;
 layout(binding = 1) uniform sampler2D bBloomTexture;
 
 uniform float exposure;

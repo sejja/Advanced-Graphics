@@ -66,7 +66,7 @@ namespace Core {
 			mHDRBuffer->Create();
 			mHDRBuffer->CreateRenderTexture({ mDimensions.x, mDimensions.y });
 			RendererShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Renderer.shader");
-			reflectionRendererShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/Renderer.shader");
+			reflectionRendererShader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<ShaderProgram>("Content/Shaders/reflectionRenderer.shader");
 
 			//-------------------------
 			glEnable(GL_MULTISAMPLE);
@@ -519,7 +519,6 @@ namespace Core {
 		    glGenFramebuffers(1, &reflectionFramebuffer);
 			glGenTextures(1, &refelectionFrameBufferTexture);
 			glBindTexture(GL_TEXTURE_2D, refelectionFrameBufferTexture);
-			glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, reflectionSize, reflectionSize, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
@@ -528,9 +527,9 @@ namespace Core {
 			float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
 			glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 			glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
+			glViewport(0, 0, reflectionSize, reflectionSize);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, refelectionFrameBufferTexture, 0);
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE) throw std::exception("FrameBuffer is Incomplete");
-			
 		    glGenTextures(1, &reflectionCubemap);
 		    glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionCubemap);
 
@@ -548,7 +547,6 @@ namespace Core {
 		    for (GLuint i = 0; i < 6; ++i)
 		    {
 		        glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, reflectionSize, reflectionSize, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionCubemap, 0);
 			}
 
 			// Set the list of draw buffers.
@@ -574,8 +572,7 @@ namespace Core {
 		    {
 
 				glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
-				glActiveTexture(GL_TEXTURE11);
-				glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionCubemap);
+				glBindTexture(GL_TEXTURE_2D, refelectionFrameBufferTexture);
 				glEnable(GL_CULL_FACE);
 				glViewport(0, 0, reflectionSize, reflectionSize);
 				
@@ -591,7 +588,7 @@ namespace Core {
 					view = glm::lookAt(position, position + cubeMapDirections[i], glm::vec3(0.0f, -1.0f, 0.0f));
 				}
 				glm::mat4 projectionMatrix = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10000.0f);
-				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionCubemap, 0);
+				
 				// Render scene with this view matrix
 				RenderShadowMaps(view, { 512, 512 });
 				UpdateUniformBuffers(view, projectionMatrix);
@@ -602,22 +599,30 @@ namespace Core {
 				mGBufferReflections->BlitDepthBufferReflections(reflectionCubemap);
 				Skybox::sCurrentSky->RenderSpecific(view,projectionMatrix, *this);
 				
-
+				
 				// WIP PostProcessing
 				glBindFramebuffer(GL_FRAMEBUFFER, finalReflectionFramebuffer->GetHandle());
+				glActiveTexture(GL_TEXTURE11);
+				glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionCubemap);
+				glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionCubemap, 0);
 				glViewport(0, 0, reflectionSize, reflectionSize);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 				//glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, reflectionCubemap, 0);
-				glActiveTexture(GL_TEXTURE20);
+				glActiveTexture(GL_TEXTURE0);
 				glBindTexture(GL_TEXTURE_2D, refelectionFrameBufferTexture);
 				reflectionRendererShader->Get()->Bind();
+				//reflectionRendererShader->Get()->SetShaderUniform("minBrightness", 0.1f); // Valor mínimo de brillo
+				//reflectionRendererShader->Get()->SetShaderUniform("maxBrightness", 1.0f); // Valor máximo de brillo
+				//reflectionRendererShader->Get()->SetShaderUniform("gamma", 2.2f);         // Valor para corrección gamma
 				reflectionRendererShader->Get()->SetShaderUniform("exposure", exposure);
+				glActiveTexture(GL_TEXTURE1);
+				glBindTexture(GL_TEXTURE_2D, mBloomRenderer->BloomTexture());
 				::Graphics::Architecture::Utils::GLUtils::RenderScreenQuad();
-				
 		    }
 		    // Cleanup
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			//glDeleteFramebuffers(1, &reflectionFramebuffer);
+			glDeleteFramebuffers(1, &reflectionFramebuffer);
 		    //glDeleteTextures(1, &reflectionCubemap);
 			//glViewport(0, 0, mDimensions.x, mDimensions.y);
 		}
