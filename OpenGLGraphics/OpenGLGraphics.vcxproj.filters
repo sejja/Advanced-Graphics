@@ -2391,7 +2391,6 @@
     <None Include="Content\Shaders\SSAO.vert" />
     <None Include="Content\Shaders\SSAOBlur.frag" />
     <None Include="Content\Shaders\SSAOBlur.shader" />
-    <None Include="Content\Maps\patata.real" />
     <None Include="Content\Maps\Scene2.real" />
     <None Include="Content\Maps\mi_dragoncito.real" />
     <None Include="Content\Maps\dafad.real" />

@@ -813,7 +813,6 @@
     <None Include="Content\Maps\Cyberpunk.level" />
     <None Include="Content\Maps\Minecraft.real" />
     <None Include="Content\Maps\mi_dragoncito.real" />
-    <None Include="Content\Maps\patata.real" />
     <None Include="Content\Maps\Scene2.real" />
     <None Include="Content\Maps\Sponza.level" />
     <None Include="Content\Meshes\backpack.mtl" />

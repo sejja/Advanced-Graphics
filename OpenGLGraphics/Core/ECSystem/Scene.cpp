@@ -51,9 +51,11 @@ namespace Core {
 		//limpiar actions
 		Singleton<::Editor>::Instance().GetActionManager()->Clear();
 
+		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
+
 		json objects = data["objects"];
 		for (int i = 0; i < objects.size(); i++) {
-			try {
+			//try {
 				printf("Creating object\n");
 				std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
 				obj->SetName(objects[i]["name"]);
@@ -128,15 +130,26 @@ namespace Core {
 						decal->SetNormal(resmg.GetResource<Core::Graphics::Texture>(std::string(components[j]["Normal"]).c_str()));
 						obj->AddComponent(std::move(decal));
 					}
+					else if (components[j]["type"] == "Fire") {
+						std::shared_ptr<Core::Particles::FireSystem> fire = std::make_shared<Core::Particles::FireSystem>(obj);
+						fire->ChangeFireSize(components[j]["radiusVector"][0], components[j]["radiusVector"][1], components[j]["radiusVector"][2], components[j]["gap"], components[j]["height"]);
+						fire->SetBaseColor(glm::vec4(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2], components[j]["color"][3]));
+						fire->SetSystemCenter(glm::vec3(components[j]["center"][0], components[j]["center"][1], components["center"][2]), obj->GetPosition());
+						obj->AddComponentR(fire);
+						particleManager->AddComponent(std::move(fire));
+					}
 				}
 
 				upload(obj);
 				mObjects.emplace_back(std::move(obj));
-			}
-			catch (std::exception ex) {
+			//}
+			/*catch (std::exception ex) {
 				std::cout << ex.what() << std::endl;
-			}
+			}*/
+			
 		}
+		mObjects.emplace_back(particleManager);
+		Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);
 
 
 		if (hasSkybox == false) {
@@ -153,11 +166,11 @@ namespace Core {
 		instancedRenderer.fetch();
 
 		/*Test data*/
-		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
+		//std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
 		//std::shared_ptr<Core::Particles::FireSystem> testParticleSystem = std::make_shared<Core::Particles::FireSystem>(particleManager);
 		//particleManager->AddComponent(std::move(testParticleSystem));
-		mObjects.emplace_back(particleManager);
-		Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);
+		//mObjects.emplace_back(particleManager);
+		//Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);
 	}
 
 	// ------------------------------------------------------------------------
@@ -261,6 +274,7 @@ namespace Core {
 					component["color"][0] = fire->GetBaseColor().r;
 					component["color"][1] = fire->GetBaseColor().g;
 					component["color"][2] = fire->GetBaseColor().b;
+					component["color"][3] = fire->GetBaseColor().a;
 					component["gap"] = fire->GetFireGap();
 					component["height"] = fire->GetFireHeight();
 					component["particleSize"] = fire->GetParticleSize();
