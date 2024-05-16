@@ -85,6 +85,4 @@ namespace Graphics::Architecture::InstancedRendering
 	{
 		this->meshMap->clear();
 	}
-
-
 }
