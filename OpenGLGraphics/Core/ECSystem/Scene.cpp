@@ -42,7 +42,7 @@ namespace Core {
 		//mParser.LoadDataFromFile(file.data());
 		auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
 		auto& instancedRenderer = Singleton<::Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance();
-		
+
 		bool hasSkybox = false;
 
 		std::ifstream f(file.data());
@@ -51,92 +51,105 @@ namespace Core {
 		//limpiar actions
 		Singleton<::Editor>::Instance().GetActionManager()->Clear();
 
+		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
+
 		json objects = data["objects"];
 		for (int i = 0; i < objects.size(); i++) {
-			try {
-				printf("Creating object\n");
-				std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
-				obj->SetName(objects[i]["name"]);
-				obj->SetID(objects[i]["_id"]);
-				obj->SetPosition(glm::vec3(objects[i]["position"][0], objects[i]["position"][1], objects[i]["position"][2]));
-				obj->SetRotation(glm::vec3(objects[i]["rotation"][0], objects[i]["rotation"][1], objects[i]["rotation"][2]));
-				obj->SetScale(glm::vec3(objects[i]["scale"][0], objects[i]["scale"][1], objects[i]["scale"][1]));
+			//try {
+			printf("Creating object\n");
+			std::shared_ptr<Core::Object> obj = std::make_shared<Core::Object>();
+			obj->SetName(objects[i]["name"]);
+			obj->SetID(objects[i]["_id"]);
+			obj->SetPosition(glm::vec3(objects[i]["position"][0], objects[i]["position"][1], objects[i]["position"][2]));
+			obj->SetRotation(glm::vec3(objects[i]["rotation"][0], objects[i]["rotation"][1], objects[i]["rotation"][2]));
+			obj->SetScale(glm::vec3(objects[i]["scale"][0], objects[i]["scale"][1], objects[i]["scale"][1]));
 
-				json components = objects[i]["components"];
-				//printf("Number of components: %d", components.size());
-				for (int j = 0; j < components.size(); j++) {
-					if (components[j]["type"] == "Model Renderer") {
-						printf("\tCreating renderer\n");
-						std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer <Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
+			json components = objects[i]["components"];
+			//printf("Number of components: %d", components.size());
+			for (int j = 0; j < components.size(); j++) {
+				if (components[j]["type"] == "Model Renderer") {
+					printf("\tCreating renderer\n");
+					std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> renderer = std::make_shared<Core::Graphics::GLBModelRenderer <Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(obj);
 
-						std::string mesh = components[j]["model"];
-						renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>(mesh.c_str()));
+					std::string mesh = components[j]["model"];
+					renderer->SetMesh(resmg.GetResource<::Graphics::Primitives::Model>(mesh.c_str()));
 
-						//if(obj->GetID() != "New Object") 
-						instancedRenderer.add_To_InstancedRendering(renderer, obj);
+					//if(obj->GetID() != "New Object") 
+					//instancedRenderer.add_To_InstancedRendering(renderer, obj);
 
-						std::string shader = components[j]["shader"];
-						renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>(shader.c_str()));
-						obj->AddComponent(std::move(renderer));
-						//printf("Num componentes anadidos: %d\n", obj->GetAllComponents().size());
-					}
-					else if (components[j]["type"] == "Directional Light") {
-						printf("\tCreating light\n");
-						std::shared_ptr<::Graphics::Primitives::Lights::DirectionalLight> light = std::make_shared<::Graphics::Primitives::Lights::DirectionalLight>(obj);
-						//light->mData->mColor = glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]);
-						light->SetColor(glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]));
-						//light->mData->mShadowCaster = components[j]["shadowCaster"];
-						//((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)light->mData)->mDirection = glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]);
-						light->SetDirection(glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]));
-						obj->AddComponent(std::move(light));
-					}
-					else if (components[j]["type"] == "Point Light") { //Qué hago con inner, outter y fallOff?
-						printf("\tCreating light\n");
-						std::shared_ptr<::Graphics::Primitives::Lights::PointLight> light = std::make_shared<::Graphics::Primitives::Lights::PointLight>(obj);
-						light->SetColor(glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]));
-						//light->mData->mShadowCaster = components[j]["shadowCaster"];
-						/*((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mRadius = components[j]["radius"];
-						((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mInner = components[j]["innerAngle"];
-						((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mOutter = components[j]["outterAngle"];*/
-						light->SetRadius(components[j]["radius"]);
-						light->SetFallOff(components[j]["fallOf"]);
-						obj->AddComponent(std::move(light));
-					}
-					else if (components[j]["type"] == "Spot Light") { //Fallof??
-						std::shared_ptr<::Graphics::Primitives::Lights::SpotLight> light = std::make_shared<::Graphics::Primitives::Lights::SpotLight>(obj);
-						light->SetColor(glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]));
-						//light->mData->mShadowCaster = components[j]["shadowCaster"];
-						light->SetDirection(glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]));
-						light->SetInner(components[j]["innerAngle"]);
-						light->SetOuter(components[j]["outterAngle"]);
-						light->SetFallOff(components[j]["fallOff"]);
-						light->SetRadius(components[j]["radius"]);
-						light->SetShadowCaster(components[j]["shadowCaster"]);
-						obj->AddComponent(std::move(light));
-					}
-					else if (components[j]["type"] == "Skybox") {
-						hasSkybox = true;
-						std::shared_ptr<Core::Graphics::Skybox> skybox = std::make_shared<Core::Graphics::Skybox>(obj);
-						skybox->CreateCubeMap();
-						skybox->LoadCubeMap(components[j]["path"]);
-						obj->AddComponent(std::move(skybox));
-					}
-					else if (components[j]["type"] == "Decal") {
-						hasSkybox = true;
-						std::shared_ptr<::Graphics::Primitives::Decal> decal = std::make_shared<::Graphics::Primitives::Decal>(obj);
-						decal->SetDiffuse(resmg.GetResource<Core::Graphics::Texture>(std::string(components[j]["Diffuse"]).c_str()));
-						decal->SetNormal(resmg.GetResource<Core::Graphics::Texture>(std::string(components[j]["Normal"]).c_str()));
-						obj->AddComponent(std::move(decal));
-					}
+					std::string shader = components[j]["shader"];
+					renderer->SetShaderProgram(resmg.GetResource<Graphics::ShaderProgram>(shader.c_str()));
+					obj->AddComponent(std::move(renderer));
+					//printf("Num componentes anadidos: %d\n", obj->GetAllComponents().size());
 				}
+				else if (components[j]["type"] == "Directional Light") {
+					printf("\tCreating light\n");
+					std::shared_ptr<::Graphics::Primitives::Lights::DirectionalLight> light = std::make_shared<::Graphics::Primitives::Lights::DirectionalLight>(obj);
+					//light->mData->mColor = glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]);
+					light->SetColor(glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]));
+					//light->mData->mShadowCaster = components[j]["shadowCaster"];
+					//((::Graphics::Primitives::DirectionalLight::DirectionalLightData*)light->mData)->mDirection = glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]);
+					light->SetDirection(glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]));
+					obj->AddComponent(std::move(light));
+				}
+				else if (components[j]["type"] == "Point Light") { //Qué hago con inner, outter y fallOff?
+					printf("\tCreating light\n");
+					std::shared_ptr<::Graphics::Primitives::Lights::PointLight> light = std::make_shared<::Graphics::Primitives::Lights::PointLight>(obj);
+					light->SetColor(glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]));
+					//light->mData->mShadowCaster = components[j]["shadowCaster"];
+					/*((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mRadius = components[j]["radius"];
+					((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mInner = components[j]["innerAngle"];
+					((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mOutter = components[j]["outterAngle"];*/
+					light->SetRadius(components[j]["radius"]);
+					light->SetFallOff(components[j]["fallOf"]);
+					obj->AddComponent(std::move(light));
+				}
+				else if (components[j]["type"] == "Spot Light") { //Fallof??
+					std::shared_ptr<::Graphics::Primitives::Lights::SpotLight> light = std::make_shared<::Graphics::Primitives::Lights::SpotLight>(obj);
+					light->SetColor(glm::vec3(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2]));
+					//light->mData->mShadowCaster = components[j]["shadowCaster"];
+					light->SetDirection(glm::vec3(components[j]["direction"][0], components[j]["direction"][1], components[j]["direction"][2]));
+					light->SetInner(components[j]["innerAngle"]);
+					light->SetOuter(components[j]["outterAngle"]);
+					light->SetFallOff(components[j]["fallOff"]);
+					light->SetRadius(components[j]["radius"]);
+					light->SetShadowCaster(components[j]["shadowCaster"]);
+					obj->AddComponent(std::move(light));
+				}
+				else if (components[j]["type"] == "Skybox") {
+					hasSkybox = true;
+					std::shared_ptr<Core::Graphics::Skybox> skybox = std::make_shared<Core::Graphics::Skybox>(obj);
+					skybox->CreateCubeMap();
+					skybox->LoadCubeMap(components[j]["path"]);
+					obj->AddComponent(std::move(skybox));
+				}
+				else if (components[j]["type"] == "Decal") {
+					hasSkybox = true;
+					std::shared_ptr<::Graphics::Primitives::Decal> decal = std::make_shared<::Graphics::Primitives::Decal>(obj);
+					decal->SetDiffuse(resmg.GetResource<Core::Graphics::Texture>(std::string(components[j]["Diffuse"]).c_str()));
+					decal->SetNormal(resmg.GetResource<Core::Graphics::Texture>(std::string(components[j]["Normal"]).c_str()));
+					obj->AddComponent(std::move(decal));
+				}
+				else if (components[j]["type"] == "Fire") {
+					std::shared_ptr<Core::Particles::FireSystem> fire = std::make_shared<Core::Particles::FireSystem>(obj);
+					fire->ChangeFireSize(components[j]["radiusVector"][0], components[j]["radiusVector"][1], components[j]["radiusVector"][2], components[j]["gap"], components[j]["height"]);
+					fire->SetBaseColor(glm::vec4(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2], components[j]["color"][3]));
+					fire->SetSystemCenter(glm::vec3(components[j]["center"][0], components[j]["center"][1], components["center"][2]), obj->GetPosition());
+					obj->AddComponentR(fire);
+					particleManager->AddComponent(std::move(fire));
+				}
+			}
 
-				upload(obj);
-				mObjects.emplace_back(std::move(obj));
-			}
-			catch (std::exception ex) {
+			upload(obj);
+			mObjects.emplace_back(std::move(obj));
+			//}
+			/*catch (std::exception ex) {
 				std::cout << ex.what() << std::endl;
-			}
+			}*/
+
 		}
+		mObjects.emplace_back(particleManager);
+		Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);
 
 
 		if (hasSkybox == false) {
@@ -153,11 +166,11 @@ namespace Core {
 		instancedRenderer.fetch();
 
 		/*Test data*/
-		std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
+		//std::shared_ptr<Core::Particles::ParticleMangager> particleManager = std::move(std::make_shared<Core::Particles::ParticleMangager>());
 		//std::shared_ptr<Core::Particles::FireSystem> testParticleSystem = std::make_shared<Core::Particles::FireSystem>(particleManager);
 		//particleManager->AddComponent(std::move(testParticleSystem));
-		mObjects.emplace_back(particleManager);
-		Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);
+		//mObjects.emplace_back(particleManager);
+		//Singleton<AppWrapper>::Instance().GetPipeline().SetParticleManager(particleManager);
 	}
 
 	// ------------------------------------------------------------------------
@@ -255,12 +268,14 @@ namespace Core {
 					component["type"] = "Decal";
 					component["Diffuse"] = *resmg.GetResourceName<Core::Graphics::Texture>(std::static_pointer_cast<::Graphics::Primitives::Decal>(comp)->GetDiffuse().lock());
 					component["Normal"] = *resmg.GetResourceName<Core::Graphics::Texture>(std::static_pointer_cast<::Graphics::Primitives::Decal>(comp)->GetNormal().lock());
-				} else if (typeid(*comp) == typeid(Core::Particles::FireSystem)) {
+				}
+				else if (typeid(*comp) == typeid(Core::Particles::FireSystem)) {
 					component["type"] = "Fire";
 					std::shared_ptr<Core::Particles::FireSystem> fire = std::static_pointer_cast<Core::Particles::FireSystem>(comp);
 					component["color"][0] = fire->GetBaseColor().r;
 					component["color"][1] = fire->GetBaseColor().g;
 					component["color"][2] = fire->GetBaseColor().b;
+					component["color"][3] = fire->GetBaseColor().a;
 					component["gap"] = fire->GetFireGap();
 					component["height"] = fire->GetFireHeight();
 					component["particleSize"] = fire->GetParticleSize();
@@ -271,7 +286,7 @@ namespace Core {
 					component["center"][1] = fire->GetSystemCenter().y;
 					component["center"][2] = fire->GetSystemCenter().z;
 				}
-				
+
 				object["components"][j] = component;
 			}
 			data["objects"][i] = object;
