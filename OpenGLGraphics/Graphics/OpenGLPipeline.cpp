@@ -616,8 +616,6 @@ namespace Core {
 				//reflectionRendererShader->Get()->SetShaderUniform("maxBrightness", 1.0f); // Valor máximo de brillo
 				//reflectionRendererShader->Get()->SetShaderUniform("gamma", 2.2f);         // Valor para corrección gamma
 				reflectionRendererShader->Get()->SetShaderUniform("exposure", exposure);
-				glActiveTexture(GL_TEXTURE1);
-				glBindTexture(GL_TEXTURE_2D, mBloomRenderer->BloomTexture());
 				::Graphics::Architecture::Utils::GLUtils::RenderScreenQuad();
 		    }
 		    // Cleanup
