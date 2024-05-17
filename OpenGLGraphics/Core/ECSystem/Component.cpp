@@ -8,12 +8,18 @@
 
 #include "Component.h"
 
+
 namespace Core {
+
 	// ------------------------------------------------------------------------
 	/*! Constructor
 	*
 	*   Constructs a Compoment owned by a parent
 	*/ // ---------------------------------------------------------------------
 	Component::Component(const std::weak_ptr<Object>& parent) :
-		mParent(parent) {}
+		mParent(parent) {
+		this->compID = std::to_string(std::rand());
+	}
+		
+
 }
