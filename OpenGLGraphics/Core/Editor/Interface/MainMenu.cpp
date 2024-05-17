@@ -1,13 +1,15 @@
 #include "MainMenu.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 #include <Dependencies/Json/single_include/json.hpp>
-#include "Core/Network/Client.h"
-#include "Core/Network/Server.h"
+#include "Core/Remote/Client.h"
+#include "Core/Remote/Server.h"
+#include "Core/Remote/NetManager.h"
 #include "Core/AppWrapper.h"
 #include "Core/Editor/Editor.h"
 #include <stdlib.h>
+#include <filesystem>
 
-
+namespace fs = std::filesystem;
 
 static bool show_tool_metrics = false;
 static bool show_shadow_mapping = false;
@@ -52,6 +54,7 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
         if (Singleton<::Editor>::Instance().getIsEditing() || ImGuizmo::IsUsing()) {
             RenderIsSavingState();
         }
+        RenderSceneLoader();
         
 
         ImGui::EndMainMenuBar();
@@ -106,8 +109,10 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
 
 void MainMenu::RenderRemoteControlMenu() {
     if (ImGui::BeginMenu("Remote")) {
+
         Server& server = Singleton<Server>::Instance();
         Client& client = Singleton<Client>::Instance();
+
         if (!server.isRunning() && !client.isConnected()) {
 
             if (ImGui::MenuItem("Host Server", NULL)) {
@@ -156,6 +161,10 @@ void MainMenu::RenderRemoteControlMenu() {
                 server.KillServer();
             }
             ImGui::PopStyleColor();
+
+            if (ImGui::Checkbox(ICON_FA_BOX" Bulk Transfer", &server.bulkTransfer)) {
+				server.sendTransferTypeUpdate(server.bulkTransfer);
+            }
 
         }
         else if (client.isConnected()) {
@@ -266,6 +275,48 @@ void MainMenu::RenderIsSavingState() {
     ImGui::PopStyleColor();
     ImGui::PopStyleVar(2);
     ImGui::PopFont();
+}
+
+void MainMenu::RenderSceneLoader(){
+
+	std::string path = "Core/Remote/BulkTransfer/serverScene.json";
+
+    if (fs::exists(path)) {
+
+        if (!Singleton<NetManager>::Instance().isClient()) { return; };
+
+	    ImGui::Text(ICON_FA_DOWNLOAD" Loading Server Scene");
+
+        auto& app = Singleton<AppWrapper>::Instance();
+        app.GetPipeline().ClearPipeline();
+        app.getScene().ClearScene();
+        
+        app.getScene().CreateScene(path, [&app](const std::shared_ptr<Core::Object>& obj) {
+            obj->ForEachComponent([&app](const std::shared_ptr<Core::Component>& comp) {
+                std::shared_ptr<Core::Graphics::Renderable> renderable = std::dynamic_pointer_cast<Core::Graphics::Renderable>(comp);
+                //If the object is a renderable
+                if (renderable) app.GetPipeline().AddRenderable(renderable);
+                });
+            });
+
+        if (fs::exists(path)) {
+            if (fs::remove(path)) {
+                std::cout << "Archivo dump " << path << " eliminado" << std::endl;
+            }
+            else {
+                std::cerr << "Error al intentar eliminar el archivo " << path << "." << std::endl;
+            }
+        }
+        else {
+            std::cout << "El archivo " << path << " no existe." << std::endl;
+        }
+	
+
+    }
+    
+
+
+
 }
 
    

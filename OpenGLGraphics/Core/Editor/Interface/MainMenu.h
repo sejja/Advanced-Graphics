@@ -19,6 +19,7 @@ private:
 	void RenderServerStateInfo();
 	void RenderActionButtons();
 	void RenderIsSavingState();
+	void RenderSceneLoader();
 
 	bool savePopup = false;
 	bool previouslySaved = false;

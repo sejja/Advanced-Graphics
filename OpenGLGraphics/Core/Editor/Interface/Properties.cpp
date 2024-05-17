@@ -11,8 +11,8 @@
 #include "Core/Assets/ResourceManager.h"
 #include "Core/Singleton.h"
 #include "Core/Editor/Editor.h"
-#include "Core/Network/Server.h"
-#include "Core/Network/Client.h"
+#include "Core/Remote/Server.h"
+#include "Core/Remote/Client.h"
 #include "Core/ParticleSystem/ParticleSystem.h"
 #include "Core/ParticleSystem/FireSystem.h"
 
@@ -46,7 +46,6 @@ SelectedObj& selectedObjIns = Singleton<Editor>::Instance().GetSelectedObj();
 auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
 
 
-//TODO: SACAR LOS SENDTOPEER DE AQUI 
 void sendToPeer(std::shared_ptr<Core::Object> obj) {
     Server& server = Singleton<Server>::Instance();
     Client& client = Singleton<Client>::Instance();
