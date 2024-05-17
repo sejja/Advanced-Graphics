@@ -23,6 +23,7 @@ namespace Graphics {
 				SSAOBuffer(const glm::u16vec2& dim);
 				void RenderAO(const GBuffer& gbuffer);
 				GLuint inline GetSSAOTexture() const noexcept;
+				GLuint inline GetHandle() const;
 
 			private:
 				GLuint mHandle, mColorBuffer, mBlurBuffer, mBlurTexture;
@@ -33,6 +34,10 @@ namespace Graphics {
 
 			GLuint SSAOBuffer::GetSSAOTexture() const noexcept {
 				return mBlurTexture;
+			}
+
+			GLuint SSAOBuffer::GetHandle() const {
+				return mHandle;
 			}
 		}
 	}

@@ -55,7 +55,7 @@ namespace Core {
 
 			void ClearPipeline();
 			Primitives::Camera* getCamera();
-
+			int firstTime = 2;
 
 			void updateRenderablesGroups(const Core::Assets::Asset<ShaderProgram>& curShader, const Core::Assets::Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable);
 
@@ -94,7 +94,7 @@ namespace Core {
 
 			// CubemapReflections
 			glm::vec3 cubeMapDirections[6];
-			int firstTime = 2;
+			
 
 			GLuint mScreenQuadVAO, mScreenQuadVBO;
 

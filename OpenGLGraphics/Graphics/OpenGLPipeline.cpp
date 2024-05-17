@@ -310,15 +310,14 @@ namespace Core {
 		void OpenGLPipeline::Render() {
 			RenderGUI();
 
-			
-			
+
+
 			if (Skybox::sCurrentSky)
 				Skybox::sCurrentSky->UploadSkyboxCubeMap();
+			
 
 			RenderShadowMaps(cam.GetViewMatrix(), {1600,900});
-			
-			glActiveTexture(GL_TEXTURE11);
-			glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionCubemap);
+
 			UpdateUniformBuffers(cam.GetViewMatrix(),cam.GetProjectionMatrix()); // SI
 			GeometryPass({1600,900},cam.GetViewMatrix(), cam.GetProjectionMatrix(), *mGBuffer); //si
 			mGeometryDeform.DecalPass(*mGBuffer);
@@ -593,6 +592,7 @@ namespace Core {
 
 				glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
 				glBindTexture(GL_TEXTURE_2D, refelectionFrameBufferTexture);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 				glEnable(GL_CULL_FACE);
 				glViewport(0, 0, reflectionSize, reflectionSize);
 				
@@ -613,11 +613,14 @@ namespace Core {
 				RenderShadowMaps(view, { 512, 512 });
 				UpdateUniformBuffers(view, projectionMatrix);
 				GeometryPass({ 512, 512 },view,projectionMatrix, *mGBufferReflections);
-				glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
 
+				glBindFramebuffer(GL_FRAMEBUFFER, mSSAOBuffer->GetHandle());
+				glClear(GL_COLOR_BUFFER_BIT);
+				glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
 				mLightPass->RenderLights({ 512, 512}, *mGBufferReflections, *mSSAOBuffer);
 				mGBufferReflections->BlitDepthBufferReflections(reflectionCubemap);
-				Skybox::sCurrentSky->RenderSpecific(view,projectionMatrix, *this);
+				if (Skybox::sCurrentSky)
+					Skybox::sCurrentSky->RenderSpecific(view,projectionMatrix, *this);
 				
 				
 				// WIP PostProcessing
