@@ -20,6 +20,7 @@ enum class MessageType {
     ParticleTransform,
     TransferTypeUpdate,
     InitScene,
+	BulkTransfer,
     Unknown
 };
 
@@ -49,6 +50,9 @@ MessageType getMessageType(const std::string& typeStr) {
 	}
     else if (typeStr == "init_scene") {
         return MessageType::InitScene;
+    }
+    else if (typeStr == "bulk_transfer") {
+		return MessageType::BulkTransfer;
     }
     else {
         return MessageType::Unknown;
@@ -108,6 +112,9 @@ DWORD WINAPI Common::ReceiveThread(LPVOID lpParam) {
                     // Actualizar la posici?n de una particula
                     transformParticle(receivedJson);
                     break;
+				case MessageType::BulkTransfer:
+					getBulkTransfer(receivedJson);
+					break;
                 case MessageType::Unknown:
                     std::cerr << "Tipo de mensaje rarete: :???? -> " << receivedJson["type"] << std::endl;
                     break;
@@ -350,7 +357,6 @@ void Common::bulkTransferScene() {
         {"scene", sceneData}
     };
 
-	std::cout << "DATA" << data << std::endl;
     sendToPeer(data);
 }
 
@@ -552,12 +558,9 @@ void Common::getScene(const json& data){
     app.GetPipeline().ClearPipeline();
     app.getScene().ClearScene();
 
-
 	json scene = data["scene"];
 
-	std::cout << "SCEENENNENENENE : " << scene << std::endl;
-
-    std::ofstream file("Core/Remote/BulkTransfer/scene.json");
+    std::ofstream file("Core/Remote/BulkTransfer/serverScene.json");
     if (file.is_open()) {
         file << scene.dump(4);
         file.close();
@@ -566,11 +569,13 @@ void Common::getScene(const json& data){
         std::cerr << "No se pudo abrir el archivo para escritura" << std::endl;
     }
 
+    /*
     app.getScene().CreateScene("Content/Maps/GreatSponza.real", [&app](const std::shared_ptr<Core::Object>& obj) {
         obj->ForEachComponent([&app](const std::shared_ptr<Core::Component>& comp) {
             std::shared_ptr<Core::Graphics::Renderable> renderable = std::dynamic_pointer_cast<Core::Graphics::Renderable>(comp);
             //If the object is a renderable
             if (renderable) app.GetPipeline().AddRenderable(renderable);
             });
-        });  
+        }); 
+    */
 }

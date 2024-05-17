@@ -142,7 +142,7 @@ int Server::StartServer() {
     HANDLE receiverThread = CreateThread(NULL, 0, ReceiveThread, &clientSocket, 0, NULL);
 
     //Send initial scene state
-	//sendInitScene();
+	sendInitScene();
 
 
     return 0;

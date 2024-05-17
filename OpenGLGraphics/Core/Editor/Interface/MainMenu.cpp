@@ -7,8 +7,9 @@
 #include "Core/AppWrapper.h"
 #include "Core/Editor/Editor.h"
 #include <stdlib.h>
+#include <filesystem>
 
-
+namespace fs = std::filesystem;
 
 static bool show_tool_metrics = false;
 static bool show_shadow_mapping = false;
@@ -53,6 +54,7 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
         if (Singleton<::Editor>::Instance().getIsEditing() || ImGuizmo::IsUsing()) {
             RenderIsSavingState();
         }
+        RenderSceneLoader();
         
 
         ImGui::EndMainMenuBar();
@@ -164,11 +166,6 @@ void MainMenu::RenderRemoteControlMenu() {
 				server.sendTransferTypeUpdate(server.bulkTransfer);
             }
 
-			if (ImGui::Button("TEST ENVIAR SCENE")) {
-                server.sendInitScene();
-			}
-
-
         }
         else if (client.isConnected()) {
             ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(1.0f, 0.0f, 0.0f, 1.0f));
@@ -278,6 +275,48 @@ void MainMenu::RenderIsSavingState() {
     ImGui::PopStyleColor();
     ImGui::PopStyleVar(2);
     ImGui::PopFont();
+}
+
+void MainMenu::RenderSceneLoader(){
+
+	std::string path = "Core/Remote/BulkTransfer/serverScene.json";
+
+    if (fs::exists(path)) {
+
+        if (!Singleton<NetManager>::Instance().isClient()) { return; };
+
+	    ImGui::Text(ICON_FA_DOWNLOAD" Loading Server Scene");
+
+        auto& app = Singleton<AppWrapper>::Instance();
+        app.GetPipeline().ClearPipeline();
+        app.getScene().ClearScene();
+        
+        app.getScene().CreateScene(path, [&app](const std::shared_ptr<Core::Object>& obj) {
+            obj->ForEachComponent([&app](const std::shared_ptr<Core::Component>& comp) {
+                std::shared_ptr<Core::Graphics::Renderable> renderable = std::dynamic_pointer_cast<Core::Graphics::Renderable>(comp);
+                //If the object is a renderable
+                if (renderable) app.GetPipeline().AddRenderable(renderable);
+                });
+            });
+
+        if (fs::exists(path)) {
+            if (fs::remove(path)) {
+                std::cout << "Archivo dump " << path << " eliminado" << std::endl;
+            }
+            else {
+                std::cerr << "Error al intentar eliminar el archivo " << path << "." << std::endl;
+            }
+        }
+        else {
+            std::cout << "El archivo " << path << " no existe." << std::endl;
+        }
+	
+
+    }
+    
+
+
+
 }
 
    
