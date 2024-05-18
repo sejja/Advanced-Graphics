@@ -4,6 +4,7 @@
             "_id": "Palace",
             "components": [
                 {
+                    "id": "41",
                     "model": "Content/Scenes/Sponza/Sponza.gltf",
                     "shader": "Content/Shaders/DeferredGeometry.shader",
                     "type": "Model Renderer"
@@ -30,6 +31,7 @@
             "_id": "Dragon",
             "components": [
                 {
+                    "id": "18467",
                     "model": "Content/Meshes/Dragon/scene.gltf",
                     "shader": "Content/Shaders/DeferredGeometry.shader",
                     "type": "Model Renderer"
@@ -56,6 +58,7 @@
             "_id": "Dragon",
             "components": [
                 {
+                    "id": "6334",
                     "model": "Content/Meshes/Dragon/scene.gltf",
                     "shader": "Content/Shaders/DeferredGeometry.shader",
                     "type": "Model Renderer"
@@ -82,6 +85,7 @@
             "_id": "SKYBOX",
             "components": [
                 {
+                    "id": "26500",
                     "path": "adfadfasfa",
                     "type": "Skybox"
                 }
@@ -109,6 +113,7 @@
                 {
                     "Diffuse": "Content/Textures/decal_skull_d.png",
                     "Normal": "Content/Textures/decal_skull_n.png",
+                    "id": "19169",
                     "type": "Decal"
                 }
             ],
@@ -146,6 +151,7 @@
                     ],
                     "gap": 0.15000000596046448,
                     "height": 3.75,
+                    "id": "15724",
                     "particleSize": 4.0,
                     "radiusVector": [
                         0.5,
@@ -168,6 +174,7 @@
                     ],
                     "gap": 0.15000000596046448,
                     "height": 3.75,
+                    "id": "29756",
                     "particleSize": 4.0,
                     "radiusVector": [
                         0.5,
@@ -190,6 +197,7 @@
                     ],
                     "gap": 0.16200000047683716,
                     "height": 3.75,
+                    "id": "25343",
                     "particleSize": 4.0,
                     "radiusVector": [
                         0.5,
@@ -212,6 +220,7 @@
                     ],
                     "gap": 0.125,
                     "height": 3.75,
+                    "id": "13777",
                     "particleSize": 4.0,
                     "radiusVector": [
                         0.5,
@@ -252,6 +261,7 @@
                         0.8700000047683716,
                         0.3400000035762787
                     ],
+                    "id": "29171",
                     "position": [
                         0.0,
                         0.0,
@@ -294,7 +304,8 @@
                     ],
                     "gap": 0.19900000095367432,
                     "height": 8.75,
-                    "particleSize": 11.699999809265137,
+                    "id": "3621",
+                    "particleSize": 4.0,
                     "radiusVector": [
                         1.7999999523162842,
                         1.7999999523162842,
@@ -308,13 +319,21 @@
                         0.5218815803527832,
                         0.08157739788293839
                     ],
-                    "fallOf": 0.5,
+                    "fallOf": 1.113883376121521,
+                    "fireParams": [
+                        0.15000000596046448,
+                        0.20999999344348907,
+                        1.0,
+                        0.28999999165534973
+                    ],
+                    "id": "8397",
+                    "isFireLight": true,
                     "position": [
                         0.0,
                         0.0,
                         0.0
                     ],
-                    "radius": 20.0,
+                    "radius": 21.049999237060547,
                     "type": "Point Light"
                 }
             ],
@@ -335,7 +354,6 @@
                 1.0
             ]
         },
-        null,
         {
             "_id": "42852",
             "components": [
@@ -353,7 +371,8 @@
                     ],
                     "gap": 0.2619999945163727,
                     "height": 10.0,
-                    "particleSize": 11.850000381469727,
+                    "id": "22197",
+                    "particleSize": 4.0,
                     "radiusVector": [
                         1.7999999523162842,
                         1.7999999523162842,
@@ -367,7 +386,15 @@
                         0.5685380697250366,
                         0.09965486079454422
                     ],
-                    "fallOf": 0.5,
+                    "fallOf": 1.0029566287994385,
+                    "fireParams": [
+                        0.15000000596046448,
+                        2.0,
+                        1.0,
+                        0.25
+                    ],
+                    "id": "25114",
+                    "isFireLight": true,
                     "position": [
                         0.0,
                         0.0,
@@ -409,6 +436,7 @@
                         0.8609282970428467
                     ],
                     "fallOff": 1.0,
+                    "id": "3714",
                     "innerAngle": 0.0,
                     "outterAngle": 5.760000228881836,
                     "position": [

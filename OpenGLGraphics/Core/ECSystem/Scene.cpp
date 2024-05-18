@@ -113,6 +113,9 @@ namespace Core {
 
 					light->SetPosition(glm::vec3(components[j]["position"][0], components[j]["position"][1], components[j]["position"][2]), obj->GetPosition());
 
+					light->SetIsFireLight(components[j]["isFireLight"]);
+					light->SetFireParams(glm::vec4(components[j]["fireParams"][0], components[j]["fireParams"][1], components[j]["fireParams"][2], components[j]["fireParams"][3]));
+
 					obj->AddComponent(std::move(light));
 				}
 				else if (components[j]["type"] == "Spot Light") { //Fallof??
@@ -271,6 +274,14 @@ namespace Core {
 					component["position"][0] = light->GetPosition().x;
 					component["position"][1] = light->GetPosition().y;
 					component["position"][2] = light->GetPosition().z;
+
+					component["isFireLight"] = light->GetIsFireLight();
+					component["fireParams"][0] = light->GetFireParams().x;
+					component["fireParams"][1] = light->GetFireParams().y;
+					component["fireParams"][2] = light->GetFireParams().z;
+					component["fireParams"][3] = light->GetFireParams().w;
+
+
 				}
 				else if (typeid(*comp) == typeid(::Graphics::Primitives::Lights::SpotLight)) {
 					printf("Se hizo la luz\n");

@@ -723,8 +723,12 @@ void Properties::LightTypeOptions(){
 
         if (auto pointLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::PointLight>(lightComp)) {
 
+            bool isFire = pointLight->GetIsFireLight();
+
             float lightRadius = pointLight->GetRadius();
             float fallOff = pointLight->GetFallOff();
+
+			glm::vec4 fireParams = pointLight->GetFireParams();
 
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
@@ -734,18 +738,59 @@ void Properties::LightTypeOptions(){
                 saveLight(lightComp);
             }
 
+            if (!isFire) {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("FallOff");
+                ImGui::TableSetColumnIndex(1);
+                if (ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f")) {
+                    saveLight(lightComp);
+                }
+            }
+            else {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Base FallOff");
+                ImGui::TableSetColumnIndex(1);
+                if (ImGui::SliderFloat("##FallOff", &fireParams[2], 0.8f, 1.0f, "%.2f")) {}
+
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Amplitude");
+                ImGui::TableSetColumnIndex(1);
+                if (ImGui::SliderFloat("##Amplitude", &fireParams[0], 0.0f, 0.6f, "%.2f")) {}
+
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Frecuency");
+                ImGui::TableSetColumnIndex(1);
+                if (ImGui::SliderFloat("##Frecuency", &fireParams[1], 0.0f, 2.0f, "%.2f")) {}
+
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Noise Frecuency");
+                ImGui::TableSetColumnIndex(1);
+                if (ImGui::SliderFloat("##NoiseFrecuency", &fireParams[3], 0.0f, 1.0f, "%.2f")) {}
+
+
+            }
+            
+
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::Text("FallOff");
+            ImGui::Text("Animation");
             ImGui::TableSetColumnIndex(1);
-            if (ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f")) {
-				saveLight(lightComp);
+
+			
+            if (ImGui::Checkbox("Fire Animation", &isFire)) {
+                pointLight->SetIsFireLight(isFire);
             }
 
             ImGui::EndTable();
 
             pointLight->SetRadius(lightRadius);
             pointLight->SetFallOff(fallOff);
+			pointLight->SetFireParams(fireParams);
         }
         else if (auto directionalLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::DirectionalLight>(lightComp)) {
 

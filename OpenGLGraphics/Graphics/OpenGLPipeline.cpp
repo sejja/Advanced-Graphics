@@ -25,6 +25,8 @@
 #include "Graphics/Primitives/Decal.h"
 #include "Graphics/Architecture/InstancedRendering/InstancedRendering.h"
 #include "Dependencies/ImGuizmo/ImGuizmo.h"
+#include "Core/AppWrapper.h"
+
 
 using namespace Core::Graphics;
 using namespace std;
@@ -492,6 +494,10 @@ namespace Core {
 			glCullFace(GL_FRONT);
 
 		}
+
+		
+
+
 
 		void OpenGLPipeline::RenderParticlesSystems()
 		{
