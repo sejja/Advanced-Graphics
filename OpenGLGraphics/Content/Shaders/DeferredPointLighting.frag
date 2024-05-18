@@ -39,11 +39,10 @@ uniform Light uLight;
 float ShadowCalculation(vec3 fragPos) {
     vec3 fragToLigth = vec3(inverse(ubView) * vec4(fragPos, 1)) - uLight.mPosition;
     float closestDepth = texture(depthMap, fragToLigth).r;
-    closestDepth *= uLight.mRadius;
+    closestDepth *= uLight.mRadius * 2;
     float currentDepth = length(fragToLigth);
-
-    float bias = 0.05; 
-    float shadow = currentDepth -  bias > closestDepth ? 0.0 : 1.0; //Esto es un if raro
+    float bias = 0.07; 
+    float shadow = currentDepth - bias < closestDepth ? 1.0 : 0.0; //Esto es un if raro.
 
     return shadow;
 }
@@ -62,16 +61,16 @@ void main() {
 
     float shadow = ShadowCalculation(fragPos);
 
-//    FragColor = texture(gAlbedoSpec, oUVs) * AmbientOcclusion * shadow * vec4(
-//            //atenuation
-//             pow(smoothstep(uLight.mRadius, 0, length(vec3(ubView * vec4(uLight.mPosition, 1)) - fragPos)), uLight.mFallOff) 
-//            //ambient
-//            * (( (max(dot(normal, lightDir), 0.0) * uLight.mColor
-//            //specular
-//            + uLight.mColor * pow(max(dot(normalize(vec3(ubView * vec4(ubCameraPosition, 1)) - fragPos), 
-//
-//                reflect(-lightDir, normal)), 0.0), 32)))), 1.0);
-    vec3 fragToLigth = vec3(inverse(ubView) * vec4(fragPos, 1)) - uLight.mPosition;
-    float closestDepth = texture(depthMap, fragToLigth).r;
-    FragColor = vec4(vec3(closestDepth), 1.0);
+    FragColor = texture(gAlbedoSpec, oUVs) * AmbientOcclusion * shadow * vec4(
+            //atenuation
+             pow(smoothstep(uLight.mRadius, 0, length(vec3(ubView * vec4(uLight.mPosition, 1)) - fragPos)), uLight.mFallOff) 
+            //ambient
+            * (( (max(dot(normal, lightDir), 0.0) * uLight.mColor
+            //specular
+            + uLight.mColor * pow(max(dot(normalize(vec3(ubView * vec4(ubCameraPosition, 1)) - fragPos), 
+
+                reflect(-lightDir, normal)), 0.0), 32)))), 1.0);
+//    vec3 fragToLigth = vec3(inverse(ubView) * vec4(fragPos, 1)) - uLight.mPosition;
+//    float closestDepth = texture(depthMap, fragToLigth).r;
+//    FragColor = vec4(vec3(closestDepth), 1.0);
 } 

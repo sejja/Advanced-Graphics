@@ -163,9 +163,9 @@ namespace Graphics {
 				glActiveTexture(GL_TEXTURE5);
 				glBindTexture(GL_TEXTURE_CUBE_MAP, x->depthCubemap);
 				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &x->mPosition);
-				//shadptr->SetShaderUniform((id + ".mColor").c_str(), &x->mColor);
-				//shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x->mRadius);
-				//shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x->mFallOff);
+				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x->mColor);
+				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x->mRadius);
+				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x->mFallOff);
 
 				glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 				Utils::GLUtils::RenderScreenQuad();
