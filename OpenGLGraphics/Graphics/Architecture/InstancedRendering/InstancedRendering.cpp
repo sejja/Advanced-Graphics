@@ -11,7 +11,6 @@ namespace Graphics::Architecture::InstancedRendering
 
 	InstanceRenderer::~InstanceRenderer()
 	{
-		delete this->meshMap;
 	}
 
 	void InstanceRenderer::add_To_InstancedRendering(std::weak_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL> > renderer, std::weak_ptr<Core::Object> object)
