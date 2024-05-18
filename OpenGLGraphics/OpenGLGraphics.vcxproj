@@ -178,6 +178,7 @@
     <ClCompile Include="Core\Editor\ActionManager\PrevStates.cpp" />
     <ClCompile Include="Core\Editor\Guizmo.cpp" />
     <ClCompile Include="Core\Editor\Interface\TextEditor.cpp" />
+    <ClCompile Include="Core\Editor\KeyBinding.cpp" />
     <ClCompile Include="Core\Editor\mouse_picking.cpp" />
     <ClCompile Include="Core\Editor\ShaderCompiler\clientWindows.c" />
     <ClCompile Include="Core\Logger.cpp" />
@@ -277,6 +278,7 @@
     <ClInclude Include="Core\Editor\ActionManager\ActionType.h" />
     <ClInclude Include="Core\Editor\ActionManager\PrevStates.h" />
     <ClInclude Include="Core\Editor\Guizmo.h" />
+    <ClInclude Include="Core\Editor\KeyBinding.h" />
     <ClInclude Include="Core\Editor\mouse_picking.h" />
     <ClInclude Include="Core\Logger.h" />
     <ClInclude Include="Core\Math\Lerp.h" />
