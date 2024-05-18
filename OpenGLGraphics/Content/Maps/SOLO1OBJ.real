@@ -1,0 +1,55 @@
+{
+    "objects": [
+        {
+            "_id": "2",
+            "components": [
+                {
+                    "model": "C:\\Users\\Asier\\source\\repos\\sejja\\Advanced-Graphics\\OpenGLGraphics\\Content\\Meshes\\backpack.obj",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                }
+            ],
+            "name": "Prueba2",
+            "position": [
+                1.0,
+                -2.119999885559082,
+                1.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                3.5,
+                3.5,
+                3.5
+            ]
+        },
+        {
+            "_id": "SKYBOX",
+            "components": [
+                {
+                    "path": "adfadfasfa",
+                    "type": "Skybox"
+                }
+            ],
+            "name": "SKYBOX",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        }
+    ]
+}

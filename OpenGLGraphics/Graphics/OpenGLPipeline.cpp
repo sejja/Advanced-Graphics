@@ -318,7 +318,19 @@ namespace Core {
 			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
 			//glEnable(GL_DEPTH_TEST);
 
+
+
+			
 			auto scene = Singleton<AppWrapper>::Instance().getScene();
+
+			if (scene.GetObjects().size() > 0) {
+				if (scene.GetObjects()[0].get()->GetAllComponents().size() > 0) {
+					auto comp = scene.GetObjects()[0].get()->GetAllComponents()[0];
+					auto modelComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp)->GetModel()->Get()->getMeshes()[0];
+				}
+			}
+			
+
 			// Draw octree
 			auto debug_draw_octree = [&]() {
 				
@@ -338,8 +350,16 @@ namespace Core {
 			scene.OctreeCheck(frust);
 			debug_draw_octree();
 
-			scene.GetOctree().set_levels(3);
-			scene.CreateOctree(3, 7);
+
+
+			//scene.CreateOctree(3, 7);
+
+			if (scene.GetObjects().size() > 0) {
+				if (scene.GetObjects()[0].get()->GetAllComponents().size() > 0) {
+					auto comp = scene.GetObjects()[0].get()->GetAllComponents()[0];
+					auto modelComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp)->GetModel()->Get()->getMeshes()[0];
+				}
+			}
 
 
 			RenderParticlesSystems();
