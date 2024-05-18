@@ -1,4 +1,5 @@
 ﻿#include "Outliner.h"
+#include "Core/Remote/NetManager.h"
 #include "Dependencies/ImGui/imgui.h"
 #include "Core/Assets/ResourceManager.h"
 #include "Core/AppWrapper.h"
@@ -7,6 +8,7 @@
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 #include "Core/Editor/Editor.h"
 #include <random>
+
 
 
 SelectedObj& selectedObj = Singleton<Editor>::Instance().GetSelectedObj();
@@ -62,6 +64,11 @@ void Outliner::RenderOptions()
 		obj->SetName("New Object");
 		obj->SetID(generateID());
 		scene.addObject(obj);
+
+		//Remote 
+		auto inst = Singleton<NetManager>::Instance();
+		if (inst.isServer()) {inst.GetServer().sendNewObject(obj);}
+		else {inst.GetClient().sendNewObject(obj);}
 	}
 
 }
@@ -123,9 +130,10 @@ void Outliner::RenderSceneObjects(){
 				if (ImGui::MenuItem(ICON_FA_TRASH_CAN" Delete")) {
 					Core::Scene& scene = Singleton<AppWrapper>::Instance().getScene();
 					scene.removeObject(obj);
-					selectedObj.SetSelectedObject(NULL);
+					selectedObj.SetSelectedMesh(NULL);
 					selectedObj.SetSelectedComponent(NULL);
 					selectedObj.SetSelectedObject(NULL);
+					
 				}
 				ImGui::EndPopup();
 			}

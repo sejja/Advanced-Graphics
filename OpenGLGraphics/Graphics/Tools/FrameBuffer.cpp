@@ -97,7 +97,7 @@ namespace Core {
 		*/ //----------------------------------------------------------------------
 		void FrameBuffer::Bind() {
 #ifdef _DEBUG
-			if (!mHandle) throw FrameBufferException("We don't have a framebuffer created yet. Did you forget to call Create()?");
+			if (!mHandle) { throw FrameBufferException("We don't have a framebuffer created yet. Did you forget to call Create()?"); }
 #endif
 
 			auto& openglinfo = Singleton<OpenGLInfo>::Instance();

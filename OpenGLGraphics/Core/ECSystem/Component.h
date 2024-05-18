@@ -13,6 +13,7 @@
 #include "Object.h"
 #include "CommonDefines.h"
 
+
 namespace Core {
 	class Object;
 
@@ -30,11 +31,16 @@ namespace Core {
 	#pragma region //Functions
 		virtual void Update() {}
 		DONTDISCARD inline std::weak_ptr<Object> GetParent() const;
+
+		std::string GetID() { return compID; }
+		void SetID(std::string id) { compID = id; }
 	#pragma endregion
 
 	#pragma region //Members
 	protected:
 		std::weak_ptr<Object> mParent;
+
+		std::string compID;
 	#pragma endregion
 	};
 
