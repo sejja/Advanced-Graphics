@@ -14,6 +14,8 @@
 #include "ShaderProgram.h"
 #include "Texture.h"
 #include "Core/Assets/ResourceManager.h"
+#include <Graphics/Architecture/SpacePartitioning/octree.hpp>
+#include <Dependencies\Assimp\include\assimp\aabb.h>
 
 namespace Graphics {
 	namespace Primitives {
@@ -52,6 +54,21 @@ namespace Graphics {
         void setDiffuse(Core::Assets::Asset<Core::Graphics::Texture> diffuse) { mDiffuse = diffuse; }
         void setNormal(Core::Assets::Asset<Core::Graphics::Texture> normal) { mNormal = normal; }
 
+		void setAABB(const aiAABB& aiAABBB) { aabb = aiAABBB; }
+		aiAABB& getAABB() { return aabb; }
+
+		std::string getMeshID() { return meshID; }
+
+
+        //SPACE PARTITIONING TEMP PUBLIC
+        bool visible = true;
+
+        Octree<Mesh>::node* m_octree_node = nullptr;
+        Mesh* m_octree_next_obj = nullptr;
+        Mesh* m_octree_prev_obj = nullptr;
+
+
+
 
         #pragma region //Members
         private:
@@ -59,6 +76,10 @@ namespace Graphics {
             Core::Assets::Asset<Core::Graphics::Texture> mNormal;
             GLsizei mCount;
             GLuint mVao, mVbo, mEbo;
+
+            aiAABB& aabb;
+
+            std::string meshID;
         #pragma endregion
         };
 	}

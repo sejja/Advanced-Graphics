@@ -16,6 +16,7 @@
 #include <assimp/scene.h>
 #include <stb_image.h>
 
+
 namespace Graphics {
 	namespace Primitives {
         class Model {
@@ -42,6 +43,7 @@ namespace Graphics {
             aiAABB& getAABB();
 
             std::vector<Mesh>& getMeshes();
+
 
 
         private:

@@ -16,9 +16,11 @@ namespace Graphics {
         *   Constructs meshes from a bunch of vertices, indices, a diffuse texture and a normal texture
         */ //----------------------------------------------------------------------
 		Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const Core::Assets::Asset<Core::Graphics::Texture>& diffuse,
-            const Core::Assets::Asset<Core::Graphics::Texture>& normal) {
-           mDiffuse = diffuse;
-           mNormal = normal;
+            const Core::Assets::Asset<Core::Graphics::Texture>& normal) : aabb(*new aiAABB()) {
+            mDiffuse = diffuse;
+            mNormal = normal;
+
+            this->meshID = std::to_string(std::rand());
             
             glGenVertexArrays(1, &mVao);
             glGenBuffers(1, &mVbo);

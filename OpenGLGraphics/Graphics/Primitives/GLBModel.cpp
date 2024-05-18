@@ -88,15 +88,18 @@ namespace Graphics {
             //aabb 
             aabb = scene->mMeshes[0]->mAABB;
 
-
             aiMatrix4x4t<float> mat;
 
             mMeshes.reserve(scene->mNumMeshes);
 
             // process ASSIMP's root node recursively
             if (!scene->mRootNode)
-                for (unsigned i = 0; i < scene->mNumMeshes; i++)
-                    mMeshes.push_back(ProcessMesh(scene->mMeshes[i], scene, directory, mat));
+                for (unsigned i = 0; i < scene->mNumMeshes; i++){
+                    Mesh mMesh = ProcessMesh(scene->mMeshes[i], scene, directory, mat);
+					mMesh.setAABB(scene->mMeshes[i]->mAABB);
+                    mMeshes.push_back(mMesh);
+                }
+                    
             else  // process ASSIMP's root node recursively
                 ProcessNode(scene->mRootNode, scene, directory, mat);
         }

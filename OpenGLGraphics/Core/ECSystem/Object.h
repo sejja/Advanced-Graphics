@@ -15,7 +15,7 @@
 #include "Core/Math/Transform.h"
 #include "CommonDefines.h"
 #include "Core/RTTI/RTTI.h"
-#include <Graphics/Architecture/SpacePartitioning/octree.hpp>
+
 
 
 namespace Core {
@@ -67,17 +67,6 @@ namespace Core {
 
 		DONTDISCARD inline std::vector<std::shared_ptr<Core::Component>> GetAllComponents() const;
 
-		// Space partitioning
-		Octree<Object>::node* GetOctreeNode() const { return m_octree_node; }
-		std::shared_ptr<Object> GetOctreeNextObj() const { return m_octree_next_obj; }
-		std::shared_ptr<Object> GetOctreePrevObj() const { return m_octree_prev_obj; }
-		bool IsVisible() const { return visible; }
-
-		void SetOctreeNode(Octree<Object>::node* node) { m_octree_node = node; }
-		void SetOctreeNextObj(std::shared_ptr<Object> obj) { m_octree_next_obj = obj; }
-		void SetOctreePrevObj(std::shared_ptr<Object> obj) { m_octree_prev_obj = obj; }
-		void SetVisible(bool vis) { visible = vis; }
-
 
 	#pragma endregion
 
@@ -87,16 +76,6 @@ namespace Core {
 		std::vector<std::shared_ptr<Component>> mComponents;
 		std::string name;
 		std::string id;
-
-		
-		// Space partitioning data
-		Octree<Object>::node* m_octree_node = nullptr;
-		std::shared_ptr<Object> m_octree_next_obj = nullptr;
-		std::shared_ptr<Object> m_octree_prev_obj = nullptr;
-		//int id_counter;
-		//int m_ID = id_counter++;
-		bool visible = true;
-		
 
 	#pragma endregion
 	};

@@ -323,6 +323,7 @@ namespace Core {
 			auto debug_draw_octree = [&]() {
 				
 			std::cout << "Octree nodes: " << scene.GetOctree().m_nodes.size() << std::endl;
+
 			for (auto& it : scene.GetOctree().m_nodes) {
 				if (it.second->first) {
 					std::cout << "Node: " << it.first << " has " << std::endl;

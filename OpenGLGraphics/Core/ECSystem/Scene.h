@@ -16,6 +16,7 @@
 #include "Core/ParticleSystem/ParticleManager.h"
 #include <iostream>
 #include "Graphics/OpenGLPipeline.h"
+#include "Graphics\Primitives\GLBMesh.h"
 
 namespace Core {
 	class Renderable;
@@ -41,15 +42,18 @@ namespace Core {
 		}
 
 		
-		Octree<Object>& GetOctree() {
+		Octree<::Graphics::Primitives::Mesh>& GetOctree() {
 			return m_octree;
 		}
-		
+	
+
+
 		void CreateOctree(int levels, int sizebit);
-		void AddObjToNode(const std::shared_ptr<Object>& obj, Octree<Object>::node* node);
-		void EraseObjFromPrevNode(const std::shared_ptr<Object>& obj, Octree<Object>& tree);
-		void CheckFrustrumObjectCollisions(Octree<Object>::node* node, frustrum const& frus);
+		void AddObjToNode(::Graphics::Primitives::Mesh& mesh, Octree<::Graphics::Primitives::Mesh>::node* node);
+		void EraseObjFromPrevNode(::Graphics::Primitives::Mesh& mesh, Octree<::Graphics::Primitives::Mesh>& tree);
+		void CheckFrustrumObjectCollisions(Octree<::Graphics::Primitives::Mesh>::node* node, frustrum const& frus);
 		void OctreeCheck(frustrum const& frustum);
+		void FrustumCheck(frustrum const& frustum);
 
 		// Stats
 		int stat_draw_calls = 0;
@@ -63,7 +67,7 @@ namespace Core {
 		SceneParser mParser;
 		std::vector<std::shared_ptr<Object>> mObjects;
 
-		Octree<Object> m_octree;
+		Octree<::Graphics::Primitives::Mesh> m_octree;
 #pragma endregion
 	};
 }
