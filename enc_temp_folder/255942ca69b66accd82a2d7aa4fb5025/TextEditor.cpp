@@ -1165,7 +1165,6 @@ bool TextEditor::isFocused()
 
 void TextEditor::Render(const char* aTitle, bool aBorder)
 {
-	if (!showWindow) { return; }
 	if (ImGui::Begin("Shader Editor", &showWindow)) {
 		ImVec2 aSize = ImGui::GetContentRegionAvail();
 		{ // Save

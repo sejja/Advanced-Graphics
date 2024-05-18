@@ -20,6 +20,9 @@ public:
 	const char* fileToEdit;
 	bool firstTime;
 	bool focused;
+
+	bool showWindow = false;
+
 	enum class PaletteIndex
 	{
 		Default,
