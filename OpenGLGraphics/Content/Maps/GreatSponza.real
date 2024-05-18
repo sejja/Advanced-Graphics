@@ -262,7 +262,7 @@
       "components": [
         {
           "model": "..\\OpenGLGraphics\\Content\\Meshes\\sphere_20_averaged.obj",
-          "shader": "..\\OpenGLGraphics\\Content\\Shaders\\White.shader",
+          "shader": "..\\OpenGLGraphics\\Content\\Shaders\\Refractive.shader",
           "type": "Model Renderer"
         },
         {

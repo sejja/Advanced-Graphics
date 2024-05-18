@@ -106,6 +106,7 @@ namespace Core {
 			std::unique_ptr<::Graphics::Debug::DebugSystem> mDebug;
 			std::unique_ptr<::Graphics::Architecture::Bloom::BloomRenderer> mBloomRenderer;
 			std::unique_ptr<::Graphics::Architecture::SSAO::SSAOBuffer> mSSAOBuffer;
+			std::unique_ptr<::Graphics::Architecture::SSAO::SSAOBuffer> mSSAOBufferReflections;
 		};
 
 		// ------------------------------------------------------------------------

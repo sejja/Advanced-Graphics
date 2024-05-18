@@ -118,6 +118,7 @@ namespace Core {
 			cubeMapDirections[5] = glm::vec3(0.0f, 0.0f, -1.0f); // -Z
 			mDebug = std::make_unique<::Graphics::Debug::DebugSystem>();
 			mSSAOBuffer = std::make_unique<::Graphics::Architecture::SSAO::SSAOBuffer>(mDimensions);
+			mSSAOBufferReflections = std::make_unique<::Graphics::Architecture::SSAO::SSAOBuffer>(glm::lowp_u16vec2{ 512, 512 });
 		}
 
 		::Graphics::Architecture::GBuffer* OpenGLPipeline::GetGBuffer() {
@@ -614,10 +615,11 @@ namespace Core {
 				UpdateUniformBuffers(view, projectionMatrix);
 				GeometryPass({ 512, 512 },view,projectionMatrix, *mGBufferReflections);
 
-				glBindFramebuffer(GL_FRAMEBUFFER, mSSAOBuffer->GetHandle());
-				glClear(GL_COLOR_BUFFER_BIT);
+				//glBindFramebuffer(GL_FRAMEBUFFER, mSSAOBuffer->GetHandle());
+				//glClear(GL_COLOR_BUFFER_BIT);
+				mSSAOBufferReflections->RenderAO(*mGBufferReflections);
 				glBindFramebuffer(GL_FRAMEBUFFER, reflectionFramebuffer);
-				mLightPass->RenderLights({ 512, 512}, *mGBufferReflections, *mSSAOBuffer);
+				mLightPass->RenderLights({ 512, 512}, *mGBufferReflections, *mSSAOBufferReflections);
 				mGBufferReflections->BlitDepthBufferReflections(reflectionCubemap);
 				if (Skybox::sCurrentSky)
 					Skybox::sCurrentSky->RenderSpecific(view,projectionMatrix, *this);
@@ -638,7 +640,7 @@ namespace Core {
 				//reflectionRendererShader->Get()->SetShaderUniform("minBrightness", 0.1f); // Valor mínimo de brillo
 				//reflectionRendererShader->Get()->SetShaderUniform("maxBrightness", 1.0f); // Valor máximo de brillo
 				//reflectionRendererShader->Get()->SetShaderUniform("gamma", 2.2f);         // Valor para corrección gamma
-				reflectionRendererShader->Get()->SetShaderUniform("exposure", exposure);
+				reflectionRendererShader->Get()->SetShaderUniform("exposure", 10.0f);
 				::Graphics::Architecture::Utils::GLUtils::RenderScreenQuad();
 		    }
 		    // Cleanup
