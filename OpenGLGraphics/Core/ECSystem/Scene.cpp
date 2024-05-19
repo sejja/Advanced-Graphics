@@ -163,7 +163,7 @@ namespace Core {
 			upload(obj);
 			mObjects.emplace_back(std::move(obj));
 			}
-			catch (std::exception ex) {
+			catch (json::exception ex) {
 				std::cout << ex.what() << std::endl;
 				logger.logMessage(LogLevel::WARNING, "Object could not be loaded");
 			}

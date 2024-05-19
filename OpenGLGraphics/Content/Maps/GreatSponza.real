@@ -43,7 +43,8 @@
           ],
           "fallOf": 0.9100000262260437,
           "radius": 20.200000762939453,
-          "type": "Point Light"
+          "type": "Point Light",
+          "position":  [0,0,0]
         }
       ],
       "name": "Point Light #1",
@@ -132,7 +133,8 @@
             0.8700000047683716,
             0.3400000035762787
           ],
-          "type": "Directional Light"
+          "type": "Directional Light",
+          "position": [ 0, 0, 0 ]
         }
       ],
       "name": "Prueba2",
@@ -168,7 +170,8 @@
           ],
           "fallOf": 0.5,
           "radius": 1.0,
-          "type": "Point Light"
+          "type": "Point Light",
+          "position": [ 0, 0, 0 ]
         }
       ],
       "name": "New Object",
@@ -237,7 +240,8 @@
           "outterAngle": 38.95000076293945,
           "radius": 55.790000915527344,
           "shadowCaster": true,
-          "type": "Spot Light"
+          "type": "Spot Light",
+          "position": [ 0, 0, 0 ]
         }
       ],
       "name": "Spot Light #1",
@@ -281,7 +285,8 @@
           "outterAngle": 38.95000076293945,
           "radius": 55.790000915527344,
           "shadowCaster": true,
-          "type": "Spot Light"
+          "type": "Spot Light",
+          "position": [ 0, 0, 0 ]
         }
       ],
       "name": "Spot Light #2",
