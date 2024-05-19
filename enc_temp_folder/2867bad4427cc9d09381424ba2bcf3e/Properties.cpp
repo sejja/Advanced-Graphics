@@ -571,7 +571,7 @@ void Properties::ParticleTransform() {
 }
 
 void Properties::applyLockResize(glm::vec3& prevVec, glm::vec3& curVec) {
-    int dimChanged = -1;
+    int dimChanged = -1; 
     for (int i = 0; i < 3; ++i) {
         if (curVec[i] != prevVec[i]) {
             dimChanged = i;
@@ -579,18 +579,11 @@ void Properties::applyLockResize(glm::vec3& prevVec, glm::vec3& curVec) {
         }
     }
     if (dimChanged != -1) {
-        if (prevVec[dimChanged] != 0) {
-            float changeScale = curVec[dimChanged] / prevVec[dimChanged];
-            for (int i = 0; i < 3; ++i) {
-                if (i != dimChanged) {
-                    curVec[i] *= changeScale;
-                }
+        float changeScale = curVec[dimChanged] / prevVec[dimChanged];
+        for (int i = 0; i < 3; ++i) {
+            if (i != dimChanged) {
+                curVec[i] *= changeScale;
             }
-        }
-        else {
-			for (int i = 0; i < 3; ++i) {
-                curVec[i] = 1.0f;
-			}
         }
     }
 }
