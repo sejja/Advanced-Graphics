@@ -41,8 +41,7 @@ float ShadowCalculation(vec3 fragPos) {
     float closestDepth = texture(depthMap, fragToLigth).r;
     closestDepth *= uLight.mRadius * 2;
     float currentDepth = length(fragToLigth);
-    float bias = 0.07; 
-    float shadow = currentDepth - bias < closestDepth ? 1.0 : 0.0; //Esto es un if raro.
+    float shadow = currentDepth * 0.98 < closestDepth ? 1.0 : 0.0; //Esto es un if raro.
 
     return shadow;
 }
