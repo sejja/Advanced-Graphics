@@ -4,7 +4,7 @@
             "_id": "Palace",
             "components": [
                 {
-                    "id": "20552",
+                    "id": "41",
                     "model": "Content/Scenes/Sponza/Sponza.gltf",
                     "shader": "Content/Shaders/DeferredGeometry.shader",
                     "type": "Model Renderer"
@@ -31,7 +31,7 @@
             "_id": "Dragon",
             "components": [
                 {
-                    "id": "20124",
+                    "id": "18467",
                     "model": "Content/Meshes/Dragon/scene.gltf",
                     "shader": "Content/Shaders/DeferredGeometry.shader",
                     "type": "Model Renderer"
@@ -44,21 +44,21 @@
                 -2.4634125232696533
             ],
             "rotation": [
-                3.0,
+                0.0,
                 0.0,
                 0.0
             ],
             "scale": [
                 0.40000009536743164,
                 0.4000000059604645,
-                0.40000009536743164
+                0.4000000059604645
             ]
         },
         {
             "_id": "Dragon",
             "components": [
                 {
-                    "id": "18858",
+                    "id": "6334",
                     "model": "Content/Meshes/Dragon/scene.gltf",
                     "shader": "Content/Shaders/DeferredGeometry.shader",
                     "type": "Model Renderer"
@@ -85,7 +85,7 @@
             "_id": "SKYBOX",
             "components": [
                 {
-                    "id": "19796",
+                    "id": "26500",
                     "path": "adfadfasfa",
                     "type": "Skybox"
                 }
@@ -113,7 +113,7 @@
                 {
                     "Diffuse": "Content/Textures/decal_skull_d.png",
                     "Normal": "Content/Textures/decal_skull_n.png",
-                    "id": "7942",
+                    "id": "19169",
                     "type": "Decal"
                 }
             ],
@@ -151,7 +151,7 @@
                     ],
                     "gap": 0.15000000596046448,
                     "height": 3.75,
-                    "id": "8782",
+                    "id": "15724",
                     "particleSize": 4.0,
                     "radiusVector": [
                         0.5,
@@ -174,7 +174,7 @@
                     ],
                     "gap": 0.15000000596046448,
                     "height": 3.75,
-                    "id": "18912",
+                    "id": "29756",
                     "particleSize": 4.0,
                     "radiusVector": [
                         0.5,
@@ -197,8 +197,8 @@
                     ],
                     "gap": 0.15299999713897705,
                     "height": 3.75,
-                    "id": "31904",
-                    "particleSize": 8.119000434875488,
+                    "id": "25343",
+                    "particleSize": 4.0,
                     "radiusVector": [
                         0.5,
                         0.5,
@@ -220,7 +220,7 @@
                     ],
                     "gap": 0.125,
                     "height": 3.75,
-                    "id": "18077",
+                    "id": "13114",
                     "particleSize": 4.0,
                     "radiusVector": [
                         0.5,
@@ -235,14 +235,14 @@
                         0.36681222915649414,
                         0.0
                     ],
-                    "fallOf": 0.9514213800430298,
+                    "fallOf": 0.8959891200065613,
                     "fireParams": [
                         0.10999999940395355,
                         0.25999999046325684,
                         1.0,
                         0.9800000190734863
                     ],
-                    "id": "14408",
+                    "id": "1531",
                     "isFireLight": true,
                     "position": [
                         29.0,
@@ -284,7 +284,7 @@
                         0.8700000047683716,
                         0.3400000035762787
                     ],
-                    "id": "28550",
+                    "id": "27570",
                     "position": [
                         0.0,
                         0.0,
@@ -327,8 +327,8 @@
                     ],
                     "gap": 0.19900000095367432,
                     "height": 6.25,
-                    "id": "19790",
-                    "particleSize": 4.0,
+                    "id": "31310",
+                    "particleSize": 8.982999801635742,
                     "radiusVector": [
                         1.7999999523162842,
                         1.7999999523162842,
@@ -342,14 +342,14 @@
                         0.08157739788293839,
                         0.8122270703315735
                     ],
-                    "fallOf": 1.1274794340133667,
+                    "fallOf": 0.8749950528144836,
                     "fireParams": [
                         0.15000000596046448,
                         0.20999999344348907,
                         1.0,
                         0.5899999737739563
                     ],
-                    "id": "15247",
+                    "id": "28896",
                     "isFireLight": true,
                     "position": [
                         0.0,
@@ -394,7 +394,7 @@
                     ],
                     "gap": 0.24899999797344208,
                     "height": 7.5,
-                    "id": "11551",
+                    "id": "6887",
                     "particleSize": 4.0,
                     "radiusVector": [
                         1.7999999523162842,
@@ -409,14 +409,14 @@
                         0.5685380697250366,
                         0.09965486079454422
                     ],
-                    "fallOf": 1.0001261234283447,
+                    "fallOf": 0.9427435398101807,
                     "fireParams": [
                         0.15000000596046448,
                         0.27000001072883606,
                         1.0,
                         1.0
                     ],
-                    "id": "16174",
+                    "id": "25752",
                     "isFireLight": true,
                     "position": [
                         0.0,
@@ -459,7 +459,7 @@
                         0.8609282970428467
                     ],
                     "fallOff": 1.0,
-                    "id": "31556",
+                    "id": "7345",
                     "innerAngle": 0.0,
                     "outterAngle": 5.760000228881836,
                     "position": [

@@ -19,11 +19,7 @@ void ActionManager::AddAction(std::shared_ptr<Action> action){
 
 void ActionManager::Undo()
 {
-	if (currentAction - 1 == -1) {
-		return;
-	}
-	std::cout << "currentActionUNDO: " << currentAction << std::endl;
-	if (currentAction >= 0) {
+	if (canUndo()) {
 		actions[currentAction]->Undo();
 		currentAction--;
 	}
@@ -31,9 +27,7 @@ void ActionManager::Undo()
 
 void ActionManager::Redo()
 {
-	std::cout << "currentActionREDO: " << currentAction << std::endl;
-
-	if (currentAction < actions.size() - 1) {
+	if (canRedo()) {
 		currentAction++;
 		actions[currentAction]->Redo();
 	}

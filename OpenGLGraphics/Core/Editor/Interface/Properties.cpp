@@ -164,6 +164,13 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_CIRCLE " Guizmo type", ImGuiTreeNodeFlags_DefaultOpen)) {
             TransformGuizmoTypeSelect();
         }
+
+        if (Singleton<Editor>::Instance().getIsEditing() && !ImGui::IsMouseDown(0)) {
+            std::cout << "Movimiento acabado" << std::endl;
+            Singleton<Editor>::Instance().setEditing(false);
+            auto fireAction = std::make_shared<FireAction>(fireSystem);
+            Singleton<Editor>::Instance().GetActionManager()->AddAction(fireAction);
+        }
     }
 
     else if (decal) {
@@ -574,7 +581,7 @@ void Properties::applyLockResize(glm::vec3& prevVec, glm::vec3& curVec) {
     int dimChanged = -1;
     for (int i = 0; i < 3; ++i) {
         if (curVec[i] != prevVec[i]) {
-            dimChanged = i;
+			dimChanged = i; //Which of the value has been changed
             break;
         }
     }
@@ -733,6 +740,15 @@ void saveLight(std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp)
         Singleton<Editor>::Instance().setEditing(true);
     }
 }
+void saveFire(std::shared_ptr<::Core::Particles::FireSystem> fireSys) {
+    if (!Singleton<Editor>::Instance().getIsEditing()) {
+		std::cout << "Guardando estado" << std::endl;
+        PrevStates::SetPrevFire(fireSys);
+        Singleton<Editor>::Instance().setEditing(true);
+    }
+}
+
+
 void Properties::LightTypeOptions(){
     static ImVec2 cell_padding(4.0f, 8.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
@@ -1125,19 +1141,19 @@ void Properties::FireSize() {
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Height");
         ImGui::TableSetColumnIndex(1);
-        ImGui::SliderFloat("##Height", &curHeight, 0.0f, 100.0f, "%.3f");
+        if (ImGui::SliderFloat("##Height", &curHeight, 0.0f, 100.0f, "%.3f")) { saveFire(fireSystem); }
 
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Gap");
         ImGui::TableSetColumnIndex(1);
-        ImGui::SliderFloat("##Gap", &curGap, 0.0f, 1.0f, "%.3f");
+		if (ImGui::SliderFloat("##Gap", &curGap, 0.0f, 1.0f, "%.3f")) { saveFire(fireSystem); }
 
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Particle Size");
         ImGui::TableSetColumnIndex(1);
-        ImGui::SliderFloat("##ParticleSize", &curParticleSize, 1.0f, 15.0f, "%.3f");
+		if (ImGui::SliderFloat("##ParticleSize", &curParticleSize, 1.0f, 15.0f, "%.3f")) { saveFire(fireSystem); }
 
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);

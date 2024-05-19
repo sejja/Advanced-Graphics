@@ -152,6 +152,7 @@ namespace Core {
 					fire->ChangeFireSize(components[j]["radiusVector"][0], components[j]["radiusVector"][1], components[j]["radiusVector"][2], components[j]["gap"], components[j]["height"]);
 					fire->SetBaseColor(glm::vec4(components[j]["color"][0], components[j]["color"][1], components[j]["color"][2], components[j]["color"][3]));
 					fire->SetSystemCenter(glm::vec3(components[j]["center"][0], components[j]["center"][1], components[j]["center"][2]), obj->GetPosition());
+					fire->SetParticleSize(components[j]["particleSize"]);
 					obj->AddComponentR(fire);
 					particleManager->AddComponent(std::move(fire));
 				}
