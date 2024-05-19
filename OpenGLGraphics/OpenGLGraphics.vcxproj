@@ -171,6 +171,7 @@
     <ClCompile Include="Core\Editor\ActionManager\Action.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\ActionManager.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\Actions\ComponentAction.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\Actions\FireAction.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\Actions\LightAction.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\Actions\MeshAction.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\Actions\ModelAction.cpp" />
@@ -271,6 +272,7 @@
     <ClInclude Include="Core\Editor\ActionManager\Action.h" />
     <ClInclude Include="Core\Editor\ActionManager\ActionManager.h" />
     <ClInclude Include="Core\Editor\ActionManager\Actions\ComponentAction.h" />
+    <ClInclude Include="Core\Editor\ActionManager\Actions\FireAction.h" />
     <ClInclude Include="Core\Editor\ActionManager\Actions\LightAction.h" />
     <ClInclude Include="Core\Editor\ActionManager\Actions\MeshAction.h" />
     <ClInclude Include="Core\Editor\ActionManager\Actions\ModelAction.h" />

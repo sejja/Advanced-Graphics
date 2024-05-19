@@ -315,6 +315,9 @@
     <ClCompile Include="Core\Editor\KeyBinding.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Core\Editor\ActionManager\Actions\FireAction.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\STB\stb.h">
@@ -1923,6 +1926,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Core\Editor\KeyBinding.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Core\Editor\ActionManager\Actions\FireAction.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

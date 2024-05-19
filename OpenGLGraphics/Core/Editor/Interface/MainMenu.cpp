@@ -187,7 +187,7 @@ void MainMenu::RenderEditMenu() {
             std::cout << "Undoing action" << std::endl;
             Singleton<::Editor>::Instance().GetActionManager()->Undo();
         }
-        if (ImGui::MenuItem("Redo", "CTRL+Y")) {
+        if (ImGui::MenuItem("Redo", "CTRL+SH+Z")) {
             std::cout << "Redoing action" << std::endl;
             Singleton<::Editor>::Instance().GetActionManager()->Redo();
         }
