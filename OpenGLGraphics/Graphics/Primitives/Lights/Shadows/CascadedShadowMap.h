@@ -35,7 +35,7 @@ namespace Graphics {
 				#pragma region //Methods
 					void Bind() const;
 					void SetUniforms(const Core::Assets::Asset<Core::Graphics::ShaderProgram>& shader);
-					void Render(glm::mat4 camview, glm::vec3 pos, glm::vec3 dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
+					void Render(const glm::mat4& camview, const glm::vec3& dir, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func);
 				
 				private:
 					DONTDISCARD std::array<glm::mat4, 5> GetLightSpaceMatrices(const glm::mat4& camview, const glm::vec3& lightdir) const;
@@ -48,6 +48,7 @@ namespace Graphics {
 					std::array<float, 4> mCascadedLevels;
 					std::array<glm::mat4, 5> mLightMatrices;
 					Core::Assets::Asset<Core::Graphics::ShaderProgram> mShader;
+					Core::Assets::Asset<Core::Graphics::ShaderProgram> mInstancedShader;
 				#pragma endregion
 				};
 			}

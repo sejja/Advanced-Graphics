@@ -16,6 +16,9 @@
 #include "Core/ParticleSystem/ParticleManager.h"
 #include <iostream>
 #include "Graphics/OpenGLPipeline.h"
+#include "Dependencies/Json/single_include/json.hpp"
+
+using json = nlohmann::json;
 
 namespace Core {
 	class Renderable;
@@ -24,6 +27,9 @@ namespace Core {
 	public:
 		void CreateScene(const std::string_view& file, std::function<void(const std::shared_ptr<Object>& obj)>);
 		void Tick();
+		void Save(const std::string_view& file);
+		void ClearScene();
+		void loadScene(const json& data, std::function<void(const std::shared_ptr<Core::Object>& obj)> upload);
 
 		const std::vector<std::shared_ptr<Core::Object>>& GetObjects() const {
 			return mObjects;
@@ -38,6 +44,7 @@ namespace Core {
 			mObjects.erase(std::remove(mObjects.begin(), mObjects.end(), obj), mObjects.end());
 		}
 
+		
 
 #pragma endregion	
 

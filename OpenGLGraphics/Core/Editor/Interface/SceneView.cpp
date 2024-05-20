@@ -5,28 +5,52 @@
 #include "Core/Singleton.h"
 #include "Core/Editor/Assets/Fonts/IconsFontAwesome.h"
 #include "Core/Editor/Editor.h"
+#include "Core/Input/InputManager.h"
+#include "Core/Editor/mouse_picking.h"
+
 
 
 void SceneView::Render(Core::Graphics::OpenGLPipeline& pipeline){
 
 	ImGui::Begin(ICON_FA_VIDEO " Scene");
+	ImGuizmo::BeginFrame();
+	ImGuizmo::SetDrawlist();
+
+	Core::Input::InputManager& inptmgr = Singleton<Core::Input::InputManager>::Instance();
+	ImVec2 screen_pos = ImGui::GetCursorScreenPos();
 	ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
-	//habría que setear la vista de la camara de la escena a este viewport tmb
+	glm::vec2 mousePosition(inptmgr.GetMousePosition().x - screen_pos.x, inptmgr.GetMousePosition().y - screen_pos.y);
 
 	glm::lowp_u16vec2 dim;
 	dim.x = static_cast<uint16_t>(viewportPanelSize.x);
 	dim.y = static_cast<uint16_t>(viewportPanelSize.y);
 
-	//printf("Viewport size 1: %d, %d\n", dim.x, dim.y);
 
-	//pipeline.setSceneFrameDimensions(dim);
-	//pipeline.Render();
+	ImGuizmo::SetRect(
+		screen_pos.x, screen_pos.y,
+		viewportPanelSize.x, viewportPanelSize.y
+	);
 
 	Singleton<Editor>::Instance().setSceneFrameDimensions(dim);
+
+	Singleton<Editor>::Instance().setSceneFramePosition(screen_pos);
+
+	isWHovered = (mousePosition.x <= viewportPanelSize.x + screen_pos.x && mousePosition.x >= screen_pos.x) && (mousePosition.y <= viewportPanelSize.y + screen_pos.y && mousePosition.y >= screen_pos.y);
+	//picking
+	
+	if (ImGui::IsMouseClicked(0) && isWHovered && !ImGuizmo::IsOver()) {
+		mousePicking.performRayCasting(mousePosition, viewportPanelSize.x, viewportPanelSize.y, pipeline.getCamera());
+	}
+	
 
 	
 	ImGui::Image(reinterpret_cast<void*>(pipeline.GetRenderTexture()), ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2{ 0, 1 }, ImVec2{ 1, 0 });
 	ImGui::End();
 
 
+}
+
+bool SceneView::isHovered()
+{	
+	return isWHovered;
 }

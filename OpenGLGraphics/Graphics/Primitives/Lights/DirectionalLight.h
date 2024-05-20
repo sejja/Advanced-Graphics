@@ -67,7 +67,7 @@ namespace Graphics {
 			*  REnders the shadow map depth buffer
 			*/ //----------------------------------------------------------------------
 			void DirectionalLight::DirectionalLightData::RenderShadowsMap(const glm::mat4& camview, const std::function<void(Core::Graphics::ShaderProgram*)>& rend_func) {
-				mShadowMap.Render(camview, mPosition, mDirection, rend_func);
+				mShadowMap.Render(camview, mDirection, rend_func);
 			}
 
 			// ------------------------------------------------------------------------

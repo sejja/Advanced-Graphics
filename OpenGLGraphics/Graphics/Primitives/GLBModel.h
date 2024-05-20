@@ -33,6 +33,16 @@ namespace Graphics {
             // draws the model, and thus all its meshes
             void Draw();
 
+            //get the model's directory
+            std::string getDirectory();
+            std::string getPath();
+			std::string getName();
+
+            //get aabb
+            aiAABB& getAABB();
+
+            std::vector<Mesh>& getMeshes();
+
         private:
             // loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
             void LoadModel(std::string const& path);
@@ -49,6 +59,9 @@ namespace Graphics {
          #pragma region //Members
             std::vector<Mesh> mMeshes;
          #pragma endregion
+            std::string modelPath;
+
+            aiAABB& aabb;
         };
 	}
 }

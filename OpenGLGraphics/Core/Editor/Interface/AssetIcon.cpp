@@ -52,7 +52,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 				//printf("Dragging");
 				dibujar(true);
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
-				printf("nombre: %s\n", this->nombre);
+				//printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}
@@ -81,7 +81,7 @@ void AssetIcon::dibujar(bool dibujarToolTip) { //Probablemente sea más eficiente
 				//printf("Dragging");
 				dibujar(true);
 				ImGui::SetDragDropPayload("other", this, sizeof(AssetIcon));
-				printf("nombre: %s\n", this->nombre);
+				//printf("nombre: %s\n", this->nombre);
 				ImGui::EndDragDropSource();
 			}
 		}

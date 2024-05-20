@@ -5,6 +5,7 @@
 #include <glew.h>
 #include "Core/ECSystem/Object.h"
 
+
 class Outliner {
 public:
     void Render();
@@ -12,8 +13,13 @@ public:
     std::string formatObjName(const std::shared_ptr<Core::Object>& obj);
     void RenderOptions();
     void RenderSceneObjects();
+    std::string generateID();
 
 
+private:
+    std::string newName;
+	bool editingName = false;
+    char searchField[128] = "";
 
 };
 

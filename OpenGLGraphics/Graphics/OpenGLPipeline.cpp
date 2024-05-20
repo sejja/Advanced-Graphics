@@ -23,6 +23,9 @@
 #include "Graphics/Tools/OpenGLInfo.h"
 #include "Graphics/Architecture/Utils/GLUtils.h"
 #include "Graphics/Primitives/Decal.h"
+#include "Graphics/Architecture/InstancedRendering/InstancedRendering.h"
+#include "Dependencies/ImGuizmo/ImGuizmo.h"
+#include "Core/AppWrapper.h"
 
 
 using namespace Core::Graphics;
@@ -93,6 +96,7 @@ namespace Core {
 			glGenBuffers(1, &mUniformBuffer);
 
 			glBindBuffer(GL_UNIFORM_BUFFER, mUniformBuffer);
+			glBindBufferBase(GL_UNIFORM_BUFFER,0 , mUniformBuffer);
 			glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4) + sizeof(glm::vec3) + sizeof(glm::vec2), NULL, GL_STATIC_DRAW);
 			glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
@@ -129,14 +133,20 @@ namespace Core {
 		*/ 
 		void OpenGLPipeline::FlushObsoletes(unordered_multimap<Core::Assets::Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> obsoletes)
 		{
-			for_each(execution::par, obsoletes.begin(), obsoletes.end(), [this, &obsoletes](pair<const Core::Assets::Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> x) {
+			
+			/*bool found = false;
 
+			for_each(execution::par, obsoletes.begin(), obsoletes.end(), [this, &found, &obsoletes](pair<const Core::Assets::Asset<ShaderProgram>, vector<weak_ptr<Renderable>>::const_iterator> x) {
+				if (found) return;
 				vector<weak_ptr<Renderable>>& it = mGroupedRenderables.find(x.first)->second;
-				it.erase(x.second);
+				//it.erase(x.second);
 
 				//If we don't have any other renderables, erase it
 				if (!it.size()) mGroupedRenderables.erase(x.first);
-				});
+				found = true;
+				});*/
+
+			
 		}
 
 		/* GroupRender
@@ -176,8 +186,8 @@ namespace Core {
 			ImGui_ImplSDL2_NewFrame();
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui::NewFrame();
-
-
+			ImGuizmo::BeginFrame();
+			
 			// Create the docking environment
 			ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoTitleBar |
 				ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove |
@@ -259,9 +269,6 @@ namespace Core {
 			colors[ImGuiCol_::ImGuiCol_ModalWindowDimBg] = { 0.80f, 0.80f, 0.80f, 0.35f };
 
 
-
-
-
 			//Render editor
 			Singleton<::Editor>::Instance().Render(*this);
 
@@ -273,6 +280,7 @@ namespace Core {
 
 			mLightPass->RenderShadowMaps({1600, 900}, cam.GetViewMatrix(), [&obsoletes, this](ShaderProgram* shader) {
 				//Render all objects
+
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
 				[this, &obsoletes, &shader](const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
 						GroupRender(obsoletes, it, shader);
@@ -292,25 +300,30 @@ namespace Core {
 			RenderGUI();
 			
 			RenderShadowMaps();
-			Skybox::sCurrentSky->UploadSkyboxCubeMap();
+			if(Skybox::sCurrentSky)
+				Skybox::sCurrentSky->UploadSkyboxCubeMap();
 			UpdateUniformBuffers();
+
 			GeometryPass();
-			mSSAOBuffer->RenderAO(*mGBuffer);
 			mGeometryDeform.DecalPass(*mGBuffer);
 
 			auto x = Singleton<::Editor>::Instance().GetSelectedObj().GetSelectedComponent();
-			
+
 			if (RTTI::IsA<::Graphics::Primitives::Decal>(x.get())) {
 				mDebug->DrawAABB(x.get()->GetParent().lock()->GetPosition(),
 					x.get()->GetParent().lock()->GetScale(), glm::vec4(1, 0.6, 0.2, 1), cam);
 			}
+
+			mSSAOBuffer->RenderAO(*mGBuffer);
 
 			//Bind and Clean
 			if (AntiAliasing) {mSamplingBuffer->Bind();mSamplingBuffer->Clear();}
 			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
 			//glEnable(GL_DEPTH_TEST);
 
-			//RenderParticlesSystems();
+			RenderParticlesSystems();
+
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			BloomPass(mHDRBuffer->GetHandle());
 			mLightPass->RenderLights({1600, 900}, *mGBuffer, *mSSAOBuffer);
@@ -318,7 +331,8 @@ namespace Core {
 			if (AntiAliasing) mGBuffer->BlitDepthBuffer(mSamplingBuffer->GetHandle());
 			else mGBuffer->BlitDepthBuffer(mHDRBuffer->GetHandle());
 
-			Skybox::sCurrentSky->Render(cam, *this);
+			if (Skybox::sCurrentSky)
+				Skybox::sCurrentSky->Render(cam, *this);
 
 			RenderParticlesSystems();
 
@@ -346,6 +360,16 @@ namespace Core {
 			
 		}
 
+
+		void OpenGLPipeline::ClearPipeline() {
+			mGroupedRenderables.clear();
+			mLightPass->Clear();
+		}
+
+		Primitives::Camera* OpenGLPipeline::getCamera()
+		{
+			return &cam;
+		}
 
 		void OpenGLPipeline::updateRenderablesGroups(const Core::Assets::Asset<ShaderProgram>& curShader, const Core::Assets::Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable)
 		{
@@ -386,7 +410,6 @@ namespace Core {
 			//glEnable(GL_DEPTH_TEST);
 			glCullFace(GL_BACK);
 			glViewport(0, 0, mDimensions.x, mDimensions.y);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glEnable(GL_ALPHA_TEST);
 			glAlphaFunc(GL_GREATER, 0.1f);
 
@@ -398,6 +421,8 @@ namespace Core {
 
 				mGBuffer->Bind();
 				mGBuffer->ClearBuffer();
+
+				Singleton<::Graphics::Architecture::InstancedRendering::InstanceRenderer>::Instance().render(1);
 
 				std::for_each(std::execution::unseq, mGroupedRenderables.begin(), mGroupedRenderables.end(),
 					[this, &obsoletes, &projection, &view](const std::pair<Core::Assets::Asset<Core::Graphics::ShaderProgram>, std::vector<std::weak_ptr<Renderable>>>& it) {
@@ -439,7 +464,7 @@ namespace Core {
 			glm::mat4 view = cam.GetViewMatrix();
 			glm::mat4 projection = cam.GetProjectionMatrix();
 		
-			glBindBuffer(GL_UNIFORM_BUFFER, mUniformBuffer);
+			glBindBufferBase(GL_UNIFORM_BUFFER,0 , mUniformBuffer);
 			glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), &view);
 			glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), &projection);
 			glBufferSubData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), sizeof(glm::vec3), &cam.GetPositionRef());
@@ -470,6 +495,10 @@ namespace Core {
 
 		}
 
+		
+
+
+
 		void OpenGLPipeline::RenderParticlesSystems()
 		{
 			if (auto currentParticleManager = particleManager.lock()) 
@@ -478,7 +507,7 @@ namespace Core {
 			}
 			else 
 			{
-				std::cout << "ERROR -> PARTICLEMANAGER WAS DESTROYED \n";
+				//std::cout << "ERROR -> PARTICLEMANAGER WAS DESTROYED \n";
 			}
 
 		}

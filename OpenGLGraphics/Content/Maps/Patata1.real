@@ -1,0 +1,340 @@
+{
+    "objects": [
+        {
+            "_id": "Palace",
+            "components": [
+                {
+                    "model": "Content/Scenes/Sponza/Sponza.gltf",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                }
+            ],
+            "name": "Palace",
+            "position": [
+                0.0,
+                -10.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224
+            ]
+        },
+        {
+            "_id": "Dragon",
+            "components": [
+                {
+                    "model": "Content/Meshes/Dragon/scene.gltf",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                }
+            ],
+            "name": "Dragon",
+            "position": [
+                0.0,
+                16.93286895751953,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.4000000059604645,
+                0.4000000059604645,
+                0.4000000059604645
+            ]
+        },
+        {
+            "_id": "Dragon",
+            "components": [
+                {
+                    "model": "Content/Meshes/Dragon/scene.gltf",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                }
+            ],
+            "name": "Dragon",
+            "position": [
+                3.574063539505005,
+                -60.0,
+                0.0
+            ],
+            "rotation": [
+                45.0,
+                -0.0,
+                -0.0
+            ],
+            "scale": [
+                0.4000000059604645,
+                0.4000000059604645,
+                0.4000000059604645
+            ]
+        },
+        {
+            "_id": "SKYBOX",
+            "components": [
+                {
+                    "path": "adfadfasfa",
+                    "type": "Skybox"
+                }
+            ],
+            "name": "SKYBOX",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "_id": "New Object",
+            "components": [
+                {
+                    "Diffuse": "Content/Textures/decal_skull_d.png",
+                    "Normal": "Content/Textures/decal_skull_n.png",
+                    "type": "Decal"
+                }
+            ],
+            "name": "Skull Decal",
+            "position": [
+                -83.23261260986328,
+                0.0,
+                -24.876203536987305
+            ],
+            "rotation": [
+                5.0,
+                0.0,
+                5.0
+            ],
+            "scale": [
+                10.0,
+                10.000000953674316,
+                10.000000953674316
+            ]
+        },
+        {
+            "_id": "25788",
+            "components": [
+                {
+                    "center": [
+                        -37.20619201660156,
+                        -2.237584114074707,
+                        8.743874549865723
+                    ],
+                    "color": [
+                        0.9882352948188782,
+                        0.729411780834198,
+                        0.0117647061124444,
+                        1.0
+                    ],
+                    "gap": 0.15000000596046448,
+                    "height": 3.75,
+                    "particleSize": 4.0,
+                    "radiusVector": [
+                        0.5,
+                        0.5,
+                        0.5
+                    ],
+                    "type": "Fire"
+                },
+                {
+                    "center": [
+                        -37.209999084472656,
+                        -2.240000009536743,
+                        -12.918292045593262
+                    ],
+                    "color": [
+                        0.9882352948188782,
+                        0.729411780834198,
+                        0.0117647061124444,
+                        1.0
+                    ],
+                    "gap": 0.15000000596046448,
+                    "height": 3.75,
+                    "particleSize": 4.0,
+                    "radiusVector": [
+                        0.5,
+                        0.5,
+                        0.5
+                    ],
+                    "type": "Fire"
+                },
+                {
+                    "center": [
+                        29.282033920288086,
+                        -2.6006925106048584,
+                        -12.97358512878418
+                    ],
+                    "color": [
+                        0.9882352948188782,
+                        0.729411780834198,
+                        0.0117647061124444,
+                        1.0
+                    ],
+                    "gap": 0.16200000047683716,
+                    "height": 3.75,
+                    "particleSize": 4.0,
+                    "radiusVector": [
+                        0.5,
+                        0.5,
+                        0.5
+                    ],
+                    "type": "Fire"
+                },
+                {
+                    "center": [
+                        28.94208526611328,
+                        -2.5690057277679443,
+                        8.606914520263672
+                    ],
+                    "color": [
+                        0.9882352948188782,
+                        0.729411780834198,
+                        0.0117647061124444,
+                        1.0
+                    ],
+                    "gap": 0.125,
+                    "height": 3.75,
+                    "particleSize": 4.0,
+                    "radiusVector": [
+                        0.5,
+                        0.5,
+                        0.5
+                    ],
+                    "type": "Fire"
+                }
+            ],
+            "name": "Fuego de Brasero",
+            "position": [
+                0.22784996032714844,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        null,
+        {
+            "_id": "12849",
+            "components": [
+                {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "direction": [
+                        0.3400000035762787,
+                        0.8700000047683716,
+                        0.3400000035762787
+                    ],
+                    "position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "type": "Directional Light"
+                }
+            ],
+            "name": "Luz Direccional",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "52046",
+            "components": [
+                {
+                    "center": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "color": [
+                        0.9882352948188782,
+                        0.729411780834198,
+                        0.0117647061124444,
+                        1.0
+                    ],
+                    "gap": 0.19900000095367432,
+                    "height": 11.25,
+                    "particleSize": 9.600000381469727,
+                    "radiusVector": [
+                        1.7999999523162842,
+                        1.7999999523162842,
+                        1.7999999523162842
+                    ],
+                    "type": "Fire"
+                },
+                {
+                    "color": [
+                        0.8122270703315735,
+                        0.5218815803527832,
+                        0.08157739788293839
+                    ],
+                    "fallOf": 0.5,
+                    "position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "radius": 20.0,
+                    "type": "Point Light"
+                }
+            ],
+            "name": "New Object",
+            "position": [
+                67.40531158447266,
+                -1.945376992225647,
+                22.9642391204834
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        }
+    ]
+}

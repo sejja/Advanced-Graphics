@@ -1,0 +1,353 @@
+{
+    "objects": [
+        {
+            "_id": "Vokselia",
+            "components": [
+                {
+                    "model": "Content/Scenes/NewSponza/scene.gltf",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                }
+            ],
+            "name": "Scene",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                10.0,
+                10.0,
+                10.0
+            ]
+        },
+        {
+            "_id": "2",
+            "components": [
+                {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "direction": [
+                        0.3400000035762787,
+                        0.8700000047683716,
+                        0.3400000035762787
+                    ],
+                    "type": "Directional Light"
+                }
+            ],
+            "name": "Prueba2",
+            "position": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "SKYBOX",
+            "components": [
+                {
+                    "path": "adfadfasfa",
+                    "type": "Skybox"
+                }
+            ],
+            "name": "SKYBOX",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "_id": "New Object",
+            "components": [
+                {
+                    "model": "Content/Meshes/cube_face.obj",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                },
+                {
+                    "color": [
+                        0.9675556421279907,
+                        1.0,
+                        0.05911332368850708
+                    ],
+                    "direction": [
+                        0.0,
+                        -1.0,
+                        0.0
+                    ],
+                    "fallOff": 1.0,
+                    "innerAngle": 70.44999694824219,
+                    "outterAngle": 57.95000076293945,
+                    "radius": 55.68000030517578,
+                    "shadowCaster": false,
+                    "type": "Spot Light"
+                }
+            ],
+            "name": "New Object",
+            "position": [
+                -148.69789123535156,
+                33.73862838745117,
+                -24.972911834716797
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "New Object",
+            "components": [
+                {
+                    "model": "Content/Meshes/cube_face.obj",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                },
+                {
+                    "color": [
+                        0.8853819966316223,
+                        0.9408866763114929,
+                        0.07415854930877686
+                    ],
+                    "direction": [
+                        0.0,
+                        -1.0,
+                        0.0
+                    ],
+                    "fallOff": 1.0,
+                    "innerAngle": 73.86000061035156,
+                    "outterAngle": 48.86000061035156,
+                    "radius": 51.13999938964844,
+                    "shadowCaster": false,
+                    "type": "Spot Light"
+                }
+            ],
+            "name": "New Object",
+            "position": [
+                -40.351463317871094,
+                21.521469116210938,
+                36.567996978759766
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "New Object",
+            "components": [
+                {
+                    "model": "Content/Meshes/cube_face.obj",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                },
+                {
+                    "color": [
+                        0.7681332230567932,
+                        1.0,
+                        0.039408862590789795
+                    ],
+                    "direction": [
+                        0.0,
+                        1.0,
+                        0.0
+                    ],
+                    "fallOff": 0.6499999761581421,
+                    "innerAngle": 68.18000030517578,
+                    "outterAngle": 46.59000015258789,
+                    "radius": 76.12999725341797,
+                    "shadowCaster": false,
+                    "type": "Spot Light"
+                }
+            ],
+            "name": "New Object",
+            "position": [
+                -38.664955139160156,
+                40.32484817504883,
+                109.412109375
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "New Object",
+            "components": [
+                {
+                    "model": "Content/Meshes/cube_face.obj",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                },
+                {
+                    "color": [
+                        0.8472906351089478,
+                        1.0,
+                        0.0
+                    ],
+                    "direction": [
+                        0.0,
+                        -1.0,
+                        0.0
+                    ],
+                    "fallOff": 1.0,
+                    "innerAngle": 50.0,
+                    "outterAngle": 78.41000366210938,
+                    "radius": 72.7300033569336,
+                    "shadowCaster": false,
+                    "type": "Spot Light"
+                }
+            ],
+            "name": "New Object",
+            "position": [
+                -282.69659423828125,
+                11.332735061645508,
+                39.186344146728516
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "New Object",
+            "components": [
+                {
+                    "model": "Content/Meshes/cube_face.obj",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                },
+                {
+                    "color": [
+                        0.9605911374092102,
+                        0.9098214507102966,
+                        0.023659884929656982
+                    ],
+                    "direction": [
+                        0.0,
+                        -1.0,
+                        0.0
+                    ],
+                    "fallOff": 1.0,
+                    "innerAngle": 52.27000045776367,
+                    "outterAngle": 70.44999694824219,
+                    "radius": 70.44999694824219,
+                    "shadowCaster": false,
+                    "type": "Spot Light"
+                }
+            ],
+            "name": "New Object",
+            "position": [
+                107.98147583007813,
+                53.94735336303711,
+                24.536550521850586
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "New Object",
+            "components": [
+                {
+                    "model": "Content/Meshes/cube_face.obj",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                },
+                {
+                    "color": [
+                        1.0,
+                        0.8872576355934143,
+                        0.004926085472106934
+                    ],
+                    "direction": [
+                        0.0,
+                        -1.0,
+                        0.0
+                    ],
+                    "fallOff": 1.0,
+                    "innerAngle": 52.27000045776367,
+                    "outterAngle": 65.91000366210938,
+                    "radius": 71.58999633789063,
+                    "shadowCaster": false,
+                    "type": "Spot Light"
+                }
+            ],
+            "name": "New Object",
+            "position": [
+                182.53115844726563,
+                33.189117431640625,
+                40.760902404785156
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        }
+    ]
+}

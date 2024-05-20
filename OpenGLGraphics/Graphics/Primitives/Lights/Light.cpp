@@ -23,13 +23,14 @@ namespace Graphics {
 			// ------------------------------------------------------------------------
 			/*! Set Position
 			*
-			*   Sets the position of the light, relative to the parent
+			*   Sets the position of the light, relative to 
 			*/ //----------------------------------------------------------------------
-			void Light::SetPosition(const glm::vec3& relativePos) noexcept {
+			void Light::SetPosition(const glm::vec3& relativePos, const glm::vec3 objPos) {
 				//If there is no parent, return
-				if(GetParent().expired()) return;
+				if (GetParent().expired()) return;
 
-				mData->mPosition = GetParent().lock()->GetPosition() + relativePos;
+				mData->mRelativePosition = relativePos;
+				mData->mPosition = objPos + relativePos;
 			}
 			
 			// ------------------------------------------------------------------------

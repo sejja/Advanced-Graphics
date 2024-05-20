@@ -1154,6 +1154,7 @@ void TextEditor::ChangeFile(const char* aFile)
 	fileToEdit = changeExtension(fileToEdit, ".frag");
 	firstTime = true;
 	SetText("");
+	showWindow = true;
 }
 
 bool TextEditor::isFocused()
@@ -1161,84 +1162,87 @@ bool TextEditor::isFocused()
 	return focused;
 }
 
+
 void TextEditor::Render(const char* aTitle, bool aBorder)
 {
-	ImGui::Begin("Shader Editor");
-	ImVec2 aSize = ImGui::GetContentRegionAvail();
-	 { // Save
-		if (ImGui::Button("Save")) {
-			std::ofstream t(fileToEdit);
-			t << GetText();
-			t.close();
-		}
-		
-		ImGui::SameLine();
-		if (ImGui::Button("Compile")) {
-			std::ofstream t(fileToEdit);
-			t << GetText();
-			t.close();
-			// Use C File ClientWindows to connect to server and send the file
-			if (compile(fileToEdit)) {
-				// If compile succesful, load shader
-				auto vert = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Shader>("Content/Shaders/Transform.vert");
-				auto frag = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Shader>(fileToEdit);
-				frag->Get()->ReloadShaderSPIRV(changeExtension(fileToEdit,".spv"), Core::Graphics::Shader::EType::Fragment);
-				vert->Get()->ReloadShaderSPIRV("Content/Shaders/Transform.spv", Core::Graphics::Shader::EType::Vertex);
-				Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>(changeExtension(fileToEdit,".shader"))->Get()->ReloadShader(vert, frag);
+	if (!showWindow) { return; }
+	if (ImGui::Begin("Shader Editor", &showWindow)) {
+		ImVec2 aSize = ImGui::GetContentRegionAvail();
+		{ // Save
+			if (ImGui::Button("Save")) {
+				std::ofstream t(fileToEdit);
+				t << GetText();
+				t.close();
 			}
-			
+
+			ImGui::SameLine();
+			if (ImGui::Button("Compile")) {
+				std::ofstream t(fileToEdit);
+				t << GetText();
+				t.close();
+				// Use C File ClientWindows to connect to server and send the file
+				if (compile(fileToEdit)) {
+					// If compile succesful, load shader
+					auto vert = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Shader>("Content/Shaders/Transform.vert");
+					auto frag = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::Shader>(fileToEdit);
+					frag->Get()->ReloadShaderSPIRV(changeExtension(fileToEdit, ".spv"), Core::Graphics::Shader::EType::Fragment);
+					vert->Get()->ReloadShaderSPIRV("Content/Shaders/Transform.spv", Core::Graphics::Shader::EType::Vertex);
+					Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>(changeExtension(fileToEdit, ".shader"))->Get()->ReloadShader(vert, frag);
+				}
+
+			}
+
+			ImGui::SameLine();
+			ImGui::TextColored(ImVec4(1, 1, 0, 1), "File: %s", fileToEdit);
+		}
+		std::ifstream t(fileToEdit);
+		if (t.good() && firstTime)
+		{
+			std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+			SetText(str);
+			firstTime = false;
+		}
+		t.close();
+		mWithinRender = true;
+		mTextChanged = false;
+		mCursorPositionChanged = false;
+
+		ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(mPalette[(int)PaletteIndex::Background]));
+		ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
+		if (!mIgnoreImGuiChild)
+			ImGui::BeginChild(aTitle, aSize, aBorder, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar | ImGuiWindowFlags_NoMove);
+
+		if (mHandleKeyboardInputs)
+		{
+			HandleKeyboardInputs();
+			ImGui::PushAllowKeyboardFocus(true);
 		}
 
-		ImGui::SameLine();
-		ImGui::TextColored(ImVec4(1, 1, 0, 1), "File: %s", fileToEdit);
+		if (mHandleMouseInputs)
+			HandleMouseInputs();
+
+		if (ImGui::IsWindowFocused()) {
+			focused = true;
+		}
+		else {
+			focused = false;
+		}
+
+		ColorizeInternal();
+		Render();
+
+		if (mHandleKeyboardInputs)
+			ImGui::PopAllowKeyboardFocus();
+
+		if (!mIgnoreImGuiChild)
+			ImGui::EndChild();
+
+		ImGui::PopStyleVar();
+		ImGui::PopStyleColor();
+
+		mWithinRender = false;
+		ImGui::End();
 	}
-	std::ifstream t(fileToEdit);
-	if (t.good() && firstTime)
-	{
-		std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
-		SetText(str);
-		firstTime = false;
-	}
-	t.close();
-	mWithinRender = true;
-	mTextChanged = false;
-	mCursorPositionChanged = false;
-
-	ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::ColorConvertU32ToFloat4(mPalette[(int)PaletteIndex::Background]));
-	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0.0f, 0.0f));
-	if (!mIgnoreImGuiChild)
-		ImGui::BeginChild(aTitle, aSize, aBorder, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_AlwaysHorizontalScrollbar | ImGuiWindowFlags_NoMove);
-
-	if (mHandleKeyboardInputs)
-	{
-		HandleKeyboardInputs();
-		ImGui::PushAllowKeyboardFocus(true);
-	}
-
-	if (mHandleMouseInputs)
-		HandleMouseInputs();
-
-	if (ImGui::IsWindowFocused()) {
-		focused = true;
-	}
-	else {
-		focused = false;
-	}
-
-	ColorizeInternal();
-	Render();
-
-	if (mHandleKeyboardInputs)
-		ImGui::PopAllowKeyboardFocus();
-
-	if (!mIgnoreImGuiChild)
-		ImGui::EndChild();
-
-	ImGui::PopStyleVar();
-	ImGui::PopStyleColor();
-
-	mWithinRender = false;
-	ImGui::End();
 }
 
 void TextEditor::SetText(const std::string& aText)

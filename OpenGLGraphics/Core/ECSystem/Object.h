@@ -51,6 +51,16 @@ namespace Core {
 		void AddComponent(std::shared_ptr<T>&& component);
 
 		template<typename T>
+		void AddComponentR(const std::shared_ptr<T>& component);
+
+		template<typename T>
+		void RemoveComponent(std::shared_ptr<T>&& component);
+
+		template<typename T>
+		void RemoveComponentR(std::shared_ptr<T>& component);
+
+
+		template<typename T>
 		DONTDISCARD inline std::shared_ptr<T> GetComponent() const;
 
 		DONTDISCARD inline std::vector<std::shared_ptr<Core::Component>> GetAllComponents() const;
@@ -189,6 +199,50 @@ namespace Core {
 
 		mComponents.push_back(component);
 	}
+
+	template<typename T>
+	void Object::AddComponentR(const std::shared_ptr<T>& component) {
+		//We should always add components
+		if (!RTTI::IsChild<T, Component>())
+			throw ObjectException("The given class is not a component");
+
+		mComponents.push_back(component);
+	}
+	// ------------------------------------------------------------------------
+	/*! Remove Component
+	* 
+	*/// ------------------------------------------------------------------------
+	template<typename T>
+	void Object::RemoveComponent(std::shared_ptr<T>&& component) {
+		if (!RTTI::IsChild<T, Component>())
+			throw ObjectException("The given class is not a component");
+
+		auto it = std::find(mComponents.begin(), mComponents.end(), component);
+
+		if (it != mComponents.end()) {
+			mComponents.erase(it);
+		}
+		else {
+			throw ObjectException("No such component");
+		}
+	}
+	template<typename T>
+	void Object::RemoveComponentR(std::shared_ptr<T>& component) {
+		if (!RTTI::IsChild<T, Component>())
+			throw ObjectException("The given class is not a component");
+
+		auto it = std::find(mComponents.begin(), mComponents.end(), component);
+
+		if (it != mComponents.end()) {
+			mComponents.erase(it);
+		}
+		else {
+			throw ObjectException("No such component");
+		}
+	}
+
+
+
 
 	// ------------------------------------------------------------------------
 	/*! Get Component

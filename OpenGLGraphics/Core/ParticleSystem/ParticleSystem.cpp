@@ -24,14 +24,16 @@ namespace Core
             return camera;
         }
 
-        void ParticleSystem::SetSystemCenter(glm::vec3 newCenter)
+        void ParticleSystem::SetSystemCenter(glm::vec3 relativePos, const glm::vec3 objPos)
         {
-            center = newCenter;
+            this->relativePos = relativePos;
+            this->center = relativePos + objPos;
         }
+
 
         glm::vec3 ParticleSystem::GetSystemCenter()
         {
-            return this->center;
+            return this->relativePos;
         }
 
         float ParticleSystem::getHeigth()
@@ -118,6 +120,5 @@ namespace Core
             float alpha = (A / 255.0f);
             return glm::vec4( red, green, blue, alpha);
         }
-
 	}
 }
