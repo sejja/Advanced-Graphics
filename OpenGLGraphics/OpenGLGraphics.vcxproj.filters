@@ -2415,7 +2415,7 @@
     <None Include="Content\Shaders\SSAO.vert" />
     <None Include="Content\Shaders\SSAOBlur.frag" />
     <None Include="Content\Shaders\SSAOBlur.shader" />
-    <None Include="Content\Maps\patata.real" />
+    <None Include="Content\Maps\GreatSponza.real" />
     <None Include="Content\Maps\Scene2.real" />
     <None Include="Content\Maps\mi_dragoncito.real" />
     <None Include="Content\Maps\dafad.real" />
@@ -2426,7 +2426,6 @@
     <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.vert" />
     <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.frag" />
     <None Include="Content\Maps\Sponza.level" />
-    <None Include="Content\Maps\GreatSponza.real" />
     <None Include="Content\Maps\GreatCyberpunk.real" />
     <None Include="Content\Maps\Japan.real" />
     <None Include="Content\Maps\Minecraft.real" />
