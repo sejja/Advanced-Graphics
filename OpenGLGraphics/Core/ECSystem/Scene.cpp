@@ -113,9 +113,9 @@ namespace Core {
 					//light->SetShadowCaster(components[j]["shadowCaster"]);
 
 					light->SetPosition(glm::vec3(components[j]["position"][0], components[j]["position"][1], components[j]["position"][2]), obj->GetPosition());
-
-					light->SetIsFireLight(components[j]["isFireLight"]);
-					light->SetFireParams(glm::vec4(components[j]["fireParams"][0], components[j]["fireParams"][1], components[j]["fireParams"][2], components[j]["fireParams"][3]));
+	
+					//light->SetIsFireLight(components[j]["isFireLight"]);
+					//light->SetFireParams(glm::vec4(components[j]["fireParams"][0], components[j]["fireParams"][1], components[j]["fireParams"][2], components[j]["fireParams"][3]));
 
 					obj->AddComponent(std::move(light));
 				}

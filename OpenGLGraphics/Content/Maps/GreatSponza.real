@@ -1,496 +1,356 @@
 {
-    "objects": [
+  "objects": [
+    {
+      "_id": "Palace",
+      "components": [
         {
-            "_id": "Palace",
-            "components": [
-                {
-                    "id": "41",
-                    "model": "Content/Scenes/Sponza/Sponza.gltf",
-                    "shader": "Content/Shaders/DeferredGeometry.shader",
-                    "type": "Model Renderer"
-                }
-            ],
-            "name": "Palace",
-            "position": [
-                0.07628607749938965,
-                -9.8457612991333,
-                0.0
-            ],
-            "rotation": [
-                0.0,
-                -0.0,
-                0.0
-            ],
-            "scale": [
-                0.20000000298023224,
-                0.20000000298023224,
-                0.20000000298023224
-            ]
-        },
-        {
-            "_id": "Dragon",
-            "components": [
-                {
-                    "id": "18467",
-                    "model": "Content/Meshes/Dragon/scene.gltf",
-                    "shader": "Content/Shaders/DeferredGeometry.shader",
-                    "type": "Model Renderer"
-                }
-            ],
-            "name": "Dragon",
-            "position": [
-                -8.31928825378418,
-                -10.574889183044434,
-                -2.4634125232696533
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                0.40000009536743164,
-                0.4000000059604645,
-                0.4000000059604645
-            ]
-        },
-        {
-            "_id": "Dragon",
-            "components": [
-                {
-                    "id": "6334",
-                    "model": "Content/Meshes/Dragon/scene.gltf",
-                    "shader": "Content/Shaders/DeferredGeometry.shader",
-                    "type": "Model Renderer"
-                }
-            ],
-            "name": "Dragon",
-            "position": [
-                3.574066638946533,
-                88.8627700805664,
-                1.8703571557998657
-            ],
-            "rotation": [
-                -47.5,
-                -0.0,
-                -0.0
-            ],
-            "scale": [
-                0.4000000059604645,
-                0.4000000059604645,
-                0.4000000059604645
-            ]
-        },
-        {
-            "_id": "SKYBOX",
-            "components": [
-                {
-                    "id": "26500",
-                    "path": "adfadfasfa",
-                    "type": "Skybox"
-                }
-            ],
-            "name": "SKYBOX",
-            "position": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                0.0,
-                0.0,
-                0.0
-            ]
-        },
-        {
-            "_id": "New Object",
-            "components": [
-                {
-                    "Diffuse": "Content/Textures/decal_skull_d.png",
-                    "Normal": "Content/Textures/decal_skull_n.png",
-                    "id": "19169",
-                    "type": "Decal"
-                }
-            ],
-            "name": "Skull Decal",
-            "position": [
-                -83.23261260986328,
-                0.0,
-                -24.876203536987305
-            ],
-            "rotation": [
-                5.0,
-                0.0,
-                5.0
-            ],
-            "scale": [
-                10.0,
-                10.000000953674316,
-                10.000000953674316
-            ]
-        },
-        {
-            "_id": "25788",
-            "components": [
-                {
-                    "center": [
-                        -37.20619201660156,
-                        -2.237584114074707,
-                        8.743874549865723
-                    ],
-                    "color": [
-                        0.9882352948188782,
-                        0.729411780834198,
-                        0.0117647061124444,
-                        1.0
-                    ],
-                    "gap": 0.15000000596046448,
-                    "height": 3.75,
-                    "id": "15724",
-                    "particleSize": 4.0,
-                    "radiusVector": [
-                        0.5,
-                        0.5,
-                        0.5
-                    ],
-                    "type": "Fire"
-                },
-                {
-                    "center": [
-                        -37.209999084472656,
-                        -2.240000009536743,
-                        -12.918292045593262
-                    ],
-                    "color": [
-                        0.9882352948188782,
-                        0.729411780834198,
-                        0.0117647061124444,
-                        1.0
-                    ],
-                    "gap": 0.15000000596046448,
-                    "height": 3.75,
-                    "id": "29756",
-                    "particleSize": 4.0,
-                    "radiusVector": [
-                        0.5,
-                        0.5,
-                        0.5
-                    ],
-                    "type": "Fire"
-                },
-                {
-                    "center": [
-                        29.282033920288086,
-                        -2.6006925106048584,
-                        -12.97358512878418
-                    ],
-                    "color": [
-                        0.9882352948188782,
-                        0.729411780834198,
-                        0.0117647061124444,
-                        1.0
-                    ],
-                    "gap": 0.15299999713897705,
-                    "height": 3.75,
-                    "id": "25343",
-                    "particleSize": 4.0,
-                    "radiusVector": [
-                        0.5,
-                        0.5,
-                        0.5
-                    ],
-                    "type": "Fire"
-                },
-                {
-                    "center": [
-                        28.94208526611328,
-                        -2.5690057277679443,
-                        8.606914520263672
-                    ],
-                    "color": [
-                        0.9882352948188782,
-                        0.729411780834198,
-                        0.0117647061124444,
-                        1.0
-                    ],
-                    "gap": 0.125,
-                    "height": 3.75,
-                    "id": "13114",
-                    "particleSize": 4.0,
-                    "radiusVector": [
-                        0.5,
-                        0.5,
-                        0.5
-                    ],
-                    "type": "Fire"
-                },
-                {
-                    "color": [
-                        1.0,
-                        0.36681222915649414,
-                        0.0
-                    ],
-                    "fallOf": 0.9357548356056213,
-                    "fireParams": [
-                        0.10999999940395355,
-                        0.8100000023841858,
-                        1.0,
-                        0.5
-                    ],
-                    "id": "1531",
-                    "isFireLight": true,
-                    "position": [
-                        29.0,
-                        2.5,
-                        -16.0
-                    ],
-                    "radius": 18.6299991607666,
-                    "shadowCaster": false,
-                    "type": "Point Light"
-                }
-            ],
-            "name": "Fuego de Brasero",
-            "position": [
-                0.22784996032714844,
-                -0.2455652356147766,
-                1.2338165044784546
-            ],
-            "rotation": [
-                0.0,
-                -0.0,
-                0.0
-            ],
-            "scale": [
-                1.0,
-                1.0,
-                1.0
-            ]
-        },
-        {
-            "_id": "12849",
-            "components": [
-                {
-                    "color": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "direction": [
-                        0.3420412540435791,
-                        0.8752232789993286,
-                        0.3420412540435791
-                    ],
-                    "id": "27570",
-                    "position": [
-                        -3.0,
-                        0.0,
-                        0.0
-                    ],
-                    "type": "Directional Light"
-                }
-            ],
-            "name": "Luz Direccional",
-            "position": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "rotation": [
-                0.0,
-                0.0,
-                0.0
-            ],
-            "scale": [
-                1.0,
-                1.0,
-                1.0
-            ]
-        },
-        {
-            "_id": "52046",
-            "components": [
-                {
-                    "center": [
-                        -0.1638031005859375,
-                        0.0,
-                        1.774831771850586
-                    ],
-                    "color": [
-                        0.6087337732315063,
-                        0.01176472008228302,
-                        0.9882352948188782,
-                        1.0
-                    ],
-                    "gap": 0.19900000095367432,
-                    "height": 6.25,
-                    "id": "31310",
-                    "particleSize": 8.982999801635742,
-                    "radiusVector": [
-                        1.7999999523162842,
-                        1.7999999523162842,
-                        1.7999999523162842
-                    ],
-                    "type": "Fire"
-                },
-                {
-                    "color": [
-                        0.7579866051673889,
-                        0.08157739788293839,
-                        0.8122270703315735
-                    ],
-                    "fallOf": 1.1118054389953613,
-                    "fireParams": [
-                        0.15000000596046448,
-                        0.20999999344348907,
-                        1.0,
-                        0.5899999737739563
-                    ],
-                    "id": "28896",
-                    "isFireLight": true,
-                    "position": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "radius": 21.049999237060547,
-                    "shadowCaster": false,
-                    "type": "Point Light"
-                }
-            ],
-            "name": "Pilar fuego 1",
-            "position": [
-                67.40531158447266,
-                2.620497465133667,
-                22.9642391204834
-            ],
-            "rotation": [
-                0.0,
-                -0.0,
-                0.0
-            ],
-            "scale": [
-                1.0,
-                1.0,
-                1.0
-            ]
-        },
-        {
-            "_id": "42852",
-            "components": [
-                {
-                    "center": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "color": [
-                        0.9882352948188782,
-                        0.729411780834198,
-                        0.0117647061124444,
-                        1.0
-                    ],
-                    "gap": 0.24899999797344208,
-                    "height": 7.5,
-                    "id": "6887",
-                    "particleSize": 4.0,
-                    "radiusVector": [
-                        1.7999999523162842,
-                        1.7999999523162842,
-                        1.7999999523162842
-                    ],
-                    "type": "Fire"
-                },
-                {
-                    "color": [
-                        0.8777292370796204,
-                        0.5685380697250366,
-                        0.09965486079454422
-                    ],
-                    "fallOf": 1.0143440961837769,
-                    "fireParams": [
-                        0.15000000596046448,
-                        0.1599999964237213,
-                        1.0,
-                        0.0
-                    ],
-                    "id": "25752",
-                    "isFireLight": true,
-                    "position": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "radius": 26.389999389648438,
-                    "shadowCaster": false,
-                    "type": "Point Light"
-                }
-            ],
-            "name": "Pilar fuego 2",
-            "position": [
-                66.96610260009766,
-                1.4938290119171143,
-                -25.97455406188965
-            ],
-            "rotation": [
-                0.0,
-                -0.0,
-                0.0
-            ],
-            "scale": [
-                1.7999999523162842,
-                1.7999999523162842,
-                1.7999999523162842
-            ]
-        },
-        {
-            "_id": "77882",
-            "components": [
-                {
-                    "color": [
-                        1.0,
-                        1.0,
-                        1.0
-                    ],
-                    "direction": [
-                        0.0,
-                        -0.5087264180183411,
-                        0.8609282970428467
-                    ],
-                    "fallOff": 1.0,
-                    "id": "7345",
-                    "innerAngle": 0.0,
-                    "outterAngle": 5.760000228881836,
-                    "position": [
-                        0.0,
-                        0.0,
-                        0.0
-                    ],
-                    "radius": 91.79000091552734,
-                    "shadowCaster": false,
-                    "type": "Spot Light"
-                }
-            ],
-            "name": "Leon Escudo",
-            "position": [
-                72.20665740966797,
-                0.0,
-                -2.1550707817077637
-            ],
-            "rotation": [
-                0.0,
-                -0.0,
-                0.0
-            ],
-            "scale": [
-                27.735105514526367,
-                1.0,
-                1.0
-            ]
+          "model": "Content/Scenes/Sponza/Sponza.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
         }
-    ]
+      ],
+      "name": "Palace",
+      "position": [
+        0.0,
+        -10.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "scale": [
+        0.20000000298023224,
+        0.20000000298023224,
+        0.20000000298023224
+      ]
+    },
+
+    {
+      "_id": "Point Light #1",
+      "components": [
+        {
+          "model": "Content/Meshes/sphere_20_averaged.obj",
+          "shader": "Content/Shaders/White.shader",
+          "type": "Model Renderer"
+        },
+        {
+          "color": [
+            0.9113300442695618,
+            0.06285027414560318,
+            0.6647275686264038
+          ],
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "fallOf": 0.9100000262260437,
+          "radius": 20.200000762939453,
+          "type": "Point Light"
+        }
+      ],
+      "name": "Point Light #1",
+      "position": [
+        -77.39887237548828,
+        -1.6884777545928955,
+        -4.626708030700684
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+
+    {
+      "_id": "Dragon",
+      "components": [
+        {
+          "model": "Content/Meshes/Dragon/scene.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Dragon",
+      "position": [
+        0.0,
+        -10.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        -0.0
+      ],
+      "scale": [
+        0.4000000059604645,
+        0.4000000059604645,
+        0.4000000059604645
+      ]
+    },
+
+    {
+      "_id": "Dragon",
+      "components": [
+        {
+          "model": "Content/Meshes/Dragon/scene.gltf",
+          "shader": "Content/Shaders/DeferredGeometry.shader",
+          "type": "Model Renderer"
+        }
+      ],
+      "name": "Dragon",
+      "position": [
+        3.574063539505005,
+        -60.0,
+        0.0
+      ],
+      "rotation": [
+        45.0,
+        -0.0,
+        -0.0
+      ],
+      "scale": [
+        0.4000000059604645,
+        0.4000000059604645,
+        0.4000000059604645
+      ]
+    },
+
+    {
+      "_id": "2",
+      "components": [
+        {
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "direction": [
+            0.3400000035762787,
+            0.8700000047683716,
+            0.3400000035762787
+          ],
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "type": "Directional Light"
+        }
+      ],
+      "name": "Prueba2",
+      "position": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "_id": "New Object",
+      "components": [
+        {
+          "model": "Content/Meshes/cube_face.obj",
+          "shader": "Content/Shaders/White.shader",
+          "type": "Model Renderer"
+        },
+        {
+          "color": [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "fallOf": 0.5,
+          "radius": 1.0,
+          "type": "Point Light"
+        }
+      ],
+      "name": "New Object",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "_id": "SKYBOX",
+      "components": [
+        {
+          "path": "adfadfasfa",
+          "type": "Skybox"
+        }
+      ],
+      "name": "SKYBOX",
+      "position": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "_id": "New Object",
+      "components": [
+        {
+          "model": "..\\OpenGLGraphics\\Content\\Meshes\\sphere_20_averaged.obj",
+          "shader": "..\\OpenGLGraphics\\Content\\Shaders\\White.shader",
+          "type": "Model Renderer"
+        },
+        {
+          "color": [
+            0.8571428656578064,
+            0.04644615203142166,
+            0.04644615203142166
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "fallOff": 1.0,
+          "innerAngle": 63.15999984741211,
+          "outterAngle": 38.95000076293945,
+          "radius": 55.790000915527344,
+          "shadowCaster": true,
+          "type": "Spot Light"
+        }
+      ],
+      "name": "Spot Light #1",
+      "position": [
+        -81.07727813720703,
+        1.6722661256790161,
+        18.78205108642578
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "_id": "New Object",
+      "components": [
+        {
+          "model": "..\\OpenGLGraphics\\Content\\Meshes\\sphere_20_averaged.obj",
+          "shader": "..\\OpenGLGraphics\\Content\\Shaders\\White.shader",
+          "type": "Model Renderer"
+        },
+        {
+          "color": [
+            0.03193478658795357,
+            0.35788989067077637,
+            0.9261083602905273
+          ],
+          "direction": [
+            0.0,
+            0.0,
+            1.0
+          ],
+          "position": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "fallOff": 1.0,
+          "innerAngle": 63.15999984741211,
+          "outterAngle": 38.95000076293945,
+          "radius": 55.790000915527344,
+          "shadowCaster": true,
+          "type": "Spot Light"
+        }
+      ],
+      "name": "Spot Light #2",
+      "position": [
+        -80.05580139160156,
+        4.885585784912109,
+        -22.45693016052246
+      ],
+      "rotation": [
+        0.0,
+        -0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "_id": "New Object",
+      "components": [
+        {
+          "Diffuse": "Content/Textures/decal_skull_d.png",
+          "Normal": "Content/Textures/decal_skull_n.png",
+          "type": "Decal"
+        }
+      ],
+      "name": "Skull Decal",
+      "position": [
+        -83.23261260986328,
+        0.0,
+        -24.876203536987305
+      ],
+      "rotation": [
+        5.0,
+        0.0,
+        5.0
+      ],
+      "scale": [
+        10.0,
+        10.000000953674316,
+        10.000001907348633
+      ]
+    }
+  ]
 }
