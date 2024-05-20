@@ -58,6 +58,9 @@ namespace Graphics {
 					}
 				}
 
+				inline void SetShadowCaster(bool shadowCaster);
+				inline bool IsShadowCaster();
+
 
 #pragma endregion
 			};
@@ -147,6 +150,14 @@ namespace Graphics {
 			*/ //----------------------------------------------------------------------
 			float PointLight::PointLightData::CalculateSphereOfInfluence() const noexcept {
 				return PI * mRadius * 2 / 3;
+			}
+			
+			void PointLight::SetShadowCaster(bool shadowCaster) {
+				mData->mShadowCaster = shadowCaster;
+			}
+
+			bool PointLight::IsShadowCaster() {
+				return mData->mShadowCaster;
 			}
 		}
 	}

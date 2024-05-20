@@ -110,6 +110,7 @@ namespace Core {
 					((::Graphics::Primitives::PointLight::PointLightData*)light->mData)->mOutter = components[j]["outterAngle"];*/
 					light->SetRadius(components[j]["radius"]);
 					light->SetFallOff(components[j]["fallOf"]);
+					light->SetShadowCaster(components[j]["shadowCaster"]);
 
 					light->SetPosition(glm::vec3(components[j]["position"][0], components[j]["position"][1], components[j]["position"][2]), obj->GetPosition());
 
@@ -271,6 +272,7 @@ namespace Core {
 					component["fallOf"] = light->GetFallOff();
 					//component["innerAngle"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mInner;
 					//component["outterAngle"] = ((::Graphics::Primitives::PointLight::PointLightData*)(light->mData))->mOutter;
+					component["shadowCaster"] = light->IsShadowCaster();
 
 					component["position"][0] = light->GetPosition().x;
 					component["position"][1] = light->GetPosition().y;
