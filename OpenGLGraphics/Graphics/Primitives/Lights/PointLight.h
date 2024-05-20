@@ -10,6 +10,7 @@
 #define _POINT_LIGHT_H_
 
 #include "Light.h"
+#include "Graphics/Tools/FrameBuffer.h"
 
 namespace Graphics {
 	namespace Primitives {
@@ -20,6 +21,9 @@ namespace Graphics {
 				struct PointLightData : public Light::BackedLightData {
 #pragma region //Methods
 					float inline CalculateSphereOfInfluence() const noexcept;
+					void GenerateShadowMap();
+					Core::Graphics::FrameBuffer depthMapFBO;
+					GLuint depthCubemap;
 #pragma endregion
 
 #pragma region //Members

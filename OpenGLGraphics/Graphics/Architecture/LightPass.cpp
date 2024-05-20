@@ -14,8 +14,8 @@
 namespace Graphics {
 	namespace Architecture {
 		LightPass::lightmap< Graphics::Primitives::Lights::DirectionalLight::DirectionalLightData> LightPass::sDirectionalLightData;
-		LightPass::lightmap < Graphics::Primitives::SpotLight::SpotLightData> LightPass::sSpotLightData;
-		LightPass::lightmap < Graphics::Primitives::PointLight::PointLightData> LightPass::sPointLightData;
+		LightPass::lightmap < Graphics::Primitives::Lights::SpotLight::SpotLightData> LightPass::sSpotLightData;
+		LightPass::lightmap < Graphics::Primitives::Lights::PointLight::PointLightData> LightPass::sPointLightData;
 
 		// ------------------------------------------------------------------------
 		/*! Constructor
@@ -259,6 +259,17 @@ namespace Graphics {
 			Up = glm::vec3(rollMatrix * glm::vec4(Up, 0.0f));
 
 			return std::move(glm::lookAt(cameraPosition, cameraPosition + Front, Up));
+		}
+
+		// ------------------------------------------------------------------------
+		/*! Clear
+		*
+		*   Removes all lighting info from the light-pass, preventing from further rendering
+		*/ //----------------------------------------------------------------------
+		void LightPass::Clear() {
+			sDirectionalLightData.clear();
+			sSpotLightData.clear();
+			sPointLightData.clear();
 		}
 	}
 
