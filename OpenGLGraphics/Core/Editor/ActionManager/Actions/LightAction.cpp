@@ -12,6 +12,8 @@ LightAction::LightAction(std::shared_ptr<::Graphics::Primitives::Lights::Light> 
 		curLightFallOff = pointLight->GetFallOff();
 		prevLightRadius = PrevStates::GetPrevLightRadius();
 		prevLightFallOff = PrevStates::GetPrevLightFallOff();
+		prevFireParams = PrevStates::GetPrevFireParams();
+		prevIsFireLight = PrevStates::GetPrevIsFireLight();
 	}
 	else if (auto spotLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::SpotLight>(light)) {
 		curLightRadius = spotLight->GetRadius();

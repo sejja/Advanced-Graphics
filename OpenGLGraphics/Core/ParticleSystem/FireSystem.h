@@ -36,19 +36,13 @@ namespace Core
 
 			void InitParticles() override ;
 			glm::vec3 GetAbsolutePos(glm::vec3 relativePoint);
-
-			
+			bool IsElipsoid(float x, float y, float z);
+			void AddNewParticle(float x, float y, float z);
 			
 			float gap = 0.7f;
-
-		private:
-
 			float radiusA = 5.0f;
 			float radiusB = 2.0f;
 			float radiusC = 5.0f;
-
-			bool IsElipsoid(float x, float y, float z);
-			void AddNewParticle(float x, float y, float z);
 
 			std::shared_ptr<FireSystem> prevFireState = nullptr;
 		};

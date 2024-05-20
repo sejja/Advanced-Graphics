@@ -50,11 +50,12 @@ void Editor::Render(Core::Graphics::OpenGLPipeline& pipeline){
 	//Guizmo
 	guizmo.Render(pipeline.getCamera());
 
-
-
+	//Keys
+	keyBinder.CheckKeyBindings();
 
 	
 
+	
 
 
 

@@ -11,8 +11,8 @@
 #include "Core/Assets/ResourceManager.h"
 #include "Core/Singleton.h"
 #include "Core/Editor/Editor.h"
-#include "Core/Network/Server.h"
-#include "Core/Network/Client.h"
+#include "Core/Remote/Server.h"
+#include "Core/Remote/Client.h"
 #include "Core/ParticleSystem/ParticleSystem.h"
 #include "Core/ParticleSystem/FireSystem.h"
 
@@ -34,6 +34,7 @@
 #include "../ActionManager/Actions/TransformObject.h"
 #include "../ActionManager/Actions/LightAction.h"
 #include "../ActionManager/Actions/ComponentAction.h"
+#include "../ActionManager/Actions/FireAction.h"
 
 
 
@@ -46,7 +47,6 @@ SelectedObj& selectedObjIns = Singleton<Editor>::Instance().GetSelectedObj();
 auto& resmg = Singleton<Core::Assets::ResourceManager>::Instance();
 
 
-//TODO: SACAR LOS SENDTOPEER DE AQUI 
 void sendToPeer(std::shared_ptr<Core::Object> obj) {
     Server& server = Singleton<Server>::Instance();
     Client& client = Singleton<Client>::Instance();
@@ -163,6 +163,13 @@ void Properties::Render(Core::Graphics::OpenGLPipeline& pipeline) {
         }
         if (ImGui::CollapsingHeader(ICON_FA_ARROWS_TO_CIRCLE " Guizmo type", ImGuiTreeNodeFlags_DefaultOpen)) {
             TransformGuizmoTypeSelect();
+        }
+
+        if (Singleton<Editor>::Instance().getIsEditing() && !ImGui::IsMouseDown(0)) {
+            std::cout << "Movimiento acabado" << std::endl;
+            Singleton<Editor>::Instance().setEditing(false);
+            auto fireAction = std::make_shared<FireAction>(fireSystem);
+            Singleton<Editor>::Instance().GetActionManager()->AddAction(fireAction);
         }
     }
 
@@ -289,8 +296,14 @@ void colorPickerBtn(static ImVec4& color) {
         if(ImGui::ColorPicker4("##picker", (float*)&color, misc_flags | ImGuiColorEditFlags_NoSidePreview | ImGuiColorEditFlags_NoSmallPreview)){
             if (!Singleton<Editor>::Instance().getIsEditing()) {
                 std::cout << "Guardando estado" << std::endl;
-                auto lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(selectedObjIns.GetSelectedComponent());
-                PrevStates::SetPrevLight(lightComp);
+                //Light
+				if (std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(selectedObjIns.GetSelectedComponent())) {
+					PrevStates::SetPrevLight(lightComp);
+				}
+                //Fire
+				else if (std::shared_ptr<Core::Particles::FireSystem> fireComp = std::dynamic_pointer_cast<Core::Particles::FireSystem>(selectedObjIns.GetSelectedComponent())) {
+					PrevStates::SetPrevFire(fireComp);
+				}
                 Singleton<Editor>::Instance().setEditing(true);
             }
         }
@@ -299,9 +312,17 @@ void colorPickerBtn(static ImVec4& color) {
             if (Singleton<Editor>::Instance().getIsEditing() && !isClicked) {
                 Singleton<Editor>::Instance().setEditing(false);
                 std::cout << "Movimiento acabado" << std::endl;
-                auto lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(selectedObjIns.GetSelectedComponent());
-				auto lightAction = std::make_shared<LightAction>(lightComp);
-				Singleton<Editor>::Instance().GetActionManager()->AddAction(lightAction);
+				//Light
+                if (std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::Light>(selectedObjIns.GetSelectedComponent())) {
+                    auto lightAction = std::make_shared<LightAction>(lightComp);
+                    Singleton<Editor>::Instance().GetActionManager()->AddAction(lightAction);
+                }
+				//Fire
+				else if (std::shared_ptr<Core::Particles::FireSystem> fireComp = std::dynamic_pointer_cast<Core::Particles::FireSystem>(selectedObjIns.GetSelectedComponent())) {
+					auto fireAction = std::make_shared<FireAction>(fireComp);
+					Singleton<Editor>::Instance().GetActionManager()->AddAction(fireAction);
+				}
+                
             }
         }
         ImGui::SameLine();
@@ -557,19 +578,26 @@ void Properties::ParticleTransform() {
 }
 
 void Properties::applyLockResize(glm::vec3& prevVec, glm::vec3& curVec) {
-    int dimChanged = -1; 
+    int dimChanged = -1;
     for (int i = 0; i < 3; ++i) {
         if (curVec[i] != prevVec[i]) {
-            dimChanged = i;
+			dimChanged = i; //Which of the value has been changed
             break;
         }
     }
     if (dimChanged != -1) {
-        float changeScale = curVec[dimChanged] / prevVec[dimChanged];
-        for (int i = 0; i < 3; ++i) {
-            if (i != dimChanged) {
-                curVec[i] *= changeScale;
+        if (prevVec[dimChanged] != 0) {
+            float changeScale = curVec[dimChanged] / prevVec[dimChanged];
+            for (int i = 0; i < 3; ++i) {
+                if (i != dimChanged) {
+                    curVec[i] *= changeScale;
+                }
             }
+        }
+        else {
+			for (int i = 0; i < 3; ++i) {
+                curVec[i] = 1.0f;
+			}
         }
     }
 }
@@ -712,6 +740,15 @@ void saveLight(std::shared_ptr<::Graphics::Primitives::Lights::Light> lightComp)
         Singleton<Editor>::Instance().setEditing(true);
     }
 }
+void saveFire(std::shared_ptr<::Core::Particles::FireSystem> fireSys) {
+    if (!Singleton<Editor>::Instance().getIsEditing()) {
+		std::cout << "Guardando estado" << std::endl;
+        PrevStates::SetPrevFire(fireSys);
+        Singleton<Editor>::Instance().setEditing(true);
+    }
+}
+
+
 void Properties::LightTypeOptions(){
     static ImVec2 cell_padding(4.0f, 8.0f);
     ImGui::PushStyleVar(ImGuiStyleVar_CellPadding, cell_padding);
@@ -724,8 +761,12 @@ void Properties::LightTypeOptions(){
 
         if (auto pointLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::PointLight>(lightComp)) {
 
+            bool isFire = pointLight->GetIsFireLight();
+
             float lightRadius = pointLight->GetRadius();
             float fallOff = pointLight->GetFallOff();
+
+			glm::vec4 fireParams = pointLight->GetFireParams();
 
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
@@ -735,18 +776,67 @@ void Properties::LightTypeOptions(){
                 saveLight(lightComp);
             }
 
+            if (!isFire) {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("FallOff");
+                ImGui::TableSetColumnIndex(1);
+                if (ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f")) {
+                    saveLight(lightComp);
+                }
+            }
+            else {
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Base FallOff");
+                ImGui::TableSetColumnIndex(1);
+                if (ImGui::SliderFloat("##FallOff", &fireParams[2], 0.8f, 1.0f, "%.2f")) {
+                    saveLight(lightComp);
+                }
+
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Amplitude");
+                ImGui::TableSetColumnIndex(1);
+                if (ImGui::SliderFloat("##Amplitude", &fireParams[0], 0.0f, 0.6f, "%.2f")) {
+                    saveLight(lightComp);
+                }
+
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Frecuency");
+                ImGui::TableSetColumnIndex(1);
+                if (ImGui::SliderFloat("##Frecuency", &fireParams[1], 0.0f, 2.0f, "%.2f")) {
+                    saveLight(lightComp);
+                }
+
+                ImGui::TableNextRow();
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Noise Frecuency");
+                ImGui::TableSetColumnIndex(1);
+                if (ImGui::SliderFloat("##NoiseFrecuency", &fireParams[3], 0.0f, 1.0f, "%.2f")) {
+                    saveLight(lightComp);
+                }
+
+
+            }
+            
+
             ImGui::TableNextRow();
             ImGui::TableSetColumnIndex(0);
-            ImGui::Text("FallOff");
+            ImGui::Text("Animation");
             ImGui::TableSetColumnIndex(1);
-            if (ImGui::SliderFloat("##FallOff", &fallOff, 0.0f, 1.0f, "%.2f")) {
-				saveLight(lightComp);
+
+			
+            if (ImGui::Checkbox("Fire Animation", &isFire)) {
+                pointLight->SetIsFireLight(isFire);
             }
 
             ImGui::EndTable();
 
             pointLight->SetRadius(lightRadius);
             pointLight->SetFallOff(fallOff);
+			pointLight->SetFireParams(fireParams);
         }
         else if (auto directionalLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::DirectionalLight>(lightComp)) {
 
@@ -1051,26 +1141,25 @@ void Properties::FireSize() {
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Height");
         ImGui::TableSetColumnIndex(1);
-        ImGui::SliderFloat("##Height", &curHeight, 0.0f, 100.0f, "%.3f");
+        if (ImGui::SliderFloat("##Height", &curHeight, 0.0f, 100.0f, "%.3f")) { saveFire(fireSystem); }
 
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Gap");
         ImGui::TableSetColumnIndex(1);
-        ImGui::SliderFloat("##Gap", &curGap, 0.0f, 1.0f, "%.3f");
+		if (ImGui::SliderFloat("##Gap", &curGap, 0.0f, 1.0f, "%.3f")) { saveFire(fireSystem); }
 
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Particle Size");
         ImGui::TableSetColumnIndex(1);
-        ImGui::SliderFloat("##ParticleSize", &curParticleSize, 1.0f, 15.0f, "%.3f");
+		if (ImGui::SliderFloat("##ParticleSize", &curParticleSize, 1.0f, 15.0f, "%.3f")) { saveFire(fireSystem); }
 
         ImGui::TableNextRow();
         ImGui::TableSetColumnIndex(0);
         ImGui::Text("Light Color");
         ImGui::TableSetColumnIndex(1);
         colorPickerBtn(baseColor);
-
 
         ImGui::EndTable();
     }
@@ -1082,18 +1171,20 @@ void Properties::FireSize() {
 
     if (prevState != nullptr) {
         //TODO: SACAR A UNA FUNCION
+        glm::vec4 newColor = glm::vec4(baseColor.x, baseColor.y, baseColor.z, baseColor.w);
+
         bool gapChanged = curGap != prevState->GetFireGap();
         bool heightChanged = curHeight != prevState->getHeigth();
         bool radiusChanged = curRadius != prevState->GetRadiusVector();
         bool particleSizeChanged = curParticleSize != prevState->GetParticleSize();
-        bool colorChanged = color != prevState->GetBaseColor();
+        bool colorChanged = color != newColor;
 
         if (gapChanged || heightChanged || radiusChanged || particleSizeChanged || colorChanged) {
 
             fireSystem->ChangeFireSize(curRadius[0], curRadius[1], curRadius[2], curGap, curHeight);
             fireSystem->SetParticleSize(curParticleSize);
 
-            glm::vec4 newColor = glm::vec4(baseColor.x, baseColor.y, baseColor.z, baseColor.w);
+            
             fireSystem->SetBaseColor(newColor);
 
 			fireSystem->saveState();

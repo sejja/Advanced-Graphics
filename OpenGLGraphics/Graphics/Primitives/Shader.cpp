@@ -151,6 +151,18 @@ namespace Core {
 				}
 
 #ifdef _DEBUG
+				if (result == GL_FALSE) {
+					// Handle compilation error
+					GLint logLength;
+					glGetShaderiv(mHandle, GL_INFO_LOG_LENGTH, &logLength);
+					std::vector<char> errorLog(logLength);
+					glGetShaderInfoLog(mHandle, logLength, NULL, errorLog.data());
+					// Output error log or handle error appropriately
+					std::cerr << "Error compiling shader: " << "it did not compile madafacka" << std::endl;
+					// Clean up shader object
+					glDeleteShader(mHandle);
+					return;
+				}
 				//If there has been errors during compilation
 				if (!result) throw ShaderException("Couldn't compile shader");
 #endif

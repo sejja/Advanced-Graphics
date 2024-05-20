@@ -9,10 +9,13 @@
 #include "Graphics/Primitives/Lights/PointLight.h"
 #include "Graphics/Primitives/Lights/SpotLight.h"
 #include "Graphics/Primitives/Lights/DirectionalLight.h"
+#include "Core/ParticleSystem/FireSystem.h"
 
 
 class PrevStates {
 public:
+
+	//ESTA ASI PK NO SE PUEDE HACER UNA COPIA DE UN COMPONENTE SIN Q SE ROMPA TODO
 
 	//OBJ TRANSFORM
     static void SetPrevPos(glm::vec3 pos) { prevPos = pos; }
@@ -46,6 +49,9 @@ public:
 			prevLightColor = pointLight->GetColor();
 			prevLightRadius = pointLight->GetRadius();
 			prevLightFallOff = pointLight->GetFallOff();
+			prevIsFireLight = pointLight->GetIsFireLight();
+			prevFireParams = pointLight->GetFireParams();
+
 		}
 		else if (auto spotLight = std::dynamic_pointer_cast<::Graphics::Primitives::Lights::SpotLight>(light)) {
 			prevLightPos = spotLight->GetPosition();
@@ -64,6 +70,19 @@ public:
 		}
 		
 	}
+	
+	//FireSystem
+	static void SetPrevFire(std::shared_ptr<::Core::Particles::FireSystem> fireSys) {
+		prevFireCenter = fireSys->GetSystemCenter();
+		prevFireColor = fireSys->GetBaseColor();
+		prevFireHeight = fireSys->getHeigth();
+		prevFireRadius = fireSys->GetRadiusVector();
+		prevFireGap = fireSys->GetFireGap();
+		prevParticleSize = fireSys->GetParticleSize();
+	}
+
+
+
 
 	static glm::vec3 GetPrevLightPos() { return prevLightPos; }
 	static glm::vec3 GetPrevLightColor() { return prevLightColor; }
@@ -73,6 +92,21 @@ public:
 	static float GetPrevLightOuter() { return prevLightOuter; }
 	static float GetPrevLightInner() { return prevLightInner; }
 	static bool GetPrevLightShadowCaster() { return prevLightShadowCaster; }
+	static bool GetPrevIsFireLight() { return prevIsFireLight; }
+	static glm::vec4 GetPrevFireParams() { return prevFireParams; }
+
+
+
+	static glm::vec3 GetPrevFireCenter() { return prevFireCenter; }
+	static glm::vec3 GetPrevFireColor() { return prevFireColor; }
+	static glm::vec3 GetPrevFireRadius() { return prevFireRadius; }
+	static float GetPrevFireHeight() { return prevFireHeight; }
+	static float GetPrevFireGap() { return prevFireGap; }
+	static float GetPrevParticleSize() { return prevParticleSize; }
+
+
+
+
 
 
 
@@ -97,10 +131,22 @@ private:
 	static glm::vec3 prevLightColor;
 	static float prevLightRadius;
 	static float prevLightFallOff;
+	static bool prevIsFireLight;
+	static glm::vec4 prevFireParams;
 	static glm::vec3 prevLightDirection;
 	static float prevLightOuter;
 	static float prevLightInner;
 	static bool prevLightShadowCaster;
+
+	//FIRESYSTEM
+	static glm::vec3 prevFireCenter;
+	static glm::vec3 prevFireColor;
+	static glm::vec3 prevFireRadius;
+	static float prevFireHeight;
+	static float prevFireGap;
+	static float prevParticleSize;
+
+
 
 
 

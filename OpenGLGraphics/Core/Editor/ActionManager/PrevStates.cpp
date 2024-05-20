@@ -21,4 +21,18 @@ glm::vec3 PrevStates::prevLightDirection;
 float PrevStates::prevLightOuter;
 float PrevStates::prevLightInner;
 bool PrevStates::prevLightShadowCaster;
+bool PrevStates::prevIsFireLight;
+glm::vec4 PrevStates::prevFireParams;
+
+
+
+
+glm::vec3 PrevStates::prevFireCenter;
+glm::vec3 PrevStates::prevFireColor;
+glm::vec3 PrevStates::prevFireRadius;
+float PrevStates::prevFireHeight;
+float PrevStates::prevFireGap;
+float PrevStates::prevParticleSize;
+
+
 

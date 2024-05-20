@@ -54,6 +54,7 @@ namespace Graphics {
 				DONTDISCARD float inline GetOutter() const noexcept;
 				DONTDISCARD float inline GetFallOff() const noexcept;
 				DONTDISCARD bool inline GetShadowCasting() const noexcept;
+				
 #pragma endregion
 			};
 

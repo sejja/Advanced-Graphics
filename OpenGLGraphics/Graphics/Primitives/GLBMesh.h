@@ -39,9 +39,14 @@ namespace Graphics {
 
         #pragma region //Constructor
             Mesh(const std::vector<Vertex>& vertices, 
-                const std::vector<unsigned>& indices, 
+                const std::vector<unsigned int>& indices, 
                 const Core::Assets::Asset<Core::Graphics::Texture>& diffuse,
                 const Core::Assets::Asset<Core::Graphics::Texture>& normal);
+            void Draw();
+            void bindTextures();
+            GLuint getVao();
+            GLuint getVbo();
+            GLuint getCount();
         #pragma endregion
 
         #pragma region //Methods

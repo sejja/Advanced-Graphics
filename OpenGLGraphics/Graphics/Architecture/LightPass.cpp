@@ -66,6 +66,68 @@ namespace Graphics {
 					x->mShadowMatrix = lightProjection * lightView;
 				}
 			}
+
+			
+
+			float near = 0.1f;
+			glViewport(0, 0, 1024, 1024);
+			for (auto& x : sPointLightData) {
+				auto lightData = x;
+				//if (!x->mShadowCaster) continue;
+				float far = x->mRadius * 2;
+				glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 1.0f, near, far);
+
+				std::vector<glm::mat4> shadowTransforms;
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(1, 0, 0), glm::vec3(0, -1, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(-1, 0, 0), glm::vec3(0, -1, 0)));
+
+				shadowTransforms.push_back(shadowProj * CorrectRollDirection(true, 90.01f, 0.0f, -90.01f, lightData->mPosition));
+				shadowTransforms.push_back(shadowProj * CorrectRollDirection(false, -90.01f, 0.0f, 90.01f, lightData->mPosition));
+
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 0, 1), glm::vec3(0, -1, 0)));
+				shadowTransforms.push_back(shadowProj * glm::lookAt(lightData->mPosition, lightData->mPosition + glm::vec3(0, 0, -1), glm::vec3(0, -1, 0)));
+
+				//glm::mat4 lightProjection = glm::perspective(glm::radians(120.f), 1.0f, 0.1f, 1000.f);
+
+				//glBindTexture(GL_TEXTURE_CUBE_MAP, lightData->depthCubemap);
+				////Borrar textura igual
+
+				//lightData->depthMapFBO.Bind();
+				//for (int i = 0; i<6; i++) { 
+				//	//glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_DEPTH_COMPONENT, 1024, 1024, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+				//	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, lightData->depthCubemap, 0);
+
+				//	auto shader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
+				//	shader->Bind();
+				//	//shader->
+				//	shader->SetShaderUniform("uView", &shadowTransforms[i]);
+				//	shader->SetShaderUniform("uProj", &lightProjection);
+
+				//	lightData->depthMapFBO.Clear(true);
+				//	rend_func(shader);
+				//}
+				//
+				//lightData->depthMapFBO.Unbind();
+
+				lightData->depthMapFBO.Bind();
+				lightData->depthMapFBO.Clear(true);
+
+				auto shader = Singleton<Core::Assets::ResourceManager>::Instance().GetResource<Core::Graphics::ShaderProgram>("Content/Shaders/PointShadow.shader")->Get();
+
+				shader->Bind();
+
+				for (int i = 0; i < 6; i++) {
+					shader->SetShaderUniform("shadowMatrices[" + std::to_string(i) + "]", &shadowTransforms[i]);
+				}
+
+				shader->SetShaderUniform("lightPos", &lightData->mPosition);
+				shader->SetShaderUniform("far_plane", &far);
+
+				rend_func(shader);
+
+				lightData->depthMapFBO.Unbind();
+
+			}
 		}
 
 		// ------------------------------------------------------------------------
@@ -99,10 +161,15 @@ namespace Graphics {
 			for (const auto& x : sPointLightData) {
 				StencilPass(x->mPosition, x->CalculateSphereOfInfluence());
 				shadptr->Bind();
+				//if (x->mShadowCaster) {
+					glActiveTexture(GL_TEXTURE5); //Esto igual hay que cambiar
+					glBindTexture(GL_TEXTURE_CUBE_MAP, x->depthCubemap);
+				//}				
 				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &x->mPosition);
 				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x->mColor);
 				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x->mRadius);
 				shadptr->SetShaderUniform((id + ".mFallOff").c_str(), &x->mFallOff);
+
 				glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 				Utils::GLUtils::RenderScreenQuad();
 			}
@@ -127,6 +194,7 @@ namespace Graphics {
 					shadptr->SetShaderUniform("uShadowMatrix", &x->mShadowMatrix);
 					x->mShadowMap.BindTexture(4);
 				}
+
 				glStencilFunc(GL_NOTEQUAL, 0, 0xFF);
 				Utils::GLUtils::RenderScreenQuad();
 			}
@@ -170,15 +238,40 @@ namespace Graphics {
 			mLightSphere->Get()->Draw();
 		}
 
+		glm::mat4 LightPass::CorrectRollDirection(bool y, float pitch, float yaw, float roll, const glm::vec3& cameraPosition) {
+			glm::vec3 front;
+			front.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch));
+			front.y = sin(glm::radians(pitch));
+			front.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch));
+			glm::vec3 Front = glm::normalize(front);
+			glm::vec3 Right;
+			if (!y) {
+				Right = glm::normalize(glm::cross(Front, glm::vec3(-1.0f, 0.0f, 0.0f)));
+			}
+			else {
+				Right = glm::normalize(glm::cross(Front, glm::vec3(1.0f, 0.0f, 0.0f)));
+			}
+			glm::vec3 Up = glm::normalize(glm::cross(Right, Front));
+
+			// Apply roll
+			glm::mat4 rollMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(roll), Front);
+			Right = glm::vec3(rollMatrix * glm::vec4(Right, 0.0f));
+			Up = glm::vec3(rollMatrix * glm::vec4(Up, 0.0f));
+
+			return std::move(glm::lookAt(cameraPosition, cameraPosition + Front, Up));
+		}
+
 		// ------------------------------------------------------------------------
 		/*! Clear
 		*
 		*   Removes all lighting info from the light-pass, preventing from further rendering
 		*/ //----------------------------------------------------------------------
-		void LightPass::Clear()	{
+		void LightPass::Clear() {
 			sDirectionalLightData.clear();
 			sSpotLightData.clear();
 			sPointLightData.clear();
 		}
 	}
+
+	
 }

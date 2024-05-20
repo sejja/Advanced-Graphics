@@ -5,7 +5,9 @@
 namespace Core {
 	namespace Particles {
 
-		/// <summary>
+		//Copy constructor
+        
+        /// <summary>
 		/// Default builder, default center = (0.0f, 0.0f, 75.0f)
 		/// </summary>
 		/// <param name="parent"></param>

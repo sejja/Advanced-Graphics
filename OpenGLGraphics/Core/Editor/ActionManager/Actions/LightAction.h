@@ -26,6 +26,8 @@ private:
 	float prevLightOuter;
 	float prevLightInner;
 	bool prevLightShadowCaster;
+	bool prevIsFireLight;
+	glm::vec4 prevFireParams;
 
 
 	glm::vec3 curLightPos;

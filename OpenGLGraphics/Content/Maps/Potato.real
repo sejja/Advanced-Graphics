@@ -1,0 +1,566 @@
+{
+    "objects": [
+        {
+            "_id": "Palace",
+            "components": [
+                {
+                    "id": "10259",
+                    "model": "Content/Scenes/Sponza/Sponza.gltf",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                }
+            ],
+            "name": "Palace",
+            "position": [
+                0.0,
+                -10.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                0.20000000298023224,
+                0.20000000298023224,
+                0.20000000298023224
+            ]
+        },
+        {
+            "_id": "Point Light #1",
+            "components": [
+                {
+                    "id": "26009",
+                    "model": "Content/Meshes/sphere_20_averaged.obj",
+                    "shader": "Content/Shaders/White.shader",
+                    "type": "Model Renderer"
+                },
+                {
+                    "color": [
+                        0.9113300442695618,
+                        0.06285027414560318,
+                        0.6647275686264038
+                    ],
+                    "fallOf": 0.9100000262260437,
+                    "fireParams": [
+                        0.15000000596046448,
+                        0.25,
+                        1.0,
+                        0.2800000011920929
+                    ],
+                    "id": "10627",
+                    "isFireLight": false,
+                    "position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "radius": 20.200000762939453,
+                    "shadowCaster": false,
+                    "type": "Point Light"
+                }
+            ],
+            "name": "Point Light #1",
+            "position": [
+                -77.39887237548828,
+                -1.6884777545928955,
+                -4.626708030700684
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "Dragon",
+            "components": [
+                {
+                    "id": "32641",
+                    "model": "Content/Meshes/Dragon/scene.gltf",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                }
+            ],
+            "name": "Dragon",
+            "position": [
+                0.0,
+                -10.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                -0.0
+            ],
+            "scale": [
+                0.4000000059604645,
+                0.4000000059604645,
+                0.4000000059604645
+            ]
+        },
+        {
+            "_id": "Dragon",
+            "components": [
+                {
+                    "id": "4805",
+                    "model": "Content/Meshes/Dragon/scene.gltf",
+                    "shader": "Content/Shaders/DeferredGeometry.shader",
+                    "type": "Model Renderer"
+                }
+            ],
+            "name": "Dragon",
+            "position": [
+                3.574063539505005,
+                -60.0,
+                0.0
+            ],
+            "rotation": [
+                45.0,
+                -0.0,
+                -0.0
+            ],
+            "scale": [
+                0.4000000059604645,
+                0.4000000059604645,
+                0.4000000059604645
+            ]
+        },
+        {
+            "_id": "2",
+            "components": [
+                {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "direction": [
+                        0.3400000035762787,
+                        0.8700000047683716,
+                        0.3400000035762787
+                    ],
+                    "id": "27123",
+                    "position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "type": "Directional Light"
+                }
+            ],
+            "name": "Prueba2",
+            "position": [
+                1.0,
+                1.0,
+                1.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "New Object",
+            "components": [
+                {
+                    "id": "32616",
+                    "model": "Content/Meshes/cube_face.obj",
+                    "shader": "Content/Shaders/White.shader",
+                    "type": "Model Renderer"
+                },
+                {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "fallOf": 0.5,
+                    "fireParams": [
+                        0.15000000596046448,
+                        0.25,
+                        1.0,
+                        0.2800000011920929
+                    ],
+                    "id": "17466",
+                    "isFireLight": false,
+                    "position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "radius": 1.0,
+                    "shadowCaster": false,
+                    "type": "Point Light"
+                }
+            ],
+            "name": "New Object",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "SKYBOX",
+            "components": [
+                {
+                    "id": "9123",
+                    "path": "adfadfasfa",
+                    "type": "Skybox"
+                }
+            ],
+            "name": "SKYBOX",
+            "position": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                0.0,
+                0.0,
+                0.0
+            ]
+        },
+        {
+            "_id": "New Object",
+            "components": [
+                {
+                    "id": "893",
+                    "model": "..\\OpenGLGraphics\\Content\\Meshes\\sphere_20_averaged.obj",
+                    "shader": "..\\OpenGLGraphics\\Content\\Shaders\\White.shader",
+                    "type": "Model Renderer"
+                },
+                {
+                    "color": [
+                        0.8571428656578064,
+                        0.04644615203142166,
+                        0.04644615203142166
+                    ],
+                    "direction": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "fallOff": 1.0,
+                    "id": "4767",
+                    "innerAngle": 63.15999984741211,
+                    "outterAngle": 38.95000076293945,
+                    "position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "radius": 55.790000915527344,
+                    "shadowCaster": true,
+                    "type": "Spot Light"
+                }
+            ],
+            "name": "Spot Light #1",
+            "position": [
+                -81.07727813720703,
+                1.6722661256790161,
+                18.78205108642578
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "New Object",
+            "components": [
+                {
+                    "id": "7771",
+                    "model": "..\\OpenGLGraphics\\Content\\Meshes\\sphere_20_averaged.obj",
+                    "shader": "..\\OpenGLGraphics\\Content\\Shaders\\White.shader",
+                    "type": "Model Renderer"
+                },
+                {
+                    "color": [
+                        0.03193478658795357,
+                        0.35788989067077637,
+                        0.9261083602905273
+                    ],
+                    "direction": [
+                        0.0,
+                        0.0,
+                        1.0
+                    ],
+                    "fallOff": 1.0,
+                    "id": "16434",
+                    "innerAngle": 63.15999984741211,
+                    "outterAngle": 38.95000076293945,
+                    "position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "radius": 55.790000915527344,
+                    "shadowCaster": true,
+                    "type": "Spot Light"
+                }
+            ],
+            "name": "Spot Light #2",
+            "position": [
+                -80.05580139160156,
+                4.885585784912109,
+                -22.45693016052246
+            ],
+            "rotation": [
+                0.0,
+                -0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "New Object",
+            "components": [
+                {
+                    "Diffuse": "Content/Textures/decal_skull_d.png",
+                    "Normal": "Content/Textures/decal_skull_n.png",
+                    "id": "31288",
+                    "type": "Decal"
+                }
+            ],
+            "name": "Skull Decal",
+            "position": [
+                -83.23261260986328,
+                0.0,
+                -24.876203536987305
+            ],
+            "rotation": [
+                5.0,
+                0.0,
+                5.0
+            ],
+            "scale": [
+                10.0,
+                10.000000953674316,
+                10.000000953674316
+            ]
+        },
+        {
+            "_id": "81883",
+            "components": [
+                {
+                    "center": [
+                        0.0,
+                        -2.734205722808838,
+                        -0.36530208587646484
+                    ],
+                    "color": [
+                        0.9882352948188782,
+                        0.729411780834198,
+                        0.0117647061124444,
+                        1.0
+                    ],
+                    "gap": 0.16699999570846558,
+                    "height": 3.8980000019073486,
+                    "id": "24947",
+                    "particleSize": 3.881999969482422,
+                    "radiusVector": [
+                        0.699999988079071,
+                        0.699999988079071,
+                        0.699999988079071
+                    ],
+                    "type": "Fire"
+                },
+                {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "direction": [
+                        0.3420412242412567,
+                        0.8752231597900391,
+                        0.3420412242412567
+                    ],
+                    "fallOff": 0.5,
+                    "id": "7978",
+                    "innerAngle": 0.5,
+                    "outterAngle": 0.5,
+                    "position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "radius": 0.0,
+                    "shadowCaster": false,
+                    "type": "Spot Light"
+                },
+                {
+                    "color": [
+                        0.47598254680633545,
+                        0.38525348901748657,
+                        0.05196313560009003
+                    ],
+                    "fallOf": 0.5,
+                    "fireParams": [
+                        0.15000000596046448,
+                        0.25,
+                        1.0,
+                        0.2800000011920929
+                    ],
+                    "id": "12242",
+                    "isFireLight": false,
+                    "position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "radius": 15.40999984741211,
+                    "shadowCaster": false,
+                    "type": "Point Light"
+                }
+            ],
+            "name": "Brasero",
+            "position": [
+                -37.034122467041016,
+                0.29157304763793945,
+                9.033327102661133
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.0,
+                1.0,
+                1.0
+            ]
+        },
+        {
+            "_id": "28901",
+            "components": [
+                {
+                    "center": [
+                        -0.5429534912109375,
+                        -1.615752935409546,
+                        2.6538219451904297
+                    ],
+                    "color": [
+                        0.9882352948188782,
+                        0.729411780834198,
+                        0.0117647061124444,
+                        1.0
+                    ],
+                    "gap": 0.2849999964237213,
+                    "height": 8.13599967956543,
+                    "id": "19423",
+                    "particleSize": 4.0,
+                    "radiusVector": [
+                        1.7999999523162842,
+                        1.7999999523162842,
+                        1.7999999523162842
+                    ],
+                    "type": "Fire"
+                },
+                {
+                    "color": [
+                        1.0,
+                        1.0,
+                        1.0
+                    ],
+                    "direction": [
+                        0.3420412242412567,
+                        0.8752231597900391,
+                        0.3420412242412567
+                    ],
+                    "fallOff": 0.5,
+                    "id": "23358",
+                    "innerAngle": 0.5,
+                    "outterAngle": 0.5,
+                    "position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "radius": 1.0,
+                    "shadowCaster": false,
+                    "type": "Spot Light"
+                },
+                {
+                    "color": [
+                        0.35807859897613525,
+                        0.24025768041610718,
+                        0.040655218064785004
+                    ],
+                    "fallOf": 0.5,
+                    "fireParams": [
+                        0.15000000596046448,
+                        0.25,
+                        1.0,
+                        0.2800000011920929
+                    ],
+                    "id": "5835",
+                    "isFireLight": false,
+                    "position": [
+                        0.0,
+                        0.0,
+                        0.0
+                    ],
+                    "radius": 18.799999237060547,
+                    "shadowCaster": false,
+                    "type": "Point Light"
+                }
+            ],
+            "name": "Altar",
+            "position": [
+                68.33407592773438,
+                -0.5239931344985962,
+                21.592721939086914
+            ],
+            "rotation": [
+                0.0,
+                0.0,
+                0.0
+            ],
+            "scale": [
+                1.7999999523162842,
+                1.7999999523162842,
+                1.7999999523162842
+            ]
+        }
+    ]
+}

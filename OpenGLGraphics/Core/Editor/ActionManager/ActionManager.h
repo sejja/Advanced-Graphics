@@ -15,19 +15,19 @@ public:
 	void Redo();
 
 	bool canUndo() { return currentAction > 0; }
-	bool canRedo() { return currentAction < actions.size() - 1; }
+	bool canRedo() { return (actions.size() > 0) &&  currentAction < actions.size() - 1; }
 
 	std::vector <std::shared_ptr<Action>> GetActions() { return actions; }
 	int GetCurrentAction() { return currentAction; }
 
 	void Clear() { 
 		actions.clear();
-		currentAction = -1;
+		currentAction = 0;
 	};
 
 private:
 	std::vector<std::shared_ptr<Action>> actions;
-	int currentAction = -1;
+	int currentAction = 0;
 };
 
 

@@ -15,6 +15,7 @@
 #include "Core/Editor/SelectedObj.h"
 #include "database.h"
 #include "Core/Editor/Interface/TextEditor.h"
+#include "Core/Editor/KeyBinding.h"
 
 #include "Core/Editor/ActionManager/ActionManager.h"
 
@@ -55,7 +56,6 @@ public:
 	bool getIsEditing() { return editComplete; }
 	void setEditing(bool value) { editComplete = value; }
 
-    
 
 private:
     SelectedObj selectedObj;
@@ -64,6 +64,7 @@ private:
     Outliner outliner;
     SceneView sceneView;
     Guizmo guizmo;
+    KeyBinding keyBinder;
 
 
     glm::lowp_u16vec2 sceneFrameDimensions;

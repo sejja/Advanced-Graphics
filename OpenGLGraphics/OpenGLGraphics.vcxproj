@@ -171,6 +171,7 @@
     <ClCompile Include="Core\Editor\ActionManager\Action.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\ActionManager.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\Actions\ComponentAction.cpp" />
+    <ClCompile Include="Core\Editor\ActionManager\Actions\FireAction.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\Actions\LightAction.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\Actions\MeshAction.cpp" />
     <ClCompile Include="Core\Editor\ActionManager\Actions\ModelAction.cpp" />
@@ -178,11 +179,14 @@
     <ClCompile Include="Core\Editor\ActionManager\PrevStates.cpp" />
     <ClCompile Include="Core\Editor\Guizmo.cpp" />
     <ClCompile Include="Core\Editor\Interface\TextEditor.cpp" />
+    <ClCompile Include="Core\Editor\KeyBinding.cpp" />
     <ClCompile Include="Core\Editor\mouse_picking.cpp" />
     <ClCompile Include="Core\Editor\ShaderCompiler\clientWindows.c" />
-    <ClCompile Include="Core\Network\Client.cpp" />
-    <ClCompile Include="Core\Network\Common.cpp" />
-    <ClCompile Include="Core\Network\Server.cpp" />
+    <ClCompile Include="Core\Logger.cpp" />
+    <ClCompile Include="Core\Remote\Client.cpp" />
+    <ClCompile Include="Core\Remote\Common.cpp" />
+    <ClCompile Include="Core\Remote\NetManager.cpp" />
+    <ClCompile Include="Core\Remote\Server.cpp" />
     <ClCompile Include="Core\Assets\ModelImporter.cpp" />
     <ClCompile Include="Core\Assets\ShaderImporter.cpp" />
     <ClCompile Include="Core\Assets\TextureImporter.cpp" />
@@ -209,6 +213,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="Core\Assets\ResourceManager.cpp" />
+    <ClCompile Include="Core\ParticleSystem\SmokeSystem.cpp" />
     <ClCompile Include="D:\Asier\Descargas\Space-Partitioning-master\Space-Partitioning-master\src\geometry.cpp" />
     <ClCompile Include="Dependencies\GLEW\Source\glew.c" />
     <ClCompile Include="Dependencies\ImGuizmo\ImGuizmo.cpp" />
@@ -225,6 +230,11 @@
     <ClCompile Include="Graphics\Architecture\GBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\GeometryDeform.cpp" />
     <ClCompile Include="Graphics\Architecture\HDRBuffer.cpp" />
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMesh.cpp" />
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMesh.h" />
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMeshMap.cpp" />
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedMeshMap.h" />
+    <ClCompile Include="Graphics\Architecture\InstancedRendering\InstancedRendering.cpp" />
     <ClCompile Include="Graphics\Architecture\SamplingBuffer.cpp" />
     <ClCompile Include="Graphics\Architecture\LightPass.cpp" />
     <ClCompile Include="Graphics\Architecture\SpacePartitioning\geometry.cpp" />
@@ -267,6 +277,7 @@
     <ClInclude Include="Core\Editor\ActionManager\Action.h" />
     <ClInclude Include="Core\Editor\ActionManager\ActionManager.h" />
     <ClInclude Include="Core\Editor\ActionManager\Actions\ComponentAction.h" />
+    <ClInclude Include="Core\Editor\ActionManager\Actions\FireAction.h" />
     <ClInclude Include="Core\Editor\ActionManager\Actions\LightAction.h" />
     <ClInclude Include="Core\Editor\ActionManager\Actions\MeshAction.h" />
     <ClInclude Include="Core\Editor\ActionManager\Actions\ModelAction.h" />
@@ -274,7 +285,9 @@
     <ClInclude Include="Core\Editor\ActionManager\ActionType.h" />
     <ClInclude Include="Core\Editor\ActionManager\PrevStates.h" />
     <ClInclude Include="Core\Editor\Guizmo.h" />
+    <ClInclude Include="Core\Editor\KeyBinding.h" />
     <ClInclude Include="Core\Editor\mouse_picking.h" />
+    <ClInclude Include="Core\Logger.h" />
     <ClInclude Include="Core\Math\Lerp.h" />
     <ClInclude Include="Core\Memory\Allocator.h" />
     <ClInclude Include="CommonDefines.h" />
@@ -284,9 +297,10 @@
     <ClInclude Include="Core\Assets\TextureImporter.h" />
     <ClInclude Include="Core\Editor\Interface\TextEditor.h" />
     <ClInclude Include="Core\Editor\ShaderCompiler\clientWindows.h" />
-    <ClInclude Include="Core\Network\Client.h" />
-    <ClInclude Include="Core\Network\Common.h" />
-    <ClInclude Include="Core\Network\Server.h" />
+    <ClInclude Include="Core\Remote\Client.h" />
+    <ClInclude Include="Core\Remote\Common.h" />
+    <ClInclude Include="Core\Remote\NetManager.h" />
+    <ClInclude Include="Core\Remote\Server.h" />
     <ClInclude Include="Core\ECSystem\Component.h" />
     <ClInclude Include="Core\ECSystem\Object.h" />
     <ClInclude Include="Core\Editor\Assets\Fonts\IconsFontAwesome.h" />
@@ -305,6 +319,7 @@
     <ClInclude Include="Core\ParticleSystem\FireSystem.h" />
     <ClInclude Include="Core\ParticleSystem\ParticleManager.h" />
     <ClInclude Include="Core\ParticleSystem\ParticleSystem.h" />
+    <ClInclude Include="Core\ParticleSystem\SmokeSystem.h" />
     <ClInclude Include="Core\RTTI\RTTI.h" />
     <ClInclude Include="Core\Events\TypeInfo.h" />
     <ClInclude Include="Core\Input\InputManager.h">
@@ -372,6 +387,7 @@
     <ClInclude Include="Graphics\Architecture\GBuffer.h" />
     <ClInclude Include="Graphics\Architecture\GeometryDeform.h" />
     <ClInclude Include="Graphics\Architecture\HDRBuffer.h" />
+    <ClInclude Include="Graphics\Architecture\InstancedRendering\InstancedRendering.h" />
     <ClInclude Include="Graphics\Architecture\LightPass.h" />
     <ClInclude Include="Graphics\Architecture\SamplingBuffer.h" />
     <ClInclude Include="Graphics\Architecture\SpacePartitioning\geometry.hpp" />
@@ -809,14 +825,13 @@
   <ItemGroup>
     <None Include="Content\Maps\dafad.real" />
     <None Include="Content\Maps\GreatCyberpunk.real" />
-    <None Include="Content\Maps\GreatSponza.real" />
     <None Include="Content\Maps\Japan.real" />
     <None Include="Content\Maps\Minecraft.level" />
     <None Include="Content\Maps\Japan.level" />
     <None Include="Content\Maps\Cyberpunk.level" />
     <None Include="Content\Maps\Minecraft.real" />
     <None Include="Content\Maps\mi_dragoncito.real" />
-    <None Include="Content\Maps\patata.real" />
+    <None Include="Content\Maps\GreatSponza.real" />
     <None Include="Content\Maps\Scene2.real" />
     <None Include="Content\Maps\Sponza.level" />
     <None Include="Content\Meshes\backpack.mtl" />
@@ -847,6 +862,22 @@
     <None Include="Content\Shaders\GeometryDecal.frag" />
     <None Include="Content\Shaders\GeometryDecal.shader" />
     <None Include="Content\Shaders\GeometryDecal.vert" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.frag" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.geom" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.shader" />
+    <None Include="Content\Shaders\InstancedShaders\CascadeShadow\InstancedCascadedShadowMap.vert" />
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.shader">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.vert">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Content\Shaders\InstancedShaders\InstancedGeometry.frag">
+      <DeploymentContent>true</DeploymentContent>
+    </None>
+    <None Include="Content\Shaders\InstancedShaders\Shadow\InstancedShadow.frag" />
+    <None Include="Content\Shaders\InstancedShaders\Shadow\InstancedShadow.shader" />
+    <None Include="Content\Shaders\InstancedShaders\Shadow\InstancedShadow.vert" />
     <None Include="Content\Shaders\Renderer.frag" />
     <None Include="Content\Shaders\FireParticle.vert" />
     <None Include="Content\Shaders\Refractive.frag" />
