@@ -73,7 +73,7 @@ namespace Graphics {
 			glViewport(0, 0, 1024, 1024);
 			for (auto& x : sPointLightData) {
 				auto lightData = x;
-				if (!x->mShadowCaster) continue;
+				//if (!x->mShadowCaster) continue;
 				float far = x->mRadius * 2;
 				glm::mat4 shadowProj = glm::perspective(glm::radians(90.0f), 1.0f, near, far);
 
@@ -161,10 +161,10 @@ namespace Graphics {
 			for (const auto& x : sPointLightData) {
 				StencilPass(x->mPosition, x->CalculateSphereOfInfluence());
 				shadptr->Bind();
-				if (x->mShadowCaster) {
+				//if (x->mShadowCaster) {
 					glActiveTexture(GL_TEXTURE5); //Esto igual hay que cambiar
 					glBindTexture(GL_TEXTURE_CUBE_MAP, x->depthCubemap);
-				}				
+				//}				
 				shadptr->SetShaderUniform((id + ".mPosition").c_str(), &x->mPosition);
 				shadptr->SetShaderUniform((id + ".mColor").c_str(), &x->mColor);
 				shadptr->SetShaderUniform((id + ".mRadius").c_str(), &x->mRadius);
