@@ -54,11 +54,14 @@ namespace Core {
 		void CheckFrustrumObjectCollisions(Octree<::Graphics::Primitives::Mesh>::node* node, frustrum const& frus);
 		void OctreeCheck(frustrum const& frustum);
 		void FrustumCheck(frustrum const& frustum);
+		void AABBDrawAll(Core::Graphics::OpenGLPipeline& pipeline);
 
 		// Stats
 		int stat_draw_calls = 0;
 		int stat_frustum_aabb_checks = 0;
 		int stat_frustum_aabb_positive = 0;
+
+		bool debugDrawALL = false;
 
 #pragma endregion	
 
@@ -68,6 +71,8 @@ namespace Core {
 		std::vector<std::shared_ptr<Object>> mObjects;
 
 		Octree<::Graphics::Primitives::Mesh> m_octree;
+
+
 #pragma endregion
 	};
 }

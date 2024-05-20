@@ -54,7 +54,7 @@ namespace Graphics {
         void setDiffuse(Core::Assets::Asset<Core::Graphics::Texture> diffuse) { mDiffuse = diffuse; }
         void setNormal(Core::Assets::Asset<Core::Graphics::Texture> normal) { mNormal = normal; }
 
-		void setAABB(const aiAABB& aiAABBB) { aabb = aiAABBB; }
+		void setAABB(const aiAABB aiAABBB) { aabb = aiAABBB; }
 		aiAABB& getAABB() { return aabb; }
 
 		std::string getMeshID() { return meshID; }
@@ -77,7 +77,7 @@ namespace Graphics {
             GLsizei mCount;
             GLuint mVao, mVbo, mEbo;
 
-            aiAABB& aabb;
+            aiAABB aabb;
 
             std::string meshID;
         #pragma endregion

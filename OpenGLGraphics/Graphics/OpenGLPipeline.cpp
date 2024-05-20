@@ -305,11 +305,17 @@ namespace Core {
 			mGeometryDeform.DecalPass(*mGBuffer);
 
 			auto x = Singleton<::Editor>::Instance().GetSelectedObj().GetSelectedComponent();
+			auto scene = Singleton<AppWrapper>::Instance().getScene();
 
 			if (RTTI::IsA<::Graphics::Primitives::Decal>(x.get())) {
 				mDebug->DrawAABB(x.get()->GetParent().lock()->GetPosition(),
 					x.get()->GetParent().lock()->GetScale(), glm::vec4(1, 0.6, 0.2, 1), cam);
 			}
+			scene.AABBDrawAll(*this);
+
+
+			
+
 
 			mSSAOBuffer->RenderAO(*mGBuffer);
 
@@ -318,17 +324,6 @@ namespace Core {
 			else {mHDRBuffer->Bind();mHDRBuffer->Clear();}
 			//glEnable(GL_DEPTH_TEST);
 
-
-
-			
-			auto scene = Singleton<AppWrapper>::Instance().getScene();
-
-			if (scene.GetObjects().size() > 0) {
-				if (scene.GetObjects()[0].get()->GetAllComponents().size() > 0) {
-					auto comp = scene.GetObjects()[0].get()->GetAllComponents()[0];
-					auto modelComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp)->GetModel()->Get()->getMeshes()[0];
-				}
-			}
 			
 
 			// Draw octree
@@ -350,17 +345,11 @@ namespace Core {
 			scene.OctreeCheck(frust);
 			debug_draw_octree();
 
+			
 
+			
 
 			//scene.CreateOctree(3, 7);
-
-			if (scene.GetObjects().size() > 0) {
-				if (scene.GetObjects()[0].get()->GetAllComponents().size() > 0) {
-					auto comp = scene.GetObjects()[0].get()->GetAllComponents()[0];
-					auto modelComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp)->GetModel()->Get()->getMeshes()[0];
-				}
-			}
-
 
 			RenderParticlesSystems();
 

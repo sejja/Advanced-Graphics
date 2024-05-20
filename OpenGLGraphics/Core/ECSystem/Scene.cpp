@@ -419,10 +419,45 @@ namespace Core {
 
 	aabb scaleAndPositionAABB(const aiAABB& originalAABB, const glm::vec3& scale, const glm::vec3& position) {
 		aabb scaledAABB;
-		scaledAABB.min = glm::vec3(originalAABB.mMin.x, originalAABB.mMin.y, originalAABB.mMin.z)  * scale + position;
+		scaledAABB.min = glm::vec3(originalAABB.mMin.x, originalAABB.mMin.y, originalAABB.mMin.z) * scale + position;
 		scaledAABB.max = glm::vec3(originalAABB.mMax.x, originalAABB.mMax.y, originalAABB.mMax.z) * scale + position;
 		return scaledAABB;
 	}
+
+	
+
+	void Scene::AABBDrawAll(Core::Graphics::OpenGLPipeline& pipeline)
+	{
+		if (!debugDrawALL) { return; }
+		for (auto& obj : GetObjects()) {
+
+			auto comps = obj->GetAllComponents();
+
+			for (auto& comp : comps) {
+				if (std::shared_ptr<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>> modelComp = std::dynamic_pointer_cast<Core::Graphics::GLBModelRenderer<Core::Graphics::Pipeline::GraphicsAPIS::OpenGL>>(comp)) {
+
+					auto glbModel = modelComp->GetModel();
+					for (::Graphics::Primitives::Mesh& mesh : glbModel->Get()->getMeshes()) {
+
+						auto meshABBB = mesh.getAABB();
+
+						aabb scaledAABB = scaleAndPositionAABB(meshABBB, obj->GetScale(), obj->GetPosition());
+
+						auto dim = scaledAABB.max - scaledAABB.min;
+		
+
+						Octree<::Graphics::Primitives::Mesh>::node* new_node = m_octree.create_node(scaledAABB);	
+						pipeline.GetDebugSystem()->DrawAABB(obj->GetPosition(),dim, glm::vec4(1, 0.6, 0.2, 1), *pipeline.getCamera());
+
+					}
+				}
+			}
+
+		}
+	}
+
+
+
 
 
 	void Scene::CreateOctree(int levels, int sizebit){

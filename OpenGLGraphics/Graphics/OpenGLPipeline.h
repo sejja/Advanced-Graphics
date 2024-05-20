@@ -56,6 +56,8 @@ namespace Core {
 			void ClearPipeline();
 			Primitives::Camera* getCamera();
 
+			std::shared_ptr<::Graphics::Debug::DebugSystem> GetDebugSystem() { return mDebug; }
+
 
 			void updateRenderablesGroups(const Core::Assets::Asset<ShaderProgram>& curShader, const Core::Assets::Asset<ShaderProgram>& newShader, const std::shared_ptr<Renderable>& renderable);
 
@@ -96,7 +98,7 @@ namespace Core {
 			GLboolean AntiAliasing = false;
 			Core::Assets::Asset<ShaderProgram> RendererShader;
 			float exposure = 1;
-			std::unique_ptr<::Graphics::Debug::DebugSystem> mDebug;
+			std::shared_ptr<::Graphics::Debug::DebugSystem> mDebug;
 			std::unique_ptr<::Graphics::Architecture::Bloom::BloomRenderer> mBloomRenderer;
 			std::unique_ptr<::Graphics::Architecture::SSAO::SSAOBuffer> mSSAOBuffer;
 

@@ -118,7 +118,9 @@ namespace Graphics {
             for (unsigned i = 0; i < node->mNumMeshes; i++) {
                 // the node object only contains indices to index the actual objects in the scene. 
                 // the scene contains all the data, node is just to keep stuff organized (like relations between nodes).
-                mMeshes.push_back(ProcessMesh(scene->mMeshes[node->mMeshes[i]], scene, dir, transform));
+                Mesh mMesh = ProcessMesh(scene->mMeshes[node->mMeshes[i]], scene, dir, transform);
+                mMesh.setAABB(scene->mMeshes[i]->mAABB);
+                mMeshes.push_back(mMesh);
             }
             // after we've processed all of the meshes (if any) we then recursively process each of the children nodes
             for (unsigned i = 0; i < node->mNumChildren; i++)

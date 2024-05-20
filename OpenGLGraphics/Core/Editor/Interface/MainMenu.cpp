@@ -27,6 +27,7 @@ void MainMenu::Render(Core::Graphics::OpenGLPipeline& pipeline) {
         if (ImGui::BeginMenu("Debug Tools")) {
             ImGui::MenuItem("Deferred Rendering", NULL, &show_deferred_rendering);
             ImGui::MenuItem("Shadow Mapping", NULL, &show_shadow_mapping);
+            ImGui::Checkbox("SpacePartitioning", &Singleton<AppWrapper>::Instance().getScene().debugDrawALL);
             ImGui::EndMenu();
         }
 
